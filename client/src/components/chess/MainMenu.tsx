@@ -269,49 +269,49 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
             {learningStats ? (
               <>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="stat-card">
-                    <div className="stat-label">Total Games</div>
-                    <div className="stat-value">{learningStats.totalGamesAnalyzed}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">Recent Games</div>
-                    <div className="stat-value">{learningStats.recentGames}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">Human Games</div>
-                    <div className="stat-value">{learningStats.humanGames}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">AI Games</div>
-                    <div className="stat-value">{learningStats.aiGames}</div>
-                  </div>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Total Games</div>
+                    <div className="text-lg font-bold">{learningStats.totalGamesAnalyzed}</div>
+                  </Card>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Recent Games</div>
+                    <div className="text-lg font-bold">{learningStats.recentGames}</div>
+                  </Card>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Human Games</div>
+                    <div className="text-lg font-bold">{learningStats.humanGames}</div>
+                  </Card>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">AI Games</div>
+                    <div className="text-lg font-bold">{learningStats.aiGames}</div>
+                  </Card>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="stat-card">
-                    <div className="stat-label">Win Rate vs Human</div>
-                    <div className="stat-value">{Math.round(learningStats.winRateVsHuman * 100)}%</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">Win Rate vs AI</div>
-                    <div className="stat-value">{Math.round(learningStats.winRateVsAI * 100)}%</div>
-                  </div>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Win Rate vs Human</div>
+                    <div className="text-lg font-bold">{Math.round(learningStats.winRateVsHuman * 100)}%</div>
+                  </Card>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Win Rate vs AI</div>
+                    <div className="text-lg font-bold">{Math.round(learningStats.winRateVsAI * 100)}%</div>
+                  </Card>
                 </div>
 
                 <div className="space-y-2">
-                  <div className="stat-card">
-                    <div className="stat-label">Move Patterns Learned</div>
-                    <div className="stat-value">{learningStats.movePatterns}</div>
-                  </div>
-                  <div className="stat-card">
-                    <div className="stat-label">Position Patterns</div>
-                    <div className="stat-value">{learningStats.positionalPatterns}</div>
-                  </div>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Move Patterns Learned</div>
+                    <div className="text-lg font-bold">{learningStats.movePatterns}</div>
+                  </Card>
+                  <Card className="p-3 bg-muted/50">
+                    <div className="text-xs text-muted-foreground mb-1">Position Patterns</div>
+                    <div className="text-lg font-bold">{learningStats.positionalPatterns}</div>
+                  </Card>
                 </div>
 
                 {learningStats.preferredStrategies && learningStats.preferredStrategies.length > 0 && (
                   <div className="space-y-2">
-                    <div className="stat-label">Preferred Strategies</div>
+                    <div className="text-sm font-medium">Preferred Strategies</div>
                     <div className="flex flex-wrap gap-1">
                       {learningStats.preferredStrategies.map((strategy: string, index: number) => (
                         <Badge key={index} variant="outline" className="text-xs">
