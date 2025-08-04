@@ -20,10 +20,12 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const [showStatsDialog, setShowStatsDialog] = useState(false);
 
   useEffect(() => {
-    // Load learning stats on component mount (no auto-reset)
+    // Reset learning data for fresh testing
+    console.log('🔄 Resetting AI learning data...');
+    aiLearning.resetLearning();
     const stats = aiLearning.getLearningStats();
     setLearningStats(stats);
-    console.log('📊 Loaded existing learning stats:', stats);
+    console.log('✅ Fresh learning data loaded:', stats);
   }, []);
 
   return (
