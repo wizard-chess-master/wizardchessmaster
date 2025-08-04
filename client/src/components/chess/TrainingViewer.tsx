@@ -47,6 +47,8 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
   useEffect(() => {
     // Check if game ended and update stats
     if (gamePhase === 'ended' && stats.isPlaying) {
+      console.log(`Game ${stats.gameNumber} ended. Winner: ${winner || 'Draw'}`);
+      
       setTimeout(() => {
         setStats(prev => {
           const newStats = { ...prev };
@@ -57,8 +59,13 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
           if (newStats.gameNumber < newStats.totalGames) {
             newStats.gameNumber++;
             newStats.currentGameMoves = 0;
+            console.log(`Starting game ${newStats.gameNumber}/${newStats.totalGames}`);
             // Start next game
-            setTimeout(() => startGame('ai-vs-ai', 'hard'), 1000);
+            setTimeout(() => {
+              if (newStats.isPlaying) { // Check if still playing
+                startGame('ai-vs-ai', 'hard');
+              }
+            }, 1000);
           } else {
             // Training complete
             newStats.isPlaying = false;
@@ -69,7 +76,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         });
       }, 1500);
     }
-  }, [gamePhase, winner, stats.isPlaying]);
+  }, [gamePhase, winner, stats.isPlaying, stats.gameNumber, stats.totalGames]);
 
   useEffect(() => {
     // Clear existing interval when speed changes
@@ -109,17 +116,33 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
   }, [stats.isPlaying, stats.isPaused, stats.speed, gamePhase]);
 
   const startTraining = () => {
-    setStats(prev => ({ ...prev, isPlaying: true, isPaused: false }));
-    if (gamePhase !== 'playing') {
-      startGame('ai-vs-ai', 'hard');
-    }
+    console.log('Starting training session');
+    setStats(prev => ({ 
+      ...prev, 
+      isPlaying: true, 
+      isPaused: false,
+      gameNumber: 1,
+      whiteWins: 0,
+      blackWins: 0,
+      draws: 0,
+      currentGameMoves: 0
+    }));
+    startGame('ai-vs-ai', 'hard');
   };
 
   const pauseTraining = () => {
+    console.log('Pausing/resuming training');
     setStats(prev => ({ ...prev, isPaused: !prev.isPaused }));
   };
 
   const stopTraining = () => {
+    console.log('Stopping training session');
+    // Clear any existing interval
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    
     setStats(prev => ({ 
       ...prev, 
       isPlaying: false, 
@@ -183,13 +206,17 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
                   Start Training
                 </Button>
               ) : (
-                <Button onClick={pauseTraining}>
+                <Button onClick={pauseTraining} variant={stats.isPaused ? "default" : "secondary"}>
                   <Pause className="w-4 h-4 mr-2" />
                   {stats.isPaused ? 'Resume' : 'Pause'}
                 </Button>
               )}
               
-              <Button variant="outline" onClick={stopTraining}>
+              <Button 
+                variant="outline" 
+                onClick={stopTraining}
+                disabled={!stats.isPlaying}
+              >
                 <Square className="w-4 h-4 mr-2" />
                 Stop
               </Button>
