@@ -3,7 +3,8 @@ import { useChess } from '../../lib/stores/useChess';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3, X } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
 
@@ -16,6 +17,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const { startGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
+  const [showStatsDialog, setShowStatsDialog] = useState(false);
 
   useEffect(() => {
     // Load learning stats on component mount
@@ -135,6 +137,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   onClick={() => {
                     const stats = aiLearning.getLearningStats();
                     setLearningStats(stats);
+                    setShowStatsDialog(true);
                     console.log('🧠 AI Learning Statistics:', stats);
                   }}
                 >
@@ -251,6 +254,108 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
           </Card>
         </div>
       </div>
+
+      {/* AI Learning Stats Dialog */}
+      <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Brain className="w-5 h-5" />
+              AI Learning Statistics
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {learningStats ? (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="stat-card">
+                    <div className="stat-label">Total Games</div>
+                    <div className="stat-value">{learningStats.totalGamesAnalyzed}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-label">Recent Games</div>
+                    <div className="stat-value">{learningStats.recentGames}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-label">Human Games</div>
+                    <div className="stat-value">{learningStats.humanGames}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-label">AI Games</div>
+                    <div className="stat-value">{learningStats.aiGames}</div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="stat-card">
+                    <div className="stat-label">Win Rate vs Human</div>
+                    <div className="stat-value">{Math.round(learningStats.winRateVsHuman * 100)}%</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-label">Win Rate vs AI</div>
+                    <div className="stat-value">{Math.round(learningStats.winRateVsAI * 100)}%</div>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className="stat-card">
+                    <div className="stat-label">Move Patterns Learned</div>
+                    <div className="stat-value">{learningStats.movePatterns}</div>
+                  </div>
+                  <div className="stat-card">
+                    <div className="stat-label">Position Patterns</div>
+                    <div className="stat-value">{learningStats.positionalPatterns}</div>
+                  </div>
+                </div>
+
+                {learningStats.preferredStrategies && learningStats.preferredStrategies.length > 0 && (
+                  <div className="space-y-2">
+                    <div className="stat-label">Preferred Strategies</div>
+                    <div className="flex flex-wrap gap-1">
+                      {learningStats.preferredStrategies.map((strategy: string, index: number) => (
+                        <Badge key={index} variant="outline" className="text-xs">
+                          {strategy}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      aiLearning.resetLearning();
+                      setLearningStats(aiLearning.getLearningStats());
+                    }}
+                  >
+                    Reset Learning Data
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const stats = aiLearning.getLearningStats();
+                      setLearningStats(stats);
+                    }}
+                  >
+                    Refresh Stats
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">No learning data available yet.</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Play games against AI or run training sessions to see statistics.
+                </p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
