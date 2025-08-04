@@ -19,7 +19,7 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - Enhanced move validation for wizard attacks in AI player logic
 - Updated wizard teleportation: Wizards can now teleport over pieces to reach empty squares
 - Fixed wizard attack rules: Wizards can now attack any enemy within 2 squares through occupied squares
-- Added AI vs AI mode: Fully automated gameplay for testing and demonstration purposes
+- Added AI vs AI mode: Fully automated gameplay for testing and demonstration purposes using advanced AI difficulty
 
 ## User Preferences
 

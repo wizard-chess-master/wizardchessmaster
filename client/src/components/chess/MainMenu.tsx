@@ -68,11 +68,11 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                 
                 <Button
                   className="mode-button"
-                  onClick={() => startGame('ai-vs-ai', 'medium')}
+                  onClick={() => startGame('ai-vs-ai', 'hard')}
                 >
                   <div className="mode-content">
-                    <span>AI vs AI</span>
-                    <Badge variant="secondary">Watch & Test</Badge>
+                    <span>AI vs AI - Advanced</span>
+                    <Badge variant="secondary">Strategic Battle</Badge>
                   </div>
                 </Button>
                 
