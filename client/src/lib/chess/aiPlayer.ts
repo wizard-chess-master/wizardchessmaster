@@ -130,9 +130,9 @@ function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove
         const possibleMoves = getPossibleMoves(gameState.board, from, piece);
         
         for (const to of possibleMoves) {
-          const captured = gameState.board[to.row][to.col];
+          const captured = gameState.board[to.row][to.col] || undefined;
           const isWizardTeleport = piece.type === 'wizard' && !captured;
-          const isWizardAttack = piece.type === 'wizard' && captured;
+          const isWizardAttack = piece.type === 'wizard' && !!captured;
           
           // Validate move doesn't put own king in check
           const testBoard = gameState.board.map(r => [...r]);

@@ -14,7 +14,7 @@ function App() {
   const { setHitSound, setSuccessSound } = useAudio();
   const [showSettings, setShowSettings] = useState(false);
 
-  // Initialize audio
+  // Initialize audio and keyboard shortcuts
   useEffect(() => {
     const hitAudio = new Audio("/sounds/hit.mp3");
     const successAudio = new Audio("/sounds/success.mp3");
@@ -22,6 +22,40 @@ function App() {
     setHitSound(hitAudio);
     setSuccessSound(successAudio);
   }, [setHitSound, setSuccessSound]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const { selectSquare, undoMove, resetGame } = useChess.getState();
+      const { toggleMute } = useAudio.getState();
+      
+      // Ctrl+Z for undo
+      if (event.ctrlKey && event.key === 'z') {
+        event.preventDefault();
+        undoMove();
+      }
+      
+      // Ctrl+M for mute toggle
+      if (event.ctrlKey && event.key === 'm') {
+        event.preventDefault();
+        toggleMute();
+      }
+      
+      // Escape to deselect
+      if (event.key === 'Escape') {
+        selectSquare({ row: -1, col: -1 }); // Invalid position to clear selection
+      }
+      
+      // Ctrl+H for home/menu
+      if (event.ctrlKey && event.key === 'h') {
+        event.preventDefault();
+        resetGame();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
     <div className="chess-app">

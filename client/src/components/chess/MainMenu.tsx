@@ -99,8 +99,9 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                 </div>
                 
                 <div className="rule-item">
-                  <h4>🧙‍♂️ Wizard Piece</h4>
+                  <h4>🧙‍♂️ Wizard Pieces</h4>
                   <p>
+                    <strong>Position:</strong> Two wizards per side in corners (a1/j1 for white, a10/j10 for black)<br/>
                     <strong>Teleport:</strong> Move to any unoccupied square within 2 spaces<br/>
                     <strong>Ranged Attack:</strong> Attack enemies within 2 squares without moving
                   </p>
@@ -129,6 +130,16 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                 <div className="control-item">
                   <span className="control-key">Escape</span>
                   <span>Deselect piece</span>
+                </div>
+                
+                <div className="control-item">
+                  <span className="control-key">Ctrl+M</span>
+                  <span>Toggle sound</span>
+                </div>
+                
+                <div className="control-item">
+                  <span className="control-key">Ctrl+H</span>
+                  <span>Return to menu</span>
                 </div>
               </div>
             </CardContent>

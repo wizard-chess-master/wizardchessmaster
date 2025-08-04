@@ -104,6 +104,10 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
                   <kbd>Ctrl + M</kbd>
                   <span>Toggle sound</span>
                 </div>
+                <div className="shortcut-item">
+                  <kbd>Ctrl + H</kbd>
+                  <span>Return to menu</span>
+                </div>
               </div>
             </CardContent>
           </Card>

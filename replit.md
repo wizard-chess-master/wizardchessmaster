@@ -1,6 +1,13 @@
 # Overview
 
-This is a **Fantasy Chess** web application - a 10x10 chess variant with magical wizards. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
+This is a **Fantasy Chess** web application - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
+
+## Recent Changes (January 4, 2025)
+- Updated board layout: Standard chess pieces centered (8 pieces + 8 pawns per side), wizards in corners (a1/j1 for white, a10/j10 for black)
+- Added comprehensive keyboard shortcuts (Ctrl+Z undo, Ctrl+M mute, Ctrl+H menu, Escape deselect)
+- Enhanced audio feedback for captures and wizard attacks
+- Fixed TypeScript type issues with piece capture handling
+- Complete implementation with fantasy UI, AI opponents, and ad/IAP placeholders
 
 ## User Preferences
 

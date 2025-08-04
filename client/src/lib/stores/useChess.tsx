@@ -3,6 +3,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import { GameState, ChessMove, Position, GameMode, AIDifficulty, PieceColor } from "../chess/types";
 import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess/gameEngine";
 import { getAIMove } from "../chess/aiPlayer";
+import { useAudio } from "./useAudio";
 
 interface ChessStore extends GameState {
   // Actions
@@ -80,12 +81,12 @@ export const useChess = create<ChessStore>()(
     makePlayerMove: (from: Position, to: Position) => {
       const state = get();
       const piece = state.board[from.row][from.col];
-      const captured = state.board[to.row][to.col];
+      const captured = state.board[to.row][to.col] || undefined;
       
       if (!piece) return;
 
       const isWizardTeleport = piece.type === 'wizard' && !captured;
-      const isWizardAttack = piece.type === 'wizard' && captured && captured.color !== piece.color;
+      const isWizardAttack = piece.type === 'wizard' && !!captured && captured.color !== piece.color;
 
       const move: ChessMove = {
         from,
@@ -95,6 +96,12 @@ export const useChess = create<ChessStore>()(
         isWizardTeleport,
         isWizardAttack
       };
+
+      // Play move sound
+      const { playHit } = useAudio.getState();
+      if (captured || isWizardAttack) {
+        playHit();
+      }
 
       const newState = makeMove(state, move);
       set(newState);

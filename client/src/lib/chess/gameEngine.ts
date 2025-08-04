@@ -4,33 +4,43 @@ import { isValidMove, getAllValidMoves, getPossibleMoves } from './pieceMovement
 export function createInitialBoard(): (ChessPiece | null)[][] {
   const board: (ChessPiece | null)[][] = Array(10).fill(null).map(() => Array(10).fill(null));
   
-  // Place white pieces
-  const whiteBackRow: PieceType[] = ['rook', 'knight', 'bishop', 'queen', 'king', 'wizard', 'bishop', 'knight', 'rook'];
-  whiteBackRow.forEach((type, col) => {
-    if (col < 9) {
-      board[9][col] = createPiece(type, 'white', `w-${type}-${col}`);
-    }
-  });
-  board[9][9] = createPiece('rook', 'white', 'w-rook-9');
+  // Place white pieces (bottom, row 9) - centered like traditional chess
+  board[9][1] = createPiece('rook', 'white', 'w-rook-1');
+  board[9][2] = createPiece('knight', 'white', 'w-knight-2');
+  board[9][3] = createPiece('bishop', 'white', 'w-bishop-3');
+  board[9][4] = createPiece('queen', 'white', 'w-queen-4');
+  board[9][5] = createPiece('king', 'white', 'w-king-5');
+  board[9][6] = createPiece('bishop', 'white', 'w-bishop-6');
+  board[9][7] = createPiece('knight', 'white', 'w-knight-7');
+  board[9][8] = createPiece('rook', 'white', 'w-rook-8');
   
-  // White pawns
-  for (let col = 0; col < 10; col++) {
+  // White pawns (row 8)
+  for (let col = 1; col < 9; col++) {
     board[8][col] = createPiece('pawn', 'white', `w-pawn-${col}`);
   }
   
-  // Place black pieces
-  const blackBackRow: PieceType[] = ['rook', 'knight', 'bishop', 'queen', 'king', 'wizard', 'bishop', 'knight', 'rook'];
-  blackBackRow.forEach((type, col) => {
-    if (col < 9) {
-      board[0][col] = createPiece(type, 'black', `b-${type}-${col}`);
-    }
-  });
-  board[0][9] = createPiece('rook', 'black', 'b-rook-9');
+  // White wizards in corners
+  board[9][0] = createPiece('wizard', 'white', 'w-wizard-0'); // a1
+  board[9][9] = createPiece('wizard', 'white', 'w-wizard-9'); // j1
   
-  // Black pawns
-  for (let col = 0; col < 10; col++) {
+  // Place black pieces (top, row 0) - centered like traditional chess
+  board[0][1] = createPiece('rook', 'black', 'b-rook-1');
+  board[0][2] = createPiece('knight', 'black', 'b-knight-2');
+  board[0][3] = createPiece('bishop', 'black', 'b-bishop-3');
+  board[0][4] = createPiece('queen', 'black', 'b-queen-4');
+  board[0][5] = createPiece('king', 'black', 'b-king-5');
+  board[0][6] = createPiece('bishop', 'black', 'b-bishop-6');
+  board[0][7] = createPiece('knight', 'black', 'b-knight-7');
+  board[0][8] = createPiece('rook', 'black', 'b-rook-8');
+  
+  // Black pawns (row 1)
+  for (let col = 1; col < 9; col++) {
     board[1][col] = createPiece('pawn', 'black', `b-pawn-${col}`);
   }
+  
+  // Black wizards in corners
+  board[0][0] = createPiece('wizard', 'black', 'b-wizard-0'); // a10
+  board[0][9] = createPiece('wizard', 'black', 'b-wizard-9'); // j10
   
   return board;
 }
