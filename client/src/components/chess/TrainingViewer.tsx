@@ -97,12 +97,11 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
       console.log(`Starting AI interval with speed: ${stats.speed}ms`);
       
       intervalRef.current = setInterval(() => {
-        // Get current stats to check move count
-        const currentStats = document.querySelector('[data-game-stats]')?.getAttribute('data-current-moves');
-        const moveCount = currentStats ? parseInt(currentStats) : 0;
+        console.log(`Making AI move at ${new Date().toLocaleTimeString()} (speed: ${stats.speed}ms)`);
         
-        // Force end if too many moves
-        if (moveCount > 80) {
+        // Check move count before making move
+        const currentMoveCount = stats.currentGameMoves;
+        if (currentMoveCount > 80) {
           console.log('Forcing game end due to move limit');
           const state = useChess.getState();
           const pieces = state.board.flat().filter(p => p !== null);

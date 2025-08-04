@@ -171,12 +171,8 @@ export const useChess = create<ChessStore>()(
           aiLearning.analyzeGame(newState, aiColor, 'ai');
         }
         
-        // Continue with next AI move if game is still playing
-        if (newState.gamePhase === 'playing') {
-          setTimeout(() => {
-            get().makeAIVsAIMove();
-          }, 800); // Slightly slower for better viewing
-        }
+        // Don't auto-continue AI moves - let the TrainingViewer control the timing
+        // This prevents conflicts with the training viewer's speed control
       }
     },
 
