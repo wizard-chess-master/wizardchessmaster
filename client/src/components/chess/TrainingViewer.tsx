@@ -97,12 +97,13 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
       console.log(`Starting AI interval with speed: ${stats.speed}ms`);
       
       intervalRef.current = setInterval(() => {
-        console.log(`Making AI move at ${new Date().toLocaleTimeString()} (speed: ${stats.speed}ms)`);
+        const currentTime = Date.now();
+        console.log(`Making AI move at ${new Date().toLocaleTimeString()} (speed: ${stats.speed}ms, interval: ${currentTime})`);
         
         // Check move count before making move
         const currentMoveCount = stats.currentGameMoves;
-        if (currentMoveCount > 80) {
-          console.log('Forcing game end due to move limit');
+        if (currentMoveCount > 60) {
+          console.log('🚫 Forcing game end due to move limit (60 moves)');
           const state = useChess.getState();
           const pieces = state.board.flat().filter(p => p !== null);
           const whitePieces = pieces.filter(p => p!.color === 'white');
@@ -114,6 +115,12 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
             gamePhase: 'ended', 
             winner: forcedWinner 
           }));
+          return;
+        }
+        
+        const gameState = useChess.getState();
+        if (gameState.gamePhase !== 'playing') {
+          console.log('🛑 Game not in playing state, stopping interval');
           return;
         }
         
@@ -153,12 +160,13 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
   };
 
   const stopTraining = () => {
-    console.log('Stopping AI training session');
+    console.log('🛑 Stopping AI training session');
     
-    // Clear interval
+    // Clear interval IMMEDIATELY
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
+      console.log('✅ Interval cleared');
     }
     
     // Reset state
@@ -176,7 +184,9 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
     gameEndedRef.current = false;
     
     // Start a fresh game for display
-    startGame('ai-vs-ai', 'hard');
+    setTimeout(() => {
+      startGame('ai-vs-ai', 'hard');
+    }, 100);
   };
 
   const changeSpeed = () => {

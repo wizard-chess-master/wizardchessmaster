@@ -54,7 +54,7 @@ export function isValidPosition(pos: Position): boolean {
 }
 
 // Helper function to detect move cycles
-function detectMoveCycles(moveHistory: ChessMove[], cycleLength: number = 3): boolean {
+function detectMoveCycles(moveHistory: ChessMove[], cycleLength: number = 6): boolean {
   if (moveHistory.length < cycleLength * 2) return false;
   
   const recentMoves = moveHistory.slice(-cycleLength * 2);
@@ -76,8 +76,35 @@ function detectMoveCycles(moveHistory: ChessMove[], cycleLength: number = 3): bo
     }
   }
   
-  console.log(`Detected ${cycleLength}-move cycle, declaring stalemate`);
+  console.log(`🔄 Detected ${cycleLength}-move cycle, declaring stalemate to prevent infinite loop`);
   return true;
+}
+
+// Simpler 2-move repetition detection for faster resolution
+function detectSimpleRepetition(moveHistory: ChessMove[]): boolean {
+  if (moveHistory.length < 8) return false; // Need at least 4 cycles of 2 moves each
+  
+  const last4 = moveHistory.slice(-4);
+  const move1 = last4[0];
+  const move2 = last4[1];
+  const move3 = last4[2];
+  const move4 = last4[3];
+  
+  // Check if last 4 moves show A-B-A-B pattern
+  const isRepeating = (
+    move1.from.row === move3.from.row && move1.from.col === move3.from.col &&
+    move1.to.row === move3.to.row && move1.to.col === move3.to.col &&
+    move2.from.row === move4.from.row && move2.from.col === move4.from.col &&
+    move2.to.row === move4.to.row && move2.to.col === move4.to.col &&
+    move1.piece.type === move3.piece.type && move2.piece.type === move4.piece.type
+  );
+  
+  if (isRepeating) {
+    console.log('🔄 Detected 2-move repetition (A-B-A-B), declaring stalemate');
+    return true;
+  }
+  
+  return false;
 }
 
 export function makeMove(gameState: GameState, move: ChessMove): GameState {
@@ -112,8 +139,8 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
   // Switch players
   const nextPlayer: PieceColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   
-  // Check for move cycles (3-move repetition = stalemate)
-  const hasCycles = detectMoveCycles(newMoveHistory, 3);
+  // Check for move cycles and simple repetitions
+  const hasCycles = detectMoveCycles(newMoveHistory, 6) || detectSimpleRepetition(newMoveHistory);
   
   // Check for check, checkmate, stalemate
   const isInCheck = isKingInCheck(newBoard, nextPlayer);
