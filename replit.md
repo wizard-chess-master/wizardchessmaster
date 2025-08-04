@@ -9,6 +9,8 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - Fixed TypeScript type issues with piece capture handling
 - Complete implementation with fantasy UI, AI opponents, and ad/IAP placeholders
 - Added AI vs AI game mode for testing and observation gameplay
+- Enhanced AI tactical intelligence: threat analysis, piece defense evaluation, blunder prevention
+- Improved AI strategic diversity: penalties for overusing same pieces, coordination bonuses, piece development incentives
 
 ## Bug Fixes (January 4, 2025)
 - Fixed wizard movement logic: Wizards can now teleport to any unoccupied square within 2 squares in straight lines

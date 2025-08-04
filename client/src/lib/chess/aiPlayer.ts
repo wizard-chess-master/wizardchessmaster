@@ -232,12 +232,34 @@ function getAdvancedStrategyMove(gameState: GameState, color: PieceColor, preFil
   const movesToConsider = preFilteredMoves || getAllPossibleMoves(gameState, color);
   if (movesToConsider.length === 0) return null;
   
-  // Evaluate each move with advanced scoring (use filtered moves)
+  // Group moves by piece type to encourage diversity
+  const movesByType: Record<string, ChessMove[]> = {};
+  for (const move of movesToConsider) {
+    if (!movesByType[move.piece.type]) {
+      movesByType[move.piece.type] = [];
+    }
+    movesByType[move.piece.type].push(move);
+  }
+  
+  // Evaluate each move with advanced scoring
   let bestMove = movesToConsider[0];
   let bestScore = -Infinity;
   
   for (const move of movesToConsider) {
-    const score = evaluateMove(gameState, move);
+    let score = evaluateMove(gameState, move);
+    
+    // Additional strategic bonus for using under-utilized pieces
+    const recentMoves = gameState.moveHistory.slice(-8);
+    const recentTypeUsage = recentMoves.filter(historyMove => 
+      historyMove.piece.color === color && 
+      historyMove.piece.type === move.piece.type
+    ).length;
+    
+    if (recentTypeUsage === 0) {
+      score += 10; // Bonus for using pieces that haven't moved recently
+      console.log(`📈 Diversity bonus for unused ${move.piece.type}: +10 points`);
+    }
+    
     if (score > bestScore) {
       bestScore = score;
       bestMove = move;
@@ -338,10 +360,26 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
     score += Math.max(0, 8 - distance);
   }
   
-  // Piece development
+  // Piece development and coordination
   if (!move.piece.hasMoved && move.piece.type !== 'pawn') {
     score += 2;
   }
+  
+  // STRATEGY: Encourage piece diversity - penalty for overusing same piece type
+  const recentMoves = gameState.moveHistory.slice(-6); // Last 6 moves
+  const sameTypeCount = recentMoves.filter(historyMove => 
+    historyMove.piece.color === gameState.currentPlayer && 
+    historyMove.piece.type === move.piece.type
+  ).length;
+  
+  if (sameTypeCount >= 3) {
+    score -= 15; // Heavy penalty for moving same piece type 3+ times in recent moves
+    console.log(`🔄 Penalty for overusing ${move.piece.type}: -15 points`);
+  }
+  
+  // STRATEGY: Encourage piece coordination - bonus for supporting other pieces
+  const coordinationBonus = calculateCoordinationBonus(simulatedState, move.to, gameState.currentPlayer);
+  score += coordinationBonus;
   
   // Special wizard moves
   if (move.piece.type === 'wizard') {
@@ -352,6 +390,19 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
   // King safety (reduced penalty, sometimes king moves are necessary)
   if (move.piece.type === 'king') {
     score -= 3;
+  }
+  
+  // STRATEGY: Penalize excessive queen usage early game
+  if (move.piece.type === 'queen' && gameState.moveHistory.length < 20) {
+    const queenMoves = gameState.moveHistory.filter(historyMove => 
+      historyMove.piece.color === gameState.currentPlayer && 
+      historyMove.piece.type === 'queen'
+    ).length;
+    
+    if (queenMoves >= 3) {
+      score -= 20; // Heavy penalty for queen overuse in opening
+      console.log(`👑 Early queen overuse penalty: -20 points (${queenMoves} queen moves)`);
+    }
   }
   
   return score;
@@ -567,6 +618,46 @@ function calculateMaterialAdvantage(gameState: GameState, myColor: PieceColor): 
   }
   
   return myMaterial - opponentMaterial;
+}
+
+// Calculate coordination bonus for pieces working together
+function calculateCoordinationBonus(gameState: GameState, position: Position, myColor: PieceColor): number {
+  let coordinationScore = 0;
+  const piece = gameState.board[position.row][position.col];
+  if (!piece) return 0;
+  
+  // Check how many friendly pieces this move supports or is supported by
+  let supportingPieces = 0;
+  let supportedPieces = 0;
+  
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const otherPiece = gameState.board[row][col];
+      if (!otherPiece || otherPiece.color !== myColor || (row === position.row && col === position.col)) continue;
+      
+      try {
+        const otherMoves = getPossibleMoves(gameState.board, { row, col }, otherPiece);
+        const thisMoves = getPossibleMoves(gameState.board, position, piece);
+        
+        // This piece supports another piece
+        if (otherMoves.some(move => move.row === position.row && move.col === position.col)) {
+          supportingPieces++;
+        }
+        
+        // This piece is supported by another piece
+        if (thisMoves.some(move => move.row === row && move.col === col)) {
+          supportedPieces++;
+        }
+      } catch (error) {
+        continue;
+      }
+    }
+  }
+  
+  coordinationScore += supportingPieces * 2; // Bonus for supporting other pieces
+  coordinationScore += supportedPieces * 1; // Smaller bonus for being supported
+  
+  return coordinationScore;
 }
 
 function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove[] {
