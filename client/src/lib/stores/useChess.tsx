@@ -4,6 +4,7 @@ import { GameState, ChessMove, Position, GameMode, AIDifficulty, PieceColor } fr
 import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess/gameEngine";
 import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
+import { aiLearning } from "../chess/aiLearning";
 
 interface ChessStore extends GameState {
   // Actions
@@ -133,6 +134,12 @@ export const useChess = create<ChessStore>()(
       const newState = makeMove(state, move);
       set(newState);
 
+      // Analyze completed games for AI learning
+      if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
+        const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
+        aiLearning.analyzeGame(newState, aiColor, 'human');
+      }
+
       // If playing against AI and it's AI's turn, make AI move after a delay
       if (newState.gameMode === 'ai' && newState.currentPlayer === 'black' && newState.gamePhase === 'playing') {
         setTimeout(() => {
@@ -157,6 +164,12 @@ export const useChess = create<ChessStore>()(
 
         const newState = makeMove(state, aiMove);
         set(newState);
+        
+        // Analyze completed AI vs AI games for learning
+        if (newState.gamePhase === 'ended') {
+          const aiColor: PieceColor = Math.random() > 0.5 ? 'white' : 'black'; // Randomly pick which AI to learn from
+          aiLearning.analyzeGame(newState, aiColor, 'ai');
+        }
         
         // Continue with next AI move if game is still playing
         if (newState.gamePhase === 'playing') {
@@ -183,6 +196,12 @@ export const useChess = create<ChessStore>()(
 
         const newState = makeMove(state, aiMove);
         set(newState);
+
+        // Analyze completed games for AI learning
+        if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
+          const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
+          aiLearning.analyzeGame(newState, aiColor, 'human');
+        }
       }
     },
 

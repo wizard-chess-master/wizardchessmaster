@@ -1,10 +1,32 @@
 import { GameState, ChessMove, Position, AIDifficulty, PieceColor, ChessPiece } from './types';
 import { getPossibleMoves } from './pieceMovement';
 import { isKingInCheck, makeMove } from './gameEngine';
+import { aiLearning } from './aiLearning';
 
 export function getAIMove(gameState: GameState): ChessMove | null {
   const aiColor = gameState.currentPlayer;
   
+  // First, try to use learned patterns (for medium and hard difficulty)
+  if (gameState.aiDifficulty !== 'easy') {
+    const learnedMove = aiLearning.getBestLearnedMove(gameState, aiColor);
+    if (learnedMove) {
+      // Validate the learned move is still legal
+      const allMoves = getAllPossibleMoves(gameState, aiColor);
+      const isLearnedMoveLegal = allMoves.some(move => 
+        move.from.row === learnedMove.from.row && 
+        move.from.col === learnedMove.from.col &&
+        move.to.row === learnedMove.to.row && 
+        move.to.col === learnedMove.to.col
+      );
+      
+      if (isLearnedMoveLegal) {
+        console.log(`🧠 AI using learned move: ${learnedMove.piece.type} ${String.fromCharCode(97 + learnedMove.from.col)}${10 - learnedMove.from.row} to ${String.fromCharCode(97 + learnedMove.to.col)}${10 - learnedMove.to.row}`);
+        return learnedMove;
+      }
+    }
+  }
+  
+  // Fall back to original strategy
   switch (gameState.aiDifficulty) {
     case 'easy':
       return getRandomMove(gameState, aiColor);

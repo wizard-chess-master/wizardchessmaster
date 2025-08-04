@@ -22,6 +22,10 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - Added AI vs AI mode: Fully automated gameplay for testing and demonstration purposes using advanced AI difficulty
 - Implemented AI training system: Runs multiple games to analyze strategies and improve AI performance
 - Added visual AI training viewer: Watch AI games in slow motion with controls and statistics
+- Implemented comprehensive AI learning system: AI analyzes every completed game (human vs AI and AI vs AI) to learn patterns, track strategies, and improve over time
+- Added learning statistics display: Shows total games analyzed, win rates, move patterns learned, and preferred strategies
+- AI now uses learned patterns when available, falling back to original difficulty-based strategies
+- Learning data persists in localStorage and can be reset via the UI
 
 ## User Preferences
 

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Settings, Sword, Users, Zap, Brain, Eye } from 'lucide-react';
+import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3 } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
+import { aiLearning } from '../../lib/chess/aiLearning';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -14,6 +15,12 @@ interface MainMenuProps {
 export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const { startGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
+  const [learningStats, setLearningStats] = useState<any>(null);
+
+  useEffect(() => {
+    // Load learning stats on component mount
+    setLearningStats(aiLearning.getLearningStats());
+  }, []);
 
   return (
     <div className="main-menu">
@@ -121,6 +128,24 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     </div>
                   </Button>
                 )}
+
+                <Button
+                  className="mode-button"
+                  variant="outline"
+                  onClick={() => {
+                    const stats = aiLearning.getLearningStats();
+                    setLearningStats(stats);
+                    console.log('🧠 AI Learning Statistics:', stats);
+                  }}
+                >
+                  <div className="mode-content">
+                    <BarChart3 className="w-4 h-4" />
+                    <span>View AI Learning Stats</span>
+                    <Badge variant="secondary">
+                      {learningStats?.totalGamesAnalyzed || 0} Games
+                    </Badge>
+                  </div>
+                </Button>
                 
                 <Button
                   className="mode-button"
