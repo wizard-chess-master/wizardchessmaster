@@ -254,10 +254,12 @@ export class AILearningSystem {
   private analyzeGameStrategy(game: GamePattern): string {
     // For training games with no move history, analyze based on outcome and length
     if (game.moves.length === 0) {
-      if (game.gameLength < 20) return 'Quick-Draw';
-      if (game.gameLength < 30) return 'Tactical';
+      if (game.gameLength < 15) return 'Aggressive';
+      if (game.gameLength < 25) return 'Quick-Tactical';
+      if (game.gameLength < 35) return 'Balanced';
+      if (game.outcome === 'win') return 'Winning-Strategy';
       if (game.outcome === 'draw') return 'Defensive';
-      return 'Balanced';
+      return 'Cautious';
     }
 
     const aiMoves = game.moves.filter(move => move.piece.color === game.aiColor);
@@ -360,6 +362,43 @@ export class AILearningSystem {
     } catch (error) {
       console.warn('Failed to save AI learning data:', error);
     }
+  }
+
+  // Update move patterns for training games (synthetic patterns)
+  updateMovePatterns(): void {
+    const recentGames = this.learningData.recentGames.slice(-10); // Last 10 games
+    
+    recentGames.forEach(game => {
+      if (game.moves.length === 0) {
+        // Create synthetic move patterns for training games
+        const patternCount = Math.floor(game.gameLength / 3) + 1;
+        for (let i = 0; i < patternCount; i++) {
+          const patternKey = `synthetic_${game.outcome}_${game.gameLength}_${i}`;
+          let pattern = this.learningData.movePatterns.get(patternKey);
+          
+          if (!pattern) {
+            pattern = {
+              pieceType: i % 2 === 0 ? 'wizard' : 'knight',
+              fromSquare: 'synthetic',
+              toSquare: 'synthetic',
+              isCapture: i % 3 === 0,
+              isWizardMove: i % 2 === 0,
+              gamePhase: game.gameLength < 20 ? 'opening' : game.gameLength < 50 ? 'middle' : 'endgame',
+              successRate: 0,
+              timesUsed: 0
+            };
+          }
+          
+          pattern.timesUsed++;
+          const outcomeValue = game.outcome === 'win' ? 1 : game.outcome === 'draw' ? 0.5 : 0;
+          pattern.successRate = (pattern.successRate * (pattern.timesUsed - 1) + outcomeValue) / pattern.timesUsed;
+          
+          this.learningData.movePatterns.set(patternKey, pattern);
+        }
+      }
+    });
+    
+    console.log(`🎯 Updated move patterns: ${this.learningData.movePatterns.size} total patterns`);
   }
 
   // Reset all learning data
