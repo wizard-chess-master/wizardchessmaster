@@ -61,9 +61,9 @@ export function getAIMove(gameState: GameState): ChessMove | null {
   }
 }
 
-// Advanced repetition detection to prevent AI from making the same move 3+ times
+// Advanced repetition detection to prevent AI from making the same move repeatedly
 function filterRepetitiveMoves(gameState: GameState, moves: ChessMove[]): ChessMove[] {
-  if (gameState.moveHistory.length < 6) return moves; // Need at least 6 moves to detect 3-fold repetition
+  if (gameState.moveHistory.length < 2) return moves; // Start filtering after just 2 moves
   
   const moveHistory = gameState.moveHistory;
   
@@ -72,46 +72,48 @@ function filterRepetitiveMoves(gameState: GameState, moves: ChessMove[]): ChessM
     let moveCount = 0;
     let opponentSameMoveCount = 0;
     
-    // Look at last 12 moves (6 moves for each player)
-    const recentMoves = moveHistory.slice(-12);
+    // Look at last 8 moves (4 moves for each player) - reduced for more aggressive filtering
+    const recentMoves = moveHistory.slice(-8);
     
-    for (let i = 0; i < recentMoves.length; i += 2) {
-      const aiMove = recentMoves[i];
-      const opponentMove = recentMoves[i + 1];
-      
-      // Check if AI made this same move before
-      if (aiMove && 
-          move.from.row === aiMove.from.row && 
-          move.from.col === aiMove.from.col &&
-          move.to.row === aiMove.to.row && 
-          move.to.col === aiMove.to.col &&
-          move.piece.type === aiMove.piece.type) {
+    // Count how many times this exact move appears in recent history
+    for (const historyMove of recentMoves) {
+      if (historyMove.piece.color === gameState.currentPlayer &&
+          move.from.row === historyMove.from.row && 
+          move.from.col === historyMove.from.col &&
+          move.to.row === historyMove.to.row && 
+          move.to.col === historyMove.to.col &&
+          move.piece.type === historyMove.piece.type) {
         moveCount++;
-      }
-      
-      // Check if opponent made similar repetitive moves
-      if (opponentMove && i > 0) {
-        const prevOpponentMove = recentMoves[i - 1];
-        if (prevOpponentMove &&
-            opponentMove.from.row === prevOpponentMove.from.row && 
-            opponentMove.from.col === prevOpponentMove.from.col &&
-            opponentMove.to.row === prevOpponentMove.to.row && 
-            opponentMove.to.col === prevOpponentMove.to.col &&
-            opponentMove.piece.type === prevOpponentMove.piece.type) {
-          opponentSameMoveCount++;
-        }
       }
     }
     
-    // Don't make the same move 3+ times unless opponent is also repeating AND we have no choice
-    if (moveCount >= 2) {
-      // Allow repetition only if:
-      // 1. Opponent is also repeating moves (mutual repetition)
-      // 2. OR this is the only legal move available
-      const allowRepetition = opponentSameMoveCount >= 2 || moves.length === 1;
+    // Check for opponent repetition patterns (simplified)
+    if (recentMoves.length >= 4) {
+      const lastOpponentMove = recentMoves[recentMoves.length - 1];
+      const prevOpponentMove = recentMoves[recentMoves.length - 3];
+      
+      if (lastOpponentMove && prevOpponentMove &&
+          lastOpponentMove.piece.color !== gameState.currentPlayer &&
+          prevOpponentMove.piece.color !== gameState.currentPlayer &&
+          lastOpponentMove.from.row === prevOpponentMove.from.row && 
+          lastOpponentMove.from.col === prevOpponentMove.from.col &&
+          lastOpponentMove.to.row === prevOpponentMove.to.row && 
+          lastOpponentMove.to.col === prevOpponentMove.to.col &&
+          lastOpponentMove.piece.type === prevOpponentMove.piece.type) {
+        opponentSameMoveCount = 1;
+      }
+    }
+    
+    // More aggressive repetition prevention - avoid after just 1 repetition in training
+    if (moveCount >= 1) {
+      // In AI vs AI training, be much more aggressive about avoiding repetition
+      const isTrainingMode = !gameState.humanPlayer; // Assume AI vs AI if no human player
+      
+      // Allow repetition only if this is the only legal move OR in mutual repetition
+      const allowRepetition = moves.length === 1 || (opponentSameMoveCount >= 1 && !isTrainingMode);
       
       if (!allowRepetition) {
-        console.log(`🚫 AI avoiding repetitive move: ${move.piece.type} ${String.fromCharCode(97 + move.from.col)}${10 - move.from.row} to ${String.fromCharCode(97 + move.to.col)}${10 - move.to.row} (used ${moveCount} times)`);
+        console.log(`🚫 AI avoiding repetitive move: ${move.piece.type} ${String.fromCharCode(97 + move.from.col)}${10 - move.from.row} to ${String.fromCharCode(97 + move.to.col)}${10 - move.to.row} (used ${moveCount + 1} times)`);
         return false;
       }
     }

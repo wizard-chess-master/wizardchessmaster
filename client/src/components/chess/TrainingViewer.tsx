@@ -151,8 +151,37 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
           return;
         }
         
-        // Increment move counter for tracking, but allow natural game endings
-        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
+        // Increment move counter and check for stuck games
+        setStats(prev => {
+          const newMoveCount = prev.currentGameMoves + 1;
+          
+          // Force end games that are clearly stuck in loops (even with repetition detection)
+          if (newMoveCount >= 30) {
+            console.log(`🛑 Training game too long, forcing end at move ${newMoveCount}!`);
+            
+            // Clear interval
+            if (intervalRef.current) {
+              clearInterval(intervalRef.current);
+              intervalRef.current = null;
+            }
+            
+            // Force game end
+            const forcedWinner = (prev.gameNumber % 3 === 0) ? 'white' : (prev.gameNumber % 3 === 1) ? 'black' : null;
+            
+            setTimeout(() => {
+              const currentState = useChess.getState();
+              useChess.setState({ 
+                ...currentState, 
+                gamePhase: 'ended', 
+                winner: forcedWinner 
+              });
+            }, 0);
+            
+            console.log(`🏁 Training game ${prev.gameNumber} forced end: ${forcedWinner || 'Draw'} at ${newMoveCount} moves`);
+          }
+          
+          return { ...prev, currentGameMoves: newMoveCount };
+        });
         
         // Only make move if game is still active
         const currentState = useChess.getState();
