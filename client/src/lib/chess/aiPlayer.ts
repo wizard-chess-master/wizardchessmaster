@@ -5,13 +5,31 @@ import { aiLearning } from './aiLearning';
 
 export function getAIMove(gameState: GameState): ChessMove | null {
   const aiColor = gameState.currentPlayer;
+  const allMoves = getAllPossibleMoves(gameState, aiColor);
   
-  // First, try to use learned patterns (for medium and hard difficulty)
+  if (allMoves.length === 0) {
+    return null;
+  }
+  
+  // PRIORITY 1: Look for immediate checkmate moves
+  const checkmateMove = findCheckmateMove(gameState, allMoves, aiColor);
+  if (checkmateMove) {
+    console.log('♔ AI found checkmate move!');
+    return checkmateMove;
+  }
+  
+  // PRIORITY 2: Block opponent's checkmate threats
+  const blockingMove = findBlockingMove(gameState, allMoves, aiColor);
+  if (blockingMove) {
+    console.log('🛡️ AI blocking opponent checkmate threat');
+    return blockingMove;
+  }
+  
+  // PRIORITY 3: Try to use learned patterns (for medium and hard difficulty)
   if (gameState.aiDifficulty !== 'easy') {
     const learnedMove = aiLearning.getBestLearnedMove(gameState, aiColor);
     if (learnedMove) {
       // Validate the learned move is still legal
-      const allMoves = getAllPossibleMoves(gameState, aiColor);
       const isLearnedMoveLegal = allMoves.some(move => 
         move.from.row === learnedMove.from.row && 
         move.from.col === learnedMove.from.col &&
@@ -26,7 +44,7 @@ export function getAIMove(gameState: GameState): ChessMove | null {
     }
   }
   
-  // Fall back to original strategy
+  // PRIORITY 4: Fall back to original strategy
   switch (gameState.aiDifficulty) {
     case 'easy':
       return getRandomMove(gameState, aiColor);
@@ -69,6 +87,62 @@ function filterRepetitiveMoves(gameState: GameState, moves: ChessMove[]): ChessM
     
     return true;
   });
+}
+
+// Find moves that lead to immediate checkmate
+function findCheckmateMove(gameState: GameState, moves: ChessMove[], aiColor: PieceColor): ChessMove | null {
+  const opponentColor = aiColor === 'white' ? 'black' : 'white';
+  
+  for (const move of moves) {
+    // Simulate the move
+    const newGameState = makeMove(gameState, move, true); // Skip repetition check for simulation
+    
+    // Check if this puts opponent in checkmate
+    if (newGameState.gamePhase === 'ended' && newGameState.winner === aiColor) {
+      return move;
+    }
+  }
+  return null;
+}
+
+// Find moves that block opponent's checkmate threats
+function findBlockingMove(gameState: GameState, moves: ChessMove[], aiColor: PieceColor): ChessMove | null {
+  const opponentColor = aiColor === 'white' ? 'black' : 'white';
+  
+  // Check if opponent has a checkmate threat next turn
+  const opponentMoves = getAllPossibleMoves(gameState, opponentColor);
+  let hasCheckmateThreats = false;
+  
+  for (const opponentMove of opponentMoves) {
+    const testState = makeMove(gameState, opponentMove, true);
+    if (testState.gamePhase === 'ended' && testState.winner === opponentColor) {
+      hasCheckmateThreats = true;
+      break;
+    }
+  }
+  
+  if (!hasCheckmateThreats) return null;
+  
+  // Try each of our moves to see if any blocks the checkmate
+  for (const move of moves) {
+    const newGameState = makeMove(gameState, move, true);
+    const futureOpponentMoves = getAllPossibleMoves(newGameState, opponentColor);
+    
+    let stillHasCheckmate = false;
+    for (const futureOpponentMove of futureOpponentMoves) {
+      const finalState = makeMove(newGameState, futureOpponentMove, true);
+      if (finalState.gamePhase === 'ended' && finalState.winner === opponentColor) {
+        stillHasCheckmate = true;
+        break;
+      }
+    }
+    
+    if (!stillHasCheckmate) {
+      return move; // This move blocks the checkmate threat
+    }
+  }
+  
+  return null;
 }
 
 function getRandomMove(gameState: GameState, color: PieceColor): ChessMove | null {
@@ -136,7 +210,7 @@ function getAdvancedStrategyMove(gameState: GameState, color: PieceColor): Chess
 function evaluateMove(gameState: GameState, move: ChessMove): number {
   let score = 0;
   
-  // Piece values
+  // Piece values (enhanced for more aggressive play)
   const pieceValues: Record<string, number> = {
     pawn: 1,
     knight: 3,
@@ -147,14 +221,33 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
     king: 0
   };
   
-  // Capture value
+  // Capture bonus (much higher priority)
   if (move.captured) {
-    score += pieceValues[move.captured.type] * 10;
+    score += pieceValues[move.captured.type] * 15; // Increased from 10
+  }
+  
+  // Check bonus (putting opponent in check is valuable)
+  const simulatedState = makeMove(gameState, move, true);
+  const opponentColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
+  if (isKingInCheck(simulatedState.board, opponentColor)) {
+    score += 20; // High bonus for check moves
+  }
+  
+  // Checkmate bonus (highest priority)
+  if (simulatedState.gamePhase === 'ended' && simulatedState.winner === gameState.currentPlayer) {
+    score += 1000; // Massive bonus for checkmate
   }
   
   // Center control
   const centerBonus = getCenterControlBonus(move.to);
   score += centerBonus;
+  
+  // Attack towards enemy king (aggressive positioning)
+  const enemyKingPos = findKingPosition(simulatedState.board, opponentColor);
+  if (enemyKingPos) {
+    const distance = Math.abs(move.to.row - enemyKingPos.row) + Math.abs(move.to.col - enemyKingPos.col);
+    score += Math.max(0, 8 - distance); // Closer to enemy king = better
+  }
   
   // Piece development
   if (!move.piece.hasMoved && move.piece.type !== 'pawn') {
@@ -165,6 +258,11 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
   if (move.piece.type === 'wizard') {
     if (move.isWizardTeleport) score += 1;
     if (move.isWizardAttack) score += 3;
+  }
+  
+  // King safety (reduced penalty, sometimes king moves are necessary)
+  if (move.piece.type === 'king') {
+    score -= 3;
   }
   
   return score;
@@ -184,6 +282,19 @@ function getCenterControlBonus(position: Position): number {
   }
   
   return 0;
+}
+
+// Helper function to find king position
+function findKingPosition(board: (ChessPiece | null)[][], color: PieceColor): Position | null {
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const piece = board[row][col];
+      if (piece && piece.type === 'king' && piece.color === color) {
+        return { row, col };
+      }
+    }
+  }
+  return null;
 }
 
 function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove[] {
