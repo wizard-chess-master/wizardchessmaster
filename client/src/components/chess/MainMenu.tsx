@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Settings, Sword, Users, Zap } from 'lucide-react';
+import { Settings, Sword, Users, Zap, Brain } from 'lucide-react';
+import { aiTrainer } from '../../lib/chess/aiTraining';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -11,6 +12,7 @@ interface MainMenuProps {
 
 export function MainMenu({ onSettings }: MainMenuProps) {
   const { startGame } = useChess();
+  const [isTraining, setIsTraining] = useState(false);
 
   return (
     <div className="main-menu">
@@ -73,6 +75,26 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                   <div className="mode-content">
                     <span>AI vs AI - Advanced</span>
                     <Badge variant="secondary">Strategic Battle</Badge>
+                  </div>
+                </Button>
+
+                <Button
+                  className="mode-button"
+                  variant="outline"
+                  onClick={async () => {
+                    setIsTraining(true);
+                    try {
+                      await aiTrainer.runTrainingSession(50, 'hard');
+                    } finally {
+                      setIsTraining(false);
+                    }
+                  }}
+                  disabled={isTraining}
+                >
+                  <div className="mode-content">
+                    <Brain className="w-4 h-4" />
+                    <span>{isTraining ? 'Training AI...' : 'Train AI Strategy'}</span>
+                    <Badge variant="secondary">{isTraining ? 'Running' : '50 Games'}</Badge>
                   </div>
                 </Button>
                 
