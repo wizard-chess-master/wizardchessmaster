@@ -58,9 +58,13 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
   const newMoveHistory = [...gameState.moveHistory, move];
   
   // Handle the move
-  newBoard[move.to.row][move.to.col] = { ...move.piece, hasMoved: true };
-  
-  if (!move.isWizardAttack) {
+  if (move.isWizardAttack) {
+    // Wizard attacks: remove target piece but wizard stays in place
+    newBoard[move.to.row][move.to.col] = null;
+    newBoard[move.from.row][move.from.col] = { ...move.piece, hasMoved: true };
+  } else {
+    // Normal move or wizard teleport: move piece to new position
+    newBoard[move.to.row][move.to.col] = { ...move.piece, hasMoved: true };
     newBoard[move.from.row][move.from.col] = null;
   }
   
