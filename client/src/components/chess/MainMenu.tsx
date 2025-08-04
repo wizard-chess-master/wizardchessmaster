@@ -68,6 +68,16 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                 
                 <Button
                   className="mode-button"
+                  onClick={() => startGame('ai-vs-ai', 'medium')}
+                >
+                  <div className="mode-content">
+                    <span>AI vs AI</span>
+                    <Badge variant="secondary">Watch & Test</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="mode-button"
                   variant="outline"
                   onClick={() => startGame('local')}
                 >

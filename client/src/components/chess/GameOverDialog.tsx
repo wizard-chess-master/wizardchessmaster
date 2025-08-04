@@ -37,6 +37,9 @@ export function GameOverDialog() {
       if (gameMode === 'ai') {
         return winner === 'white' ? 'Victory!' : 'Defeat!';
       }
+      if (gameMode === 'ai-vs-ai') {
+        return `AI ${winner === 'white' ? 'White' : 'Black'} Wins!`;
+      }
       return `${winner === 'white' ? 'White' : 'Black'} Wins!`;
     }
     
@@ -122,7 +125,7 @@ export function GameOverDialog() {
                 <div className="stat-item">
                   <span className="stat-label">Game Mode:</span>
                   <Badge variant="outline">
-                    {gameMode === 'ai' ? 'vs AI' : 'Local Multiplayer'}
+                    {gameMode === 'ai' ? 'vs AI' : gameMode === 'ai-vs-ai' ? 'AI vs AI' : 'Local Multiplayer'}
                   </Badge>
                 </div>
               </div>
@@ -145,7 +148,11 @@ export function GameOverDialog() {
         <div className="game-over-actions flex gap-3 justify-center">
           <Button
             size="lg"
-            onClick={() => gameMode === 'ai' ? startGame('ai', aiDifficulty) : startGame('local')}
+            onClick={() => {
+              if (gameMode === 'ai') startGame('ai', aiDifficulty);
+              else if (gameMode === 'ai-vs-ai') startGame('ai-vs-ai', aiDifficulty);
+              else startGame('local');
+            }}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
             Start New Game

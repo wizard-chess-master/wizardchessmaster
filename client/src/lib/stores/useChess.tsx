@@ -11,6 +11,7 @@ interface ChessStore extends GameState {
   selectSquare: (position: Position | null) => void;
   makePlayerMove: (from: Position, to: Position) => void;
   makeAIMove: () => void;
+  makeAIVsAIMove: () => void;
   resetGame: () => void;
   undoMove: () => void;
 }
@@ -42,11 +43,21 @@ export const useChess = create<ChessStore>()(
         gameMode: mode,
         aiDifficulty: aiDifficulty
       });
+
+      // Start AI vs AI gameplay immediately
+      if (mode === 'ai-vs-ai') {
+        setTimeout(() => {
+          get().makeAIVsAIMove();
+        }, 1000); // Start after 1 second
+      }
     },
 
     selectSquare: (position: Position | null) => {
       const state = get();
       if (state.gamePhase !== 'playing') return;
+      
+      // Disable player interaction in AI vs AI mode
+      if (state.gameMode === 'ai-vs-ai') return;
 
       // Handle explicit clearing
       if (!position) {
@@ -130,6 +141,32 @@ export const useChess = create<ChessStore>()(
       }
     },
 
+    makeAIVsAIMove: () => {
+      const state = get();
+      if (state.gamePhase !== 'playing' || state.gameMode !== 'ai-vs-ai') {
+        return;
+      }
+
+      const aiMove = getAIMove(state);
+      if (aiMove) {
+        // Play move sound
+        const { playHit } = useAudio.getState();
+        if (aiMove.captured || aiMove.isWizardAttack) {
+          playHit();
+        }
+
+        const newState = makeMove(state, aiMove);
+        set(newState);
+        
+        // Continue with next AI move if game is still playing
+        if (newState.gamePhase === 'playing') {
+          setTimeout(() => {
+            get().makeAIVsAIMove();
+          }, 800); // Slightly slower for better viewing
+        }
+      }
+    },
+
     makeAIMove: () => {
       const state = get();
       if (state.gamePhase !== 'playing' || state.gameMode !== 'ai' || state.currentPlayer !== 'black') {
@@ -138,6 +175,12 @@ export const useChess = create<ChessStore>()(
 
       const aiMove = getAIMove(state);
       if (aiMove) {
+        // Play move sound
+        const { playHit } = useAudio.getState();
+        if (aiMove.captured || aiMove.isWizardAttack) {
+          playHit();
+        }
+
         const newState = makeMove(state, aiMove);
         set(newState);
       }
