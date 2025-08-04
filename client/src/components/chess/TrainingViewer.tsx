@@ -100,10 +100,10 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         const currentTime = Date.now();
         console.log(`Making AI move at ${new Date().toLocaleTimeString()} (speed: ${stats.speed}ms, interval: ${currentTime})`);
         
-        // Check move count before making move
+        // Check move count before making move (full moves, not half-moves)
         const currentMoveCount = stats.currentGameMoves;
-        if (currentMoveCount > 60) {
-          console.log('🚫 Forcing game end due to move limit (60 moves)');
+        if (currentMoveCount > 30) {
+          console.log('🚫 Forcing game end due to move limit (30 full moves)');
           const state = useChess.getState();
           const pieces = state.board.flat().filter(p => p !== null);
           const whitePieces = pieces.filter(p => p!.color === 'white');
@@ -125,7 +125,12 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         }
         
         makeAIVsAIMove();
-        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
+        
+        // Only increment move counter when white moves (start of new full move)
+        const currentGameState = useChess.getState();
+        if (currentGameState.currentPlayer === 'white') {
+          setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
+        }
       }, stats.speed);
     }
 
@@ -296,7 +301,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
                 </Badge>
               </div>
               <div className="stat-item">
-                <span className="stat-label">Moves:</span>
+                <span className="stat-label">Full Moves:</span>
                 <Badge variant="outline">{stats.currentGameMoves}</Badge>
               </div>
               <div className="stat-item">
