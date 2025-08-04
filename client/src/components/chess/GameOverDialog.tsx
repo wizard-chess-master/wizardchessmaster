@@ -75,21 +75,33 @@ export function GameOverDialog() {
 
   return (
     <Dialog open>
-      <DialogContent className="game-over-dialog">
+      <DialogContent className="game-over-dialog" aria-describedby="game-over-description">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 justify-center">
+          <DialogTitle className="flex items-center gap-3 justify-center text-2xl">
             {getResultIcon()}
-            {getGameResult()}
+            Game Over!
           </DialogTitle>
         </DialogHeader>
         
         <div className="game-over-content">
-          <Card>
-            <CardContent className="pt-6 text-center">
-              <p className="text-muted-foreground mb-4">
-                {getResultDescription()}
-              </p>
-              
+          <div id="game-over-description" className="text-center mb-6">
+            <p className="text-lg mb-2">
+              {getGameResult()}
+            </p>
+            <p className="text-muted-foreground">
+              {getResultDescription()}
+            </p>
+          </div>
+
+          <div className="text-center mb-6">
+            <p className="text-lg font-medium mb-4">
+              Start new game or quit?
+            </p>
+          </div>
+          
+          {/* Game Stats */}
+          <Card className="mb-4">
+            <CardContent className="pt-4 text-center">
               <div className="game-stats">
                 <div className="stat-item">
                   <span className="stat-label">Total Moves:</span>
@@ -118,7 +130,7 @@ export function GameOverDialog() {
           </Card>
           
           {/* IAP Promotion */}
-          <Card className="iap-promotion">
+          <Card className="iap-promotion mb-4">
             <CardContent className="pt-4 text-center">
               <p className="text-sm text-muted-foreground mb-2">
                 Enjoyed the game?
@@ -130,18 +142,18 @@ export function GameOverDialog() {
           </Card>
         </div>
 
-        <div className="game-over-actions">
+        <div className="game-over-actions flex gap-3 justify-center">
           <Button
-            variant="outline"
+            size="lg"
             onClick={() => gameMode === 'ai' ? startGame('ai', aiDifficulty) : startGame('local')}
           >
             <RotateCcw className="w-4 h-4 mr-2" />
-            Play Again
+            Start New Game
           </Button>
           
-          <Button onClick={resetGame}>
+          <Button variant="outline" size="lg" onClick={resetGame}>
             <Home className="w-4 h-4 mr-2" />
-            Main Menu
+            Quit
           </Button>
         </div>
       </DialogContent>
