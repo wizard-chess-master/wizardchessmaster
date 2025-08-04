@@ -39,25 +39,65 @@ export function getAIMove(gameState: GameState): ChessMove | null {
   }
 }
 
+// Filter out moves that would create immediate repetition
+function filterRepetitiveMoves(gameState: GameState, moves: ChessMove[]): ChessMove[] {
+  if (gameState.moveHistory.length < 3) return moves;
+  
+  const lastMove = gameState.moveHistory[gameState.moveHistory.length - 1];
+  const secondLastMove = gameState.moveHistory[gameState.moveHistory.length - 2];
+  
+  return moves.filter(move => {
+    // Don't immediately reverse the last move with the same piece
+    if (lastMove && 
+        move.from.row === lastMove.to.row && 
+        move.from.col === lastMove.to.col &&
+        move.to.row === lastMove.from.row && 
+        move.to.col === lastMove.from.col &&
+        move.piece.type === lastMove.piece.type) {
+      return false;
+    }
+    
+    // Don't repeat the exact same move as 2 moves ago
+    if (secondLastMove &&
+        move.from.row === secondLastMove.from.row && 
+        move.from.col === secondLastMove.from.col &&
+        move.to.row === secondLastMove.to.row && 
+        move.to.col === secondLastMove.to.col &&
+        move.piece.type === secondLastMove.piece.type) {
+      return false;
+    }
+    
+    return true;
+  });
+}
+
 function getRandomMove(gameState: GameState, color: PieceColor): ChessMove | null {
   const allMoves = getAllPossibleMoves(gameState, color);
   if (allMoves.length === 0) return null;
   
-  return allMoves[Math.floor(Math.random() * allMoves.length)];
+  // Filter out repetitive moves to prevent endless loops
+  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
+  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+  
+  return movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
 }
 
 function getBasicStrategyMove(gameState: GameState, color: PieceColor): ChessMove | null {
   const allMoves = getAllPossibleMoves(gameState, color);
   if (allMoves.length === 0) return null;
   
+  // Filter out repetitive moves to prevent endless loops
+  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
+  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+  
   // Prioritize captures
-  const captures = allMoves.filter(move => move.captured);
+  const captures = movesToConsider.filter(move => move.captured);
   if (captures.length > 0) {
     return captures[Math.floor(Math.random() * captures.length)];
   }
   
   // Prioritize center control
-  const centerMoves = allMoves.filter(move => {
+  const centerMoves = movesToConsider.filter(move => {
     const row = move.to.row;
     const col = move.to.col;
     return row >= 3 && row <= 6 && col >= 3 && col <= 6;
@@ -67,17 +107,22 @@ function getBasicStrategyMove(gameState: GameState, color: PieceColor): ChessMov
     return centerMoves[Math.floor(Math.random() * centerMoves.length)];
   }
   
-  return allMoves[Math.floor(Math.random() * allMoves.length)];
+  return movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
 }
 
 function getAdvancedStrategyMove(gameState: GameState, color: PieceColor): ChessMove | null {
   const allMoves = getAllPossibleMoves(gameState, color);
   if (allMoves.length === 0) return null;
   
-  let bestMove = allMoves[0];
+  // Filter out repetitive moves to prevent endless loops
+  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
+  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+  
+  // Evaluate each move with advanced scoring (use filtered moves)
+  let bestMove = movesToConsider[0];
   let bestScore = -Infinity;
   
-  for (const move of allMoves) {
+  for (const move of movesToConsider) {
     const score = evaluateMove(gameState, move);
     if (score > bestScore) {
       bestScore = score;
