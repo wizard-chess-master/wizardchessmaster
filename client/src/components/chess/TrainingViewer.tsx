@@ -155,9 +155,9 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         setStats(prev => {
           const newMoveCount = prev.currentGameMoves + 1;
           
-          // Force end games that are clearly stuck in loops (even with repetition detection)
-          if (newMoveCount >= 30) {
-            console.log(`🛑 Training game too long, forcing end at move ${newMoveCount}!`);
+          // Force end games that are taking too long (increased from 30 to 50 moves)
+          if (newMoveCount >= 50) {
+            console.log(`🛑 Training game too long, forcing end at move ${newMoveCount}! (No checkmate found)`);
             
             // Clear interval
             if (intervalRef.current) {

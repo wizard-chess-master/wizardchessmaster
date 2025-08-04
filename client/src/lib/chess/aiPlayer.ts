@@ -294,6 +294,27 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
   // Checkmate bonus (highest priority)
   if (simulatedState.gamePhase === 'ended' && simulatedState.winner === gameState.currentPlayer) {
     score += 1000;
+    console.log(`🏆 CHECKMATE MOVE FOUND! ${move.piece.type} ${String.fromCharCode(97 + move.from.col)}${10 - move.from.row} to ${String.fromCharCode(97 + move.to.col)}${10 - move.to.row}`);
+  }
+  
+  // CRITICAL: Aggressive endgame pushing when ahead
+  const materialAdvantage = calculateMaterialAdvantage(simulatedState, gameState.currentPlayer);
+  if (materialAdvantage >= 5) { // We're significantly ahead
+    // Bonus for moves that force the enemy king into corners or edges
+    const enemyKingPos = findKingPosition(simulatedState.board, opponentColor);
+    if (enemyKingPos) {
+      const distanceFromCenter = Math.abs(enemyKingPos.row - 4.5) + Math.abs(enemyKingPos.col - 4.5);
+      score += distanceFromCenter * 3; // Push king to edges when ahead
+      
+      // Extra bonus for forcing king to corners
+      const distanceFromCorner = Math.min(
+        enemyKingPos.row + enemyKingPos.col,
+        enemyKingPos.row + (9 - enemyKingPos.col),
+        (9 - enemyKingPos.row) + enemyKingPos.col,
+        (9 - enemyKingPos.row) + (9 - enemyKingPos.col)
+      );
+      score += (10 - distanceFromCorner) * 2;
+    }
   }
   
   // TACTICAL: Look for forks, pins, and discovered attacks
@@ -372,8 +393,12 @@ function filterBadMoves(gameState: GameState, moves: ChessMove[], aiColor: Piece
   };
   
   return moves.filter(move => {
-    // Simulate the move
+    // Always allow checkmate moves regardless of hanging pieces
     const simulatedState = makeMove(gameState, move, true);
+    if (simulatedState.gamePhase === 'ended' && simulatedState.winner === aiColor) {
+      console.log(`✅ Allowing checkmate move despite hanging pieces: ${move.piece.type}`);
+      return true;
+    }
     
     // Check if this move hangs our piece without compensation
     const pieceDefense = analyzePieceDefense(simulatedState, move.to, aiColor);
@@ -381,9 +406,13 @@ function filterBadMoves(gameState: GameState, moves: ChessMove[], aiColor: Piece
       const pieceValue = pieceValues[move.piece.type];
       const captureValue = move.captured ? pieceValues[move.captured.type] : 0;
       
-      // Only allow hanging pieces if we capture something more valuable
-      if (pieceValue > captureValue + 1) {
-        console.log(`🚫 Filtering bad move: ${move.piece.type} hangs for ${pieceValue}, only captures ${captureValue}`);
+      // Be less strict about hanging pieces when we have material advantage
+      const materialAdvantage = calculateMaterialAdvantage(gameState, aiColor);
+      const allowedLoss = materialAdvantage >= 8 ? 3 : 1; // Allow bigger sacrifices when ahead
+      
+      // Only allow hanging pieces if we capture something valuable OR in winning endgame
+      if (pieceValue > captureValue + allowedLoss) {
+        console.log(`🚫 Filtering bad move: ${move.piece.type} hangs for ${pieceValue}, only captures ${captureValue} (advantage: ${materialAdvantage})`);
         return false;
       }
     }
@@ -511,6 +540,33 @@ function analyzeProtectionValue(gameState: GameState, position: Position, myColo
   }
   
   return protectionScore;
+}
+
+// Calculate material advantage for endgame decisions
+function calculateMaterialAdvantage(gameState: GameState, myColor: PieceColor): number {
+  const pieceValues: Record<string, number> = {
+    pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, wizard: 4, king: 0
+  };
+  
+  let myMaterial = 0;
+  let opponentMaterial = 0;
+  const opponentColor = myColor === 'white' ? 'black' : 'white';
+  
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const piece = gameState.board[row][col];
+      if (piece) {
+        const value = pieceValues[piece.type];
+        if (piece.color === myColor) {
+          myMaterial += value;
+        } else {
+          opponentMaterial += value;
+        }
+      }
+    }
+  }
+  
+  return myMaterial - opponentMaterial;
 }
 
 function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove[] {
