@@ -159,13 +159,18 @@ function getKingMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ches
 function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: ChessPiece): Position[] {
   const moves: Position[] = [];
   
-  // Wizard can teleport to any unoccupied square within 2 spaces
-  // Or attack any enemy within 2 spaces without moving
-  for (let dr = -2; dr <= 2; dr++) {
-    for (let dc = -2; dc <= 2; dc++) {
-      if (dr === 0 && dc === 0) continue;
-      
-      const newPos = { row: pos.row + dr, col: pos.col + dc };
+  // Wizard can teleport/attack in straight lines only (horizontal, vertical, diagonal)
+  // within 2 squares distance
+  const directions = [
+    [-1, -1], [-1, 0], [-1, 1],  // up-left, up, up-right
+    [0, -1],           [0, 1],   // left, right
+    [1, -1],  [1, 0],  [1, 1]    // down-left, down, down-right
+  ];
+  
+  for (const [dr, dc] of directions) {
+    // Check squares at distance 1 and 2 in this direction
+    for (let distance = 1; distance <= 2; distance++) {
+      const newPos = { row: pos.row + dr * distance, col: pos.col + dc * distance };
       
       if (isValidPosition(newPos)) {
         const target = board[newPos.row][newPos.col];
@@ -177,6 +182,9 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
         // Can attack enemies (without moving)
         else if (target.color !== piece.color) {
           moves.push(newPos);
+          break; // Can't move past an occupied square
+        } else {
+          break; // Can't move past own piece
         }
       }
     }
