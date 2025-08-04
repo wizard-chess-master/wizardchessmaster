@@ -25,12 +25,16 @@ export function getAIMove(gameState: GameState): ChessMove | null {
     return blockingMove;
   }
   
+  // PRIORITY 2.5: Filter out repetitive moves early (before other considerations)
+  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
+  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+  
   // PRIORITY 3: Try to use learned patterns (for medium and hard difficulty)
   if (gameState.aiDifficulty !== 'easy') {
     const learnedMove = aiLearning.getBestLearnedMove(gameState, aiColor);
     if (learnedMove) {
-      // Validate the learned move is still legal
-      const isLearnedMoveLegal = allMoves.some(move => 
+      // Validate the learned move is still legal AND not repetitive
+      const isLearnedMoveLegal = movesToConsider.some(move => 
         move.from.row === learnedMove.from.row && 
         move.from.col === learnedMove.from.col &&
         move.to.row === learnedMove.to.row && 
@@ -44,45 +48,87 @@ export function getAIMove(gameState: GameState): ChessMove | null {
     }
   }
   
-  // PRIORITY 4: Fall back to original strategy
+  // PRIORITY 4: Fall back to original strategy (using filtered moves)
   switch (gameState.aiDifficulty) {
     case 'easy':
-      return getRandomMove(gameState, aiColor);
+      return getRandomMove(gameState, aiColor, movesToConsider);
     case 'medium':
-      return getBasicStrategyMove(gameState, aiColor);
+      return getBasicStrategyMove(gameState, aiColor, movesToConsider);
     case 'hard':
-      return getAdvancedStrategyMove(gameState, aiColor);
+      return getAdvancedStrategyMove(gameState, aiColor, movesToConsider);
     default:
-      return getRandomMove(gameState, aiColor);
+      return getRandomMove(gameState, aiColor, movesToConsider);
   }
 }
 
-// Filter out moves that would create immediate repetition
+// Advanced repetition detection to prevent AI from making the same move 3+ times
 function filterRepetitiveMoves(gameState: GameState, moves: ChessMove[]): ChessMove[] {
-  if (gameState.moveHistory.length < 3) return moves;
+  if (gameState.moveHistory.length < 6) return moves; // Need at least 6 moves to detect 3-fold repetition
   
-  const lastMove = gameState.moveHistory[gameState.moveHistory.length - 1];
-  const secondLastMove = gameState.moveHistory[gameState.moveHistory.length - 2];
+  const moveHistory = gameState.moveHistory;
   
   return moves.filter(move => {
-    // Don't immediately reverse the last move with the same piece
+    // Count how many times this exact move has been made recently
+    let moveCount = 0;
+    let opponentSameMoveCount = 0;
+    
+    // Look at last 12 moves (6 moves for each player)
+    const recentMoves = moveHistory.slice(-12);
+    
+    for (let i = 0; i < recentMoves.length; i += 2) {
+      const aiMove = recentMoves[i];
+      const opponentMove = recentMoves[i + 1];
+      
+      // Check if AI made this same move before
+      if (aiMove && 
+          move.from.row === aiMove.from.row && 
+          move.from.col === aiMove.from.col &&
+          move.to.row === aiMove.to.row && 
+          move.to.col === aiMove.to.col &&
+          move.piece.type === aiMove.piece.type) {
+        moveCount++;
+      }
+      
+      // Check if opponent made similar repetitive moves
+      if (opponentMove && i > 0) {
+        const prevOpponentMove = recentMoves[i - 1];
+        if (prevOpponentMove &&
+            opponentMove.from.row === prevOpponentMove.from.row && 
+            opponentMove.from.col === prevOpponentMove.from.col &&
+            opponentMove.to.row === prevOpponentMove.to.row && 
+            opponentMove.to.col === prevOpponentMove.to.col &&
+            opponentMove.piece.type === prevOpponentMove.piece.type) {
+          opponentSameMoveCount++;
+        }
+      }
+    }
+    
+    // Don't make the same move 3+ times unless opponent is also repeating AND we have no choice
+    if (moveCount >= 2) {
+      // Allow repetition only if:
+      // 1. Opponent is also repeating moves (mutual repetition)
+      // 2. OR this is the only legal move available
+      const allowRepetition = opponentSameMoveCount >= 2 || moves.length === 1;
+      
+      if (!allowRepetition) {
+        console.log(`🚫 AI avoiding repetitive move: ${move.piece.type} ${String.fromCharCode(97 + move.from.col)}${10 - move.from.row} to ${String.fromCharCode(97 + move.to.col)}${10 - move.to.row} (used ${moveCount} times)`);
+        return false;
+      }
+    }
+    
+    // Additional immediate repetition prevention (back-and-forth moves)
+    const lastMove = moveHistory[moveHistory.length - 1];
     if (lastMove && 
         move.from.row === lastMove.to.row && 
         move.from.col === lastMove.to.col &&
         move.to.row === lastMove.from.row && 
         move.to.col === lastMove.from.col &&
         move.piece.type === lastMove.piece.type) {
-      return false;
-    }
-    
-    // Don't repeat the exact same move as 2 moves ago
-    if (secondLastMove &&
-        move.from.row === secondLastMove.from.row && 
-        move.from.col === secondLastMove.from.col &&
-        move.to.row === secondLastMove.to.row && 
-        move.to.col === secondLastMove.to.col &&
-        move.piece.type === secondLastMove.piece.type) {
-      return false;
+      // Only allow if no other moves available
+      if (moves.length > 1) {
+        console.log(`🚫 AI avoiding immediate back-and-forth move`);
+        return false;
+      }
     }
     
     return true;
@@ -145,24 +191,16 @@ function findBlockingMove(gameState: GameState, moves: ChessMove[], aiColor: Pie
   return null;
 }
 
-function getRandomMove(gameState: GameState, color: PieceColor): ChessMove | null {
-  const allMoves = getAllPossibleMoves(gameState, color);
-  if (allMoves.length === 0) return null;
-  
-  // Filter out repetitive moves to prevent endless loops
-  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
-  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+function getRandomMove(gameState: GameState, color: PieceColor, preFilteredMoves?: ChessMove[]): ChessMove | null {
+  const movesToConsider = preFilteredMoves || getAllPossibleMoves(gameState, color);
+  if (movesToConsider.length === 0) return null;
   
   return movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
 }
 
-function getBasicStrategyMove(gameState: GameState, color: PieceColor): ChessMove | null {
-  const allMoves = getAllPossibleMoves(gameState, color);
-  if (allMoves.length === 0) return null;
-  
-  // Filter out repetitive moves to prevent endless loops
-  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
-  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+function getBasicStrategyMove(gameState: GameState, color: PieceColor, preFilteredMoves?: ChessMove[]): ChessMove | null {
+  const movesToConsider = preFilteredMoves || getAllPossibleMoves(gameState, color);
+  if (movesToConsider.length === 0) return null;
   
   // Prioritize captures
   const captures = movesToConsider.filter(move => move.captured);
@@ -184,13 +222,9 @@ function getBasicStrategyMove(gameState: GameState, color: PieceColor): ChessMov
   return movesToConsider[Math.floor(Math.random() * movesToConsider.length)];
 }
 
-function getAdvancedStrategyMove(gameState: GameState, color: PieceColor): ChessMove | null {
-  const allMoves = getAllPossibleMoves(gameState, color);
-  if (allMoves.length === 0) return null;
-  
-  // Filter out repetitive moves to prevent endless loops
-  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
-  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+function getAdvancedStrategyMove(gameState: GameState, color: PieceColor, preFilteredMoves?: ChessMove[]): ChessMove | null {
+  const movesToConsider = preFilteredMoves || getAllPossibleMoves(gameState, color);
+  if (movesToConsider.length === 0) return null;
   
   // Evaluate each move with advanced scoring (use filtered moves)
   let bestMove = movesToConsider[0];
@@ -204,6 +238,7 @@ function getAdvancedStrategyMove(gameState: GameState, color: PieceColor): Chess
     }
   }
   
+  console.log(`🎯 AI selected best move with score ${bestScore}: ${bestMove.piece.type} ${String.fromCharCode(97 + bestMove.from.col)}${10 - bestMove.from.row} to ${String.fromCharCode(97 + bestMove.to.col)}${10 - bestMove.to.row}`);
   return bestMove;
 }
 
