@@ -6,6 +6,7 @@ import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
+import { TrainingViewer } from "./components/chess/TrainingViewer";
 import "@fontsource/inter";
 import "./styles/chess.css";
 
@@ -13,6 +14,7 @@ function App() {
   const { gamePhase } = useChess();
   const { setHitSound, setSuccessSound } = useAudio();
   const [showSettings, setShowSettings] = useState(false);
+  const [showTrainingViewer, setShowTrainingViewer] = useState(false);
 
   // Initialize audio and keyboard shortcuts
   useEffect(() => {
@@ -62,11 +64,18 @@ function App() {
 
   return (
     <div className="chess-app">
-      {gamePhase === 'menu' && (
-        <MainMenu onSettings={() => setShowSettings(true)} />
+      {gamePhase === 'menu' && !showTrainingViewer && (
+        <MainMenu 
+          onSettings={() => setShowSettings(true)}
+          onTrainingViewer={() => setShowTrainingViewer(true)}
+        />
+      )}
+
+      {showTrainingViewer && (
+        <TrainingViewer onBack={() => setShowTrainingViewer(false)} />
       )}
       
-      {(gamePhase === 'playing' || gamePhase === 'ended') && (
+      {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
         <>
           <div className="game-container">
             <ChessBoard />

@@ -3,14 +3,15 @@ import { useChess } from '../../lib/stores/useChess';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Settings, Sword, Users, Zap, Brain } from 'lucide-react';
+import { Settings, Sword, Users, Zap, Brain, Eye } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 
 interface MainMenuProps {
   onSettings: () => void;
+  onTrainingViewer?: () => void;
 }
 
-export function MainMenu({ onSettings }: MainMenuProps) {
+export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const { startGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
 
@@ -106,6 +107,20 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                     <Badge variant="secondary">{isTraining ? 'Running...' : '25 Games'}</Badge>
                   </div>
                 </Button>
+
+                {onTrainingViewer && (
+                  <Button
+                    className="mode-button"
+                    variant="outline"
+                    onClick={onTrainingViewer}
+                  >
+                    <div className="mode-content">
+                      <Eye className="w-4 h-4" />
+                      <span>Watch AI Training</span>
+                      <Badge variant="secondary">Visual Mode</Badge>
+                    </div>
+                  </Button>
+                )}
                 
                 <Button
                   className="mode-button"

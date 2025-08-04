@@ -21,6 +21,7 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - Fixed wizard attack rules: Wizards can now attack any enemy within 2 squares through occupied squares
 - Added AI vs AI mode: Fully automated gameplay for testing and demonstration purposes using advanced AI difficulty
 - Implemented AI training system: Runs multiple games to analyze strategies and improve AI performance
+- Added visual AI training viewer: Watch AI games in slow motion with controls and statistics
 
 ## User Preferences
 
