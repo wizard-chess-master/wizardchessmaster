@@ -183,8 +183,10 @@ export function makeMove(gameState: GameState, move: ChessMove, skipRepetitionCh
   // Switch players
   const nextPlayer: PieceColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   
-  // Completely disable repetition detection for AI vs AI mode
-  const hasCycles = skipRepetitionCheck ? false : false; // Always false for now to prevent training loops
+  // Re-enable basic repetition detection but with higher thresholds for AI training
+  const hasCycles = skipRepetitionCheck ? false : (
+    detectMoveCycles(newMoveHistory, 12) // Allow more moves before detecting cycles
+  );
   
   // Check for check, checkmate, stalemate
   const isInCheck = isKingInCheck(newBoard, nextPlayer);

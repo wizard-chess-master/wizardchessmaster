@@ -151,40 +151,8 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
           return;
         }
         
-        // Increment move counter BEFORE making the move for better control
-        setStats(prev => {
-          const newMoveCount = prev.currentGameMoves + 1;
-          console.log(`📊 Move counter: ${newMoveCount}`);
-          
-          // CRITICAL: Check limit IMMEDIATELY with updated counter
-          if (newMoveCount >= 8) {
-            console.log(`🛑 IMMEDIATE STOP at move ${newMoveCount}!`);
-            
-            // Clear interval IMMEDIATELY
-            if (intervalRef.current) {
-              clearInterval(intervalRef.current);
-              intervalRef.current = null;
-            }
-            
-            // Force game end using setTimeout to avoid React state update warning
-            const forcedWinner = (prev.gameNumber % 3 === 0) ? 'white' : (prev.gameNumber % 3 === 1) ? 'black' : null;
-            
-            setTimeout(() => {
-              const currentState = useChess.getState();
-              useChess.setState({ 
-                ...currentState, 
-                gamePhase: 'ended', 
-                winner: forcedWinner 
-              });
-            }, 0);
-            
-            console.log(`🏁 Game ${prev.gameNumber} forced end: ${forcedWinner || 'Draw'} at ${newMoveCount} moves`);
-            
-            return { ...prev, currentGameMoves: newMoveCount };
-          }
-          
-          return { ...prev, currentGameMoves: newMoveCount };
-        });
+        // Increment move counter for tracking, but allow natural game endings
+        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
         
         // Only make move if game is still active
         const currentState = useChess.getState();
