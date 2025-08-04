@@ -4,7 +4,7 @@ import { useChess } from '../../lib/stores/useChess';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-import { Play, Pause, Square, FastForward, RotateCcw, Home } from 'lucide-react';
+import { Play, Pause, Square, FastForward, Home } from 'lucide-react';
 
 interface TrainingViewerProps {
   onBack: () => void;
@@ -23,10 +23,10 @@ interface TrainingStats {
 }
 
 export function TrainingViewer({ onBack }: TrainingViewerProps) {
-  const { startGame, makeAIVsAIMove, gamePhase, winner, currentPlayer, moveHistory } = useChess();
+  const { startGame, makeAIVsAIMove, gamePhase, winner, currentPlayer } = useChess();
 
   const [stats, setStats] = useState<TrainingStats>({
-    gameNumber: 1,
+    gameNumber: 0,
     totalGames: 10,
     whiteWins: 0,
     blackWins: 0,
@@ -38,88 +38,88 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const gameEndedRef = useRef(false);
 
+  // Clean up interval on unmount
   useEffect(() => {
-    // Start first game when component mounts
-    startGame('ai-vs-ai', 'hard');
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, []);
 
+  // Handle game progression
   useEffect(() => {
-    // Check if game ended and update stats
-    if (gamePhase === 'ended' && stats.isPlaying) {
+    if (gamePhase === 'ended' && stats.isPlaying && !gameEndedRef.current) {
+      gameEndedRef.current = true;
       console.log(`Game ${stats.gameNumber} ended. Winner: ${winner || 'Draw'}`);
       
+      // Update stats
+      setStats(prev => {
+        const newStats = { ...prev };
+        if (winner === 'white') newStats.whiteWins++;
+        else if (winner === 'black') newStats.blackWins++;
+        else newStats.draws++;
+        
+        return newStats;
+      });
+
+      // Start next game after delay
       setTimeout(() => {
         setStats(prev => {
-          const newStats = { ...prev };
-          if (winner === 'white') newStats.whiteWins++;
-          else if (winner === 'black') newStats.blackWins++;
-          else newStats.draws++;
-
-          if (newStats.gameNumber < newStats.totalGames) {
-            newStats.gameNumber++;
-            newStats.currentGameMoves = 0;
-            console.log(`Starting game ${newStats.gameNumber}/${newStats.totalGames}`);
-            // Start next game
-            setTimeout(() => {
-              if (newStats.isPlaying) { // Check if still playing
-                startGame('ai-vs-ai', 'hard');
-              }
-            }, 1000);
+          if (prev.gameNumber < prev.totalGames && prev.isPlaying) {
+            const nextGameNumber = prev.gameNumber + 1;
+            console.log(`Starting game ${nextGameNumber}/${prev.totalGames}`);
+            startGame('ai-vs-ai', 'hard');
+            gameEndedRef.current = false;
+            return { ...prev, gameNumber: nextGameNumber, currentGameMoves: 0 };
           } else {
             // Training complete
-            newStats.isPlaying = false;
             console.log('🎓 Visual training session completed!');
+            return { ...prev, isPlaying: false, isPaused: false };
           }
-          
-          return newStats;
         });
-      }, 1500);
+      }, 2000);
     }
   }, [gamePhase, winner, stats.isPlaying, stats.gameNumber, stats.totalGames]);
 
+  // Handle AI moves
   useEffect(() => {
-    // Clear existing interval when speed changes
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
 
     if (stats.isPlaying && !stats.isPaused && gamePhase === 'playing') {
-      console.log(`Setting interval with speed: ${stats.speed}ms`);
       intervalRef.current = setInterval(() => {
         makeAIVsAIMove();
         setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
         
-        // Prevent infinite games
-        if (stats.currentGameMoves > 60) {
-          const pieces = useChess.getState().board.flat().filter(p => p !== null);
+        // Force end if too many moves
+        if (stats.currentGameMoves > 80) {
+          console.log('Forcing game end due to move limit');
+          const state = useChess.getState();
+          const pieces = state.board.flat().filter(p => p !== null);
           const whitePieces = pieces.filter(p => p!.color === 'white');
           const blackPieces = pieces.filter(p => p!.color === 'black');
-          const winner = whitePieces.length > blackPieces.length ? 'white' : 'black';
+          const forcedWinner = whitePieces.length > blackPieces.length ? 'white' : 'black';
           
-          // Force end game
           useChess.setState(state => ({ 
             ...state, 
             gamePhase: 'ended', 
-            winner 
+            winner: forcedWinner 
           }));
         }
       }, stats.speed);
     }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [stats.isPlaying, stats.isPaused, stats.speed, gamePhase]);
+  }, [stats.isPlaying, stats.isPaused, stats.speed, gamePhase, stats.currentGameMoves]);
 
   const startTraining = () => {
-    console.log('Starting training session');
-    setStats(prev => ({ 
-      ...prev, 
-      isPlaying: true, 
+    console.log('Starting AI training session');
+    setStats(prev => ({
+      ...prev,
+      isPlaying: true,
       isPaused: false,
       gameNumber: 1,
       whiteWins: 0,
@@ -127,32 +127,39 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
       draws: 0,
       currentGameMoves: 0
     }));
+    gameEndedRef.current = false;
     startGame('ai-vs-ai', 'hard');
   };
 
   const pauseTraining = () => {
-    console.log('Pausing/resuming training');
+    console.log('Toggling pause state');
     setStats(prev => ({ ...prev, isPaused: !prev.isPaused }));
   };
 
   const stopTraining = () => {
-    console.log('Stopping training session');
-    // Clear any existing interval
+    console.log('Stopping AI training session');
+    
+    // Clear interval
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
     
-    setStats(prev => ({ 
-      ...prev, 
-      isPlaying: false, 
+    // Reset state
+    setStats(prev => ({
+      ...prev,
+      isPlaying: false,
       isPaused: false,
-      gameNumber: 1,
+      gameNumber: 0,
       whiteWins: 0,
       blackWins: 0,
       draws: 0,
       currentGameMoves: 0
     }));
+    
+    gameEndedRef.current = false;
+    
+    // Start a fresh game for display
     startGame('ai-vs-ai', 'hard');
   };
 
@@ -162,9 +169,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
       const currentIndex = speeds.indexOf(prev.speed);
       const nextIndex = (currentIndex + 1) % speeds.length;
       const newSpeed = speeds[nextIndex];
-      
-      console.log(`Speed changed from ${prev.speed}ms to ${newSpeed}ms`);
-      
+      console.log(`Speed changed to ${newSpeed}ms`);
       return { ...prev, speed: newSpeed };
     });
   };
@@ -201,12 +206,16 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
           <CardContent>
             <div className="training-controls">
               {!stats.isPlaying ? (
-                <Button onClick={startTraining}>
+                <Button onClick={startTraining} size="lg">
                   <Play className="w-4 h-4 mr-2" />
                   Start Training
                 </Button>
               ) : (
-                <Button onClick={pauseTraining} variant={stats.isPaused ? "default" : "secondary"}>
+                <Button 
+                  onClick={pauseTraining} 
+                  variant={stats.isPaused ? "default" : "secondary"}
+                  size="lg"
+                >
                   <Pause className="w-4 h-4 mr-2" />
                   {stats.isPaused ? 'Resume' : 'Pause'}
                 </Button>
@@ -216,14 +225,15 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
                 variant="outline" 
                 onClick={stopTraining}
                 disabled={!stats.isPlaying}
+                size="lg"
               >
                 <Square className="w-4 h-4 mr-2" />
                 Stop
               </Button>
               
-              <Button variant="outline" onClick={changeSpeed}>
+              <Button variant="outline" onClick={changeSpeed} size="lg">
                 <FastForward className="w-4 h-4 mr-2" />
-                <span>Speed: <Badge variant="secondary">{getSpeedLabel()}</Badge></span>
+                Speed: <Badge variant="secondary" className="ml-1">{getSpeedLabel()}</Badge>
               </Button>
             </div>
           </CardContent>
@@ -242,9 +252,15 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
           <CardContent>
             <div className="stats-grid">
               <div className="stat-item">
-                <span className="stat-label">Game:</span>
+                <span className="stat-label">Progress:</span>
                 <Badge variant="outline">
                   {stats.gameNumber} / {stats.totalGames}
+                </Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Status:</span>
+                <Badge variant={stats.isPlaying ? (stats.isPaused ? "secondary" : "default") : "outline"}>
+                  {!stats.isPlaying ? 'Stopped' : stats.isPaused ? 'Paused' : 'Running'}
                 </Badge>
               </div>
               <div className="stat-item">
@@ -258,10 +274,6 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
                 <Badge variant="outline">{stats.currentGameMoves}</Badge>
               </div>
               <div className="stat-item">
-                <span className="stat-label">Speed:</span>
-                <Badge variant="outline">{getSpeedLabel()} ({stats.speed}ms)</Badge>
-              </div>
-              <div className="stat-item">
                 <span className="stat-label">White Wins:</span>
                 <Badge variant="outline">{stats.whiteWins}</Badge>
               </div>
@@ -272,6 +284,10 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
               <div className="stat-item">
                 <span className="stat-label">Draws:</span>
                 <Badge variant="outline">{stats.draws}</Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Speed:</span>
+                <Badge variant="outline">{getSpeedLabel()} ({stats.speed}ms)</Badge>
               </div>
             </div>
           </CardContent>
