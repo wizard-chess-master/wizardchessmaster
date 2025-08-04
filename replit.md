@@ -17,6 +17,7 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - Fixed keyboard shortcut selection clearing: Escape key now properly clears piece selection
 - Enhanced move validation for wizard attacks in AI player logic
 - Updated wizard teleportation: Wizards can now teleport over pieces to reach empty squares
+- Fixed wizard attack rules: Wizards can now attack any enemy within 2 squares through occupied squares
 
 ## User Preferences
 

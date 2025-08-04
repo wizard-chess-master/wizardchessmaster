@@ -160,7 +160,7 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
   const moves: Position[] = [];
   
   // Wizard can teleport to any unoccupied square within 2 squares in straight line directions
-  // or attack enemy pieces if there's a clear line of sight
+  // and can attack any enemy piece within 2 squares, even through occupied squares
   const directions = [
     [-1, -1], [-1, 0], [-1, 1],  // up-left, up, up-right
     [0, -1],           [0, 1],   // left, right
@@ -179,21 +179,10 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
         if (!target) {
           moves.push(newPos);
         }
-        // Can attack enemies if there's a clear line of sight
+        // Can attack any enemy piece within range (even through occupied squares)
         else if (target.color !== piece.color) {
-          // For attacks, check if path is clear (no pieces blocking the attack)
-          let pathClear = true;
-          for (let checkDist = 1; checkDist < distance; checkDist++) {
-            const checkPos = { row: pos.row + dr * checkDist, col: pos.col + dc * checkDist };
-            if (board[checkPos.row][checkPos.col]) {
-              pathClear = false;
-              break;
-            }
-          }
-          if (pathClear) {
-            moves.push(newPos);
-          }
-          break; // Stop checking further in this direction after finding a piece
+          moves.push(newPos);
+          break; // Stop checking further in this direction after finding an enemy
         } else {
           // Own piece - can't attack it, but continue to check if we can teleport beyond it
           // (wizards can teleport over their own pieces to empty squares)
