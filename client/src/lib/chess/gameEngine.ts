@@ -90,6 +90,13 @@ function detectSimpleRepetition(moveHistory: ChessMove[]): boolean {
   const move3 = last4[2];
   const move4 = last4[3];
   
+  console.log('🔍 Checking for repetition in last 4 moves:', {
+    move1: `${move1.piece.type} ${move1.from.row},${move1.from.col} -> ${move1.to.row},${move1.to.col}`,
+    move2: `${move2.piece.type} ${move2.from.row},${move2.from.col} -> ${move2.to.row},${move2.to.col}`,
+    move3: `${move3.piece.type} ${move3.from.row},${move3.from.col} -> ${move3.to.row},${move3.to.col}`,
+    move4: `${move4.piece.type} ${move4.from.row},${move4.from.col} -> ${move4.to.row},${move4.to.col}`
+  });
+  
   // Check if last 4 moves show A-B-A-B pattern
   const isRepeating = (
     move1.from.row === move3.from.row && move1.from.col === move3.from.col &&
@@ -100,8 +107,35 @@ function detectSimpleRepetition(moveHistory: ChessMove[]): boolean {
   );
   
   if (isRepeating) {
-    console.log('🔄 Detected 2-move repetition (A-B-A-B), declaring stalemate');
+    console.log('🔄 DETECTED 2-move repetition (A-B-A-B), declaring stalemate!');
     return true;
+  }
+  
+  return false;
+}
+
+// More aggressive repetition detection - shorter cycles
+function detectQuickRepetition(moveHistory: ChessMove[]): boolean {
+  if (moveHistory.length < 6) return false;
+  
+  const last6 = moveHistory.slice(-6);
+  
+  // Check if last 6 moves contain any exact repeated move pairs
+  for (let i = 0; i < 4; i++) {
+    for (let j = i + 2; j < 6; j++) {
+      const moveA = last6[i];
+      const moveB = last6[j];
+      
+      if (moveA.from.row === moveB.from.row && 
+          moveA.from.col === moveB.from.col &&
+          moveA.to.row === moveB.to.row && 
+          moveA.to.col === moveB.to.col &&
+          moveA.piece.type === moveB.piece.type) {
+        
+        console.log('🔄 DETECTED repeated move pattern, declaring stalemate!');
+        return true;
+      }
+    }
   }
   
   return false;
@@ -139,8 +173,10 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
   // Switch players
   const nextPlayer: PieceColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   
-  // Check for move cycles and simple repetitions
-  const hasCycles = detectMoveCycles(newMoveHistory, 6) || detectSimpleRepetition(newMoveHistory);
+  // Check for move cycles and simple repetitions (multiple detection methods)
+  const hasCycles = detectMoveCycles(newMoveHistory, 6) || 
+                   detectSimpleRepetition(newMoveHistory) ||
+                   detectQuickRepetition(newMoveHistory);
   
   // Check for check, checkmate, stalemate
   const isInCheck = isKingInCheck(newBoard, nextPlayer);
