@@ -40,7 +40,7 @@ interface LearningData {
 
 export class AILearningSystem {
   private learningData: LearningData;
-  private maxGameHistory = 1000; // Keep last 1000 games
+  private maxGameHistory = 100; // Keep last 100 games for better visibility
   private maxPositionalPatterns = 5000; // Limit memory usage
 
   constructor() {

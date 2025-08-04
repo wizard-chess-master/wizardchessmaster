@@ -20,12 +20,10 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const [showStatsDialog, setShowStatsDialog] = useState(false);
 
   useEffect(() => {
-    // Force reset learning data for fresh testing
-    console.log('🔄 Auto-resetting AI learning data for fresh testing...');
-    aiLearning.resetLearning();
+    // Load learning stats on component mount (no auto-reset)
     const stats = aiLearning.getLearningStats();
     setLearningStats(stats);
-    console.log('✅ Learning data reset completed:', stats);
+    console.log('📊 Loaded existing learning stats:', stats);
   }, []);
 
   return (
@@ -290,7 +288,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   </div>
                   
                   <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Recent Games:</span>
+                    <span className="font-medium">Recent Games (last 100):</span>
                     <span className="font-bold text-lg">{learningStats.recentGames}</span>
                   </div>
                   

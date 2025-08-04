@@ -336,8 +336,8 @@ export class AITrainer {
         
         learningData.recentGames.push(gamePattern);
         
-        // Keep only last 1000 games
-        if (learningData.recentGames.length > 1000) {
+        // Keep only last 100 games  
+        if (learningData.recentGames.length > 100) {
           learningData.recentGames.shift();
         }
       });
