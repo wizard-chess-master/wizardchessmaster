@@ -1,0 +1,164 @@
+import React from 'react';
+import { useChess } from '../../lib/stores/useChess';
+import { Button } from '../ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
+import { Settings, Sword, Users, Zap } from 'lucide-react';
+
+interface MainMenuProps {
+  onSettings: () => void;
+}
+
+export function MainMenu({ onSettings }: MainMenuProps) {
+  const { startGame } = useChess();
+
+  return (
+    <div className="main-menu">
+      <div className="menu-container">
+        <div className="title-section">
+          <h1 className="game-title">
+            <Zap className="title-icon" />
+            Fantasy Chess
+          </h1>
+          <p className="game-subtitle">
+            10x10 Chess with Magical Wizards
+          </p>
+        </div>
+
+        <div className="menu-cards">
+          {/* Game Modes */}
+          <Card className="menu-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sword className="w-5 h-5" />
+                Play Game
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="game-mode-buttons">
+                <Button
+                  className="mode-button"
+                  onClick={() => startGame('ai', 'easy')}
+                >
+                  <div className="mode-content">
+                    <span>vs AI - Easy</span>
+                    <Badge variant="secondary">Random moves</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="mode-button"
+                  onClick={() => startGame('ai', 'medium')}
+                >
+                  <div className="mode-content">
+                    <span>vs AI - Medium</span>
+                    <Badge variant="secondary">Basic strategy</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="mode-button"
+                  onClick={() => startGame('ai', 'hard')}
+                >
+                  <div className="mode-content">
+                    <span>vs AI - Hard</span>
+                    <Badge variant="secondary">Advanced tactics</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="mode-button"
+                  variant="outline"
+                  onClick={() => startGame('local')}
+                >
+                  <div className="mode-content">
+                    <Users className="w-4 h-4" />
+                    <span>Local Multiplayer</span>
+                    <Badge variant="outline">Pass & Play</Badge>
+                  </div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Game Rules */}
+          <Card className="menu-card">
+            <CardHeader>
+              <CardTitle>Game Rules</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="rules-content">
+                <div className="rule-item">
+                  <h4>Board Size</h4>
+                  <p>10x10 squares instead of traditional 8x8</p>
+                </div>
+                
+                <div className="rule-item">
+                  <h4>Standard Pieces</h4>
+                  <p>All traditional chess pieces with standard movement</p>
+                </div>
+                
+                <div className="rule-item">
+                  <h4>🧙‍♂️ Wizard Piece</h4>
+                  <p>
+                    <strong>Teleport:</strong> Move to any unoccupied square within 2 spaces<br/>
+                    <strong>Ranged Attack:</strong> Attack enemies within 2 squares without moving
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Controls */}
+          <Card className="menu-card">
+            <CardHeader>
+              <CardTitle>Controls</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="controls-content">
+                <div className="control-item">
+                  <span className="control-key">Mouse Click</span>
+                  <span>Select piece / Make move</span>
+                </div>
+                
+                <div className="control-item">
+                  <span className="control-key">Ctrl+Z</span>
+                  <span>Undo last move</span>
+                </div>
+                
+                <div className="control-item">
+                  <span className="control-key">Escape</span>
+                  <span>Deselect piece</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="menu-footer">
+          <Button
+            variant="outline"
+            onClick={onSettings}
+          >
+            <Settings className="w-4 h-4 mr-2" />
+            Settings
+          </Button>
+          
+          {/* IAP Placeholder */}
+          <Card className="iap-placeholder">
+            <CardContent className="pt-4">
+              <div className="iap-content">
+                <p className="text-sm text-muted-foreground">
+                  Premium Features Available
+                </p>
+                <Button variant="outline" size="sm" disabled>
+                  Remove Ads - $2.99
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
