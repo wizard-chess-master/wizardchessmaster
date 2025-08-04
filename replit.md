@@ -10,12 +10,13 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - Complete implementation with fantasy UI, AI opponents, and ad/IAP placeholders
 
 ## Bug Fixes (January 4, 2025)
-- Fixed wizard movement logic: Wizards can no longer teleport through or beyond own pieces
+- Fixed wizard movement logic: Wizards can now teleport to any unoccupied square within 2 squares in straight lines
 - Added missing pawn promotion: Pawns now auto-promote to queen when reaching the opposite end
 - Fixed AI move validation: AI moves now properly check if they would put own king in check
 - Improved getAllValidMoves function: Now properly validates moves don't put own king in check
 - Fixed keyboard shortcut selection clearing: Escape key now properly clears piece selection
 - Enhanced move validation for wizard attacks in AI player logic
+- Updated wizard teleportation: Wizards can now teleport over pieces to reach empty squares
 
 ## User Preferences
 

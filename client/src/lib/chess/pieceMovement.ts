@@ -159,8 +159,8 @@ function getKingMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ches
 function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: ChessPiece): Position[] {
   const moves: Position[] = [];
   
-  // Wizard can teleport/attack in straight lines only (horizontal, vertical, diagonal)
-  // within 2 squares distance
+  // Wizard can teleport to any unoccupied square within 2 squares in straight line directions
+  // or attack enemy pieces if there's a clear line of sight
   const directions = [
     [-1, -1], [-1, 0], [-1, 1],  // up-left, up, up-right
     [0, -1],           [0, 1],   // left, right
@@ -175,13 +175,13 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
       if (isValidPosition(newPos)) {
         const target = board[newPos.row][newPos.col];
         
-        // Can teleport to empty squares (can jump over pieces)
+        // Can teleport to any empty square within range (regardless of pieces in between)
         if (!target) {
           moves.push(newPos);
         }
-        // Can attack enemies only if there's a clear line of sight (no teleport through pieces for attacks)
+        // Can attack enemies if there's a clear line of sight
         else if (target.color !== piece.color) {
-          // For attacks, check if path is clear
+          // For attacks, check if path is clear (no pieces blocking the attack)
           let pathClear = true;
           for (let checkDist = 1; checkDist < distance; checkDist++) {
             const checkPos = { row: pos.row + dr * checkDist, col: pos.col + dc * checkDist };
@@ -195,8 +195,9 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
           }
           break; // Stop checking further in this direction after finding a piece
         } else {
-          // Own piece - can't attack or teleport through/beyond it
-          break; // Stop checking further in this direction
+          // Own piece - can't attack it, but continue to check if we can teleport beyond it
+          // (wizards can teleport over their own pieces to empty squares)
+          continue;
         }
       }
     }
