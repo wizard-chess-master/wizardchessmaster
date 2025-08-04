@@ -25,9 +25,13 @@ export function getAIMove(gameState: GameState): ChessMove | null {
     return blockingMove;
   }
   
+  // PRIORITY 2.1: Filter out obviously bad moves (hanging pieces, blunders)
+  const smartMoves = filterBadMoves(gameState, allMoves, aiColor);
+  const movesToEvaluate = smartMoves.length > 0 ? smartMoves : allMoves;
+  
   // PRIORITY 2.5: Filter out repetitive moves early (before other considerations)
-  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, allMoves);
-  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : allMoves;
+  const nonRepetitiveMoves = filterRepetitiveMoves(gameState, movesToEvaluate);
+  const movesToConsider = nonRepetitiveMoves.length > 0 ? nonRepetitiveMoves : movesToEvaluate;
   
   // PRIORITY 3: Try to use learned patterns (for medium and hard difficulty)
   if (gameState.aiDifficulty !== 'easy') {
@@ -107,7 +111,7 @@ function filterRepetitiveMoves(gameState: GameState, moves: ChessMove[]): ChessM
     // More aggressive repetition prevention - avoid after just 1 repetition in training
     if (moveCount >= 1) {
       // In AI vs AI training, be much more aggressive about avoiding repetition
-      const isTrainingMode = !gameState.humanPlayer; // Assume AI vs AI if no human player
+      const isTrainingMode = gameState.gameMode === 'ai-vs-ai'; // Check if in AI vs AI mode
       
       // Allow repetition only if this is the only legal move OR in mutual repetition
       const allowRepetition = moves.length === 1 || (opponentSameMoveCount >= 1 && !isTrainingMode);
@@ -258,22 +262,47 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
     king: 0
   };
   
+  // Simulate the move to analyze the resulting position
+  const simulatedState = makeMove(gameState, move, true);
+  const opponentColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
+  
+  // CRITICAL: Check if this move leaves our piece undefended
+  const pieceDefense = analyzePieceDefense(simulatedState, move.to, gameState.currentPlayer);
+  if (!pieceDefense.isDefended && pieceDefense.isAttacked) {
+    const pieceValue = pieceValues[move.piece.type];
+    score -= pieceValue * 20; // Heavy penalty for hanging pieces
+    console.log(`⚠️ Move hangs ${move.piece.type} - penalty: ${pieceValue * 20}`);
+  }
+  
+  // CRITICAL: Look for opponent's immediate threats after our move
+  const opponentThreats = findImmediateThreats(simulatedState, opponentColor);
+  for (const threat of opponentThreats) {
+    const threatValue = pieceValues[threat.targetPiece.type];
+    score -= threatValue * 10; // Penalty for allowing opponent threats
+  }
+  
   // Capture bonus (much higher priority)
   if (move.captured) {
-    score += pieceValues[move.captured.type] * 15; // Increased from 10
+    score += pieceValues[move.captured.type] * 15;
   }
   
   // Check bonus (putting opponent in check is valuable)
-  const simulatedState = makeMove(gameState, move, true);
-  const opponentColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   if (isKingInCheck(simulatedState.board, opponentColor)) {
-    score += 20; // High bonus for check moves
+    score += 20;
   }
   
   // Checkmate bonus (highest priority)
   if (simulatedState.gamePhase === 'ended' && simulatedState.winner === gameState.currentPlayer) {
-    score += 1000; // Massive bonus for checkmate
+    score += 1000;
   }
+  
+  // TACTICAL: Look for forks, pins, and discovered attacks
+  const tacticalBonus = analyzeTacticalOpportunities(simulatedState, gameState.currentPlayer);
+  score += tacticalBonus;
+  
+  // DEFENSE: Bonus for protecting our pieces
+  const protectionBonus = analyzeProtectionValue(simulatedState, move.to, gameState.currentPlayer);
+  score += protectionBonus;
   
   // Center control
   const centerBonus = getCenterControlBonus(move.to);
@@ -283,7 +312,7 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
   const enemyKingPos = findKingPosition(simulatedState.board, opponentColor);
   if (enemyKingPos) {
     const distance = Math.abs(move.to.row - enemyKingPos.row) + Math.abs(move.to.col - enemyKingPos.col);
-    score += Math.max(0, 8 - distance); // Closer to enemy king = better
+    score += Math.max(0, 8 - distance);
   }
   
   // Piece development
@@ -332,6 +361,130 @@ function findKingPosition(board: (ChessPiece | null)[][], color: PieceColor): Po
     }
   }
   return null;
+}
+
+// Filter out obviously bad moves to prevent blunders
+function filterBadMoves(gameState: GameState, moves: ChessMove[], aiColor: PieceColor): ChessMove[] {
+  const pieceValues: Record<string, number> = {
+    pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, wizard: 4, king: 0
+  };
+  
+  return moves.filter(move => {
+    // Simulate the move
+    const simulatedState = makeMove(gameState, move, true);
+    
+    // Check if this move hangs our piece without compensation
+    const pieceDefense = analyzePieceDefense(simulatedState, move.to, aiColor);
+    if (!pieceDefense.isDefended && pieceDefense.isAttacked) {
+      const pieceValue = pieceValues[move.piece.type];
+      const captureValue = move.captured ? pieceValues[move.captured.type] : 0;
+      
+      // Only allow hanging pieces if we capture something more valuable
+      if (pieceValue > captureValue + 1) {
+        console.log(`🚫 Filtering bad move: ${move.piece.type} hangs for ${pieceValue}, only captures ${captureValue}`);
+        return false;
+      }
+    }
+    
+    return true;
+  });
+}
+
+// Analyze if a piece is defended and attacked
+function analyzePieceDefense(gameState: GameState, position: Position, pieceColor: PieceColor): { isDefended: boolean, isAttacked: boolean } {
+  let isDefended = false;
+  let isAttacked = false;
+  
+  // Check if any friendly pieces defend this position
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const piece = gameState.board[row][col];
+      if (piece && piece.color === pieceColor) {
+        const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+        if (possibleMoves.some(move => move.row === position.row && move.col === position.col)) {
+          isDefended = true;
+        }
+      } else if (piece && piece.color !== pieceColor) {
+        const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+        if (possibleMoves.some(move => move.row === position.row && move.col === position.col)) {
+          isAttacked = true;
+        }
+      }
+    }
+  }
+  
+  return { isDefended, isAttacked };
+}
+
+// Find immediate threats from opponent
+function findImmediateThreats(gameState: GameState, opponentColor: PieceColor): Array<{ targetPiece: ChessPiece, attackerPos: Position }> {
+  const threats = [];
+  const myColor = opponentColor === 'white' ? 'black' : 'white';
+  
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const piece = gameState.board[row][col];
+      if (piece && piece.color === opponentColor) {
+        const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+        
+        for (const move of possibleMoves) {
+          const targetPiece = gameState.board[move.row][move.col];
+          if (targetPiece && targetPiece.color === myColor) {
+            threats.push({ targetPiece, attackerPos: { row, col } });
+          }
+        }
+      }
+    }
+  }
+  
+  return threats;
+}
+
+// Analyze tactical opportunities (forks, pins, etc.)
+function analyzeTacticalOpportunities(gameState: GameState, myColor: PieceColor): number {
+  let tacticalScore = 0;
+  const opponentColor = myColor === 'white' ? 'black' : 'white';
+  
+  // Look for pieces that can attack multiple enemy pieces (forks)
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const piece = gameState.board[row][col];
+      if (piece && piece.color === myColor) {
+        const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+        
+        let attackTargets = 0;
+        for (const move of possibleMoves) {
+          const targetPiece = gameState.board[move.row][move.col];
+          if (targetPiece && targetPiece.color === opponentColor) {
+            attackTargets++;
+          }
+        }
+        
+        if (attackTargets >= 2) {
+          tacticalScore += attackTargets * 5; // Bonus for forks
+        }
+      }
+    }
+  }
+  
+  return tacticalScore;
+}
+
+// Analyze protection value of a move
+function analyzeProtectionValue(gameState: GameState, position: Position, myColor: PieceColor): number {
+  let protectionScore = 0;
+  
+  // Check if this move protects any of our pieces
+  const possibleMoves = getPossibleMoves(gameState.board, position, gameState.board[position.row][position.col]!);
+  
+  for (const move of possibleMoves) {
+    const piece = gameState.board[move.row][move.col];
+    if (piece && piece.color === myColor) {
+      protectionScore += 2; // Bonus for protecting friendly pieces
+    }
+  }
+  
+  return protectionScore;
 }
 
 function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove[] {
