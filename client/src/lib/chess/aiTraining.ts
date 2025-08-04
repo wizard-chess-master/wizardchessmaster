@@ -45,6 +45,7 @@ export class AITrainer {
     this.resetStats();
     
     console.log(`🧠 Starting AI training session: ${numGames} games at ${difficulty} difficulty`);
+    console.log('🎮 Training games will be played automatically...');
 
     for (let i = 0; i < numGames; i++) {
       if (!this.isTraining) break; // Allow stopping training
@@ -55,11 +56,9 @@ export class AITrainer {
         this.updateStats(game);
         
         // Log progress every 5 games for better feedback
-        if ((i + 1) % 5 === 0) {
+        if ((i + 1) % 5 === 0 || i === 0) {
           console.log(`📊 Progress: ${i + 1}/${numGames} games completed`);
-          if ((i + 1) % 10 === 0) {
-            this.logCurrentStats();
-          }
+          this.logCurrentStats();
         }
       } catch (error) {
         console.error(`Error in training game ${i + 1}:`, error);

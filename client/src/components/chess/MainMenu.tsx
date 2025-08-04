@@ -269,67 +269,66 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
           </DialogHeader>
           
           <div className="space-y-4 p-1">
-            {(() => {
-              console.log('🔍 Dialog render check - learningStats:', learningStats);
-              console.log('🔍 Dialog render check - condition result:', learningStats && learningStats.totalGamesAnalyzed >= 0);
-              return learningStats && learningStats.totalGamesAnalyzed >= 0;
-            })() ? (
-              <>
-                <div className="grid grid-cols-2 gap-4">
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Total Games</div>
-                    <div className="text-lg font-bold">{learningStats.totalGamesAnalyzed}</div>
-                  </Card>
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Recent Games</div>
-                    <div className="text-lg font-bold">{learningStats.recentGames}</div>
-                  </Card>
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Human Games</div>
-                    <div className="text-lg font-bold">{learningStats.humanGames}</div>
-                  </Card>
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">AI Games</div>
-                    <div className="text-lg font-bold">{learningStats.aiGames}</div>
-                  </Card>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Win Rate vs Human</div>
-                    <div className="text-lg font-bold">{Math.round(learningStats.winRateVsHuman * 100)}%</div>
-                  </Card>
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Win Rate vs AI</div>
-                    <div className="text-lg font-bold">{Math.round(learningStats.winRateVsAI * 100)}%</div>
-                  </Card>
-                </div>
-
-                <div className="space-y-2">
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Move Patterns Learned</div>
-                    <div className="text-lg font-bold">{learningStats.movePatterns}</div>
-                  </Card>
-                  <Card className="p-3 bg-muted/50">
-                    <div className="text-xs text-muted-foreground mb-1">Position Patterns</div>
-                    <div className="text-lg font-bold">{learningStats.positionalPatterns}</div>
-                  </Card>
+            {learningStats && learningStats.totalGamesAnalyzed >= 0 ? (
+              <div className="space-y-4">
+                <div className="text-lg font-semibold mb-4">Learning Statistics</div>
+                
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Total Games Analyzed:</span>
+                    <span className="font-bold text-lg">{learningStats.totalGamesAnalyzed}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Recent Games:</span>
+                    <span className="font-bold text-lg">{learningStats.recentGames}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Human Games:</span>
+                    <span className="font-bold text-lg">{learningStats.humanGames}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">AI Games:</span>
+                    <span className="font-bold text-lg">{learningStats.aiGames}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Win Rate vs Human:</span>
+                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsHuman * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Win Rate vs AI:</span>
+                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsAI * 100)}%</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Move Patterns:</span>
+                    <span className="font-bold text-lg">{learningStats.movePatterns}</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
+                    <span className="font-medium">Position Patterns:</span>
+                    <span className="font-bold text-lg">{learningStats.positionalPatterns}</span>
+                  </div>
                 </div>
 
                 {learningStats.preferredStrategies && learningStats.preferredStrategies.length > 0 && (
-                  <div className="space-y-2">
-                    <div className="text-sm font-medium">Preferred Strategies</div>
-                    <div className="flex flex-wrap gap-1">
+                  <div className="mt-4">
+                    <div className="font-medium mb-2">Preferred Strategies:</div>
+                    <div className="flex flex-wrap gap-2">
                       {learningStats.preferredStrategies.map((strategy: string, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs">
+                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
                           {strategy}
-                        </Badge>
+                        </span>
                       ))}
                     </div>
                   </div>
                 )}
 
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-6 pt-4 border-t">
                   <Button
                     variant="outline"
                     size="sm"
@@ -351,7 +350,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     Refresh Stats
                   </Button>
                 </div>
-              </>
+              </div>
             ) : (
               <div className="text-center py-8">
                 <Brain className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
