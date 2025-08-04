@@ -253,6 +253,15 @@
 /* Piece size hierarchy */
 .chess-piece.pawn .piece-symbol {
   font-size: 1.5rem;
+  font-weight: normal;
+}
+
+/* Ensure both pawn colors have identical styling */
+.chess-piece.white.pawn .piece-symbol,
+.chess-piece.black.pawn .piece-symbol {
+  font-size: 1.5rem;
+  font-weight: normal;
+  font-family: inherit;
 }
 
 .chess-piece.rook .piece-symbol,
@@ -510,8 +519,12 @@
     height: 2.5rem;
   }
   
-  .chess-piece.pawn .piece-symbol {
+  .chess-piece.pawn .piece-symbol,
+  .chess-piece.white.pawn .piece-symbol,
+  .chess-piece.black.pawn .piece-symbol {
     font-size: 1.25rem;
+    font-weight: normal;
+    font-family: inherit;
   }
 
   .chess-piece.rook .piece-symbol,
@@ -540,8 +553,12 @@
     height: 2rem;
   }
   
-  .chess-piece.pawn .piece-symbol {
+  .chess-piece.pawn .piece-symbol,
+  .chess-piece.white.pawn .piece-symbol,
+  .chess-piece.black.pawn .piece-symbol {
     font-size: 1rem;
+    font-weight: normal;
+    font-family: inherit;
   }
 
   .chess-piece.rook .piece-symbol,
