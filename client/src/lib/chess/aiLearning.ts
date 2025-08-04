@@ -113,7 +113,15 @@ export class AILearningSystem {
   getLearningStats(): any {
     const totalGames = this.learningData.recentGames.length;
     const humanGames = this.learningData.recentGames.filter(g => g.opponentType === 'human').length;
-    const aiGames = totalGames - humanGames;
+    const aiGames = this.learningData.recentGames.filter(g => g.opponentType === 'ai').length;
+
+    console.log('📊 Learning Stats Debug:', {
+      totalAnalyzed: this.learningData.gamesPlayed,
+      recentGamesCount: totalGames,
+      humanGamesInRecent: humanGames,
+      aiGamesInRecent: aiGames,
+      recentGamesArray: this.learningData.recentGames.slice(-5) // Last 5 games for debugging
+    });
 
     return {
       totalGamesAnalyzed: this.learningData.gamesPlayed,

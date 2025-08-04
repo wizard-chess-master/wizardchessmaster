@@ -307,10 +307,31 @@ export class AITrainer {
       }
     });
     
-    // Force increment the games played counter
+    // Force increment the games played counter and add AI games to recent games
     const learningData = (aiLearning as any).learningData;
     if (learningData) {
       learningData.gamesPlayed += this.games.length;
+      
+      // Add training games as AI vs AI matches to recent games
+      this.games.forEach(game => {
+        const gamePattern = {
+          id: `training_${game.id}`,
+          moves: [], // Empty moves array for training games
+          outcome: game.winner === null ? 'draw' : (game.winner === 'white' ? 'win' : 'loss'),
+          aiColor: 'white' as const,
+          opponentType: 'ai' as const,
+          gameLength: game.moves,
+          timestamp: Date.now()
+        };
+        
+        learningData.recentGames.push(gamePattern);
+        
+        // Keep only last 1000 games
+        if (learningData.recentGames.length > 1000) {
+          learningData.recentGames.shift();
+        }
+      });
+      
       // Save the updated data
       (aiLearning as any).saveLearningData();
     }
