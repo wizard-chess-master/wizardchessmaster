@@ -16,7 +16,7 @@ export function ChessPiece({ piece }: ChessPieceProps) {
         bishop: '♗',
         knight: '♘',
         pawn: '♙',
-        wizard: '🧙‍♂️'
+        wizard: '♕'  // Using queen symbol for wizard (distinctive)
       },
       black: {
         king: '♚',
@@ -25,7 +25,7 @@ export function ChessPiece({ piece }: ChessPieceProps) {
         bishop: '♝',
         knight: '♞',
         pawn: '♟',
-        wizard: '🧙‍♀️'
+        wizard: '♛'  // Using queen symbol for wizard (distinctive)
       }
     };
 
@@ -41,6 +41,9 @@ export function ChessPiece({ piece }: ChessPieceProps) {
       <span className="piece-symbol">
         {getPieceSymbol()}
       </span>
+      {piece.type === 'wizard' && (
+        <span className="wizard-indicator">⚡</span>
+      )}
     </div>
   );
 }
