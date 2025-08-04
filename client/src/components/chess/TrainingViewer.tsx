@@ -34,7 +34,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
     currentGameMoves: 0,
     isPlaying: false,
     isPaused: false,
-    speed: 800
+    speed: 1500
   });
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -133,7 +133,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
 
   const changeSpeed = () => {
     setStats(prev => {
-      const speeds = [2000, 1200, 800, 400]; // Slow, Normal, Fast, Ultra-Fast
+      const speeds = [3000, 1500, 800, 300]; // Slow, Normal, Fast, Ultra-Fast
       const currentIndex = speeds.indexOf(prev.speed);
       const nextIndex = (currentIndex + 1) % speeds.length;
       return { ...prev, speed: speeds[nextIndex] };
@@ -142,10 +142,10 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
 
   const getSpeedLabel = () => {
     switch (stats.speed) {
-      case 2000: return 'Slow';
-      case 1200: return 'Normal';
+      case 3000: return 'Slow';
+      case 1500: return 'Normal';
       case 800: return 'Fast';
-      case 400: return 'Ultra-Fast';
+      case 300: return 'Ultra-Fast';
       default: return 'Normal';
     }
   };
@@ -190,7 +190,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
               
               <Button variant="outline" onClick={changeSpeed}>
                 <FastForward className="w-4 h-4 mr-2" />
-                Speed: {getSpeedLabel()}
+                <span>Speed: <Badge variant="secondary">{getSpeedLabel()}</Badge></span>
               </Button>
             </div>
           </CardContent>
