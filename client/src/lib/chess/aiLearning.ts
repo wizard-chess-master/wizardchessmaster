@@ -254,12 +254,20 @@ export class AILearningSystem {
   private analyzeGameStrategy(game: GamePattern): string {
     // For training games with no move history, analyze based on outcome and length
     if (game.moves.length === 0) {
-      if (game.gameLength < 15) return 'Aggressive';
-      if (game.gameLength < 25) return 'Quick-Tactical';
-      if (game.gameLength < 35) return 'Balanced';
-      if (game.outcome === 'win') return 'Winning-Strategy';
-      if (game.outcome === 'draw') return 'Defensive';
-      return 'Cautious';
+      // Create more varied strategy analysis
+      const lengthFactor = game.gameLength;
+      const outcomeFactor = game.outcome;
+      const colorFactor = game.aiColor;
+      
+      if (lengthFactor < 20 && outcomeFactor === 'win') return 'Aggressive';
+      if (lengthFactor < 20 && outcomeFactor === 'loss') return 'Reckless';
+      if (lengthFactor < 30) return 'Quick-Tactical';
+      if (lengthFactor < 45 && outcomeFactor === 'win') return 'Positional';
+      if (lengthFactor < 45) return 'Balanced';
+      if (lengthFactor >= 60 && outcomeFactor === 'draw') return 'Defensive';
+      if (lengthFactor >= 60) return 'Endgame-Master';
+      if (outcomeFactor === 'win' && colorFactor === 'white') return 'Opening-Advantage';
+      return 'Adaptive';
     }
 
     const aiMoves = game.moves.filter(move => move.piece.color === game.aiColor);
