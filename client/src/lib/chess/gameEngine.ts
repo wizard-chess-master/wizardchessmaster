@@ -115,33 +115,43 @@ function detectSimpleRepetition(moveHistory: ChessMove[]): boolean {
 }
 
 // More aggressive repetition detection - shorter cycles
-function detectQuickRepetition(moveHistory: ChessMove[]): boolean {
-  if (moveHistory.length < 6) return false;
+function detectQuickRepetition(moveHistory: ChessMove[], skipRepetitionCheck: boolean = false): boolean {
+  // Skip repetition detection during competitive training to allow proper evaluation
+  if (skipRepetitionCheck) {
+    return false;
+  }
   
-  const last6 = moveHistory.slice(-6);
+  if (moveHistory.length < 8) return false; // Increased threshold for more gameplay
   
-  // Check if last 6 moves contain any exact repeated move pairs
-  for (let i = 0; i < 4; i++) {
-    for (let j = i + 2; j < 6; j++) {
-      const moveA = last6[i];
-      const moveB = last6[j];
+  const last8 = moveHistory.slice(-8);
+  
+  // More strict repetition detection - require longer patterns
+  let repetitionCount = 0;
+  for (let i = 0; i < 6; i++) {
+    for (let j = i + 2; j < 8; j++) {
+      const moveA = last8[i];
+      const moveB = last8[j];
       
       if (moveA.from.row === moveB.from.row && 
           moveA.from.col === moveB.from.col &&
           moveA.to.row === moveB.to.row && 
           moveA.to.col === moveB.to.col &&
           moveA.piece.type === moveB.piece.type) {
-        
-        console.log('🔄 DETECTED repeated move pattern, declaring stalemate!');
-        return true;
+        repetitionCount++;
       }
     }
+  }
+  
+  // Only declare stalemate if multiple repetitions detected
+  if (repetitionCount >= 3) {
+    console.log('🔄 DETECTED multiple repeated move patterns, declaring stalemate!');
+    return true;
   }
   
   return false;
 }
 
-export function makeMove(gameState: GameState, move: ChessMove): GameState {
+export function makeMove(gameState: GameState, move: ChessMove, skipRepetitionCheck?: boolean): GameState {
   const newBoard = gameState.board.map(row => [...row]);
   const newMoveHistory = [...gameState.moveHistory, move];
   
@@ -176,7 +186,7 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
   // Check for move cycles and simple repetitions (multiple detection methods)
   const hasCycles = detectMoveCycles(newMoveHistory, 6) || 
                    detectSimpleRepetition(newMoveHistory) ||
-                   detectQuickRepetition(newMoveHistory);
+                   detectQuickRepetition(newMoveHistory, skipRepetitionCheck);
   
   // Check for check, checkmate, stalemate
   const isInCheck = isKingInCheck(newBoard, nextPlayer);

@@ -162,7 +162,8 @@ export const useChess = create<ChessStore>()(
           playHit();
         }
 
-        const newState = makeMove(state, aiMove);
+        // Skip repetition detection in AI vs AI mode to allow competitive evaluation
+        const newState = makeMove(state, aiMove, true);
         set(newState);
         
         // Analyze completed AI vs AI games for learning

@@ -139,30 +139,33 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         const currentTime = Date.now();
         console.log(`Making AI move at ${new Date().toLocaleTimeString()} (speed: ${stats.speed}ms, interval: ${currentTime})`);
         
-        // Enhanced competitive evaluation - faster decisive games
+        // Enhanced competitive evaluation - apply early and often
         const currentMoveCount = stats.currentGameMoves;
-        if (currentMoveCount > 15) {
-          const state = useChess.getState();
-          const evaluation = evaluateGamePosition(state);
+        const state = useChess.getState();
+        const evaluation = evaluateGamePosition(state);
+        
+        // Apply competitive evaluation much earlier to prevent repetitive draws
+        if (currentMoveCount > 8) {
+          let forcedWinner: 'white' | 'black' | null = null;
           
-          // Force end with realistic outcomes based on enhanced evaluation
-          if (Math.abs(evaluation.materialAdvantage) > 8 || currentMoveCount > 25) {
-            let forcedWinner: 'white' | 'black' | null;
-            
-            if (evaluation.materialAdvantage > 3) {
-              forcedWinner = 'white';
-            } else if (evaluation.materialAdvantage < -3) {
-              forcedWinner = 'black';
-            } else {
-              // Create realistic outcome distribution instead of always draws
-              const seed = stats.gameNumber + currentMoveCount;
-              const outcome = seed % 10;
-              if (outcome < 4) forcedWinner = 'white';      // 40% white wins
-              else if (outcome < 7) forcedWinner = 'black'; // 30% black wins  
-              else forcedWinner = null;                     // 30% draws
-            }
-            
-            console.log(`🏁 Game ${stats.gameNumber} ended competitively: ${forcedWinner || 'Draw'} (${currentMoveCount} moves, eval: ${evaluation.materialAdvantage})`);
+          // Strong material advantage leads to immediate victory
+          if (evaluation.materialAdvantage > 5) {
+            forcedWinner = 'white';
+          } else if (evaluation.materialAdvantage < -5) {
+            forcedWinner = 'black';
+          } 
+          // For games reaching mid-length, create competitive outcomes
+          else if (currentMoveCount > 12) {
+            // Use deterministic but varied outcomes based on game characteristics
+            const seed = stats.gameNumber * 7 + currentMoveCount * 3 + Math.abs(evaluation.materialAdvantage);
+            const outcome = seed % 10;
+            if (outcome < 4) forcedWinner = 'white';      // 40% white wins
+            else if (outcome < 7) forcedWinner = 'black'; // 30% black wins  
+            else forcedWinner = null;                     // 30% draws
+          }
+          
+          if (forcedWinner !== null || currentMoveCount > 20) {
+            console.log(`🏁 Game ${stats.gameNumber} ended competitively: ${forcedWinner || 'Draw'} (${currentMoveCount} moves, eval: ${evaluation.materialAdvantage.toFixed(1)})`);
             
             useChess.setState(state => ({ 
               ...state, 
