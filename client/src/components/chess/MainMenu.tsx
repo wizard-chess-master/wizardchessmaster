@@ -82,19 +82,28 @@ export function MainMenu({ onSettings }: MainMenuProps) {
                   className="mode-button"
                   variant="outline"
                   onClick={async () => {
+                    if (isTraining) {
+                      aiTrainer.stopTraining();
+                      setIsTraining(false);
+                      return;
+                    }
+                    
                     setIsTraining(true);
                     try {
-                      await aiTrainer.runTrainingSession(50, 'hard');
+                      console.log('Starting AI training session...');
+                      await aiTrainer.runTrainingSession(25, 'hard'); // Reduced to 25 games for faster testing
+                    } catch (error) {
+                      console.error('Training error:', error);
                     } finally {
                       setIsTraining(false);
                     }
                   }}
-                  disabled={isTraining}
+                  disabled={false}
                 >
                   <div className="mode-content">
                     <Brain className="w-4 h-4" />
-                    <span>{isTraining ? 'Training AI...' : 'Train AI Strategy'}</span>
-                    <Badge variant="secondary">{isTraining ? 'Running' : '50 Games'}</Badge>
+                    <span>{isTraining ? 'Stop Training' : 'Train AI Strategy'}</span>
+                    <Badge variant="secondary">{isTraining ? 'Running...' : '25 Games'}</Badge>
                   </div>
                 </Button>
                 

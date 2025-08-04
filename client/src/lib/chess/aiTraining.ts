@@ -34,20 +34,36 @@ export class AITrainer {
   private isTraining = false;
 
   async runTrainingSession(numGames: number, difficulty: AIDifficulty = 'hard'): Promise<TrainingStats> {
+    if (this.isTraining) {
+      console.log('Training already in progress, skipping...');
+      return this.stats;
+    }
+
     this.isTraining = true;
+    
+    // Reset stats for fresh session
+    this.resetStats();
+    
     console.log(`🧠 Starting AI training session: ${numGames} games at ${difficulty} difficulty`);
 
     for (let i = 0; i < numGames; i++) {
       if (!this.isTraining) break; // Allow stopping training
       
-      const game = await this.playTrainingGame(i + 1, difficulty);
-      this.games.push(game);
-      this.updateStats(game);
-      
-      // Log progress every 10 games
-      if ((i + 1) % 10 === 0) {
-        console.log(`📊 Progress: ${i + 1}/${numGames} games completed`);
-        this.logCurrentStats();
+      try {
+        const game = await this.playTrainingGame(i + 1, difficulty);
+        this.games.push(game);
+        this.updateStats(game);
+        
+        // Log progress every 5 games for better feedback
+        if ((i + 1) % 5 === 0) {
+          console.log(`📊 Progress: ${i + 1}/${numGames} games completed`);
+          if ((i + 1) % 10 === 0) {
+            this.logCurrentStats();
+          }
+        }
+      } catch (error) {
+        console.error(`Error in training game ${i + 1}:`, error);
+        continue;
       }
     }
 
@@ -75,14 +91,56 @@ export class AITrainer {
     };
 
     let moveCount = 0;
-    const maxMoves = 200; // Prevent infinite games
+    const maxMoves = 100; // Reduced to prevent infinite games
+    let consecutiveNoProgress = 0; // Track if game is stuck
 
     while (gameState.gamePhase === 'playing' && moveCount < maxMoves) {
       const aiMove = getAIMove(gameState);
-      if (!aiMove) break;
+      if (!aiMove) {
+        // No valid moves available - this should trigger game end
+        console.log(`No AI move available at move ${moveCount + 1}, ending game`);
+        break;
+      }
 
+      const prevBoardState = JSON.stringify(gameState.board);
       gameState = makeMove(gameState, aiMove);
       moveCount++;
+      
+      // Check if game state actually changed
+      const newBoardState = JSON.stringify(gameState.board);
+      if (prevBoardState === newBoardState) {
+        consecutiveNoProgress++;
+        if (consecutiveNoProgress > 5) {
+          console.log(`Game stuck at move ${moveCount}, forcing end`);
+          break;
+        }
+      } else {
+        consecutiveNoProgress = 0;
+      }
+
+      // Force end if game is clearly decided but not detected
+      if (moveCount > 50 && gameState.gamePhase === 'playing') {
+        const pieces = gameState.board.flat().filter(p => p !== null);
+        const whitePieces = pieces.filter(p => p!.color === 'white');
+        const blackPieces = pieces.filter(p => p!.color === 'black');
+        
+        // If one side has significantly fewer pieces, end the game
+        if (whitePieces.length <= 3 || blackPieces.length <= 3) {
+          const winner = whitePieces.length > blackPieces.length ? 'white' : 'black';
+          gameState = { ...gameState, gamePhase: 'ended', winner };
+          break;
+        }
+      }
+
+      // Add small delay to prevent browser freeze (only every 10 moves)
+      if (moveCount % 10 === 0) {
+        await new Promise(resolve => setTimeout(resolve, 1));
+      }
+    }
+
+    // If maxMoves reached without winner, declare draw
+    if (moveCount >= maxMoves && !gameState.winner) {
+      gameState = { ...gameState, gamePhase: 'ended', isStalemate: true };
     }
 
     const duration = Date.now() - startTime;
