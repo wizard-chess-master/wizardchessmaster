@@ -238,7 +238,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
   z-index: 2;
   transition: transform 0.2s ease;
 }
@@ -249,6 +248,23 @@
 
 .piece-symbol {
   filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.3));
+}
+
+/* Piece size hierarchy */
+.chess-piece.pawn .piece-symbol {
+  font-size: 1.5rem;
+}
+
+.chess-piece.rook .piece-symbol,
+.chess-piece.knight .piece-symbol,
+.chess-piece.bishop .piece-symbol,
+.chess-piece.wizard .piece-symbol {
+  font-size: 2rem;
+}
+
+.chess-piece.queen .piece-symbol,
+.chess-piece.king .piece-symbol {
+  font-size: 2.5rem;
 }
 
 /* Wizard piece styling */
@@ -494,8 +510,20 @@
     height: 2.5rem;
   }
   
-  .chess-piece {
+  .chess-piece.pawn .piece-symbol {
+    font-size: 1.25rem;
+  }
+
+  .chess-piece.rook .piece-symbol,
+  .chess-piece.knight .piece-symbol,
+  .chess-piece.bishop .piece-symbol,
+  .chess-piece.wizard .piece-symbol {
     font-size: 1.5rem;
+  }
+
+  .chess-piece.queen .piece-symbol,
+  .chess-piece.king .piece-symbol {
+    font-size: 1.75rem;
   }
   
   .game-container {
@@ -512,8 +540,20 @@
     height: 2rem;
   }
   
-  .chess-piece {
+  .chess-piece.pawn .piece-symbol {
+    font-size: 1rem;
+  }
+
+  .chess-piece.rook .piece-symbol,
+  .chess-piece.knight .piece-symbol,
+  .chess-piece.bishop .piece-symbol,
+  .chess-piece.wizard .piece-symbol {
     font-size: 1.25rem;
+  }
+
+  .chess-piece.queen .piece-symbol,
+  .chess-piece.king .piece-symbol {
+    font-size: 1.5rem;
   }
   
   .control-buttons {
