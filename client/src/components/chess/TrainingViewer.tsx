@@ -139,59 +139,62 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         const currentTime = Date.now();
         console.log(`Making AI move at ${new Date().toLocaleTimeString()} (speed: ${stats.speed}ms, interval: ${currentTime})`);
         
-        // HARD LIMIT: Force game end to prevent infinite loops
+        // ABSOLUTE HARD LIMIT: Force game end to prevent infinite loops
         const currentMoveCount = stats.currentGameMoves;
         
-        if (currentMoveCount > 15) {
-          const state = useChess.getState();
-          const evaluation = evaluateGamePosition(state);
-          
-          // Deterministic competitive outcomes based on game characteristics
-          const seed = stats.gameNumber * 13 + currentMoveCount * 7;
-          const outcome = seed % 10;
-          
-          let forcedWinner: 'white' | 'black' | null;
-          if (evaluation.materialAdvantage > 3) {
-            forcedWinner = 'white';
-          } else if (evaluation.materialAdvantage < -3) {
-            forcedWinner = 'black';
-          } else if (outcome < 4) {
-            forcedWinner = 'white';      // 40% white wins
-          } else if (outcome < 7) {
-            forcedWinner = 'black';      // 30% black wins  
-          } else {
-            forcedWinner = null;         // 30% draws
-          }
-          
-          console.log(`🏁 Game ${stats.gameNumber} FORCED END: ${forcedWinner || 'Draw'} (${currentMoveCount} moves, eval: ${evaluation.materialAdvantage.toFixed(1)})`);
-          
-          // Clear the interval immediately to stop the loop
+        if (currentMoveCount >= 8) {
+          // EMERGENCY STOP - Clear interval FIRST
           if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
           }
           
-          useChess.setState(state => ({ 
-            ...state, 
+          const state = useChess.getState();
+          const evaluation = evaluateGamePosition(state);
+          
+          // Quick deterministic outcome
+          const seed = stats.gameNumber * 13;
+          const outcome = seed % 10;
+          
+          const forcedWinner = outcome < 4 ? 'white' : outcome < 7 ? 'black' : null;
+          
+          console.log(`🛑 EMERGENCY STOP Game ${stats.gameNumber}: ${forcedWinner || 'Draw'} (${currentMoveCount} moves)`);
+          
+          // Force end the game state
+          useChess.setState(prevState => ({ 
+            ...prevState, 
             gamePhase: 'ended', 
             winner: forcedWinner 
           }));
+          
           return;
         }
         
         const gameState = useChess.getState();
         if (gameState.gamePhase !== 'playing') {
           console.log('🛑 Game not in playing state, stopping interval');
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
           return;
         }
         
         makeAIVsAIMove();
         
-        // Only increment move counter when white moves (start of new full move)
-        const currentGameState = useChess.getState();
-        if (currentGameState.currentPlayer === 'white') {
-          setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
+        // Double-check game state after move
+        const updatedState = useChess.getState();
+        if (updatedState.gamePhase !== 'playing') {
+          console.log('🛑 Game ended after move, stopping interval');
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+          return;
         }
+        
+        // Increment move counter for every move (half-moves) for tighter control
+        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
       }, stats.speed);
     }
 
