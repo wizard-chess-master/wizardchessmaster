@@ -339,8 +339,11 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     variant="outline"
                     size="sm"
                     onClick={() => {
+                      console.log('🔄 Resetting AI learning data...');
                       aiLearning.resetLearning();
-                      setLearningStats(aiLearning.getLearningStats());
+                      const freshStats = aiLearning.getLearningStats();
+                      setLearningStats(freshStats);
+                      console.log('✅ Learning data reset completed:', freshStats);
                     }}
                   >
                     Reset Learning Data
