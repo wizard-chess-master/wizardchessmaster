@@ -300,9 +300,11 @@ function evaluateMove(gameState: GameState, move: ChessMove): number {
   const tacticalBonus = analyzeTacticalOpportunities(simulatedState, gameState.currentPlayer);
   score += tacticalBonus;
   
-  // DEFENSE: Bonus for protecting our pieces
-  const protectionBonus = analyzeProtectionValue(simulatedState, move.to, gameState.currentPlayer);
-  score += protectionBonus;
+  // DEFENSE: Bonus for protecting our pieces (only if piece exists at destination)
+  if (simulatedState.board[move.to.row][move.to.col]) {
+    const protectionBonus = analyzeProtectionValue(simulatedState, move.to, gameState.currentPlayer);
+    score += protectionBonus;
+  }
   
   // Center control
   const centerBonus = getCenterControlBonus(move.to);
@@ -399,16 +401,24 @@ function analyzePieceDefense(gameState: GameState, position: Position, pieceColo
   for (let row = 0; row < 10; row++) {
     for (let col = 0; col < 10; col++) {
       const piece = gameState.board[row][col];
-      if (piece && piece.color === pieceColor) {
-        const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
-        if (possibleMoves.some(move => move.row === position.row && move.col === position.col)) {
-          isDefended = true;
+      if (!piece) continue; // Skip empty squares
+      
+      try {
+        if (piece.color === pieceColor) {
+          const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+          if (possibleMoves.some(move => move.row === position.row && move.col === position.col)) {
+            isDefended = true;
+          }
+        } else if (piece.color !== pieceColor) {
+          const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+          if (possibleMoves.some(move => move.row === position.row && move.col === position.col)) {
+            isAttacked = true;
+          }
         }
-      } else if (piece && piece.color !== pieceColor) {
-        const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
-        if (possibleMoves.some(move => move.row === position.row && move.col === position.col)) {
-          isAttacked = true;
-        }
+      } catch (error) {
+        // Skip pieces that cause errors in move calculation
+        console.warn(`Error analyzing piece at ${row},${col}:`, error);
+        continue;
       }
     }
   }
@@ -424,7 +434,9 @@ function findImmediateThreats(gameState: GameState, opponentColor: PieceColor): 
   for (let row = 0; row < 10; row++) {
     for (let col = 0; col < 10; col++) {
       const piece = gameState.board[row][col];
-      if (piece && piece.color === opponentColor) {
+      if (!piece || piece.color !== opponentColor) continue;
+      
+      try {
         const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
         
         for (const move of possibleMoves) {
@@ -433,6 +445,9 @@ function findImmediateThreats(gameState: GameState, opponentColor: PieceColor): 
             threats.push({ targetPiece, attackerPos: { row, col } });
           }
         }
+      } catch (error) {
+        // Skip pieces that cause errors in move calculation
+        continue;
       }
     }
   }
@@ -449,7 +464,9 @@ function analyzeTacticalOpportunities(gameState: GameState, myColor: PieceColor)
   for (let row = 0; row < 10; row++) {
     for (let col = 0; col < 10; col++) {
       const piece = gameState.board[row][col];
-      if (piece && piece.color === myColor) {
+      if (!piece || piece.color !== myColor) continue;
+      
+      try {
         const possibleMoves = getPossibleMoves(gameState.board, { row, col }, piece);
         
         let attackTargets = 0;
@@ -463,6 +480,9 @@ function analyzeTacticalOpportunities(gameState: GameState, myColor: PieceColor)
         if (attackTargets >= 2) {
           tacticalScore += attackTargets * 5; // Bonus for forks
         }
+      } catch (error) {
+        // Skip pieces that cause errors in move calculation
+        continue;
       }
     }
   }
@@ -474,12 +494,18 @@ function analyzeTacticalOpportunities(gameState: GameState, myColor: PieceColor)
 function analyzeProtectionValue(gameState: GameState, position: Position, myColor: PieceColor): number {
   let protectionScore = 0;
   
+  // Check if the piece still exists at this position
+  const piece = gameState.board[position.row][position.col];
+  if (!piece) {
+    return 0; // No piece to analyze
+  }
+  
   // Check if this move protects any of our pieces
-  const possibleMoves = getPossibleMoves(gameState.board, position, gameState.board[position.row][position.col]!);
+  const possibleMoves = getPossibleMoves(gameState.board, position, piece);
   
   for (const move of possibleMoves) {
-    const piece = gameState.board[move.row][move.col];
-    if (piece && piece.color === myColor) {
+    const targetPiece = gameState.board[move.row][move.col];
+    if (targetPiece && targetPiece.color === myColor) {
       protectionScore += 2; // Bonus for protecting friendly pieces
     }
   }
