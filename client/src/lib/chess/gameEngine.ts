@@ -183,10 +183,12 @@ export function makeMove(gameState: GameState, move: ChessMove, skipRepetitionCh
   // Switch players
   const nextPlayer: PieceColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   
-  // Check for move cycles and simple repetitions (multiple detection methods)
-  const hasCycles = detectMoveCycles(newMoveHistory, 6) || 
-                   detectSimpleRepetition(newMoveHistory) ||
-                   detectQuickRepetition(newMoveHistory, skipRepetitionCheck);
+  // Check for move cycles and simple repetitions (only when not skipping)
+  const hasCycles = skipRepetitionCheck ? false : (
+    detectMoveCycles(newMoveHistory, 6) || 
+    detectSimpleRepetition(newMoveHistory) ||
+    detectQuickRepetition(newMoveHistory, skipRepetitionCheck)
+  );
   
   // Check for check, checkmate, stalemate
   const isInCheck = isKingInCheck(newBoard, nextPlayer);

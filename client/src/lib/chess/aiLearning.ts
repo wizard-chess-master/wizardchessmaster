@@ -132,8 +132,47 @@ export class AILearningSystem {
       winRateVsAI: this.learningData.winRateVsAI,
       movePatterns: this.learningData.movePatterns.size,
       positionalPatterns: this.learningData.positionalPatterns.size,
-      preferredStrategies: this.learningData.preferredStrategies
+      preferredStrategies: this.learningData.preferredStrategies,
+      proficiencyLevel: this.getProficiencyLevel(),
+      learningProgress: this.getLearningProgress(),
+      experiencePoints: this.getExperiencePoints()
     };
+  }
+
+  private getProficiencyLevel(): string {
+    const totalGames = this.learningData.gamesPlayed;
+    const winRate = this.learningData.winRateVsHuman;
+    const patterns = this.learningData.movePatterns.size;
+    
+    if (totalGames < 5) return 'Novice';
+    if (totalGames < 20 && winRate < 30) return 'Learning';
+    if (totalGames < 50 && winRate < 50) return 'Developing';
+    if (totalGames < 100 && winRate < 65) return 'Competent';
+    if (totalGames < 200 && winRate < 75) return 'Skilled';
+    if (patterns > 15 && winRate > 60) return 'Advanced';
+    if (patterns > 30 && winRate > 70) return 'Expert';
+    return 'Master';
+  }
+
+  private getLearningProgress(): number {
+    const totalGames = this.learningData.gamesPlayed;
+    const patterns = this.learningData.movePatterns.size;
+    const winRate = this.learningData.winRateVsHuman;
+    
+    // Progress based on games played, patterns learned, and performance
+    const gameProgress = Math.min(50, (totalGames / 100) * 50);
+    const patternProgress = Math.min(30, (patterns / 40) * 30);
+    const performanceProgress = Math.min(20, (winRate / 80) * 20);
+    
+    return Math.round(gameProgress + patternProgress + performanceProgress);
+  }
+
+  private getExperiencePoints(): number {
+    const basePoints = this.learningData.gamesPlayed * 10;
+    const patternBonus = this.learningData.movePatterns.size * 5;
+    const winBonus = Math.round(this.learningData.winRateVsHuman * 2);
+    
+    return basePoints + patternBonus + winBonus;
   }
 
   private determineOutcome(gameState: GameState, aiColor: 'white' | 'black'): 'win' | 'loss' | 'draw' {
