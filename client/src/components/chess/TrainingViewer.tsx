@@ -1,8 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ChessBoard } from './ChessBoard';
-import { GameState, ChessMove, AIDifficulty } from '../../lib/chess/types';
-import { createInitialBoard, makeMove } from '../../lib/chess/gameEngine';
-import { getAIMove } from '../../lib/chess/aiPlayer';
 import { useChess } from '../../lib/stores/useChess';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -26,259 +23,224 @@ interface TrainingStats {
 }
 
 export function TrainingViewer({ onBack }: TrainingViewerProps) {
-  const { startGame } = useChess();
+  const { startGame, makeAIVsAIMove, gamePhase, winner, currentPlayer, moveHistory } = useChess();
 
   const [stats, setStats] = useState<TrainingStats>({
     gameNumber: 1,
-    totalGames: 25,
+    totalGames: 10,
     whiteWins: 0,
     blackWins: 0,
     draws: 0,
     currentGameMoves: 0,
     isPlaying: false,
     isPaused: false,
-    speed: 1000 // milliseconds between moves
+    speed: 800
   });
 
-  const [moveTimeout, setMoveTimeout] = useState<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const resetGame = () => {
+  useEffect(() => {
+    // Start first game when component mounts
     startGame('ai-vs-ai', 'hard');
-    setStats(prev => ({ ...prev, currentGameMoves: 0 }));
-  };
+  }, []);
 
-  const nextGame = () => {
-    if (stats.gameNumber >= stats.totalGames) {
-      console.log('🏆 Training session completed!');
-      setStats(prev => ({ ...prev, isPlaying: false }));
-      return;
+  useEffect(() => {
+    // Check if game ended and update stats
+    if (gamePhase === 'ended' && stats.isPlaying) {
+      setTimeout(() => {
+        setStats(prev => {
+          const newStats = { ...prev };
+          if (winner === 'white') newStats.whiteWins++;
+          else if (winner === 'black') newStats.blackWins++;
+          else newStats.draws++;
+
+          if (newStats.gameNumber < newStats.totalGames) {
+            newStats.gameNumber++;
+            newStats.currentGameMoves = 0;
+            // Start next game
+            setTimeout(() => startGame('ai-vs-ai', 'hard'), 1000);
+          } else {
+            // Training complete
+            newStats.isPlaying = false;
+            console.log('🎓 Visual training session completed!');
+          }
+          
+          return newStats;
+        });
+      }, 1500);
+    }
+  }, [gamePhase, winner, stats.isPlaying]);
+
+  useEffect(() => {
+    if (stats.isPlaying && !stats.isPaused && gamePhase === 'playing') {
+      intervalRef.current = setInterval(() => {
+        makeAIVsAIMove();
+        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
+        
+        // Prevent infinite games
+        if (stats.currentGameMoves > 60) {
+          const pieces = useChess.getState().board.flat().filter(p => p !== null);
+          const whitePieces = pieces.filter(p => p!.color === 'white');
+          const blackPieces = pieces.filter(p => p!.color === 'black');
+          const winner = whitePieces.length > blackPieces.length ? 'white' : 'black';
+          
+          // Force end game
+          useChess.setState(state => ({ 
+            ...state, 
+            gamePhase: 'ended', 
+            winner 
+          }));
+        }
+      }, stats.speed);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
 
-    // Update stats based on current game result
-    const currentGameState = useChess.getState();
-    setStats(prev => {
-      const newStats = { ...prev };
-      if (currentGameState.winner === 'white') newStats.whiteWins++;
-      else if (currentGameState.winner === 'black') newStats.blackWins++;
-      else newStats.draws++;
-      
-      newStats.gameNumber++;
-      return newStats;
-    });
-
-    resetGame();
-  };
-
-  const makeNextMove = async () => {
-    const currentGameState = useChess.getState();
-    if (currentGameState.gamePhase !== 'playing' || stats.isPaused) return;
-
-    const aiMove = getAIMove(currentGameState);
-    if (!aiMove) {
-      // No moves available - end game
-      console.log(`Game ${stats.gameNumber} ended - no moves available`);
-      setTimeout(nextGame, 2000);
-      return;
-    }
-
-    // Make the move through the chess store
-    const { makeAIVsAIMove } = useChess.getState();
-    makeAIVsAIMove();
-    
-    setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
-
-    // Check if game ended
-    const updatedGameState = useChess.getState();
-    if (updatedGameState.gamePhase === 'ended' || updatedGameState.winner) {
-      console.log(`Game ${stats.gameNumber} ended - Winner: ${updatedGameState.winner || 'Draw'}`);
-      setTimeout(nextGame, 2000);
-      return;
-    }
-
-    // Check for max moves (prevent infinite games)
-    if (stats.currentGameMoves >= 100) {
-      console.log(`Game ${stats.gameNumber} ended - Max moves reached`);
-      setTimeout(nextGame, 2000);
-      return;
-    }
-
-    // Schedule next move
-    if (stats.isPlaying && !stats.isPaused) {
-      const timeout = setTimeout(makeNextMove, stats.speed);
-      setMoveTimeout(timeout);
-    }
-  };
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [stats.isPlaying, stats.isPaused, stats.speed, gamePhase]);
 
   const startTraining = () => {
     setStats(prev => ({ ...prev, isPlaying: true, isPaused: false }));
-    resetGame();
+    if (gamePhase !== 'playing') {
+      startGame('ai-vs-ai', 'hard');
+    }
   };
 
   const pauseTraining = () => {
     setStats(prev => ({ ...prev, isPaused: !prev.isPaused }));
-    if (moveTimeout) {
-      clearTimeout(moveTimeout);
-      setMoveTimeout(null);
-    }
   };
 
   const stopTraining = () => {
-    setStats(prev => ({ ...prev, isPlaying: false, isPaused: false }));
-    if (moveTimeout) {
-      clearTimeout(moveTimeout);
-      setMoveTimeout(null);
-    }
+    setStats(prev => ({ 
+      ...prev, 
+      isPlaying: false, 
+      isPaused: false,
+      gameNumber: 1,
+      whiteWins: 0,
+      blackWins: 0,
+      draws: 0,
+      currentGameMoves: 0
+    }));
+    startGame('ai-vs-ai', 'hard');
   };
 
-  const changeSpeed = (newSpeed: number) => {
-    setStats(prev => ({ ...prev, speed: newSpeed }));
+  const changeSpeed = () => {
+    setStats(prev => {
+      const speeds = [2000, 1200, 800, 400]; // Slow, Normal, Fast, Ultra-Fast
+      const currentIndex = speeds.indexOf(prev.speed);
+      const nextIndex = (currentIndex + 1) % speeds.length;
+      return { ...prev, speed: speeds[nextIndex] };
+    });
   };
 
-  // Start making moves when training begins
-  useEffect(() => {
-    const currentGameState = useChess.getState();
-    if (stats.isPlaying && !stats.isPaused && currentGameState.gamePhase === 'playing') {
-      const timeout = setTimeout(makeNextMove, stats.speed);
-      setMoveTimeout(timeout);
-      return () => {
-        if (timeout) clearTimeout(timeout);
-      };
+  const getSpeedLabel = () => {
+    switch (stats.speed) {
+      case 2000: return 'Slow';
+      case 1200: return 'Normal';
+      case 800: return 'Fast';
+      case 400: return 'Ultra-Fast';
+      default: return 'Normal';
     }
-  }, [stats.isPlaying, stats.isPaused, stats.speed]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (moveTimeout) clearTimeout(moveTimeout);
-    };
-  }, [moveTimeout]);
+  };
 
   return (
     <div className="training-viewer">
-      <div className="training-header">
-        <Card>
+      <div className="training-container">
+        
+        {/* Header */}
+        <Card className="training-header">
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>AI Training Session</span>
-              <Button variant="outline" onClick={onBack}>
+            <div className="header-content">
+              <CardTitle>AI Training Viewer</CardTitle>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onBack}
+              >
                 <Home className="w-4 h-4 mr-2" />
                 Back to Menu
               </Button>
-            </CardTitle>
+            </div>
           </CardHeader>
           <CardContent>
-            <div className="training-stats grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-              <div className="stat-item">
-                <span className="stat-label">Game</span>
-                <Badge variant="outline">
-                  {stats.gameNumber} / {stats.totalGames}
-                </Badge>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Moves</span>
-                <Badge variant="outline">{stats.currentGameMoves}</Badge>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">White Wins</span>
-                <Badge variant="secondary">{stats.whiteWins}</Badge>
-              </div>
-              <div className="stat-item">
-                <span className="stat-label">Black Wins</span>
-                <Badge variant="secondary">{stats.blackWins}</Badge>
-              </div>
-            </div>
-
-            <div className="training-controls flex gap-2 mb-4">
+            <div className="training-controls">
               {!stats.isPlaying ? (
                 <Button onClick={startTraining}>
                   <Play className="w-4 h-4 mr-2" />
                   Start Training
                 </Button>
               ) : (
-                <>
-                  <Button variant="outline" onClick={pauseTraining}>
-                    {stats.isPaused ? <Play className="w-4 h-4 mr-2" /> : <Pause className="w-4 h-4 mr-2" />}
-                    {stats.isPaused ? 'Resume' : 'Pause'}
-                  </Button>
-                  <Button variant="destructive" onClick={stopTraining}>
-                    <Square className="w-4 h-4 mr-2" />
-                    Stop
-                  </Button>
-                </>
+                <Button onClick={pauseTraining}>
+                  <Pause className="w-4 h-4 mr-2" />
+                  {stats.isPaused ? 'Resume' : 'Pause'}
+                </Button>
               )}
               
-              <Button variant="outline" onClick={resetGame}>
-                <RotateCcw className="w-4 h-4 mr-2" />
-                Reset Game
+              <Button variant="outline" onClick={stopTraining}>
+                <Square className="w-4 h-4 mr-2" />
+                Stop
+              </Button>
+              
+              <Button variant="outline" onClick={changeSpeed}>
+                <FastForward className="w-4 h-4 mr-2" />
+                Speed: {getSpeedLabel()}
               </Button>
             </div>
-
-            <div className="speed-controls mb-4">
-              <span className="text-sm font-medium mr-3">Speed:</span>
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant={stats.speed === 2000 ? "default" : "outline"}
-                  onClick={() => changeSpeed(2000)}
-                >
-                  Slow
-                </Button>
-                <Button
-                  size="sm"
-                  variant={stats.speed === 1000 ? "default" : "outline"}
-                  onClick={() => changeSpeed(1000)}
-                >
-                  Normal
-                </Button>
-                <Button
-                  size="sm"
-                  variant={stats.speed === 500 ? "default" : "outline"}
-                  onClick={() => changeSpeed(500)}
-                >
-                  Fast
-                </Button>
-                <Button
-                  size="sm"
-                  variant={stats.speed === 100 ? "default" : "outline"}
-                  onClick={() => changeSpeed(100)}
-                >
-                  <FastForward className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            <GameInfo />
           </CardContent>
         </Card>
-      </div>
 
-      <div className="game-container">
-        <ChessBoard />
-      </div>
-    </div>
-  );
-}
+        {/* Game Board */}
+        <div className="training-board">
+          <ChessBoard />
+        </div>
 
-function GameInfo() {
-  const { currentPlayer, winner, isStalemate } = useChess();
-  
-  return (
-    <div className="game-info mb-4">
-      <p className="text-sm text-muted-foreground">
-        Current Player: <Badge variant={currentPlayer === 'white' ? 'default' : 'secondary'}>
-          {currentPlayer === 'white' ? 'White' : 'Black'}
-        </Badge>
-      </p>
-      {winner && (
-        <p className="text-sm font-medium">
-          Winner: <Badge>{winner === 'white' ? 'White' : 'Black'}</Badge>
-        </p>
-      )}
-      {isStalemate && (
-        <p className="text-sm font-medium">
-          <Badge variant="outline">Stalemate - Draw</Badge>
-        </p>
-      )}
+        {/* Stats */}
+        <Card className="training-stats">
+          <CardHeader>
+            <CardTitle>Training Statistics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="stats-grid">
+              <div className="stat-item">
+                <span className="stat-label">Game:</span>
+                <Badge variant="outline">
+                  {stats.gameNumber} / {stats.totalGames}
+                </Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Current Player:</span>
+                <Badge variant={currentPlayer === 'white' ? 'default' : 'secondary'}>
+                  {currentPlayer}
+                </Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Moves:</span>
+                <Badge variant="outline">{stats.currentGameMoves}</Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">White Wins:</span>
+                <Badge variant="outline">{stats.whiteWins}</Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Black Wins:</span>
+                <Badge variant="outline">{stats.blackWins}</Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Draws:</span>
+                <Badge variant="outline">{stats.draws}</Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+      </div>
     </div>
   );
 }

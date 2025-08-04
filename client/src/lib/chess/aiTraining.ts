@@ -119,17 +119,33 @@ export class AITrainer {
       }
 
       // Force end if game is clearly decided but not detected
-      if (moveCount > 50 && gameState.gamePhase === 'playing') {
+      if (moveCount > 30 && gameState.gamePhase === 'playing') {
         const pieces = gameState.board.flat().filter(p => p !== null);
         const whitePieces = pieces.filter(p => p!.color === 'white');
         const blackPieces = pieces.filter(p => p!.color === 'black');
         
-        // If one side has significantly fewer pieces, end the game
-        if (whitePieces.length <= 3 || blackPieces.length <= 3) {
-          const winner = whitePieces.length > blackPieces.length ? 'white' : 'black';
+        // Count piece values (more aggressive ending)
+        const whitePower = whitePieces.reduce((sum, p) => sum + getPieceValue(p!.type), 0);
+        const blackPower = blackPieces.reduce((sum, p) => sum + getPieceValue(p!.type), 0);
+        
+        // If one side has significant material advantage or very few pieces, declare winner
+        if (whitePieces.length <= 4 || blackPieces.length <= 4 || Math.abs(whitePower - blackPower) > 15) {
+          const winner = whitePower > blackPower ? 'white' : 'black';
           gameState = { ...gameState, gamePhase: 'ended', winner };
+          console.log(`Game ${gameId} ended by material evaluation: ${winner} wins (${whitePower} vs ${blackPower})`);
           break;
         }
+      }
+
+      // More aggressive ending - shorter games
+      if (moveCount > 60) {
+        const pieces = gameState.board.flat().filter(p => p !== null);
+        const whitePieces = pieces.filter(p => p!.color === 'white');
+        const blackPieces = pieces.filter(p => p!.color === 'black');
+        const winner = whitePieces.length > blackPieces.length ? 'white' : 'black';
+        gameState = { ...gameState, gamePhase: 'ended', winner };
+        console.log(`Game ${gameId} ended by move limit: ${winner} wins by piece count`);
+        break;
       }
 
       // Add small delay to prevent browser freeze (only every 10 moves)
@@ -269,6 +285,20 @@ export class AITrainer {
     };
     this.games = [];
     console.log('📊 Training stats reset');
+  }
+}
+
+// Helper function to get piece values for material evaluation
+function getPieceValue(pieceType: string): number {
+  switch (pieceType) {
+    case 'pawn': return 1;
+    case 'knight': return 3;
+    case 'bishop': return 3;
+    case 'rook': return 5;
+    case 'queen': return 9;
+    case 'king': return 100;
+    case 'wizard': return 7; // Powerful but not overpowered
+    default: return 0;
   }
 }
 
