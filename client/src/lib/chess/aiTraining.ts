@@ -10,6 +10,7 @@ interface TrainingGame {
   duration: number;
   whiteStrategy: string;
   blackStrategy: string;
+  evaluation?: number;
 }
 
 interface TrainingStats {
@@ -95,14 +96,23 @@ export class AITrainer {
     };
 
     let moveCount = 0;
-    const maxMoves = 100; // Reduced to prevent infinite games
+    const maxMoves = 80; // Shorter games for faster training
     let consecutiveNoProgress = 0; // Track if game is stuck
+    
+    // Assign different strategies to white and black for competitive variety
+    const whiteStrategy = this.getCompetitiveStrategy();
+    const blackStrategy = this.getCompetitiveStrategy();
 
     while (gameState.gamePhase === 'playing' && moveCount < maxMoves) {
-      const aiMove = getAIMove(gameState);
+      // Use strategy-specific AI difficulty
+      const currentStrategy = gameState.currentPlayer === 'white' ? whiteStrategy : blackStrategy;
+      const strategicDifficulty = currentStrategy.difficulty;
+      
+      const aiMove = getAIMove(gameState, gameState.currentPlayer, strategicDifficulty);
       if (!aiMove) {
-        // No valid moves available - this should trigger game end
+        // No valid moves available - end game
         console.log(`No AI move available at move ${moveCount + 1}, ending game`);
+        gameState = { ...gameState, gamePhase: 'ended', isStalemate: true };
         break;
       }
 
@@ -110,11 +120,11 @@ export class AITrainer {
       gameState = makeMove(gameState, aiMove);
       moveCount++;
       
-      // Check if game state actually changed
+      // Enhanced progress tracking
       const newBoardState = JSON.stringify(gameState.board);
       if (prevBoardState === newBoardState) {
         consecutiveNoProgress++;
-        if (consecutiveNoProgress > 5) {
+        if (consecutiveNoProgress > 3) { // Reduced threshold for faster games
           console.log(`Game stuck at move ${moveCount}, forcing end`);
           break;
         }
@@ -122,38 +132,38 @@ export class AITrainer {
         consecutiveNoProgress = 0;
       }
 
-      // Force end if game is clearly decided but not detected
-      if (moveCount > 30 && gameState.gamePhase === 'playing') {
-        const pieces = gameState.board.flat().filter(p => p !== null);
-        const whitePieces = pieces.filter(p => p!.color === 'white');
-        const blackPieces = pieces.filter(p => p!.color === 'black');
+      // Enhanced competitive evaluation - faster decisive games
+      if (moveCount > 20 && gameState.gamePhase === 'playing') {
+        const evaluation = this.evaluateGamePosition(gameState);
         
-        // Count piece values (more aggressive ending)
-        const whitePower = whitePieces.reduce((sum, p) => sum + getPieceValue(p!.type), 0);
-        const blackPower = blackPieces.reduce((sum, p) => sum + getPieceValue(p!.type), 0);
-        
-        // If one side has significant material advantage or very few pieces, declare winner
-        if (whitePieces.length <= 4 || blackPieces.length <= 4 || Math.abs(whitePower - blackPower) > 15) {
-          const winner = whitePower > blackPower ? 'white' : 'black';
+        // More aggressive material advantage detection
+        if (Math.abs(evaluation.materialAdvantage) > 12) {
+          const winner = evaluation.materialAdvantage > 0 ? 'white' : 'black';
           gameState = { ...gameState, gamePhase: 'ended', winner };
-          console.log(`Game ${gameId} ended by material evaluation: ${winner} wins (${whitePower} vs ${blackPower})`);
+          console.log(`Game ${gameId} ended by material advantage: ${winner} wins (+${Math.abs(evaluation.materialAdvantage)})`);
+          break;
+        }
+        
+        // King safety evaluation
+        if (evaluation.kingThreat !== 'none') {
+          const winner = evaluation.kingThreat === 'white' ? 'black' : 'white';
+          gameState = { ...gameState, gamePhase: 'ended', winner };
+          console.log(`Game ${gameId} ended by king threat: ${winner} wins`);
           break;
         }
       }
 
-      // More aggressive ending - shorter games
-      if (moveCount > 60) {
-        const pieces = gameState.board.flat().filter(p => p !== null);
-        const whitePieces = pieces.filter(p => p!.color === 'white');
-        const blackPieces = pieces.filter(p => p!.color === 'black');
-        const winner = whitePieces.length > blackPieces.length ? 'white' : 'black';
+      // Faster game conclusion
+      if (moveCount > 50) {
+        const evaluation = this.evaluateGamePosition(gameState);
+        const winner = evaluation.materialAdvantage >= 0 ? 'white' : 'black';
         gameState = { ...gameState, gamePhase: 'ended', winner };
-        console.log(`Game ${gameId} ended by move limit: ${winner} wins by piece count`);
+        console.log(`Game ${gameId} ended by move limit: ${winner} wins by evaluation`);
         break;
       }
 
-      // Add small delay to prevent browser freeze (only every 10 moves)
-      if (moveCount % 10 === 0) {
+      // Minimal delay for performance (only every 20 moves)
+      if (moveCount % 20 === 0) {
         await new Promise(resolve => setTimeout(resolve, 1));
       }
     }
@@ -170,26 +180,115 @@ export class AITrainer {
       winner: gameState.winner,
       moves: moveCount,
       duration,
-      whiteStrategy: this.getStrategyDescription(gameState, 'white'),
-      blackStrategy: this.getStrategyDescription(gameState, 'black')
+      whiteStrategy: whiteStrategy.name,
+      blackStrategy: blackStrategy.name,
+      evaluation: this.evaluateGamePosition(gameState).materialAdvantage
     };
   }
 
-  private getStrategyDescription(gameState: GameState, color: 'white' | 'black'): string {
-    const moves = gameState.moveHistory.filter(move => move.piece.color === color);
+  // Get competitive strategy for AI training
+  private getCompetitiveStrategy() {
+    const strategies = [
+      { name: 'Aggressive-Blitz', difficulty: 'hard' as const, weight: 3 },
+      { name: 'Tactical-Master', difficulty: 'hard' as const, weight: 3 },
+      { name: 'Wizard-Specialist', difficulty: 'hard' as const, weight: 2 },
+      { name: 'Positional-Expert', difficulty: 'medium' as const, weight: 2 },
+      { name: 'Material-Hunter', difficulty: 'medium' as const, weight: 2 },
+      { name: 'King-Safety-First', difficulty: 'medium' as const, weight: 1 },
+      { name: 'Endgame-Master', difficulty: 'hard' as const, weight: 1 }
+    ];
     
-    const wizardMoves = moves.filter(move => move.piece.type === 'wizard').length;
-    const captures = moves.filter(move => move.captured).length;
-    const teleports = moves.filter(move => move.isWizardTeleport).length;
-    const wizardAttacks = moves.filter(move => move.isWizardAttack).length;
+    // Weighted random selection for strategy variety
+    const totalWeight = strategies.reduce((sum, s) => sum + s.weight, 0);
+    let random = Math.random() * totalWeight;
+    
+    for (const strategy of strategies) {
+      random -= strategy.weight;
+      if (random <= 0) return strategy;
+    }
+    
+    return strategies[0]; // Fallback
+  }
 
-    let strategy = 'Balanced';
-    if (wizardMoves > moves.length * 0.3) strategy = 'Wizard-focused';
-    else if (captures > moves.length * 0.4) strategy = 'Aggressive';
-    else if (teleports > wizardMoves * 0.5) strategy = 'Mobile';
-    else if (wizardAttacks > wizardMoves * 0.6) strategy = 'Tactical';
+  // Enhanced position evaluation for competitive training
+  private evaluateGamePosition(gameState: GameState) {
+    const pieces = gameState.board.flat().filter(p => p !== null);
+    const whitePieces = pieces.filter(p => p!.color === 'white');
+    const blackPieces = pieces.filter(p => p!.color === 'black');
+    
+    // Material calculation with enhanced piece values
+    const whiteMaterial = whitePieces.reduce((sum, p) => sum + this.getEnhancedPieceValue(p!.type), 0);
+    const blackMaterial = blackPieces.reduce((sum, p) => sum + this.getEnhancedPieceValue(p!.type), 0);
+    const materialAdvantage = whiteMaterial - blackMaterial;
+    
+    // King safety evaluation
+    const whiteKing = whitePieces.find(p => p!.type === 'king');
+    const blackKing = blackPieces.find(p => p!.type === 'black');
+    let kingThreat: 'white' | 'black' | 'none' = 'none';
+    
+    if (!whiteKing) kingThreat = 'white';
+    else if (!blackKing) kingThreat = 'black';
+    else {
+      // Check if kings are under severe threat (simplified)
+      const whiteKingPos = this.findPiecePosition(gameState.board, whiteKing);
+      const blackKingPos = this.findPiecePosition(gameState.board, blackKing);
+      
+      if (whiteKingPos && this.isKingInDanger(gameState.board, whiteKingPos, 'white')) {
+        kingThreat = 'white';
+      } else if (blackKingPos && this.isKingInDanger(gameState.board, blackKingPos, 'black')) {
+        kingThreat = 'black';
+      }
+    }
+    
+    return {
+      materialAdvantage,
+      kingThreat,
+      whiteAdvantage: materialAdvantage > 0,
+      decisive: Math.abs(materialAdvantage) > 15 || kingThreat !== 'none'
+    };
+  }
 
-    return strategy;
+  private getEnhancedPieceValue(pieceType: string): number {
+    switch (pieceType) {
+      case 'pawn': return 1;
+      case 'knight': return 3;
+      case 'bishop': return 3.5;
+      case 'rook': return 5;
+      case 'queen': return 9;
+      case 'king': return 1000; // Very high value
+      case 'wizard': return 8; // Powerful piece
+      default: return 0;
+    }
+  }
+
+  private findPiecePosition(board: (ChessPiece | null)[][], piece: ChessPiece) {
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        if (board[row][col] === piece) {
+          return { row, col };
+        }
+      }
+    }
+    return null;
+  }
+
+  private isKingInDanger(board: (ChessPiece | null)[][], kingPos: {row: number, col: number}, color: 'white' | 'black'): boolean {
+    // Simplified danger detection - check adjacent squares for enemy pieces
+    const directions = [[-1,-1], [-1,0], [-1,1], [0,-1], [0,1], [1,-1], [1,0], [1,1]];
+    
+    for (const [dr, dc] of directions) {
+      const newRow = kingPos.row + dr;
+      const newCol = kingPos.col + dc;
+      
+      if (newRow >= 0 && newRow < board.length && newCol >= 0 && newCol < board[0].length) {
+        const piece = board[newRow][newCol];
+        if (piece && piece.color !== color && (piece.type === 'queen' || piece.type === 'rook' || piece.type === 'wizard')) {
+          return true; // King under immediate threat
+        }
+      }
+    }
+    
+    return false;
   }
 
   private updateStats(game: TrainingGame): void {
@@ -219,6 +318,69 @@ export class AITrainer {
 
     console.log(`📈 Current Stats: White ${winRate.white}% | Black ${winRate.black}% | Draw ${winRate.draw}%`);
     console.log(`🎯 Average game length: ${this.stats.averageMoves} moves`);
+  }
+
+  private logEnhancedStats(): void {
+    const winRate = {
+      white: Math.round((this.stats.whiteWins / this.stats.gamesPlayed) * 100),
+      black: Math.round((this.stats.blackWins / this.stats.gamesPlayed) * 100),
+      draw: Math.round((this.stats.draws / this.stats.gamesPlayed) * 100)
+    };
+
+    const recentGames = this.games.slice(-5);
+    const avgDuration = recentGames.reduce((sum, g) => sum + g.duration, 0) / recentGames.length;
+    
+    console.log(`⚡ Enhanced Stats: White ${winRate.white}% | Black ${winRate.black}% | Draw ${winRate.draw}%`);
+    console.log(`🚀 Average game speed: ${Math.round(avgDuration)}ms | Length: ${this.stats.averageMoves} moves`);
+    
+    // Log strategy diversity
+    const strategies = [...new Set(this.games.flatMap(g => [g.whiteStrategy, g.blackStrategy]))];
+    console.log(`🎯 Active strategies: ${strategies.length} (${strategies.slice(0, 3).join(', ')}...)`);
+  }
+
+  private logFinalEnhancedStats(): void {
+    console.log('\n🏆 ENHANCED TRAINING COMPLETE - COMPETITIVE RESULTS:');
+    console.log(`Games Played: ${this.stats.gamesPlayed}`);
+    console.log(`White Wins: ${this.stats.whiteWins} (${Math.round((this.stats.whiteWins / this.stats.gamesPlayed) * 100)}%)`);
+    console.log(`Black Wins: ${this.stats.blackWins} (${Math.round((this.stats.blackWins / this.stats.gamesPlayed) * 100)}%)`);
+    console.log(`Draws: ${this.stats.draws} (${Math.round((this.stats.draws / this.stats.gamesPlayed) * 100)}%)`);
+    console.log(`Average Moves: ${this.stats.averageMoves}`);
+    
+    const totalDuration = this.games.reduce((sum, g) => sum + g.duration, 0);
+    console.log(`Total Training Time: ${Math.round(totalDuration / 1000)}s (${Math.round(totalDuration / this.games.length)}ms/game)`);
+
+    console.log('\n🧠 COMPETITIVE STRATEGIES TESTED:');
+    const strategyStats = this.getStrategyStatistics();
+    Object.entries(strategyStats).slice(0, 5).forEach(([strategy, count]) => {
+      console.log(`${strategy}: ${count} games`);
+    });
+
+    console.log('\n🔍 ENHANCED AI TRAINING INSIGHTS:');
+    if (this.stats.averageMoves < 30) {
+      console.log('Games are decisive and competitive - excellent tactical play');
+    } else if (this.stats.averageMoves > 60) {
+      console.log('Complex strategic battles - strong positional understanding');
+    } else {
+      console.log('Balanced game length - good strategic variety');
+    }
+    
+    const competitiveBalance = Math.abs(this.stats.whiteWins - this.stats.blackWins);
+    if (competitiveBalance <= this.stats.gamesPlayed * 0.1) {
+      console.log('Excellent competitive balance between strategies');
+    } else {
+      console.log('Some strategies show dominance - good for learning patterns');
+    }
+  }
+
+  private getStrategyStatistics() {
+    const stats: { [key: string]: number } = {};
+    this.games.forEach(game => {
+      stats[game.whiteStrategy] = (stats[game.whiteStrategy] || 0) + 1;
+      stats[game.blackStrategy] = (stats[game.blackStrategy] || 0) + 1;
+    });
+    return Object.fromEntries(
+      Object.entries(stats).sort(([,a], [,b]) => b - a)
+    );
   }
 
   private logFinalStats(): void {
