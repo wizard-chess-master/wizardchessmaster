@@ -23,6 +23,7 @@ export interface ChessMove {
   captured?: ChessPiece;
   isWizardTeleport?: boolean;
   isWizardAttack?: boolean;
+  promotion?: PieceType; // For pawn promotion
 }
 
 export interface GameState {

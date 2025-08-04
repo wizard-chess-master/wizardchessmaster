@@ -1,5 +1,5 @@
 import { ChessPiece, Position } from './types';
-import { isValidPosition } from './gameEngine';
+import { isValidPosition, isKingInCheck } from './gameEngine';
 
 export function getPossibleMoves(
   board: (ChessPiece | null)[][],
@@ -195,8 +195,8 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
           }
           break; // Stop checking further in this direction after finding a piece
         } else {
-          // Own piece - can't attack, but continue checking for teleport destinations beyond it
-          continue;
+          // Own piece - can't attack or teleport through/beyond it
+          break; // Stop checking further in this direction
         }
       }
     }
@@ -212,8 +212,27 @@ export function getAllValidMoves(board: (ChessPiece | null)[][], color: string):
     for (let col = 0; col < 10; col++) {
       const piece = board[row][col];
       if (piece && piece.color === color) {
-        const pieceMoves = getPossibleMoves(board, { row, col }, piece);
-        moves.push(...pieceMoves);
+        const from = { row, col };
+        const pieceMoves = getPossibleMoves(board, from, piece);
+        
+        // Filter out moves that would put own king in check
+        const validMoves = pieceMoves.filter(to => {
+          const testBoard = board.map(r => [...r]);
+          
+          // Make the test move
+          if (piece.type === 'wizard' && board[to.row][to.col] && board[to.row][to.col]!.color !== piece.color) {
+            // Wizard attack: remove target but keep wizard in place
+            testBoard[to.row][to.col] = null;
+          } else {
+            // Normal move: move piece to destination
+            testBoard[to.row][to.col] = piece;
+            testBoard[from.row][from.col] = null;
+          }
+          
+          return !isKingInCheck(testBoard, color);
+        });
+        
+        moves.push(...validMoves);
       }
     }
   }

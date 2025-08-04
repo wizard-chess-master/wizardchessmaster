@@ -8,7 +8,7 @@ import { useAudio } from "./useAudio";
 interface ChessStore extends GameState {
   // Actions
   startGame: (mode: GameMode, aiDifficulty?: AIDifficulty) => void;
-  selectSquare: (position: Position) => void;
+  selectSquare: (position: Position | null) => void;
   makePlayerMove: (from: Position, to: Position) => void;
   makeAIMove: () => void;
   resetGame: () => void;
@@ -44,9 +44,18 @@ export const useChess = create<ChessStore>()(
       });
     },
 
-    selectSquare: (position: Position) => {
+    selectSquare: (position: Position | null) => {
       const state = get();
       if (state.gamePhase !== 'playing') return;
+
+      // Handle explicit clearing
+      if (!position) {
+        set({
+          selectedPosition: null,
+          validMoves: []
+        });
+        return;
+      }
 
       const piece = state.board[position.row][position.col];
       
@@ -87,6 +96,12 @@ export const useChess = create<ChessStore>()(
 
       const isWizardTeleport = piece.type === 'wizard' && !captured;
       const isWizardAttack = piece.type === 'wizard' && !!captured && captured.color !== piece.color;
+      
+      // Check if pawn promotion is needed
+      const promotion = piece.type === 'pawn' && 
+        ((piece.color === 'white' && to.row === 0) || (piece.color === 'black' && to.row === 9)) 
+        ? 'queen' // Auto-promote to queen for now
+        : undefined;
 
       const move: ChessMove = {
         from,
@@ -94,7 +109,8 @@ export const useChess = create<ChessStore>()(
         piece,
         captured,
         isWizardTeleport,
-        isWizardAttack
+        isWizardAttack,
+        promotion
       };
 
       // Play move sound

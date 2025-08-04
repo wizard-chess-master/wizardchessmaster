@@ -43,7 +43,10 @@ function App() {
       
       // Escape to deselect
       if (event.key === 'Escape') {
-        selectSquare({ row: -1, col: -1 }); // Invalid position to clear selection
+        const { selectedPosition, selectSquare } = useChess.getState();
+        if (selectedPosition) {
+          selectSquare(null);
+        }
       }
       
       // Ctrl+H for home/menu

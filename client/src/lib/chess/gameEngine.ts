@@ -64,7 +64,21 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
     newBoard[move.from.row][move.from.col] = { ...move.piece, hasMoved: true };
   } else {
     // Normal move or wizard teleport: move piece to new position
-    newBoard[move.to.row][move.to.col] = { ...move.piece, hasMoved: true };
+    let pieceToPlace = { ...move.piece, hasMoved: true };
+    
+    // Handle pawn promotion
+    if (move.piece.type === 'pawn' && move.promotion) {
+      const promotionRow = move.piece.color === 'white' ? 0 : 9;
+      if (move.to.row === promotionRow) {
+        pieceToPlace = {
+          ...pieceToPlace,
+          type: move.promotion,
+          id: `${move.piece.color}-${move.promotion}-promoted-${move.to.row}-${move.to.col}`
+        };
+      }
+    }
+    
+    newBoard[move.to.row][move.to.col] = pieceToPlace;
     newBoard[move.from.row][move.from.col] = null;
   }
   
@@ -163,4 +177,16 @@ function isWizardAttack(from: Position, to: Position, board: (ChessPiece | null)
   
   const distance = Math.max(Math.abs(to.row - from.row), Math.abs(to.col - from.col));
   return distance <= 2 && target.color !== piece.color;
+}
+
+export function requiresPromotion(piece: ChessPiece, toPosition: Position): boolean {
+  if (piece.type !== 'pawn') return false;
+  
+  const promotionRow = piece.color === 'white' ? 0 : 9;
+  return toPosition.row === promotionRow;
+}
+
+export function getDefaultPromotion(piece: ChessPiece): PieceType {
+  // Default promotion to queen
+  return 'queen';
 }

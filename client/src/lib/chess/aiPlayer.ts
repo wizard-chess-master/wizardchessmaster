@@ -134,9 +134,19 @@ function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove
           const isWizardTeleport = piece.type === 'wizard' && !captured;
           const isWizardAttack = piece.type === 'wizard' && !!captured;
           
+          // Check if pawn promotion is needed
+          const promotion = piece.type === 'pawn' && 
+            ((piece.color === 'white' && to.row === 0) || (piece.color === 'black' && to.row === 9)) 
+            ? 'queen' // Auto-promote to queen
+            : undefined;
+          
           // Validate move doesn't put own king in check
           const testBoard = gameState.board.map(r => [...r]);
-          testBoard[to.row][to.col] = piece;
+          let pieceToPlace = piece;
+          if (promotion) {
+            pieceToPlace = { ...piece, type: promotion };
+          }
+          testBoard[to.row][to.col] = pieceToPlace;
           if (!isWizardAttack) {
             testBoard[from.row][from.col] = null;
           }
@@ -148,7 +158,8 @@ function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove
               piece,
               captured,
               isWizardTeleport,
-              isWizardAttack
+              isWizardAttack,
+              promotion
             });
           }
         }
