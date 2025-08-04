@@ -211,34 +211,55 @@ export class AILearningSystem {
   private updateWinRates(): void {
     const humanGames = this.learningData.recentGames.filter(g => g.opponentType === 'human');
     const aiGames = this.learningData.recentGames.filter(g => g.opponentType === 'ai');
-    
+
+    console.log('🔄 Updating win rates:', { humanGamesCount: humanGames.length, aiGamesCount: aiGames.length });
+
     if (humanGames.length > 0) {
       const humanWins = humanGames.filter(g => g.outcome === 'win').length;
       this.learningData.winRateVsHuman = humanWins / humanGames.length;
+      console.log(`📊 Win rate vs human: ${humanWins}/${humanGames.length} = ${this.learningData.winRateVsHuman}`);
+    } else {
+      this.learningData.winRateVsHuman = 0;
     }
-    
+
     if (aiGames.length > 0) {
       const aiWins = aiGames.filter(g => g.outcome === 'win').length;
       this.learningData.winRateVsAI = aiWins / aiGames.length;
+      console.log(`📊 Win rate vs AI: ${aiWins}/${aiGames.length} = ${this.learningData.winRateVsAI}`);
+    } else {
+      this.learningData.winRateVsAI = 0;
     }
   }
 
   private updatePreferredStrategies(): void {
-    const winningGames = this.learningData.recentGames.filter(g => g.outcome === 'win');
+    const allGames = this.learningData.recentGames;
     const strategyCount: { [key: string]: number } = {};
 
-    winningGames.forEach(game => {
+    console.log('🎯 Analyzing strategies from', allGames.length, 'games');
+
+    allGames.forEach(game => {
       const strategy = this.analyzeGameStrategy(game);
       strategyCount[strategy] = (strategyCount[strategy] || 0) + 1;
     });
 
     this.learningData.preferredStrategies = Object.entries(strategyCount)
       .sort(([,a], [,b]) => b - a)
-      .slice(0, 3)
+      .slice(0, 5)
       .map(([strategy]) => strategy);
+
+    console.log('🎯 Strategy analysis:', strategyCount);
+    console.log('🎯 Preferred strategies:', this.learningData.preferredStrategies);
   }
 
   private analyzeGameStrategy(game: GamePattern): string {
+    // For training games with no move history, analyze based on outcome and length
+    if (game.moves.length === 0) {
+      if (game.gameLength < 20) return 'Quick-Draw';
+      if (game.gameLength < 30) return 'Tactical';
+      if (game.outcome === 'draw') return 'Defensive';
+      return 'Balanced';
+    }
+
     const aiMoves = game.moves.filter(move => move.piece.color === game.aiColor);
     const wizardMoves = aiMoves.filter(move => move.piece.type === 'wizard').length;
     const captures = aiMoves.filter(move => move.captured).length;

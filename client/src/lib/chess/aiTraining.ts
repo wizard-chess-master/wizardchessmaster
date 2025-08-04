@@ -332,6 +332,10 @@ export class AITrainer {
         }
       });
       
+      // Update derived statistics
+      (aiLearning as any).updateWinRates();
+      (aiLearning as any).updatePreferredStrategies();
+      
       // Save the updated data
       (aiLearning as any).saveLearningData();
     }
