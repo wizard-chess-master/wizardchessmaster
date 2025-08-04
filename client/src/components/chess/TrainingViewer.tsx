@@ -72,7 +72,14 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
   }, [gamePhase, winner, stats.isPlaying]);
 
   useEffect(() => {
+    // Clear existing interval when speed changes
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+
     if (stats.isPlaying && !stats.isPaused && gamePhase === 'playing') {
+      console.log(`Setting interval with speed: ${stats.speed}ms`);
       intervalRef.current = setInterval(() => {
         makeAIVsAIMove();
         setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
@@ -92,11 +99,6 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
           }));
         }
       }, stats.speed);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
     }
 
     return () => {
@@ -136,7 +138,11 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
       const speeds = [3000, 1500, 800, 300]; // Slow, Normal, Fast, Ultra-Fast
       const currentIndex = speeds.indexOf(prev.speed);
       const nextIndex = (currentIndex + 1) % speeds.length;
-      return { ...prev, speed: speeds[nextIndex] };
+      const newSpeed = speeds[nextIndex];
+      
+      console.log(`Speed changed from ${prev.speed}ms to ${newSpeed}ms`);
+      
+      return { ...prev, speed: newSpeed };
     });
   };
 
@@ -223,6 +229,10 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
               <div className="stat-item">
                 <span className="stat-label">Moves:</span>
                 <Badge variant="outline">{stats.currentGameMoves}</Badge>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Speed:</span>
+                <Badge variant="outline">{getSpeedLabel()} ({stats.speed}ms)</Badge>
               </div>
               <div className="stat-item">
                 <span className="stat-label">White Wins:</span>
