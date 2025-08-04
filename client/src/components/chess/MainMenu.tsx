@@ -136,9 +136,12 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   variant="outline"
                   onClick={() => {
                     const stats = aiLearning.getLearningStats();
+                    console.log('🧠 Raw AI Learning Statistics:', stats);
+                    console.log('🧠 Stats type:', typeof stats);
+                    console.log('🧠 Stats keys:', stats ? Object.keys(stats) : 'null');
+                    console.log('🧠 totalGamesAnalyzed:', stats?.totalGamesAnalyzed);
                     setLearningStats(stats);
                     setShowStatsDialog(true);
-                    console.log('🧠 AI Learning Statistics:', stats);
                   }}
                 >
                   <div className="mode-content">
@@ -257,7 +260,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
 
       {/* AI Learning Stats Dialog */}
       <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Brain className="w-5 h-5" />
@@ -265,8 +268,12 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
             </DialogTitle>
           </DialogHeader>
           
-          <div className="space-y-4">
-            {learningStats ? (
+          <div className="space-y-4 p-1">
+            {(() => {
+              console.log('🔍 Dialog render check - learningStats:', learningStats);
+              console.log('🔍 Dialog render check - condition result:', learningStats && learningStats.totalGamesAnalyzed >= 0);
+              return learningStats && learningStats.totalGamesAnalyzed >= 0;
+            })() ? (
               <>
                 <div className="grid grid-cols-2 gap-4">
                   <Card className="p-3 bg-muted/50">
@@ -346,11 +353,24 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                 </div>
               </>
             ) : (
-              <div className="text-center py-4">
-                <p className="text-muted-foreground">No learning data available yet.</p>
-                <p className="text-sm text-muted-foreground mt-2">
+              <div className="text-center py-8">
+                <Brain className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+                <p className="text-muted-foreground mb-2">No learning data available yet.</p>
+                <p className="text-sm text-muted-foreground">
                   Play games against AI or run training sessions to see statistics.
                 </p>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-4"
+                  onClick={() => {
+                    const stats = aiLearning.getLearningStats();
+                    setLearningStats(stats);
+                    console.log('Debug - Raw stats:', stats);
+                  }}
+                >
+                  Debug: Reload Stats
+                </Button>
               </div>
             )}
           </div>
