@@ -14,8 +14,8 @@ export function createInitialBoard(): (ChessPiece | null)[][] {
   board[9][7] = createPiece('knight', 'white', 'w-knight-7');
   board[9][8] = createPiece('rook', 'white', 'w-rook-8');
   
-  // White pawns (row 8)
-  for (let col = 1; col < 9; col++) {
+  // White pawns (row 8) - all 10 columns
+  for (let col = 0; col < 10; col++) {
     board[8][col] = createPiece('pawn', 'white', `w-pawn-${col}`);
   }
   
@@ -33,8 +33,8 @@ export function createInitialBoard(): (ChessPiece | null)[][] {
   board[0][7] = createPiece('knight', 'black', 'b-knight-7');
   board[0][8] = createPiece('rook', 'black', 'b-rook-8');
   
-  // Black pawns (row 1)
-  for (let col = 1; col < 9; col++) {
+  // Black pawns (row 1) - all 10 columns
+  for (let col = 0; col < 10; col++) {
     board[1][col] = createPiece('pawn', 'black', `b-pawn-${col}`);
   }
   
