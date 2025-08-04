@@ -175,16 +175,28 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
       if (isValidPosition(newPos)) {
         const target = board[newPos.row][newPos.col];
         
-        // Can teleport to empty squares
+        // Can teleport to empty squares (can jump over pieces)
         if (!target) {
           moves.push(newPos);
         }
-        // Can attack enemies (without moving)
+        // Can attack enemies only if there's a clear line of sight (no teleport through pieces for attacks)
         else if (target.color !== piece.color) {
-          moves.push(newPos);
-          break; // Can't move past an occupied square
+          // For attacks, check if path is clear
+          let pathClear = true;
+          for (let checkDist = 1; checkDist < distance; checkDist++) {
+            const checkPos = { row: pos.row + dr * checkDist, col: pos.col + dc * checkDist };
+            if (board[checkPos.row][checkPos.col]) {
+              pathClear = false;
+              break;
+            }
+          }
+          if (pathClear) {
+            moves.push(newPos);
+          }
+          break; // Stop checking further in this direction after finding a piece
         } else {
-          break; // Can't move past own piece
+          // Own piece - can't attack, but continue checking for teleport destinations beyond it
+          continue;
         }
       }
     }
