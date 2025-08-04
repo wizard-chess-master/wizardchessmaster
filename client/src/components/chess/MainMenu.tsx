@@ -100,10 +100,16 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     
                     setIsTraining(true);
                     try {
-                      console.log('Starting AI training session...');
-                      await aiTrainer.runTrainingSession(25, 'hard'); // Reduced to 25 games for faster testing
+                      console.log('🚀 Starting AI training session...');
+                      const trainingStats = await aiTrainer.runTrainingSession(25, 'hard');
+                      console.log('📊 Training completed, updating learning stats...');
+                      
+                      // Refresh learning stats after training
+                      const updatedStats = aiLearning.getLearningStats();
+                      setLearningStats(updatedStats);
+                      console.log('✅ AI learning stats updated:', updatedStats);
                     } catch (error) {
-                      console.error('Training error:', error);
+                      console.error('❌ Training error:', error);
                     } finally {
                       setIsTraining(false);
                     }
