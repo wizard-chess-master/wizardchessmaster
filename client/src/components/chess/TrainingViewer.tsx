@@ -84,20 +84,25 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
     }
   }, [gamePhase, winner, stats.isPlaying, stats.gameNumber, stats.totalGames]);
 
-  // Handle AI moves
+  // Handle AI moves with proper speed control
   useEffect(() => {
+    // Always clear existing interval first
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
 
+    // Only start new interval if conditions are met
     if (stats.isPlaying && !stats.isPaused && gamePhase === 'playing') {
+      console.log(`Starting AI interval with speed: ${stats.speed}ms`);
+      
       intervalRef.current = setInterval(() => {
-        makeAIVsAIMove();
-        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
+        // Get current stats to check move count
+        const currentStats = document.querySelector('[data-game-stats]')?.getAttribute('data-current-moves');
+        const moveCount = currentStats ? parseInt(currentStats) : 0;
         
         // Force end if too many moves
-        if (stats.currentGameMoves > 80) {
+        if (moveCount > 80) {
           console.log('Forcing game end due to move limit');
           const state = useChess.getState();
           const pieces = state.board.flat().filter(p => p !== null);
@@ -110,10 +115,22 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
             gamePhase: 'ended', 
             winner: forcedWinner 
           }));
+          return;
         }
+        
+        makeAIVsAIMove();
+        setStats(prev => ({ ...prev, currentGameMoves: prev.currentGameMoves + 1 }));
       }, stats.speed);
     }
-  }, [stats.isPlaying, stats.isPaused, stats.speed, gamePhase, stats.currentGameMoves]);
+
+    // Cleanup on unmount or dependency change
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [stats.isPlaying, stats.isPaused, stats.speed, gamePhase]);
 
   const startTraining = () => {
     console.log('Starting AI training session');
@@ -245,7 +262,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
         </div>
 
         {/* Stats */}
-        <Card className="training-stats">
+        <Card className="training-stats" data-game-stats data-current-moves={stats.currentGameMoves}>
           <CardHeader>
             <CardTitle>Training Statistics</CardTitle>
           </CardHeader>
@@ -287,7 +304,7 @@ export function TrainingViewer({ onBack }: TrainingViewerProps) {
               </div>
               <div className="stat-item">
                 <span className="stat-label">Speed:</span>
-                <Badge variant="outline">{getSpeedLabel()} ({stats.speed}ms)</Badge>
+                <Badge variant="outline">{getSpeedLabel()} ({(stats.speed/1000).toFixed(1)}s)</Badge>
               </div>
             </div>
           </CardContent>
