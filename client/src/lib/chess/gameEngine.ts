@@ -53,6 +53,33 @@ export function isValidPosition(pos: Position): boolean {
   return pos.row >= 0 && pos.row < 10 && pos.col >= 0 && pos.col < 10;
 }
 
+// Helper function to detect move cycles
+function detectMoveCycles(moveHistory: ChessMove[], cycleLength: number = 3): boolean {
+  if (moveHistory.length < cycleLength * 2) return false;
+  
+  const recentMoves = moveHistory.slice(-cycleLength * 2);
+  const firstHalf = recentMoves.slice(0, cycleLength);
+  const secondHalf = recentMoves.slice(cycleLength);
+  
+  // Check if the moves repeat exactly
+  for (let i = 0; i < cycleLength; i++) {
+    const move1 = firstHalf[i];
+    const move2 = secondHalf[i];
+    
+    if (move1.from.row !== move2.from.row || 
+        move1.from.col !== move2.from.col ||
+        move1.to.row !== move2.to.row || 
+        move1.to.col !== move2.to.col ||
+        move1.piece.type !== move2.piece.type ||
+        move1.piece.color !== move2.piece.color) {
+      return false;
+    }
+  }
+  
+  console.log(`Detected ${cycleLength}-move cycle, declaring stalemate`);
+  return true;
+}
+
 export function makeMove(gameState: GameState, move: ChessMove): GameState {
   const newBoard = gameState.board.map(row => [...row]);
   const newMoveHistory = [...gameState.moveHistory, move];
@@ -85,11 +112,17 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
   // Switch players
   const nextPlayer: PieceColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   
+  // Check for move cycles (3-move repetition = stalemate)
+  const hasCycles = detectMoveCycles(newMoveHistory, 3);
+  
   // Check for check, checkmate, stalemate
   const isInCheck = isKingInCheck(newBoard, nextPlayer);
   const allMoves = getAllValidMoves(newBoard, nextPlayer);
   const isCheckmate = isInCheck && allMoves.length === 0;
   const isStalemate = !isInCheck && allMoves.length === 0;
+  
+  // Game ends if checkmate, natural stalemate, or move cycles
+  const gameEnded = isCheckmate || isStalemate || hasCycles;
   
   return {
     ...gameState,
@@ -100,8 +133,8 @@ export function makeMove(gameState: GameState, move: ChessMove): GameState {
     moveHistory: newMoveHistory,
     isInCheck,
     isCheckmate,
-    isStalemate,
-    gamePhase: isCheckmate || isStalemate ? 'ended' : 'playing',
+    isStalemate: isStalemate || hasCycles,
+    gamePhase: gameEnded ? 'ended' : 'playing',
     winner: isCheckmate ? gameState.currentPlayer : null
   };
 }
