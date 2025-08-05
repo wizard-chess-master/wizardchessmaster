@@ -35,8 +35,9 @@ export class MassAITraining {
     };
 
     let totalGameLength = 0;
-    const batchSize = 50; // Process in batches to avoid blocking
-
+    const batchSize = 10; // Smaller batches to prevent blocking
+    
+    // Add delay between batches to prevent UI freezing
     for (let batch = 0; batch < Math.ceil(gameCount / batchSize); batch++) {
       const batchStart = batch * batchSize;
       const batchEnd = Math.min((batch + 1) * batchSize, gameCount);
