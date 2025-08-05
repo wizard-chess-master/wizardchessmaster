@@ -3,16 +3,18 @@
 This is a **Fantasy Chess** web application - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
 
 ## Recent Changes (January 5, 2025)
-- **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-1000 game range, covering all training needs
-- **Advanced AI Training System**: Implemented minimax with alpha-beta pruning (depth 4+) for large-scale self-play training
+- **NEW: Advanced Minimax AI Integration**: Implemented user-specified minimax algorithm with alpha-beta pruning (depth 4+)
+- **Updated Piece Values**: All AI systems now use user-specified values (pawn 10, knight 30, bishop 30, rook 50, queen 90, king 900, wizard 35)
+- **NEW: AIManager Class**: Clean minimax implementation matching user pseudocode structure with simplified evaluation
+- **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-1000 game range, now using improved minimax
+- **Fixed Learning Stats Dialog**: "Back to Menu" button moved to top of dialog for guaranteed visibility
+- **Advanced AI Training System**: Dual AI system with both neural network learning and pure minimax approaches
 - **Neural Network Learning**: AI learns from game outcomes using adaptive weights for material, position, king safety, and mobility
 - **Strategy Pattern Recognition**: AI discovers and logs strategic patterns (aggressive-tactical, strategic-development, wizard-focused, etc.)
 - **Unified Training Interface**: Single, comprehensive UI for all training needs - removed redundant training options
 - **Training Controls**: Start/stop functionality, configurable game counts, and real-time progress tracking
 - **JSON Strategy Logging**: Export/import training data with neural weights, strategy patterns, and game statistics
-- **10% Exploration**: Built-in randomness for varied gameplay and strategy discovery
-- **Piece Value System**: Standard chess values (pawn 1, knight/bishop 3, rook 5, queen 9, king ∞, wizard 4)
-- **Advanced Position Evaluation**: Wizard utility analysis, piece coordination bonuses, center control, king safety
+- **10% Exploration**: Built-in randomness for varied gameplay and strategy discovery (in neural AI)
 - **Transposition Tables**: Optimized move search with position caching for better performance
 - **UI Improvements**: Fixed win rate display issues, added main menu navigation, eliminated redundant controls
 - **Performance Optimization**: Limited AI learning records to prevent UI freezing during large training sessions

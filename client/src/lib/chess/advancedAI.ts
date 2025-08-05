@@ -118,9 +118,9 @@ export class AdvancedAIPlayer {
     let score = 0;
     const opponentColor = aiColor === 'white' ? 'black' : 'white';
 
-    // Material evaluation with piece values
+    // Material evaluation with piece values (updated to match user specification)
     const pieceValues = {
-      pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, wizard: 4, king: 0
+      pawn: 10, knight: 30, bishop: 30, rook: 50, queen: 90, wizard: 35, king: 900
     };
 
     let aiMaterial = 0;
@@ -330,7 +330,7 @@ export class AdvancedAIPlayer {
   // Move ordering for better alpha-beta pruning
   private orderMoves(moves: ChessMove[], gameState: GameState): ChessMove[] {
     const pieceValues = {
-      pawn: 1, knight: 3, bishop: 3, rook: 5, queen: 9, wizard: 4, king: 0
+      pawn: 10, knight: 30, bishop: 30, rook: 50, queen: 90, wizard: 35, king: 900
     };
     
     return moves.sort((a, b) => {
@@ -339,10 +339,10 @@ export class AdvancedAIPlayer {
       
       // Captures first (Most Valuable Victim - Least Valuable Attacker)
       if (a.captured) {
-        scoreA += pieceValues[a.captured.type] * 10 - pieceValues[a.piece.type];
+        scoreA += pieceValues[a.captured.type] - pieceValues[a.piece.type];
       }
       if (b.captured) {
-        scoreB += pieceValues[b.captured.type] * 10 - pieceValues[b.piece.type];
+        scoreB += pieceValues[b.captured.type] - pieceValues[b.piece.type];
       }
       
       // Checks second
@@ -528,6 +528,146 @@ interface NeuralWeights {
   mobilityWeight: number;
 }
 
+// Simplified AI Manager that matches user's pseudocode structure
+export class AIManager {
+  private maxDepth = 4; // Depth 4+ as requested
+  
+  // Piece values as specified by user
+  private pieceValues = {
+    pawn: 10, knight: 30, bishop: 30, rook: 50, queen: 90, wizard: 35, king: 900
+  };
+
+  getBestMove(gameState: GameState, aiColor: PieceColor = 'white'): ChessMove | null {
+    let bestMove: ChessMove | null = null;
+    let bestValue = -Infinity;
+    
+    const validMoves = this.getValidMoves(gameState, aiColor);
+    
+    for (const move of validMoves) {
+      const newBoard = this.makeMove(gameState, move);
+      const boardValue = this.minimax(newBoard, this.maxDepth, -Infinity, Infinity, false, aiColor);
+      
+      if (boardValue > bestValue) {
+        bestValue = boardValue;
+        bestMove = move;
+      }
+    }
+    
+    console.log(`🤖 AIManager selected move with value: ${bestValue}`);
+    return bestMove;
+  }
+
+  private minimax(
+    gameState: GameState, 
+    depth: number, 
+    alpha: number, 
+    beta: number, 
+    maximizingPlayer: boolean,
+    aiColor: PieceColor
+  ): number {
+    
+    if (depth === 0 || this.gameOver(gameState)) {
+      return this.evaluateBoard(gameState, aiColor);
+    }
+    
+    const currentColor = maximizingPlayer ? aiColor : (aiColor === 'white' ? 'black' : 'white');
+    
+    if (maximizingPlayer) {
+      let maxEval = -Infinity;
+      const moves = this.getValidMoves(gameState, currentColor);
+      
+      for (const move of moves) {
+        const newPos = this.makeMove(gameState, move);
+        const evalScore = this.minimax(newPos, depth - 1, alpha, beta, false, aiColor);
+        maxEval = Math.max(maxEval, evalScore);
+        alpha = Math.max(alpha, evalScore);
+        
+        if (beta <= alpha) break; // Alpha-beta pruning
+      }
+      return maxEval;
+      
+    } else {
+      let minEval = Infinity;
+      const moves = this.getValidMoves(gameState, currentColor);
+      
+      for (const move of moves) {
+        const newPos = this.makeMove(gameState, move);
+        const evalScore = this.minimax(newPos, depth - 1, alpha, beta, true, aiColor);
+        minEval = Math.min(minEval, evalScore);
+        beta = Math.min(beta, evalScore);
+        
+        if (beta <= alpha) break; // Alpha-beta pruning
+      }
+      return minEval;
+    }
+  }
+
+  private evaluateBoard(gameState: GameState, aiColor: PieceColor): number {
+    let score = 0;
+    
+    // Material evaluation
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const piece = gameState.board[row][col];
+        if (piece) {
+          const pieceValue = this.pieceValues[piece.type];
+          if (piece.color === aiColor) {
+            score += pieceValue;
+          } else {
+            score -= pieceValue;
+          }
+        }
+      }
+    }
+    
+    // Checkmate/Stalemate detection
+    if (gameState.isCheckmate) {
+      return gameState.winner === aiColor ? 10000 : -10000;
+    }
+    if (gameState.isStalemate) {
+      return 0;
+    }
+    
+    return score;
+  }
+
+  private gameOver(gameState: GameState): boolean {
+    return gameState.isCheckmate || gameState.isStalemate || gameState.gamePhase === 'ended';
+  }
+
+  private getValidMoves(gameState: GameState, color: PieceColor): ChessMove[] {
+    const moves: ChessMove[] = [];
+    
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const piece = gameState.board[row][col];
+        if (piece && piece.color === color) {
+          const pieceMoves = getPossibleMoves(gameState.board, { row, col }, piece);
+          for (const move of pieceMoves) {
+            // Create proper ChessMove object
+            const chessMove: ChessMove = {
+              from: { row, col },
+              to: move,
+              piece: piece,
+              captured: gameState.board[move.row][move.col],
+              isWizardTeleport: piece.type === 'wizard' && Math.abs(move.row - row) + Math.abs(move.col - col) > 1,
+              isWizardAttack: piece.type === 'wizard' && gameState.board[move.row][move.col] !== null
+            };
+            moves.push(chessMove);
+          }
+        }
+      }
+    }
+    
+    return moves;
+  }
+
+  private makeMove(gameState: GameState, move: ChessMove): GameState {
+    // Use existing makeMove function from game engine
+    return makeMove(gameState, move, true);
+  }
+}
+
 // Game analysis data for learning
 export interface GameAnalysisData {
   winner: PieceColor | 'draw';
@@ -547,5 +687,6 @@ export interface StrategyPattern {
   conditions: string[];
 }
 
-// Export the advanced AI instance
+// Export the advanced AI instances
 export const advancedAI = new AdvancedAIPlayer();
+export const aiManager = new AIManager();

@@ -1,7 +1,7 @@
 import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase } from './types';
 import { makeMove, isKingInCheck } from './gameEngine';
 import { getAllValidMoves as getAllValidMovesFromBoard } from './pieceMovement';
-import { advancedAI, GameAnalysisData, StrategyPattern } from './advancedAI';
+import { advancedAI, aiManager, GameAnalysisData, StrategyPattern } from './advancedAI';
 
 // Mass training system for 1000-game self-play
 export class MassAITraining {
@@ -127,7 +127,7 @@ export class MassAITraining {
     
     while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
-      const move = advancedAI.getMove(gameState, currentColor);
+      const move = aiManager.getBestMove(gameState, currentColor);
       
       if (!move) {
         // No legal moves - game over
