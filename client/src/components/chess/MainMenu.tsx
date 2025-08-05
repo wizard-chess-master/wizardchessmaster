@@ -318,15 +318,6 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                 )}
 
                 <div className="flex gap-2 mt-6 pt-4 border-t">
-                  <DialogClose asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                    >
-                      <X className="w-4 h-4 mr-2" />
-                      Close
-                    </Button>
-                  </DialogClose>
                   <Button
                     variant="outline"
                     size="sm"
