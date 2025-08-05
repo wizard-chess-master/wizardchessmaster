@@ -142,7 +142,18 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   </Button>
                 )}
 
-                <MassTrainingDialog />
+                <MassTrainingDialog>
+                  <Button
+                    className="mode-button"
+                    variant="outline"
+                  >
+                    <div className="mode-content">
+                      <Brain className="w-4 h-4" />
+                      <span>Mass AI Training</span>
+                      <Badge variant="secondary">1000+ Games</Badge>
+                    </div>
+                  </Button>
+                </MassTrainingDialog>
 
                 <Button
                   className="mode-button"
