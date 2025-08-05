@@ -162,7 +162,12 @@ export function MassTrainingDialog() {
                   />
                 </div>
 
-                <div className="flex gap-2">
+                {/* Debug Info */}
+                <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+                  Debug: isTraining={isTraining ? 'true' : 'false'}, gameCount={gameCount}, massTraining={typeof massTraining}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
                   {!isTraining ? (
                     <Button onClick={handleStartTraining} className="gap-2">
                       <Play className="w-4 h-4" />
@@ -204,6 +209,15 @@ export function MassTrainingDialog() {
                     <RotateCcw className="w-4 h-4" />
                     Reset All Data
                   </Button>
+                </div>
+
+                {/* Always show current stats */}
+                <div className="mt-4 p-3 bg-gray-50 rounded-md">
+                  <div className="text-sm text-gray-600">
+                    <div>Training Stats: {trainingStats.totalTrainingGames} games completed</div>
+                    <div>Strategy Patterns: {strategyPatterns.length} learned</div>
+                    <div>Neural Weights: Material={neuralWeights.materialWeight.toFixed(2)}, Position={neuralWeights.positionWeight.toFixed(2)}</div>
+                  </div>
                 </div>
 
                 {isTraining && progress && (
