@@ -321,7 +321,13 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowStatsDialog(false)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('🏠 Back to Menu clicked - closing dialog');
+                      setShowStatsDialog(false);
+                      console.log('✅ setShowStatsDialog(false) called');
+                    }}
                   >
                     <Home className="w-4 h-4 mr-2" />
                     Back to Menu
