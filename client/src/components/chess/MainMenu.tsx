@@ -364,20 +364,39 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                 <p className="text-sm text-muted-foreground">
                   Play games against AI or run training sessions to see statistics.
                 </p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="mt-4"
-                  onClick={() => {
-                    const stats = aiLearning.getLearningStats();
-                    setLearningStats(stats);
-                    console.log('Debug - Raw stats:', stats);
-                  }}
-                >
-                  Debug: Reload Stats
-                </Button>
+                <div className="flex gap-2 mt-4">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      const stats = aiLearning.getLearningStats();
+                      setLearningStats(stats);
+                      console.log('Debug - Raw stats:', stats);
+                    }}
+                  >
+                    Debug: Reload Stats
+                  </Button>
+                </div>
               </div>
             )}
+            
+            {/* Always visible dialog buttons */}
+            <div className="flex gap-2 mt-4 pt-4 border-t">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log('🏠 Back to Menu clicked - closing dialog');
+                  setShowStatsDialog(false);
+                  console.log('✅ setShowStatsDialog(false) called');
+                }}
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Back to Menu
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
