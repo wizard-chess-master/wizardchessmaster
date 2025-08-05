@@ -167,31 +167,24 @@ export function MassTrainingDialog() {
                   Debug: isTraining={isTraining ? 'true' : 'false'}, gameCount={gameCount}, massTraining={typeof massTraining}
                 </div>
 
-                <div className="flex flex-wrap gap-2">
-                  {!isTraining ? (
-                    <Button onClick={handleStartTraining} className="gap-2">
-                      <Play className="w-4 h-4" />
-                      Start Training
-                    </Button>
-                  ) : (
-                    <Button onClick={handleStopTraining} variant="destructive" className="gap-2">
-                      <Square className="w-4 h-4" />
-                      Stop Training
-                    </Button>
-                  )}
+                <div className="flex flex-wrap gap-2" style={{minHeight: '40px', border: '1px solid #ccc', padding: '8px'}}>
+                  <Button onClick={handleStartTraining} className="gap-2" disabled={isTraining}>
+                    <Play className="w-4 h-4" />
+                    {isTraining ? 'Training...' : 'Start Training'}
+                  </Button>
                   
                   <Button 
                     onClick={async () => {
-                      console.log('🧪 Testing single game training...');
+                      console.log('Testing single game training...');
                       try {
                         setIsTraining(true);
                         const result = await massTraining.runMassTraining(1, (progress) => {
-                          console.log('📈 Test progress:', progress);
+                          console.log('Test progress:', progress);
                         });
-                        console.log('✅ Single game test completed:', result);
+                        console.log('Single game test completed:', result);
                         alert(`Test completed! Winner: ${result.whiteWins > 0 ? 'White' : result.blackWins > 0 ? 'Black' : 'Draw'}, Game length: ${result.avgGameLength} moves`);
                       } catch (error) {
-                        console.error('❌ Test failed:', error);
+                        console.error('Test failed:', error);
                         alert(`Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
                       } finally {
                         setIsTraining(false);
@@ -205,10 +198,17 @@ export function MassTrainingDialog() {
                     Test 1 Game
                   </Button>
                   
-                  <Button onClick={handleResetTraining} variant="outline" className="gap-2">
+                  <Button onClick={handleResetTraining} variant="outline" className="gap-2" disabled={isTraining}>
                     <RotateCcw className="w-4 h-4" />
-                    Reset All Data
+                    Reset Data
                   </Button>
+
+                  {isTraining && (
+                    <Button onClick={handleStopTraining} variant="destructive" className="gap-2">
+                      <Square className="w-4 h-4" />
+                      Stop Training
+                    </Button>
+                  )}
                 </div>
 
                 {/* Always show current stats */}
