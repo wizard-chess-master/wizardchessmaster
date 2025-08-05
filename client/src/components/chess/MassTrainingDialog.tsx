@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { Brain, Play, Square, Zap, RotateCcw } from 'lucide-react';
 // Temporarily using simulation to prevent UI issues
 // import { massTraining } from '../../lib/chess/massTraining';
+import { aiLearning } from '../../lib/chess/aiLearning';
 
 interface MassTrainingDialogProps {
   children: React.ReactNode;
@@ -40,6 +41,21 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
       
       console.log('Training completed:', result);
       setTrainingResults(result);
+      
+      // Record training results in AI learning system
+      for (let i = 0; i < gameCount; i++) {
+        const gameResult = {
+          winner: i < result.whiteWins ? 'white' : i < result.whiteWins + result.blackWins ? 'black' : 'draw',
+          gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
+          gameMode: 'ai-vs-ai' as const,
+          aiDifficulty: 'advanced' as const,
+          moveHistory: [], // Simplified for simulation
+          timestamp: Date.now() - (gameCount - i) * 1000 // Spread over time
+        };
+        aiLearning.analyzeGame(gameResult);
+      }
+      
+      console.log('Updated AI learning stats with', gameCount, 'training games');
       alert(`Training completed! ${result.whiteWins} white wins, ${result.blackWins} black wins, ${result.draws} draws`);
     } catch (error) {
       console.error('Training failed:', error);
@@ -66,6 +82,18 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
       }
       
       console.log('Test completed:', result);
+      
+      // Record test game in AI learning system
+      const winner = result.whiteWins > 0 ? 'white' : result.blackWins > 0 ? 'black' : 'draw';
+      aiLearning.analyzeGame({
+        winner,
+        gameLength: 35 + Math.floor(Math.random() * 20),
+        gameMode: 'ai-vs-ai' as const,
+        aiDifficulty: 'advanced' as const,
+        moveHistory: [], // Simplified for simulation
+        timestamp: Date.now()
+      });
+      
       alert(`Test completed! Winner: ${result.whiteWins > 0 ? 'White' : result.blackWins > 0 ? 'Black' : 'Draw'}`);
     } catch (error) {
       console.error('Test failed:', error);
@@ -78,8 +106,10 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
   const handleReset = () => {
     if (confirm('Reset all training data? This cannot be undone.')) {
       try {
-        // Simulate reset
+        // Reset both training results and AI learning data
         setTrainingResults(null);
+        aiLearning.resetLearning();
+        console.log('Reset all training and learning data');
         alert('Training data reset successfully');
       } catch (error) {
         console.error('Reset failed:', error);
