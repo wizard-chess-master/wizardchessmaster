@@ -56,8 +56,8 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   onClick={() => startGame('ai', 'easy')}
                 >
                   <div className="mode-content">
-                    <span>vs AI - Easy</span>
-                    <Badge variant="secondary">Random moves</Badge>
+                    <span>Player vs AI - Easy</span>
+                    <Badge variant="secondary">Beginner</Badge>
                   </div>
                 </Button>
                 
@@ -66,8 +66,8 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   onClick={() => startGame('ai', 'medium')}
                 >
                   <div className="mode-content">
-                    <span>vs AI - Medium</span>
-                    <Badge variant="secondary">Basic strategy</Badge>
+                    <span>Player vs AI - Medium</span>
+                    <Badge variant="secondary">Intermediate</Badge>
                   </div>
                 </Button>
                 
@@ -76,8 +76,8 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   onClick={() => startGame('ai', 'hard')}
                 >
                   <div className="mode-content">
-                    <span>vs AI - Hard</span>
-                    <Badge variant="secondary">Advanced tactics</Badge>
+                    <span>Player vs AI - Hard</span>
+                    <Badge variant="secondary">Expert</Badge>
                   </div>
                 </Button>
                 
