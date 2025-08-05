@@ -48,7 +48,16 @@ export class AILearningSystem {
   }
 
   // Analyze a completed game and extract learning patterns
-  analyzeGame(gameState: GameState, aiColor: 'white' | 'black', opponentType: 'human' | 'ai'): void {
+  analyzeGame(gameStateOrResult: GameState | any, aiColor?: 'white' | 'black', opponentType?: 'human' | 'ai'): void {
+    // Handle different input formats for mass training compatibility
+    if (gameStateOrResult.gameMode && gameStateOrResult.winner !== undefined) {
+      // This is a simplified game result from mass training
+      this.analyzeSimpleGameResult(gameStateOrResult);
+      return;
+    }
+    
+    // Original GameState analysis
+    const gameState = gameStateOrResult as GameState;
     const gamePattern: GamePattern = {
       id: `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       moves: gameState.moveHistory,
@@ -84,6 +93,43 @@ export class AILearningSystem {
     this.saveLearningData();
 
     console.log(`🧠 AI Learning: Analyzed ${opponentType} game, outcome: ${gamePattern.outcome}`);
+    console.log(`📊 Total games analyzed: ${this.learningData.gamesPlayed}`);
+  }
+
+  // Analyze simplified game result from mass training
+  private analyzeSimpleGameResult(gameResult: any): void {
+    const aiColor = Math.random() > 0.5 ? 'white' : 'black'; // Random since it's AI vs AI
+    const opponentType = 'ai';
+    
+    const gamePattern: GamePattern = {
+      id: `mass_training_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      moves: [], // Simplified - no move history in mass training
+      outcome: gameResult.winner === aiColor ? 'win' : gameResult.winner === 'draw' ? 'draw' : 'loss',
+      aiColor,
+      opponentType: 'ai',
+      gameLength: gameResult.gameLength || 35,
+      timestamp: gameResult.timestamp || Date.now()
+    };
+
+    // Add to recent games
+    this.learningData.recentGames.push(gamePattern);
+    if (this.learningData.recentGames.length > this.maxGameHistory) {
+      this.learningData.recentGames.shift();
+    }
+
+    // Update win rates
+    this.updateWinRates();
+
+    // Update preferred strategies (simplified)
+    this.updatePreferredStrategies();
+
+    // Increment games played
+    this.learningData.gamesPlayed++;
+
+    // Save learning data
+    this.saveLearningData();
+
+    console.log(`🧠 AI Learning: Analyzed mass training game, outcome: ${gamePattern.outcome}`);
     console.log(`📊 Total games analyzed: ${this.learningData.gamesPlayed}`);
   }
 
