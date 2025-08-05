@@ -91,40 +91,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   </div>
                 </Button>
 
-                <Button
-                  className="mode-button"
-                  variant="outline"
-                  onClick={async () => {
-                    if (isTraining) {
-                      aiTrainer.stopTraining();
-                      setIsTraining(false);
-                      return;
-                    }
-                    
-                    setIsTraining(true);
-                    try {
-                      console.log('🚀 Starting AI training session...');
-                      const trainingStats = await aiTrainer.runTrainingSession(25, 'hard');
-                      console.log('📊 Training completed, updating learning stats...');
-                      
-                      // Refresh learning stats after training
-                      const updatedStats = aiLearning.getLearningStats();
-                      setLearningStats(updatedStats);
-                      console.log('✅ AI learning stats updated:', updatedStats);
-                    } catch (error) {
-                      console.error('❌ Training error:', error);
-                    } finally {
-                      setIsTraining(false);
-                    }
-                  }}
-                  disabled={false}
-                >
-                  <div className="mode-content">
-                    <Brain className="w-4 h-4" />
-                    <span>{isTraining ? 'Stop Training' : 'Train AI Strategy'}</span>
-                    <Badge variant="secondary">{isTraining ? 'Running...' : '25 Games'}</Badge>
-                  </div>
-                </Button>
+
 
                 {onTrainingViewer && (
                   <Button
@@ -148,7 +115,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     <div className="mode-content">
                       <Brain className="w-4 h-4" />
                       <span>Mass AI Training</span>
-                      <Badge variant="secondary">1000+ Games</Badge>
+                      <Badge variant="secondary">1-1000 Games</Badge>
                     </div>
                   </Button>
                 </MassTrainingDialog>
