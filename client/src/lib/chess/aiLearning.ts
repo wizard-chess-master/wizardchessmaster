@@ -238,8 +238,8 @@ export class AILearningSystem {
       recentGames: totalGames,
       humanGames,
       aiGames,
-      winRateVsHuman: this.learningData.winRateVsHuman,
-      winRateVsAI: this.learningData.winRateVsAI,
+      winRateVsHuman: Math.round(this.learningData.winRateVsHuman * 100) / 100, // Round to 2 decimals
+      winRateVsAI: Math.round(this.learningData.winRateVsAI * 100) / 100, // Round to 2 decimals
       movePatterns: this.learningData.movePatterns.size,
       positionalPatterns: this.learningData.positionalPatterns.size,
       preferredStrategies: this.learningData.preferredStrategies,

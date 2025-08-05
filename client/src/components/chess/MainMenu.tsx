@@ -318,12 +318,12 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   
                   <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
                     <span className="font-medium">Win Rate vs Human:</span>
-                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsHuman * 100)}%</span>
+                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsHuman)}%</span>
                   </div>
                   
                   <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
                     <span className="font-medium">Win Rate vs AI:</span>
-                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsAI * 100)}%</span>
+                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsAI)}%</span>
                   </div>
                   
                   <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
