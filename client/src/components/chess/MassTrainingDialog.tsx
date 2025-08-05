@@ -13,18 +13,36 @@ interface MassTrainingDialogProps {
 }
 
 export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children }) => {
-  const [gameCount, setGameCount] = useState(1000);
+  const [gameCount, setGameCount] = useState(25); // Default to 25 for testing
   const [isTraining, setIsTraining] = useState(false);
   const [trainingResults, setTrainingResults] = useState<any>(null);
+  const [trainingAborted, setTrainingAborted] = useState(false);
 
   const handleStartTraining = async () => {
     console.log('Starting mass training with', gameCount, 'games');
+    
+    // Prevent multiple training sessions
+    if (isTraining) {
+      console.log('Training already in progress, ignoring request');
+      return;
+    }
+    
     try {
       setIsTraining(true);
       setTrainingResults(null);
+      setTrainingAborted(false);
       
-      // Simulate training with realistic timing
-      await new Promise(resolve => setTimeout(resolve, Math.min(gameCount * 20, 5000)));
+      // Simulate training with realistic timing - shorter for smaller counts
+      const trainingTime = Math.min(gameCount * 20, 5000);
+      console.log(`Training will take approximately ${trainingTime}ms`);
+      
+      await new Promise(resolve => setTimeout(resolve, trainingTime));
+      
+      // Check if training was aborted
+      if (trainingAborted) {
+        console.log('Training was aborted');
+        return;
+      }
       
       // Generate realistic results based on game count
       const winRate = 0.45 + Math.random() * 0.1; // 45-55% win rate
@@ -35,34 +53,46 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
         blackWins: Math.floor(gameCount * (1 - winRate - drawRate)),
         draws: Math.floor(gameCount * drawRate),
         avgGameLength: 30 + Math.random() * 20, // 30-50 moves
-        completionTime: Math.min(gameCount * 20, 5000),
+        completionTime: trainingTime,
         strategiesLearned: Math.floor(gameCount / 50) + 1
       };
       
       console.log('Training completed:', result);
       setTrainingResults(result);
       
-      // Record training results in AI learning system
-      for (let i = 0; i < gameCount; i++) {
+      // Record training results in AI learning system (limit to avoid overwhelming)
+      const recordCount = Math.min(gameCount, 100); // Limit to 100 records to avoid UI freeze
+      for (let i = 0; i < recordCount; i++) {
         const gameResult = {
-          winner: i < result.whiteWins ? 'white' : i < result.whiteWins + result.blackWins ? 'black' : 'draw',
+          winner: i < result.whiteWins * (recordCount / gameCount) ? 'white' : 
+                  i < (result.whiteWins + result.blackWins) * (recordCount / gameCount) ? 'black' : 'draw',
           gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
           gameMode: 'ai-vs-ai' as const,
           aiDifficulty: 'advanced' as const,
           moveHistory: [], // Simplified for simulation
-          timestamp: Date.now() - (gameCount - i) * 1000 // Spread over time
+          timestamp: Date.now() - (recordCount - i) * 1000 // Spread over time
         };
         aiLearning.analyzeGame(gameResult);
       }
       
-      console.log('Updated AI learning stats with', gameCount, 'training games');
-      alert(`Training completed! ${result.whiteWins} white wins, ${result.blackWins} black wins, ${result.draws} draws`);
+      console.log(`Updated AI learning stats with ${recordCount} training games (from ${gameCount} total)`);
+      
+      // Show success message without blocking
+      console.log(`✅ Training completed! ${result.whiteWins} white wins, ${result.blackWins} black wins, ${result.draws} draws`);
+      
     } catch (error) {
       console.error('Training failed:', error);
-      alert(`Training failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      console.log(`❌ Training failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsTraining(false);
+      setTrainingAborted(false);
     }
+  };
+
+  const handleStopTraining = () => {
+    console.log('Stopping training...');
+    setTrainingAborted(true);
+    setIsTraining(false);
   };
 
   const handleTestGame = async () => {
@@ -156,9 +186,12 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
                 id="gameCount"
                 type="number"
                 min="1"
-                max="10000"
+                max="1000"
                 value={gameCount}
-                onChange={(e) => setGameCount(parseInt(e.target.value) || 1000)}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 25;
+                  setGameCount(Math.min(Math.max(val, 1), 1000)); // Clamp between 1-1000
+                }}
                 className="px-3 py-1 border rounded-md w-24"
                 disabled={isTraining}
               />
@@ -174,15 +207,26 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
               className="flex flex-wrap gap-2 p-4 border border-gray-300 rounded-md bg-gray-50"
               style={{ minHeight: '60px' }}
             >
-              <Button 
-                onClick={handleStartTraining} 
-                className="gap-2" 
-                disabled={isTraining}
-                size="default"
-              >
-                <Play className="w-4 h-4" />
-                {isTraining ? 'Training...' : 'Start Training'}
-              </Button>
+              {!isTraining ? (
+                <Button 
+                  onClick={handleStartTraining} 
+                  className="gap-2" 
+                  size="default"
+                >
+                  <Play className="w-4 h-4" />
+                  Start Training
+                </Button>
+              ) : (
+                <Button 
+                  onClick={handleStopTraining} 
+                  variant="destructive"
+                  className="gap-2" 
+                  size="default"
+                >
+                  <Square className="w-4 h-4" />
+                  Stop Training
+                </Button>
+              )}
               
               <Button 
                 onClick={handleTestGame}
