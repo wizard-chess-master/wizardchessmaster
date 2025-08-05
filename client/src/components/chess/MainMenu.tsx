@@ -321,7 +321,11 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowStatsDialog(false)}
+                    onClick={() => {
+                      console.log('🔄 Closing Learning Stats dialog...');
+                      setShowStatsDialog(false);
+                      console.log('✅ Dialog closed, showStatsDialog set to false');
+                    }}
                   >
                     <X className="w-4 h-4 mr-2" />
                     Close
