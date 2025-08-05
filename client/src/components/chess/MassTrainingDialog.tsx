@@ -4,8 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Brain, Play, Square, Zap, RotateCcw } from 'lucide-react';
-// Temporarily comment out problematic import
-// import { massTraining } from '../../lib/chess/massTraining';
+import { massTraining } from '../../lib/chess/massTraining';
 
 interface MassTrainingDialogProps {
   children: React.ReactNode;
@@ -22,9 +21,9 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
       setIsTraining(true);
       setTrainingResults(null);
       
-      // Simulate training for now
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      const result = { whiteWins: 450, blackWins: 420, draws: 130, avgGameLength: 35, completionTime: 120000 };
+      const result = await massTraining.runMassTraining(gameCount, (progress) => {
+        console.log('Training progress:', progress);
+      });
       
       console.log('Training completed:', result);
       setTrainingResults(result);
@@ -42,9 +41,9 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
     try {
       setIsTraining(true);
       
-      // Simulate test game
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      const result = { whiteWins: 1, blackWins: 0, draws: 0 };
+      const result = await massTraining.runMassTraining(1, (progress) => {
+        console.log('Test progress:', progress);
+      });
       
       console.log('Test completed:', result);
       alert(`Test completed! Winner: ${result.whiteWins > 0 ? 'White' : result.blackWins > 0 ? 'Black' : 'Draw'}`);
@@ -59,7 +58,7 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
   const handleReset = () => {
     if (confirm('Reset all training data? This cannot be undone.')) {
       try {
-        // Simulate reset
+        massTraining.resetTrainingData();
         setTrainingResults(null);
         alert('Training data reset successfully');
       } catch (error) {
