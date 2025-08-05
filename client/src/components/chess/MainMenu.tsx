@@ -3,7 +3,7 @@ import { useChess } from '../../lib/stores/useChess';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../ui/dialog';
 import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3, X, Home } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
@@ -318,18 +318,15 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                 )}
 
                 <div className="flex gap-2 mt-6 pt-4 border-t">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      console.log('🔄 Closing Learning Stats dialog...');
-                      setShowStatsDialog(false);
-                      console.log('✅ Dialog closed, showStatsDialog set to false');
-                    }}
-                  >
-                    <X className="w-4 h-4 mr-2" />
-                    Close
-                  </Button>
+                  <DialogClose asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                    >
+                      <X className="w-4 h-4 mr-2" />
+                      Close
+                    </Button>
+                  </DialogClose>
                   <Button
                     variant="outline"
                     size="sm"
