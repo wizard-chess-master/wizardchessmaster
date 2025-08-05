@@ -257,6 +257,24 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
             </DialogTitle>
           </DialogHeader>
           
+          {/* Navigation button at top */}
+          <div className="flex gap-2 mb-4 pb-4 border-b">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('🏠 Back to Menu clicked - closing dialog');
+                setShowStatsDialog(false);
+                console.log('✅ setShowStatsDialog(false) called');
+              }}
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Back to Menu
+            </Button>
+          </div>
+          
           <div className="space-y-4 p-1">
             {learningStats && learningStats.totalGamesAnalyzed >= 0 ? (
               <div className="space-y-4">
@@ -379,24 +397,6 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                 </div>
               </div>
             )}
-            
-            {/* Always visible dialog buttons */}
-            <div className="flex gap-2 mt-4 pt-4 border-t">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  console.log('🏠 Back to Menu clicked - closing dialog');
-                  setShowStatsDialog(false);
-                  console.log('✅ setShowStatsDialog(false) called');
-                }}
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Back to Menu
-              </Button>
-            </div>
           </div>
         </DialogContent>
       </Dialog>
