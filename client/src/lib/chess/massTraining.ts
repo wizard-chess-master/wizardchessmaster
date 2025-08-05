@@ -1,4 +1,4 @@
-import { GameState, ChessMove, PieceColor } from './types';
+import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase } from './types';
 import { makeMove, isKingInCheck } from './gameEngine';
 import { getAllValidMoves as getAllValidMovesFromBoard } from './pieceMovement';
 import { advancedAI, GameAnalysisData, StrategyPattern } from './advancedAI';
@@ -103,11 +103,16 @@ export class MassAITraining {
     let gameState: GameState = {
       board: Array(10).fill(null).map(() => Array(10).fill(null)),
       currentPlayer: 'white',
-      gamePhase: 'active',
+      gamePhase: 'active' as GamePhase,
       winner: null,
       moveHistory: [],
       aiDifficulty: 'hard',
-      gameMode: 'ai-vs-ai'
+      gameMode: 'ai-vs-ai',
+      selectedPosition: null,
+      validMoves: [],
+      isInCheck: false,
+      isCheckmate: false,
+      isStalemate: false
     };
     
     // Initialize board with starting position
@@ -119,7 +124,7 @@ export class MassAITraining {
     let moveCount = 0;
     const maxMoves = 100; // Prevent infinite games
     
-    while (gameState.gamePhase === 'active' && moveCount < maxMoves) {
+    while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
       const move = advancedAI.getMove(gameState, currentColor);
       
@@ -144,16 +149,16 @@ export class MassAITraining {
       
       // Prevent infinite loops
       if (this.detectPositionRepetition(moves)) {
-        gameState.gamePhase = 'ended';
-        gameState.winner = 'draw';
+        gameState.gamePhase = 'ended' as GamePhase;
+        gameState.winner = null;
         break;
       }
     }
     
     // Force draw if too many moves
-    if (moveCount >= maxMoves && gameState.gamePhase === 'active') {
-      gameState.gamePhase = 'ended';
-      gameState.winner = 'draw';
+    if (moveCount >= maxMoves && gameState.gamePhase === ('active' as GamePhase)) {
+      gameState.gamePhase = 'ended' as GamePhase;
+      gameState.winner = null;
     }
     
     // Calculate game statistics
@@ -172,7 +177,7 @@ export class MassAITraining {
     
     const gameData: TrainingGameData = {
       moves,
-      winner: gameState.winner || 'draw',
+      winner: (gameState.winner || 'draw') as PieceColor | 'draw',
       gameLength: moveCount,
       timestamp: Date.now(),
       strategiesUsed: this.identifyStrategies(moveAnalysis),
@@ -183,7 +188,7 @@ export class MassAITraining {
     this.gameLog.push(gameData);
     
     return {
-      winner: gameState.winner || 'draw',
+      winner: (gameState.winner || 'draw') as PieceColor | 'draw',
       gameLength: moveCount,
       analysisData,
       gameData
@@ -192,7 +197,7 @@ export class MassAITraining {
 
   // Analyze move type for strategy learning
   private analyzeMoveType(gameState: GameState, move: ChessMove): MoveAnalysis {
-    const validMoves = getAllValidMoves(gameState, gameState.currentPlayer).length;
+    const validMoves = getAllValidMovesFromBoard(gameState.board, gameState.currentPlayer).length;
     
     let type: 'tactical' | 'strategic' | 'positional' = 'positional';
     
@@ -587,3 +592,6 @@ interface MoveAnalysis {
 
 // Export the training system
 export const massTraining = new MassAITraining();
+
+// Export types for use in components
+export type { TrainingProgress, TrainingResults, TrainingStats };

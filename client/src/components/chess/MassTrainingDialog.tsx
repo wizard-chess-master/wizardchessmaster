@@ -103,12 +103,15 @@ export function MassTrainingDialog() {
           Mass AI Training
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="mass-training-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Brain className="w-5 h-5" />
             Advanced AI Training System
           </DialogTitle>
+          <div id="mass-training-description" className="sr-only">
+            Advanced AI training system for running thousands of self-play games with neural network learning and strategy pattern recognition.
+          </div>
         </DialogHeader>
 
         <Tabs defaultValue="training" className="w-full">
