@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3, X } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
+import { MassTrainingDialog } from './MassTrainingDialog';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -140,6 +141,8 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     </div>
                   </Button>
                 )}
+
+                <MassTrainingDialog />
 
                 <Button
                   className="mode-button"
