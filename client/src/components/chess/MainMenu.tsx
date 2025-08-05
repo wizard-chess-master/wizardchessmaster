@@ -321,13 +321,10 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => {
-                      setShowStatsDialog(false);
-                      resetGame(); // Actually navigate to main menu
-                    }}
+                    onClick={() => setShowStatsDialog(false)}
                   >
-                    <Home className="w-4 h-4 mr-2" />
-                    Main Menu
+                    <X className="w-4 h-4 mr-2" />
+                    Close
                   </Button>
                   <Button
                     variant="outline"
