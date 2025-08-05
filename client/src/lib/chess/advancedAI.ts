@@ -465,6 +465,8 @@ export class AdvancedAIPlayer {
     return { ...this.neuralWeights };
   }
 
+
+
   // Helper method to get all valid moves for a game state
   private getAllValidMoves(gameState: GameState, color: PieceColor): ChessMove[] {
     const moves: ChessMove[] = [];

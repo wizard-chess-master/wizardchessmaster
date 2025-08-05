@@ -56,7 +56,8 @@ export function MassTrainingDialog() {
       }
     } catch (error) {
       console.error('❌ Training failed:', error);
-      alert(`Training failed: ${error.message}`);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      alert(`Training failed: ${errorMessage}`);
     } finally {
       setIsTraining(false);
     }
