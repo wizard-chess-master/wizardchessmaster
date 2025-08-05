@@ -9,7 +9,7 @@ import {
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Switch } from '../ui/switch';
-import { Volume2, VolumeX, Info } from 'lucide-react';
+import { Volume2, VolumeX, Info, Home } from 'lucide-react';
 
 interface SettingsDialogProps {
   onClose: () => void;
@@ -114,6 +114,16 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
         </div>
 
         <div className="settings-footer">
+          <Button 
+            variant="outline"
+            onClick={() => {
+              onClose();
+              window.location.reload();
+            }}
+          >
+            <Home className="w-4 h-4 mr-2" />
+            Main Menu
+          </Button>
           <Button onClick={onClose}>
             Close
           </Button>

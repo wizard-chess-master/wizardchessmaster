@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Brain, Play, Square, Zap, RotateCcw } from 'lucide-react';
+import { Brain, Play, Square, Zap, RotateCcw, Home } from 'lucide-react';
 // Temporarily using simulation to prevent UI issues
 // import { massTraining } from '../../lib/chess/massTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
@@ -204,6 +204,17 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
               >
                 <RotateCcw className="w-4 h-4" />
                 Reset Data
+              </Button>
+              
+              <Button 
+                onClick={() => window.location.reload()}
+                variant="outline" 
+                className="gap-2"
+                disabled={isTraining}
+                size="default"
+              >
+                <Home className="w-4 h-4" />
+                Main Menu
               </Button>
             </div>
 

@@ -74,6 +74,19 @@ export function GameUI({ onSettings }: GameUIProps) {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => {
+                resetGame();
+                // Navigate to main menu by resetting game phase
+                window.location.reload();
+              }}
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Main Menu
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
               onClick={undoMove}
               disabled={moveHistory.length === 0}
             >
