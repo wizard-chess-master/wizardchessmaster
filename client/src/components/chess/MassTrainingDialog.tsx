@@ -172,6 +172,31 @@ export function MassTrainingDialog() {
                     </Button>
                   )}
                   
+                  <Button 
+                    onClick={async () => {
+                      console.log('🧪 Testing single game training...');
+                      try {
+                        setIsTraining(true);
+                        const result = await massTraining.runMassTraining(1, (progress) => {
+                          console.log('📈 Test progress:', progress);
+                        });
+                        console.log('✅ Single game test completed:', result);
+                        alert(`Test completed! Winner: ${result.whiteWins > 0 ? 'White' : result.blackWins > 0 ? 'Black' : 'Draw'}, Game length: ${result.avgGameLength} moves`);
+                      } catch (error) {
+                        console.error('❌ Test failed:', error);
+                        alert(`Test failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+                      } finally {
+                        setIsTraining(false);
+                      }
+                    }}
+                    variant="secondary" 
+                    className="gap-2"
+                    disabled={isTraining}
+                  >
+                    <Zap className="w-4 h-4" />
+                    Test 1 Game
+                  </Button>
+                  
                   <Button onClick={handleResetTraining} variant="outline" className="gap-2">
                     <RotateCcw className="w-4 h-4" />
                     Reset All Data

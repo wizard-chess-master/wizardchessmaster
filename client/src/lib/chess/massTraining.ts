@@ -117,9 +117,6 @@ export class MassAITraining {
 
     // Initialize the board with pieces
     this.initializeBoard(gameState.board);
-    
-    // Initialize board with starting position
-    this.initializeBoard(gameState.board);
     gameState.gameMode = 'ai-vs-ai';
     
     const moves: ChessMove[] = [];
@@ -141,9 +138,14 @@ export class MassAITraining {
       moveAnalysis.push(analysis);
       
       // Make the move
-      gameState = makeMove(gameState, move);
-      moves.push(move);
-      moveCount++;
+      try {
+        gameState = makeMove(gameState, move);
+        moves.push(move);
+        moveCount++;
+      } catch (error) {
+        console.error('❌ Move failed:', error, 'Move:', move);
+        break;
+      }
       
       // Check for game end conditions
       if (gameState.gamePhase === 'ended') {
