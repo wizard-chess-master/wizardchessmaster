@@ -114,6 +114,9 @@ export class MassAITraining {
       isCheckmate: false,
       isStalemate: false
     };
+
+    // Initialize the board with pieces
+    this.initializeBoard(gameState.board);
     
     // Initialize board with starting position
     this.initializeBoard(gameState.board);

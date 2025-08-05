@@ -30,22 +30,33 @@ export function MassTrainingDialog() {
   const abortRef = useRef<boolean>(false);
 
   const handleStartTraining = async () => {
+    console.log('🚀 Starting mass training with', gameCount, 'games...');
     setIsTraining(true);
     setProgress(null);
     setTrainingResults(null);
     abortRef.current = false;
 
     try {
+      console.log('📊 Mass training object check:', massTraining);
+      console.log('📊 runMassTraining method exists:', typeof massTraining.runMassTraining);
+      
+      if (!massTraining.runMassTraining) {
+        throw new Error('runMassTraining method not found on massTraining object');
+      }
+      
       const results = await massTraining.runMassTraining(gameCount, (progressData) => {
         if (abortRef.current) return;
+        console.log('📈 Training progress update:', progressData);
         setProgress(progressData);
       });
       
       if (!abortRef.current) {
+        console.log('✅ Training completed, results:', results);
         setTrainingResults(results);
       }
     } catch (error) {
-      console.error('Training failed:', error);
+      console.error('❌ Training failed:', error);
+      alert(`Training failed: ${error.message}`);
     } finally {
       setIsTraining(false);
     }
@@ -109,9 +120,9 @@ export function MassTrainingDialog() {
             <Brain className="w-5 h-5" />
             Advanced AI Training System
           </DialogTitle>
-          <div id="mass-training-description" className="sr-only">
+          <p id="mass-training-description" className="sr-only">
             Advanced AI training system for running thousands of self-play games with neural network learning and strategy pattern recognition.
-          </div>
+          </p>
         </DialogHeader>
 
         <Tabs defaultValue="training" className="w-full">
