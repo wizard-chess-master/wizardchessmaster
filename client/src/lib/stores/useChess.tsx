@@ -106,8 +106,12 @@ export const useChess = create<ChessStore>()(
       
       if (!piece) return;
 
-      const isWizardTeleport = piece.type === 'wizard' && !captured;
-      const isWizardAttack = piece.type === 'wizard' && !!captured && captured.color !== piece.color;
+      // Wizard movement logic: 
+      // - Teleport: move to empty square within 2 squares (wizard moves to new position)
+      // - Attack: destroy enemy within 2 squares but wizard STAYS in original position
+      const isWizardMove = piece.type === 'wizard';
+      const isWizardTeleport = isWizardMove && !captured;
+      const isWizardAttack = isWizardMove && !!captured && captured.color !== piece.color;
       
       // Check if pawn promotion is needed
       const promotion = piece.type === 'pawn' && 
