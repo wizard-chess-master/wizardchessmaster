@@ -3,17 +3,19 @@
 This is a **Fantasy Chess** web application - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
 
 ## Recent Changes (January 5, 2025)
-- **Mass AI Training System - FULLY OPERATIONAL**: Successfully implemented complete 1000-game self-play training with working UI
+- **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-1000 game range, covering all training needs
 - **Advanced AI Training System**: Implemented minimax with alpha-beta pruning (depth 4+) for large-scale self-play training
 - **Neural Network Learning**: AI learns from game outcomes using adaptive weights for material, position, king safety, and mobility
 - **Strategy Pattern Recognition**: AI discovers and logs strategic patterns (aggressive-tactical, strategic-development, wizard-focused, etc.)
-- **Mass Training Interface**: Complete functional UI for running, monitoring, and managing large-scale AI training sessions
+- **Unified Training Interface**: Single, comprehensive UI for all training needs - removed redundant training options
+- **Training Controls**: Start/stop functionality, configurable game counts, and real-time progress tracking
 - **JSON Strategy Logging**: Export/import training data with neural weights, strategy patterns, and game statistics
 - **10% Exploration**: Built-in randomness for varied gameplay and strategy discovery
 - **Piece Value System**: Standard chess values (pawn 1, knight/bishop 3, rook 5, queen 9, king ∞, wizard 4)
 - **Advanced Position Evaluation**: Wizard utility analysis, piece coordination bonuses, center control, king safety
 - **Transposition Tables**: Optimized move search with position caching for better performance
-- **UI Stability**: Fixed page unresponsiveness issues and ensured stable Mass AI Training dialog functionality
+- **UI Improvements**: Fixed win rate display issues, added main menu navigation, eliminated redundant controls
+- **Performance Optimization**: Limited AI learning records to prevent UI freezing during large training sessions
 - Enhanced AI tactical intelligence: threat analysis, piece defense evaluation, blunder prevention
 - Improved AI strategic diversity: penalties for overusing same pieces, coordination bonuses, piece development incentives
 
@@ -62,11 +64,12 @@ Preferred communication style: Simple, everyday language.
 ### Game Logic Architecture
 - **Chess Engine** - Complete 10x10 chess implementation with piece movement validation
 - **Advanced AI System** - Minimax with alpha-beta pruning, neural network learning, strategy pattern recognition
-- **Mass Training System** - 1000-game self-play training with strategy logging and neural weight adaptation
+- **Unified Training System** - Comprehensive training interface handling 1-1000 games with full control capabilities
 - **AI Difficulty Levels** - Easy/medium/hard with different strategies plus advanced minimax AI
 - **State Management** - Zustand stores for game state, audio controls, and UI state
 - **Move Validation** - Comprehensive piece movement rules including special wizard abilities
 - **Neural Learning** - Adaptive AI that learns from game outcomes and adjusts evaluation weights
+- **Training Features** - Start/stop controls, configurable game counts, real-time statistics, and performance optimization
 
 ### Audio System
 - **HTML5 Audio** - Sound effects for moves and game events
