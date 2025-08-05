@@ -61,9 +61,9 @@ export class AILearningSystem {
     const gamePattern: GamePattern = {
       id: `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
       moves: gameState.moveHistory,
-      outcome: this.determineOutcome(gameState, aiColor),
-      aiColor,
-      opponentType,
+      outcome: this.determineOutcome(gameState, aiColor!),
+      aiColor: aiColor!,
+      opponentType: opponentType!,
       gameLength: gameState.moveHistory.length,
       timestamp: Date.now()
     };
