@@ -110,9 +110,12 @@ export function MassTrainingDialog() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="gap-2">
-          <Brain className="w-4 h-4" />
-          Mass AI Training
+        <Button variant="outline" className="mode-button gap-2">
+          <div className="mode-content">
+            <Brain className="w-4 h-4" />
+            <span>Mass AI Training</span>
+            <Badge variant="secondary">Neural Network</Badge>
+          </div>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto" aria-describedby="mass-training-description">
@@ -152,8 +155,8 @@ export function MassTrainingDialog() {
                     type="number"
                     min="10"
                     max="10000"
-                    value={gameCount}
-                    onChange={(e) => setGameCount(parseInt(e.target.value))}
+                    value={gameCount || 1000}
+                    onChange={(e) => setGameCount(parseInt(e.target.value) || 1000)}
                     className="px-3 py-1 border rounded-md w-24"
                     disabled={isTraining}
                   />
