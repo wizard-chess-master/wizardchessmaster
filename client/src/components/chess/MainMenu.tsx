@@ -321,6 +321,14 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
+                    onClick={() => setShowStatsDialog(false)}
+                  >
+                    <Home className="w-4 h-4 mr-2" />
+                    Back to Menu
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
                     onClick={() => {
                       console.log('🔄 Resetting AI learning data...');
                       aiLearning.resetLearning();
