@@ -15,7 +15,7 @@ interface MainMenuProps {
 }
 
 export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
-  const { startGame } = useChess();
+  const { startGame, resetGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
@@ -321,7 +321,10 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowStatsDialog(false)}
+                    onClick={() => {
+                      setShowStatsDialog(false);
+                      resetGame(); // Actually navigate to main menu
+                    }}
                   >
                     <Home className="w-4 h-4 mr-2" />
                     Main Menu
