@@ -605,27 +605,129 @@ export class AIManager {
   private evaluateBoard(gameState: GameState, aiColor: PieceColor): number {
     let score = 0;
     
-    // Material evaluation
-    for (let row = 0; row < 10; row++) {
-      for (let col = 0; col < 10; col++) {
-        const piece = gameState.board[row][col];
-        if (piece) {
-          const pieceValue = this.pieceValues[piece.type];
-          if (piece.color === aiColor) {
-            score += pieceValue;
-          } else {
-            score -= pieceValue;
-          }
-        }
-      }
-    }
-    
-    // Checkmate/Stalemate detection
+    // Checkmate/Stalemate detection (check first for efficiency)
     if (gameState.isCheckmate) {
       return gameState.winner === aiColor ? 10000 : -10000;
     }
     if (gameState.isStalemate) {
       return 0;
+    }
+    
+    // Find important pieces positions for strategic evaluation
+    let aiKing: Position | null = null;
+    let aiQueen: Position | null = null;
+    let enemyKing: Position | null = null;
+    let enemyQueen: Position | null = null;
+    const aiWizards: Position[] = [];
+    const enemyWizards: Position[] = [];
+    const aiRooks: Position[] = [];
+    const enemyRooks: Position[] = [];
+    
+    // Material evaluation and piece positioning
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const piece = gameState.board[row][col];
+        if (piece) {
+          const pieceValue = this.pieceValues[piece.type];
+          const position = { row, col };
+          
+          if (piece.color === aiColor) {
+            score += pieceValue;
+            
+            // Track key pieces for strategic evaluation
+            if (piece.type === 'king') aiKing = position;
+            else if (piece.type === 'queen') aiQueen = position;
+            else if (piece.type === 'wizard') aiWizards.push(position);
+            else if (piece.type === 'rook') aiRooks.push(position);
+            
+          } else {
+            score -= pieceValue;
+            
+            // Track enemy key pieces
+            if (piece.type === 'king') enemyKing = position;
+            else if (piece.type === 'queen') enemyQueen = position;
+            else if (piece.type === 'wizard') enemyWizards.push(position);
+            else if (piece.type === 'rook') enemyRooks.push(position);
+          }
+        }
+      }
+    }
+    
+    // Strategic bonuses for new board layout
+    
+    // 1. Wizard protection bonuses near king/queen
+    if (aiKing && aiWizards.length > 0) {
+      for (const wizardPos of aiWizards) {
+        const distance = Math.max(Math.abs(aiKing.row - wizardPos.row), Math.abs(aiKing.col - wizardPos.col));
+        if (distance <= 2) {
+          score += 15; // Wizard protecting king bonus
+        }
+        if (distance <= 3) {
+          score += 5; // Wizard in king vicinity
+        }
+      }
+    }
+    
+    if (aiQueen && aiWizards.length > 0) {
+      for (const wizardPos of aiWizards) {
+        const distance = Math.max(Math.abs(aiQueen.row - wizardPos.row), Math.abs(aiQueen.col - wizardPos.col));
+        if (distance <= 2) {
+          score += 10; // Wizard protecting queen bonus
+        }
+      }
+    }
+    
+    // Enemy wizard protection penalty (they get defensive bonus)
+    if (enemyKing && enemyWizards.length > 0) {
+      for (const wizardPos of enemyWizards) {
+        const distance = Math.max(Math.abs(enemyKing.row - wizardPos.row), Math.abs(enemyKing.col - wizardPos.col));
+        if (distance <= 2) {
+          score -= 15; // Enemy wizard protecting their king
+        }
+      }
+    }
+    
+    // 2. Corner rook control bonuses
+    for (const rookPos of aiRooks) {
+      // Bonus for rooks in corners (strong defensive positions)
+      if ((rookPos.row === 0 || rookPos.row === 9) && (rookPos.col === 0 || rookPos.col === 9)) {
+        score += 8; // Corner rook bonus
+      }
+      
+      // Bonus for rooks on back rank (controlling key squares)
+      if ((aiColor === 'white' && rookPos.row === 9) || (aiColor === 'black' && rookPos.row === 0)) {
+        score += 5; // Back rank control
+      }
+      
+      // Bonus for active rooks (not on starting squares)
+      const isStartingSquare = (aiColor === 'white' && rookPos.row === 9 && (rookPos.col === 0 || rookPos.col === 9)) ||
+                              (aiColor === 'black' && rookPos.row === 0 && (rookPos.col === 0 || rookPos.col === 9));
+      if (!isStartingSquare) {
+        score += 3; // Active rook bonus
+      }
+    }
+    
+    // Enemy corner rook control penalty
+    for (const rookPos of enemyRooks) {
+      if ((rookPos.row === 0 || rookPos.row === 9) && (rookPos.col === 0 || rookPos.col === 9)) {
+        score -= 8; // Enemy corner rook penalty
+      }
+    }
+    
+    // 3. Center control bonus (important for the new layout)
+    const centerSquares = [
+      { row: 4, col: 4 }, { row: 4, col: 5 }, { row: 5, col: 4 }, { row: 5, col: 5 }
+    ];
+    
+    for (const centerSq of centerSquares) {
+      const piece = gameState.board[centerSq.row][centerSq.col];
+      if (piece) {
+        if (piece.color === aiColor) {
+          score += 3; // Center occupation bonus
+        } else {
+          score -= 3; // Enemy center occupation penalty
+        }
+      }
     }
     
     return score;
@@ -649,7 +751,7 @@ export class AIManager {
               from: { row, col },
               to: move,
               piece: piece,
-              captured: gameState.board[move.row][move.col],
+              captured: gameState.board[move.row][move.col] || undefined,
               isWizardTeleport: piece.type === 'wizard' && Math.abs(move.row - row) + Math.abs(move.col - col) > 1,
               isWizardAttack: piece.type === 'wizard' && gameState.board[move.row][move.col] !== null
             };
