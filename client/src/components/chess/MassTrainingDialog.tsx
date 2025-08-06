@@ -44,34 +44,76 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
         return;
       }
       
-      // Generate realistic results based on game count
-      const winRate = 0.45 + Math.random() * 0.1; // 45-55% win rate
-      const drawRate = 0.1 + Math.random() * 0.1; // 10-20% draws
+      // Generate realistic results based on game count with proper balance
+      const winRate = 0.40 + Math.random() * 0.15; // 40-55% white win rate
+      const drawRate = 0.12 + Math.random() * 0.08; // 12-20% draws  
+      const blackWinRate = 1 - winRate - drawRate; // Remaining for black
       
       const result = {
         whiteWins: Math.floor(gameCount * winRate),
-        blackWins: Math.floor(gameCount * (1 - winRate - drawRate)),
+        blackWins: Math.floor(gameCount * blackWinRate),
         draws: Math.floor(gameCount * drawRate),
         avgGameLength: 30 + Math.random() * 20, // 30-50 moves
         completionTime: trainingTime,
         strategiesLearned: Math.floor(gameCount / 50) + 1
       };
       
+      // Ensure totals match gameCount
+      const actualTotal = result.whiteWins + result.blackWins + result.draws;
+      if (actualTotal < gameCount) {
+        const diff = gameCount - actualTotal;
+        // Add remaining games to white wins
+        result.whiteWins += diff;
+      }
+      
+      console.log(`🎯 Training Results Distribution:`, {
+        whiteWins: result.whiteWins,
+        blackWins: result.blackWins, 
+        draws: result.draws,
+        total: result.whiteWins + result.blackWins + result.draws,
+        whiteRate: Math.round((result.whiteWins / gameCount) * 100) + '%',
+        blackRate: Math.round((result.blackWins / gameCount) * 100) + '%',
+        drawRate: Math.round((result.draws / gameCount) * 100) + '%'
+      });
+      
       console.log('Training completed:', result);
       setTrainingResults(result);
       
       // Record training results in AI learning system (limit to avoid overwhelming)
       const recordCount = Math.min(gameCount, 100); // Limit to 100 records to avoid UI freeze
+      
+      // Calculate proportions for recorded games
+      const recordedWhiteWins = Math.floor(result.whiteWins * (recordCount / gameCount));
+      const recordedBlackWins = Math.floor(result.blackWins * (recordCount / gameCount));
+      const recordedDraws = recordCount - recordedWhiteWins - recordedBlackWins;
+      
+      console.log(`📝 Recording ${recordCount} games:`, {
+        whiteWins: recordedWhiteWins,
+        blackWins: recordedBlackWins,
+        draws: recordedDraws,
+        total: recordedWhiteWins + recordedBlackWins + recordedDraws
+      });
+      
       for (let i = 0; i < recordCount; i++) {
+        let winner: string;
+        if (i < recordedWhiteWins) {
+          winner = 'white';
+        } else if (i < recordedWhiteWins + recordedBlackWins) {
+          winner = 'black';
+        } else {
+          winner = 'draw';
+        }
+        
         const gameResult = {
-          winner: i < result.whiteWins * (recordCount / gameCount) ? 'white' : 
-                  i < (result.whiteWins + result.blackWins) * (recordCount / gameCount) ? 'black' : 'draw',
+          winner,
           gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
           gameMode: 'ai-vs-ai' as const,
           aiDifficulty: 'advanced' as const,
           moveHistory: [], // Simplified for simulation
           timestamp: Date.now() - (recordCount - i) * 1000 // Spread over time
         };
+        
+        console.log(`📝 Recording game ${i + 1}/${recordCount}: winner = ${winner}`);
         aiLearning.analyzeGame(gameResult);
       }
       
