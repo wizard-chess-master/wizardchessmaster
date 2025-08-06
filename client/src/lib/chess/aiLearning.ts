@@ -40,8 +40,8 @@ interface LearningData {
 
 export class AILearningSystem {
   private learningData: LearningData;
-  private maxGameHistory = 100; // Keep last 100 games for better visibility
-  private maxPositionalPatterns = 5000; // Limit memory usage
+  private maxGameHistory = 500; // Keep last 500 games for comprehensive analysis
+  private maxPositionalPatterns = 10000; // Increased for large training datasets
 
   constructor() {
     this.learningData = this.loadLearningData();
@@ -256,7 +256,7 @@ export class AILearningSystem {
     const humanGames = this.learningData.recentGames.filter(g => g.opponentType === 'human').length;
     const aiGames = this.learningData.recentGames.filter(g => g.opponentType === 'ai').length;
 
-    // Enhanced debugging information
+    // Enhanced debugging information with data completeness check
     console.log('🔍 DETAILED LEARNING STATS DEBUG:');
     console.log(`  📈 Total games analyzed (lifetime): ${this.learningData.gamesPlayed}`);
     console.log(`  📋 Recent games in memory: ${totalGames}`);
@@ -266,6 +266,13 @@ export class AILearningSystem {
     console.log(`  🏁 Positional patterns: ${this.learningData.positionalPatterns.size}`);
     console.log(`  🎯 Win rate vs Human: ${Math.round(this.learningData.winRateVsHuman)}%`);
     console.log(`  🎯 Win rate vs AI: ${Math.round(this.learningData.winRateVsAI)}%`);
+    
+    // Data completeness warning
+    if (this.learningData.gamesPlayed > 0 && this.learningData.gamesPlayed < 50000) {
+      console.log(`  ⚠️  DATA INCOMPLETE: Only ${this.learningData.gamesPlayed} games recorded from larger training session!`);
+    } else if (this.learningData.gamesPlayed >= 50000) {
+      console.log(`  ✅ COMPLETE DATASET: ${this.learningData.gamesPlayed} games analyzed - full training captured!`);
+    }
     
     // Show recent games analysis
     const recentGamesSample = this.learningData.recentGames.slice(-10);

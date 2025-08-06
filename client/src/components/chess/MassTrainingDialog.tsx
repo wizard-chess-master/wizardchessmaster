@@ -79,45 +79,61 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
       console.log('Training completed:', result);
       setTrainingResults(result);
       
-      // Record training results in AI learning system (limit to avoid overwhelming)
-      const recordCount = Math.min(gameCount, 100); // Limit to 100 records to avoid UI freeze
+      // Record ALL training results in AI learning system with batched processing
+      const recordCount = gameCount; // Record every single game
+      const batchSize = 1000; // Process in batches to prevent UI freezing
       
       // Calculate proportions for recorded games
       const recordedWhiteWins = Math.floor(result.whiteWins * (recordCount / gameCount));
       const recordedBlackWins = Math.floor(result.blackWins * (recordCount / gameCount));
       const recordedDraws = recordCount - recordedWhiteWins - recordedBlackWins;
       
-      console.log(`📝 Recording ${recordCount} games:`, {
-        whiteWins: recordedWhiteWins,
-        blackWins: recordedBlackWins,
-        draws: recordedDraws,
-        total: recordedWhiteWins + recordedBlackWins + recordedDraws
+      console.log(`📝 Recording ALL ${recordCount} games in batches of ${batchSize}:`, {
+        whiteWins: result.whiteWins,
+        blackWins: result.blackWins,
+        draws: result.draws,
+        total: result.whiteWins + result.blackWins + result.draws
       });
       
-      for (let i = 0; i < recordCount; i++) {
-        let winner: string;
-        if (i < recordedWhiteWins) {
-          winner = 'white';
-        } else if (i < recordedWhiteWins + recordedBlackWins) {
-          winner = 'black';
-        } else {
-          winner = 'draw';
+      // Process games in batches to prevent UI freezing
+      for (let batch = 0; batch < Math.ceil(recordCount / batchSize); batch++) {
+        const batchStart = batch * batchSize;
+        const batchEnd = Math.min((batch + 1) * batchSize, recordCount);
+        
+        console.log(`📝 Processing batch ${batch + 1}/${Math.ceil(recordCount / batchSize)}: games ${batchStart + 1} to ${batchEnd}`);
+        
+        // Process this batch
+        for (let i = batchStart; i < batchEnd; i++) {
+          let winner: string;
+          if (i < result.whiteWins) {
+            winner = 'white';
+          } else if (i < result.whiteWins + result.blackWins) {
+            winner = 'black';
+          } else {
+            winner = 'draw';
+          }
+          
+          const gameResult = {
+            winner,
+            gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
+            gameMode: 'ai-vs-ai' as const,
+            aiDifficulty: 'advanced' as const,
+            moveHistory: [], // Simplified for simulation
+            timestamp: Date.now() - (recordCount - i) * 100 // Shorter time spread for large datasets
+          };
+          
+          aiLearning.analyzeGame(gameResult);
         }
         
-        const gameResult = {
-          winner,
-          gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
-          gameMode: 'ai-vs-ai' as const,
-          aiDifficulty: 'advanced' as const,
-          moveHistory: [], // Simplified for simulation
-          timestamp: Date.now() - (recordCount - i) * 1000 // Spread over time
-        };
-        
-        console.log(`📝 Recording game ${i + 1}/${recordCount}: winner = ${winner}`);
-        aiLearning.analyzeGame(gameResult);
+        // Add small delay between batches to prevent blocking
+        if (batch < Math.ceil(recordCount / batchSize) - 1) {
+          await new Promise(resolve => setTimeout(resolve, 10));
+        }
       }
       
-      console.log(`Updated AI learning stats with ${recordCount} training games (from ${gameCount} total)`);
+      console.log(`✅ Successfully recorded ALL ${recordCount} games to AI learning system!`);
+      
+      console.log(`Updated AI learning stats with ALL ${recordCount} training games`);
       
       // Show success message without blocking
       console.log(`✅ Training completed! ${result.whiteWins} white wins, ${result.blackWins} black wins, ${result.draws} draws`);
