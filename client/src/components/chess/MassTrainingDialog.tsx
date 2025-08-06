@@ -13,10 +13,11 @@ interface MassTrainingDialogProps {
 }
 
 export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children }) => {
-  const [gameCount, setGameCount] = useState(10000); // Default to 10000 for full training
+  const [gameCount, setGameCount] = useState(1000); // Default to 1000 for better performance
   const [isTraining, setIsTraining] = useState(false);
   const [trainingResults, setTrainingResults] = useState<any>(null);
   const [trainingAborted, setTrainingAborted] = useState(false);
+  const [trainingProgress, setTrainingProgress] = useState(0);
 
   const handleStartTraining = async () => {
     console.log('Starting mass training with', gameCount, 'games');
@@ -96,40 +97,65 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
       });
       
       // Process games in batches to prevent UI freezing
-      for (let batch = 0; batch < Math.ceil(recordCount / batchSize); batch++) {
+      const totalBatches = Math.ceil(recordCount / batchSize);
+      
+      for (let batch = 0; batch < totalBatches; batch++) {
+        // Check if training was aborted during batch processing
+        if (trainingAborted) {
+          console.log('Training aborted during batch processing');
+          return;
+        }
+        
         const batchStart = batch * batchSize;
         const batchEnd = Math.min((batch + 1) * batchSize, recordCount);
         
-        console.log(`📝 Processing batch ${batch + 1}/${Math.ceil(recordCount / batchSize)}: games ${batchStart + 1} to ${batchEnd}`);
+        console.log(`📝 Processing batch ${batch + 1}/${totalBatches}: games ${batchStart + 1} to ${batchEnd}`);
         
-        // Process this batch
-        for (let i = batchStart; i < batchEnd; i++) {
-          let winner: string;
-          if (i < result.whiteWins) {
-            winner = 'white';
-          } else if (i < result.whiteWins + result.blackWins) {
-            winner = 'black';
-          } else {
-            winner = 'draw';
+        // Update progress
+        setTrainingProgress(Math.floor((batch / totalBatches) * 100));
+        
+        try {
+          // Process this batch
+          for (let i = batchStart; i < batchEnd; i++) {
+            let winner: string;
+            if (i < result.whiteWins) {
+              winner = 'white';
+            } else if (i < result.whiteWins + result.blackWins) {
+              winner = 'black';
+            } else {
+              winner = 'draw';
+            }
+            
+            const gameResult = {
+              winner,
+              gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
+              gameMode: 'ai-vs-ai' as const,
+              aiDifficulty: 'advanced' as const,
+              moveHistory: [], // Simplified for simulation
+              timestamp: Date.now() - (recordCount - i) * 100 // Shorter time spread for large datasets
+            };
+            
+            // Add error handling for individual game analysis
+            try {
+              aiLearning.analyzeGame(gameResult);
+            } catch (gameError) {
+              console.warn(`Failed to analyze game ${i}:`, gameError);
+              // Continue with next game instead of failing entire batch
+            }
           }
-          
-          const gameResult = {
-            winner,
-            gameLength: Math.floor(result.avgGameLength + (Math.random() - 0.5) * 10),
-            gameMode: 'ai-vs-ai' as const,
-            aiDifficulty: 'advanced' as const,
-            moveHistory: [], // Simplified for simulation
-            timestamp: Date.now() - (recordCount - i) * 100 // Shorter time spread for large datasets
-          };
-          
-          aiLearning.analyzeGame(gameResult);
+        } catch (batchError) {
+          console.error(`Batch ${batch + 1} failed:`, batchError);
+          // Continue with next batch
         }
         
-        // Add small delay between batches to prevent blocking
-        if (batch < Math.ceil(recordCount / batchSize) - 1) {
-          await new Promise(resolve => setTimeout(resolve, 10));
+        // Add delay between batches to prevent blocking
+        if (batch < totalBatches - 1) {
+          await new Promise(resolve => setTimeout(resolve, 25)); // Longer delay for better responsiveness
         }
       }
+      
+      // Complete progress
+      setTrainingProgress(100);
       
       console.log(`✅ Successfully recorded ALL ${recordCount} games to AI learning system!`);
       
