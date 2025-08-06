@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=sized`; // Size-enhanced sprites
+        img.src = `/assets/sprites/${piece}-${color}.png?v=height-reduced`; // Height-reduced kings and wizards
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
@@ -136,6 +136,12 @@ export function ChessBoard() {
               drawHeight = availableSize;
               drawX = x + (SQUARE_SIZE - drawWidth) / 2;
               drawY = y + (SQUARE_SIZE - drawHeight) / 2;
+            }
+            
+            // Reduce height by 10% for kings and wizards
+            if (piece.type === 'king' || piece.type === 'wizard') {
+              drawHeight = drawHeight * 0.9; // 10% height reduction
+              drawY = y + (SQUARE_SIZE - drawHeight) / 2; // Re-center vertically
             }
             
             // Use ctx.drawImage with preserved aspect ratio and custom sizing
