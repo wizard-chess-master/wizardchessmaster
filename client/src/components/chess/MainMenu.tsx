@@ -119,7 +119,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     <div className="mode-content">
                       <Brain className="w-4 h-4" />
                       <span>Mass AI Training</span>
-                      <Badge variant="secondary">1-1000 Games</Badge>
+                      <Badge variant="secondary">1-10000 Games</Badge>
                     </div>
                   </Button>
                 </MassTrainingDialog>
@@ -137,7 +137,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                           completed: true,
                           message: 'Debug verification completed successfully!',
                           details: 'All core systems tested and verified. Check console for detailed results.',
-                          nextStep: 'System ready for mass AI training. Click "Mass AI Training" to begin 1000-game session.'
+                          nextStep: 'System ready for mass AI training. Click "Mass AI Training" to begin 10000-game session.'
                         });
                         setShowDebugDialog(true);
                       }, 2000); // Give verification time to complete

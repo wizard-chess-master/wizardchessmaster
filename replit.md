@@ -13,7 +13,7 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - **Advanced Minimax AI Integration**: Implemented user-specified minimax algorithm with alpha-beta pruning (depth 4+)
 - **Updated Piece Values**: All AI systems now use user-specified values (pawn 10, knight 30, bishop 30, rook 50, queen 90, king 900, wizard 35)
 - **AIManager Class**: Clean minimax implementation matching user pseudocode structure with simplified evaluation
-- **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-1000 game range, now using improved minimax
+- **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-10000 game range, now using improved minimax
 - **Fixed Learning Stats Dialog**: "Back to Menu" button moved to top of dialog for guaranteed visibility
 - **Advanced AI Training System**: Dual AI system with both neural network learning and pure minimax approaches
 - **Neural Network Learning**: AI learns from game outcomes using adaptive weights for material, position, king safety, and mobility
@@ -78,7 +78,7 @@ Preferred communication style: Simple, everyday language.
 - **State Management** - Zustand stores for game state, audio controls, and UI state
 - **Move Validation** - Comprehensive piece movement rules including special wizard abilities
 - **Neural Learning** - Adaptive AI that learns from game outcomes and adjusts evaluation weights
-- **Training Features** - Start/stop controls, configurable game counts, real-time statistics, and performance optimization
+- **Training Features** - Start/stop controls, configurable game counts (1-10000), real-time statistics, and performance optimization
 
 ### Audio System
 - **HTML5 Audio** - Sound effects for moves and game events

@@ -13,7 +13,7 @@ interface MassTrainingDialogProps {
 }
 
 export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children }) => {
-  const [gameCount, setGameCount] = useState(25); // Default to 25 for testing
+  const [gameCount, setGameCount] = useState(10000); // Default to 10000 for full training
   const [isTraining, setIsTraining] = useState(false);
   const [trainingResults, setTrainingResults] = useState<any>(null);
   const [trainingAborted, setTrainingAborted] = useState(false);
@@ -186,11 +186,11 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
                 id="gameCount"
                 type="number"
                 min="1"
-                max="1000"
+                max="10000"
                 value={gameCount}
                 onChange={(e) => {
                   const val = parseInt(e.target.value) || 25;
-                  setGameCount(Math.min(Math.max(val, 1), 1000)); // Clamp between 1-1000
+                  setGameCount(Math.min(Math.max(val, 1), 10000)); // Clamp between 1-10000
                 }}
                 className="px-3 py-1 border rounded-md w-24"
                 disabled={isTraining}

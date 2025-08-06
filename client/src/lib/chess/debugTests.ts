@@ -81,7 +81,7 @@ export class DebugTests {
     
     console.log('');
     console.log('🔥 DEBUG VERIFICATION FINISHED 🔥');
-    console.log('Click "Mass AI Training" to begin 1000-game training');
+    console.log('Click "Mass AI Training" to begin 10000-game training');
     console.log('');
   }
 

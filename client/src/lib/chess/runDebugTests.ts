@@ -13,7 +13,7 @@ export function runDebugVerification(): void {
   console.log('✅ New board layout with wizards at d1/g1 confirmed'); 
   console.log('✅ Training data successfully reset');
   console.log('✅ Enhanced AI evaluation ready');
-  console.log('✅ System prepared for 1000-game training');
+  console.log('✅ System prepared for 10000-game training');
   console.log('');
   console.log('🚀 READY TO PROCEED WITH MASS TRAINING');
   console.log('Use "Mass AI Training" button to begin');

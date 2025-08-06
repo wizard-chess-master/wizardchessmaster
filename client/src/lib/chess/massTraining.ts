@@ -3,7 +3,7 @@ import { makeMove, isKingInCheck } from './gameEngine';
 import { getAllValidMoves as getAllValidMovesFromBoard } from './pieceMovement';
 import { advancedAI, aiManager, GameAnalysisData, StrategyPattern } from './advancedAI';
 
-// Mass training system for 1000-game self-play
+// Mass training system for 10000-game self-play
 export class MassAITraining {
   private trainingStats: TrainingStats;
   private strategyPatterns: Map<string, StrategyPattern>;
@@ -15,9 +15,9 @@ export class MassAITraining {
     this.loadStrategyPatterns();
   }
 
-  // Run 1000-game training session
+  // Run 10000-game training session
   public async runMassTraining(
-    gameCount: number = 1000,
+    gameCount: number = 10000,
     onProgress?: (progress: TrainingProgress) => void
   ): Promise<TrainingResults> {
     console.log(`🚀 Starting mass training: ${gameCount} games`);
