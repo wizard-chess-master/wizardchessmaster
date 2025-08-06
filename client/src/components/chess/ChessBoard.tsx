@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=transparent2`; // Force reload new transparent sprites
+        img.src = `/assets/sprites/${piece}-${color}.png?v=original`; // Back to original sprites
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
@@ -99,21 +99,27 @@ export function ChessBoard() {
           });
           
           if (img && img.complete && img.naturalWidth > 0) {
-            // Calculate aspect ratio preservation
+            // Calculate aspect ratio preservation for all pieces
             const imgAspect = img.naturalWidth / img.naturalHeight;
             const padding = 5;
             const availableSize = SQUARE_SIZE - (padding * 2);
             
             let drawWidth, drawHeight, drawX, drawY;
             
-            if (imgAspect > 1) {
+            if (Math.abs(imgAspect - 1.0) < 0.1) {
+              // Nearly square - center it
+              drawWidth = availableSize;
+              drawHeight = availableSize;
+              drawX = x + padding;
+              drawY = y + padding;
+            } else if (imgAspect > 1) {
               // Wider than tall
               drawWidth = availableSize;
               drawHeight = availableSize / imgAspect;
               drawX = x + padding;
               drawY = y + padding + (availableSize - drawHeight) / 2;
             } else {
-              // Taller than wide or square
+              // Taller than wide
               drawWidth = availableSize * imgAspect;
               drawHeight = availableSize;
               drawX = x + padding + (availableSize - drawWidth) / 2;
