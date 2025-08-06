@@ -54,9 +54,16 @@
 
 .menu-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
   gap: 2rem;
   margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .menu-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 }
 
 .menu-card {
@@ -82,8 +89,10 @@
 .mode-content {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: space-between;
+  gap: 0.75rem;
   width: 100%;
+  min-width: 240px;
 }
 
 .rules-content,
