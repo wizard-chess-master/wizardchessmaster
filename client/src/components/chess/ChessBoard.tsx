@@ -12,6 +12,7 @@ export function ChessBoard() {
 
   // Load sprite images using the requested pattern
   useEffect(() => {
+    console.log('🎮 Loading chess piece sprites...');
     const pieceTypes = ['King', 'Queen', 'Castle', 'Bishop', 'Knight', 'Pawn', 'Wizard'];
     const colors = ['W', 'B']; // White, Black
     
@@ -20,9 +21,16 @@ export function ChessBoard() {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
         img.src = `/assets/sprites/${piece}-${color}.png`; // Load from assets/sprites
+        console.log(`🖼️ Loading sprite: ${img.src}`);
+        
         img.onload = () => {
+          console.log(`✅ Loaded sprite: ${key}`);
           imagesRef.current[key] = img;
           drawBoard(); // Redraw when image loads
+        };
+        
+        img.onerror = (error) => {
+          console.error(`❌ Failed to load sprite: ${key} from ${img.src}`, error);
         };
       });
     });
@@ -31,10 +39,22 @@ export function ChessBoard() {
   // Draw the chess board and pieces on canvas
   const drawBoard = () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      console.log('❌ Canvas not found');
+      return;
+    }
     
     const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) {
+      console.log('❌ Canvas context not found');
+      return;
+    }
+
+    console.log('🎨 Drawing board...', { 
+      boardSize: BOARD_SIZE, 
+      boardLength: board.length,
+      imagesLoaded: Object.keys(imagesRef.current).length 
+    });
 
     // Clear canvas
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
@@ -71,9 +91,28 @@ export function ChessBoard() {
           const spriteKey = getSpriteKey(piece.type, piece.color);
           const img = imagesRef.current[spriteKey];
           
-          if (img) {
+          console.log(`🔍 Drawing piece at ${row},${col}: ${piece.type} ${piece.color} (key: ${spriteKey})`, {
+            hasImage: !!img,
+            imageLoaded: img?.complete,
+            naturalWidth: img?.naturalWidth
+          });
+          
+          if (img && img.complete && img.naturalWidth > 0) {
             // Use ctx.drawImage as requested
             ctx.drawImage(img, x + 5, y + 5, SQUARE_SIZE - 10, SQUARE_SIZE - 10);
+          } else {
+            // Fallback: draw text symbol if image not loaded
+            const symbols = {
+              white: { king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙', wizard: '🧙' },
+              black: { king: '♚', queen: '♛', rook: '♜', bishop: '♝', knight: '♞', pawn: '♟', wizard: '🧙' }
+            };
+            const symbol = symbols[piece.color as keyof typeof symbols][piece.type as keyof typeof symbols.white] || '?';
+            
+            ctx.fillStyle = piece.color === 'white' ? '#fff' : '#000';
+            ctx.font = '30px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(symbol, x + SQUARE_SIZE / 2, y + SQUARE_SIZE / 2);
           }
         }
         
@@ -102,6 +141,19 @@ export function ChessBoard() {
     
     const colorCode = color === 'white' ? 'W' : 'B';
     return `${spriteMap[pieceType]}-${colorCode}`;
+  };
+
+  // Fallback text symbols for pieces
+  const getPieceSymbol = (pieceType: string, color: string): string => {
+    const symbols = {
+      white: {
+        king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙', wizard: '🧙'
+      },
+      black: {
+        king: '♚', queen: '♛', rook: '♜', bishop: '♝', knight: '♞', pawn: '♟', wizard: '🧙'
+      }
+    };
+    return symbols[color as keyof typeof symbols][pieceType as keyof typeof symbols.white] || '?';
   };
 
   // Handle canvas clicks
