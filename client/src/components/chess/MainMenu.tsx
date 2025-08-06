@@ -9,6 +9,7 @@ import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
+import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -137,6 +138,25 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     <Eye className="w-4 h-4" />
                     <span>Debug & Verify System</span>
                     <Badge variant="secondary">Test All</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="mode-button"
+                  variant="outline"
+                  onClick={() => {
+                    console.log('🔄 Training reset requested...');
+                    try {
+                      confirmAndResetTraining();
+                    } catch (error) {
+                      console.error('❌ Training reset failed:', error);
+                    }
+                  }}
+                >
+                  <div className="mode-content">
+                    <Zap className="w-4 h-4" />
+                    <span>🔄 Reset AI Training</span>
+                    <Badge variant="destructive">Clear All Data</Badge>
                   </div>
                 </Button>
                 
