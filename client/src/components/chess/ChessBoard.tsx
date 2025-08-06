@@ -9,8 +9,24 @@ export function ChessBoard() {
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatingPiece, setAnimatingPiece] = useState<{piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number} | null>(null);
-  const SQUARE_SIZE = 60;
-  const BOARD_SIZE = SQUARE_SIZE * 10;
+  const [canvasSize, setCanvasSize] = useState(600);
+  const [squareSize, setSquareSize] = useState(60);
+
+  // Responsive canvas sizing
+  useEffect(() => {
+    const updateCanvasSize = () => {
+      const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7, 600);
+      const newSquareSize = Math.floor(maxSize / 10);
+      const newCanvasSize = newSquareSize * 10;
+      
+      setCanvasSize(newCanvasSize);
+      setSquareSize(newSquareSize);
+    };
+
+    updateCanvasSize();
+    window.addEventListener('resize', updateCanvasSize);
+    return () => window.removeEventListener('resize', updateCanvasSize);
+  }, []);
 
   // Load sprite images using the requested pattern
   useEffect(() => {
@@ -55,13 +71,13 @@ export function ChessBoard() {
     // Reduced logging to prevent crashes
 
     // Clear canvas
-    ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
 
     // Draw squares
     for (let row = 0; row < 10; row++) {
       for (let col = 0; col < 10; col++) {
-        const x = col * SQUARE_SIZE;
-        const y = row * SQUARE_SIZE;
+        const x = col * squareSize;
+        const y = row * squareSize;
         
         // Alternate square colors
         const isLight = (row + col) % 2 === 0;
@@ -82,11 +98,11 @@ export function ChessBoard() {
           ctx.shadowBlur = 0;
         }
         
-        ctx.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
+        ctx.fillRect(x, y, squareSize, squareSize);
         
         // Draw border
         ctx.strokeStyle = '#999';
-        ctx.strokeRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
+        ctx.strokeRect(x, y, squareSize, squareSize);
         
         // Draw piece if present
         const piece = board[row][col];
@@ -103,7 +119,7 @@ export function ChessBoard() {
             // Calculate aspect ratio preservation for all pieces
             const imgAspect = img.naturalWidth / img.naturalHeight;
             let padding = 5;
-            let availableSize = SQUARE_SIZE - (padding * 2);
+            let availableSize = squareSize - (padding * 2);
             
             // Apply size multipliers for specific pieces
             let sizeMultiplier = 1.0;
@@ -116,7 +132,7 @@ export function ChessBoard() {
               padding = 3; // Slight padding reduction
             }
             
-            availableSize = (SQUARE_SIZE - (padding * 2)) * sizeMultiplier;
+            availableSize = (squareSize - (padding * 2)) * sizeMultiplier;
             
             let drawWidth, drawHeight, drawX, drawY;
             
@@ -124,26 +140,26 @@ export function ChessBoard() {
               // Nearly square - center it
               drawWidth = availableSize;
               drawHeight = availableSize;
-              drawX = x + (SQUARE_SIZE - drawWidth) / 2;
-              drawY = y + (SQUARE_SIZE - drawHeight) / 2;
+              drawX = x + (squareSize - drawWidth) / 2;
+              drawY = y + (squareSize - drawHeight) / 2;
             } else if (imgAspect > 1) {
               // Wider than tall
               drawWidth = availableSize;
               drawHeight = availableSize / imgAspect;
-              drawX = x + (SQUARE_SIZE - drawWidth) / 2;
-              drawY = y + (SQUARE_SIZE - drawHeight) / 2;
+              drawX = x + (squareSize - drawWidth) / 2;
+              drawY = y + (squareSize - drawHeight) / 2;
             } else {
               // Taller than wide
               drawWidth = availableSize * imgAspect;
               drawHeight = availableSize;
-              drawX = x + (SQUARE_SIZE - drawWidth) / 2;
-              drawY = y + (SQUARE_SIZE - drawHeight) / 2;
+              drawX = x + (squareSize - drawWidth) / 2;
+              drawY = y + (squareSize - drawHeight) / 2;
             }
             
             // Reduce height by 10% for kings and wizards
             if (piece.type === 'king' || piece.type === 'wizard') {
               drawHeight = drawHeight * 0.9; // 10% height reduction
-              drawY = y + (SQUARE_SIZE - drawHeight) / 2; // Re-center vertically
+              drawY = y + (squareSize - drawHeight) / 2; // Re-center vertically
             }
             
             // Use ctx.drawImage with preserved aspect ratio and custom sizing
@@ -160,7 +176,7 @@ export function ChessBoard() {
             ctx.font = '30px serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText(symbol, x + SQUARE_SIZE / 2, y + SQUARE_SIZE / 2);
+            ctx.fillText(symbol, x + squareSize / 2, y + squareSize / 2);
           }
         }
         
@@ -168,7 +184,7 @@ export function ChessBoard() {
         if (validMoves.some(move => move.row === row && move.col === col)) {
           ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
           ctx.beginPath();
-          ctx.arc(x + SQUARE_SIZE / 2, y + SQUARE_SIZE / 2, 8, 0, 2 * Math.PI);
+          ctx.arc(x + squareSize / 2, y + squareSize / 2, 8, 0, 2 * Math.PI);
           ctx.fill();
         }
       }
@@ -213,8 +229,8 @@ export function ChessBoard() {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     
-    const col = Math.floor(x / SQUARE_SIZE);
-    const row = Math.floor(y / SQUARE_SIZE);
+    const col = Math.floor(x / squareSize);
+    const row = Math.floor(y / squareSize);
     
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
       // Trigger animation effect
@@ -251,15 +267,15 @@ export function ChessBoard() {
         <div className="canvas-container">
           <div className="row-labels">
             {Array.from({ length: 10 }, (_, i) => (
-              <div key={i} className="coord-label row-label" style={{ height: SQUARE_SIZE }}>
+              <div key={i} className="coord-label row-label" style={{ height: squareSize }}>
                 {10 - i}
               </div>
             ))}
           </div>
           <canvas
             ref={canvasRef}
-            width={BOARD_SIZE}
-            height={BOARD_SIZE}
+            width={canvasSize}
+            height={canvasSize}
             onClick={handleCanvasClick}
             className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
             style={{ 

@@ -70,7 +70,7 @@ export function GameUI({ onSettings }: GameUIProps) {
       {/* Game Controls */}
       <Card className="medieval-panel game-controls">
         <CardContent className="pt-6">
-          <div className="control-buttons">
+          <div className="control-buttons flex flex-wrap gap-2 justify-center">
             <Button
               variant="outline"
               size="sm"

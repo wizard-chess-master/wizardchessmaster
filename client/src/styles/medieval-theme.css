@@ -184,18 +184,21 @@
   gap: 20px;
   padding: 20px;
   min-height: 100vh;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* Game UI Panel */
 .game-ui {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
   justify-content: center;
   align-items: start;
   margin: 20px 0;
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
+  padding: 0 10px;
 }
 
 .side-panel {
@@ -265,32 +268,39 @@
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 100%;
+  max-width: min(90vw, 600px);
+}
+
+/* Chess Canvas Responsive */
+.chess-canvas {
+  max-width: 100% !important;
+  height: auto !important;
+  width: auto !important;
+  aspect-ratio: 1;
 }
 
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .game-layout {
     padding: 10px;
-  }
-  
-  .game-ui {
-    flex-direction: column;
-    align-items: center;
     gap: 15px;
   }
+  
   .game-ui {
     grid-template-columns: 1fr;
     gap: 15px;
+    margin: 10px 0;
   }
   
   .board-container {
-    padding: 15px;
-    margin: 10px;
+    max-width: min(95vw, 500px);
+    padding: 10px;
   }
   
   .chess-canvas {
-    max-width: 100vw;
-    height: auto;
+    max-width: 100% !important;
+    width: 100% !important;
   }
   
   .side-panel {
@@ -298,38 +308,59 @@
   }
   
   .medieval-btn {
-    padding: 10px 20px;
+    padding: 10px 15px;
     font-size: 14px;
-    min-width: 240px;
+    min-width: 200px;
   }
   
   .game-container {
-    padding: 10px;
+    padding: 5px;
   }
   
   .main-menu {
     max-width: 95vw;
-    padding: 20px;
+    padding: 15px;
+  }
+  
+  .control-buttons {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
 @media (max-width: 480px) {
+  .game-layout {
+    padding: 5px;
+    gap: 10px;
+  }
+  
   .board-container {
-    padding: 10px;
+    max-width: min(98vw, 400px);
+    padding: 5px;
+  }
+  
+  .chess-canvas {
+    max-width: 100% !important;
+    width: 100% !important;
   }
   
   .medieval-btn {
-    padding: 8px 16px;
-    font-size: 13px;
+    padding: 8px 12px;
+    font-size: 12px;
+    min-width: 180px;
   }
   
   .side-panel {
-    padding: 12px;
+    padding: 10px;
   }
   
   .ad-banner {
-    padding: 10px;
-    min-height: 80px;
+    padding: 8px;
+    min-height: 60px;
+  }
+  
+  .game-ui {
+    padding: 0 5px;
   }
 }
 
