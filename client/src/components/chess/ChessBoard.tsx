@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=debug-sizing`; // Debug sizing changes
+        img.src = `/assets/sprites/${piece}-${color}.png?v=clean-render`; // Clean rendering without debug spam
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
@@ -50,11 +50,7 @@ export function ChessBoard() {
       return;
     }
 
-    console.log('🎨 Drawing board...', { 
-      boardSize: BOARD_SIZE, 
-      boardLength: board.length,
-      imagesLoaded: Object.keys(imagesRef.current).length 
-    });
+    // Reduced logging to prevent crashes
 
     // Clear canvas
     ctx.clearRect(0, 0, BOARD_SIZE, BOARD_SIZE);
@@ -91,14 +87,10 @@ export function ChessBoard() {
           const spriteKey = getSpriteKey(piece.type, piece.color);
           const img = imagesRef.current[spriteKey];
           
-          console.log(`🔍 Drawing piece at ${row},${col}: ${piece.type} ${piece.color} (key: ${spriteKey})`, {
-            hasImage: !!img,
-            imageLoaded: img?.complete,
-            naturalWidth: img?.naturalWidth,
-            naturalHeight: img?.naturalHeight,
-            pieceType: typeof piece.type,
-            pieceTypeValue: piece.type
-          });
+          // Debug only for kings and wizards to reduce console spam
+          if (piece.type === 'king' || piece.type === 'wizard') {
+            console.log(`🔍 Drawing ${piece.type} ${piece.color} at ${row},${col}`);
+          }
           
           if (img && img.complete && img.naturalWidth > 0) {
             // Calculate aspect ratio preservation for all pieces
@@ -108,18 +100,13 @@ export function ChessBoard() {
             
             // Apply size multipliers for specific pieces
             let sizeMultiplier = 1.0;
-            console.log(`🔍 Checking piece type: "${piece.type}" (${typeof piece.type})`);
             
             if (piece.type === 'king') {
               sizeMultiplier = 1.4; // Make kings larger and wider (40% bigger)
               padding = 2; // Reduce padding for larger pieces
-              console.log(`👑 King ${piece.color} size multiplier: ${sizeMultiplier}, padding: ${padding}`);
             } else if (piece.type === 'wizard') {
               sizeMultiplier = 1.2; // Make wizards slightly larger (20% bigger)
               padding = 3; // Slight padding reduction
-              console.log(`🧙 Wizard ${piece.color} size multiplier: ${sizeMultiplier}, padding: ${padding}`);
-            } else {
-              console.log(`⚪ Regular piece: ${piece.type} (no size multiplier)`);
             }
             
             availableSize = (SQUARE_SIZE - (padding * 2)) * sizeMultiplier;
@@ -147,14 +134,9 @@ export function ChessBoard() {
             }
             
             // Reduce height by 10% for kings and wizards
-            console.log(`🔍 Height reduction check for: "${piece.type}"`);
             if (piece.type === 'king' || piece.type === 'wizard') {
-              const originalHeight = drawHeight;
               drawHeight = drawHeight * 0.9; // 10% height reduction
               drawY = y + (SQUARE_SIZE - drawHeight) / 2; // Re-center vertically
-              console.log(`🔧 Height reduction for ${piece.type} ${piece.color}: ${originalHeight.toFixed(1)} → ${drawHeight.toFixed(1)} (${Math.round(originalHeight - drawHeight)}px shorter)`);
-            } else {
-              console.log(`⚪ No height reduction for: ${piece.type}`);
             }
             
             // Use ctx.drawImage with preserved aspect ratio and custom sizing
