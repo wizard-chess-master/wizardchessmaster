@@ -12,10 +12,28 @@ export function ChessBoard() {
   const [canvasSize, setCanvasSize] = useState(600);
   const [squareSize, setSquareSize] = useState(60);
 
-  // Responsive canvas sizing
+  // Responsive canvas sizing - 600x600 base, scales down for mobile
   useEffect(() => {
     const updateCanvasSize = () => {
-      const maxSize = Math.min(window.innerWidth * 0.9, window.innerHeight * 0.7, 600);
+      // Calculate available space for the board
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // Base size is 600x600 for desktop
+      let maxSize = 600;
+      
+      // Scale down for smaller screens, ensuring full visibility
+      if (viewportWidth < 768) {
+        // Mobile: use 85% of viewport width, max 500px
+        maxSize = Math.min(viewportWidth * 0.85, 500);
+      } else if (viewportWidth < 1024) {
+        // Tablet: use 80% of viewport width, max 600px
+        maxSize = Math.min(viewportWidth * 0.8, 600);
+      }
+      
+      // Ensure minimum size for playability
+      maxSize = Math.max(maxSize, 300);
+      
       const newSquareSize = Math.floor(maxSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
@@ -251,38 +269,41 @@ export function ChessBoard() {
   };
 
   return (
-    <div className="chess-board">
-      <div className="board-coordinates">
-        {/* Column labels */}
-        <div className="coord-row">
-          <div className="coord-corner"></div>
-          {Array.from({ length: 10 }, (_, i) => (
-            <div key={i} className="coord-label">
-              {String.fromCharCode(65 + i)}
-            </div>
-          ))}
-        </div>
-        
-        {/* Canvas board with row labels */}
-        <div className="canvas-container">
-          <div className="row-labels">
+    <div className="board-container">
+      <div className="chess-board">
+        <div className="board-coordinates">
+          {/* Column labels */}
+          <div className="coord-row">
+            <div className="coord-corner" style={{ width: '30px', height: '30px' }}></div>
             {Array.from({ length: 10 }, (_, i) => (
-              <div key={i} className="coord-label row-label" style={{ height: squareSize }}>
-                {10 - i}
+              <div key={i} className="coord-label" style={{ width: squareSize }}>
+                {String.fromCharCode(65 + i)}
               </div>
             ))}
           </div>
-          <canvas
-            ref={canvasRef}
-            width={canvasSize}
-            height={canvasSize}
-            onClick={handleCanvasClick}
-            className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
-            style={{ 
-              border: '2px solid #333',
-              cursor: 'pointer'
-            }}
-          />
+          
+          {/* Canvas board with row labels */}
+          <div className="canvas-container">
+            <div className="row-labels">
+              {Array.from({ length: 10 }, (_, i) => (
+                <div key={i} className="coord-label row-label" style={{ height: squareSize }}>
+                  {10 - i}
+                </div>
+              ))}
+            </div>
+            <canvas
+              ref={canvasRef}
+              width={canvasSize}
+              height={canvasSize}
+              onClick={handleCanvasClick}
+              className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
+              style={{ 
+                cursor: 'pointer',
+                width: canvasSize + 'px',
+                height: canvasSize + 'px'
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
