@@ -113,6 +113,25 @@ export const useChess = create<ChessStore>()(
       const isWizardTeleport = isWizardMove && !captured;
       const isWizardAttack = isWizardMove && !!captured && captured.color !== piece.color;
       
+      // Check for castling
+      const isCastling = piece.type === 'king' && Math.abs(to.col - from.col) === 3;
+      let rookMove: { from: Position; to: Position } | undefined = undefined;
+      
+      if (isCastling) {
+        const homeRow = piece.color === 'white' ? 9 : 0;
+        if (to.col === 2) { // Queenside castling (king to c1/c10)
+          rookMove = { 
+            from: { row: homeRow, col: 0 }, 
+            to: { row: homeRow, col: 3 } 
+          };
+        } else if (to.col === 6) { // Kingside castling (king to g1/g10)  
+          rookMove = { 
+            from: { row: homeRow, col: 9 }, 
+            to: { row: homeRow, col: 5 } 
+          };
+        }
+      }
+      
       // Check if pawn promotion is needed
       const promotion = piece.type === 'pawn' && 
         ((piece.color === 'white' && to.row === 0) || (piece.color === 'black' && to.row === 9)) 
@@ -126,7 +145,9 @@ export const useChess = create<ChessStore>()(
         captured,
         isWizardTeleport,
         isWizardAttack,
-        promotion
+        promotion,
+        isCastling,
+        rookMove
       };
 
       // Play move sound

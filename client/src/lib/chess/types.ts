@@ -24,6 +24,8 @@ export interface ChessMove {
   isWizardTeleport?: boolean;
   isWizardAttack?: boolean;
   promotion?: PieceType; // For pawn promotion
+  isCastling?: boolean;
+  rookMove?: { from: Position; to: Position }; // For castling, track rook movement
 }
 
 export interface GameState {

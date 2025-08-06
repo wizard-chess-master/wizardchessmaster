@@ -1,5 +1,5 @@
 import { ChessPiece, Position } from './types';
-import { isValidPosition, isKingInCheck } from './gameEngine';
+import { isValidPosition } from './gameEngine';
 
 export function getPossibleMoves(
   board: (ChessPiece | null)[][],
@@ -153,7 +153,92 @@ function getKingMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ches
     }
   }
   
+  // Add castling moves
+  const castlingMoves = getCastlingMoves(board, pos, piece);
+  moves.push(...castlingMoves);
+  
   return moves;
+}
+
+function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: ChessPiece): Position[] {
+  const moves: Position[] = [];
+  
+  // Can't castle if king has moved
+  if (king.hasMoved) return moves;
+  
+  // Can't castle if king is in check (simple check without importing circular dependency)
+  if (isKingUnderAttack(board, pos, king.color)) return moves;
+  
+  const homeRow = king.color === 'white' ? 9 : 0;
+  
+  // Only allow castling if king is on home row in starting position (column 5)
+  if (pos.row !== homeRow || pos.col !== 5) return moves;
+  
+  // Check castling queenside (king to c1/c10, rook a1/a10 to d1/d10)
+  const queensideRook = board[homeRow][0];
+  if (queensideRook && 
+      queensideRook.type === 'rook' && 
+      queensideRook.color === king.color && 
+      !queensideRook.hasMoved) {
+    
+    // Check if path is clear (b1, c1, d1 for white)
+    let pathClear = true;
+    for (let col = 1; col <= 4; col++) {
+      if (board[homeRow][col] && col !== 5) { // Skip king position
+        pathClear = false;
+        break;
+      }
+    }
+    
+    if (pathClear) {
+      // King moves to c1/c10 (column 2)
+      moves.push({ row: homeRow, col: 2 });
+    }
+  }
+  
+  // Check castling kingside (king to g1/g10, rook j1/j10 to f1/f10)
+  const kingsideRook = board[homeRow][9];
+  if (kingsideRook && 
+      kingsideRook.type === 'rook' && 
+      kingsideRook.color === king.color && 
+      !kingsideRook.hasMoved) {
+    
+    // Check if path is clear (g1, h1, i1 for white)
+    let pathClear = true;
+    for (let col = 6; col <= 8; col++) {
+      if (board[homeRow][col]) {
+        pathClear = false;
+        break;
+      }
+    }
+    
+    if (pathClear) {
+      // King moves to g1/g10 (column 6)
+      moves.push({ row: homeRow, col: 6 });
+    }
+  }
+  
+  return moves;
+}
+
+// Simple check function to avoid circular dependency
+function isKingUnderAttack(board: (ChessPiece | null)[][], kingPos: Position, kingColor: string): boolean {
+  // Check if any opponent piece can attack the king position
+  const opponentColor = kingColor === 'white' ? 'black' : 'white';
+  
+  for (let row = 0; row < 10; row++) {
+    for (let col = 0; col < 10; col++) {
+      const piece = board[row][col];
+      if (piece && piece.color === opponentColor) {
+        const moves = getPossibleMoves(board, { row, col }, piece);
+        if (moves.some(move => move.row === kingPos.row && move.col === kingPos.col)) {
+          return true;
+        }
+      }
+    }
+  }
+  
+  return false;
 }
 
 function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: ChessPiece): Position[] {
@@ -219,7 +304,21 @@ export function getAllValidMoves(board: (ChessPiece | null)[][], color: string):
             testBoard[from.row][from.col] = null;
           }
           
-          return !isKingInCheck(testBoard, color);
+          // Find king position and check if under attack
+          let kingPos: Position | null = null;
+          for (let r = 0; r < 10; r++) {
+            for (let c = 0; c < 10; c++) {
+              const p = testBoard[r][c];
+              if (p && p.type === 'king' && p.color === color) {
+                kingPos = { row: r, col: c };
+                break;
+              }
+            }
+            if (kingPos) break;
+          }
+          
+          if (!kingPos) return false;
+          return !isKingUnderAttack(testBoard, kingPos, color);
         });
         
         moves.push(...validMoves);

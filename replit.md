@@ -2,10 +2,17 @@
 
 This is a **Fantasy Chess** web application - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
 
-## Recent Changes (January 5, 2025)
-- **NEW: Advanced Minimax AI Integration**: Implemented user-specified minimax algorithm with alpha-beta pruning (depth 4+)
+## Recent Changes (January 6, 2025)
+- **NEW: Updated Board Layout**: Changed starting positions - wizards now in home row (d1/g1), full 10-column setup
+- **NEW: Castling System**: Implemented castling with king moving 3 squares (to c1/g1), rook to d1/f1
+- **Castling Rules**: Proper validation - no pieces between, king not in check, neither piece has moved
+- **Board Setup**: White: rook, knight, bishop, wizard, queen, king, wizard, bishop, knight, rook (mirrored for black)
+- **Wizard Movement Fixed**: Corrected wizard attack/teleport logic in all game modes
+
+## Previous Changes (January 5, 2025)
+- **Advanced Minimax AI Integration**: Implemented user-specified minimax algorithm with alpha-beta pruning (depth 4+)
 - **Updated Piece Values**: All AI systems now use user-specified values (pawn 10, knight 30, bishop 30, rook 50, queen 90, king 900, wizard 35)
-- **NEW: AIManager Class**: Clean minimax implementation matching user pseudocode structure with simplified evaluation
+- **AIManager Class**: Clean minimax implementation matching user pseudocode structure with simplified evaluation
 - **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-1000 game range, now using improved minimax
 - **Fixed Learning Stats Dialog**: "Back to Menu" button moved to top of dialog for guaranteed visibility
 - **Advanced AI Training System**: Dual AI system with both neural network learning and pure minimax approaches

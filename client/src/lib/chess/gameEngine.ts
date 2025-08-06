@@ -4,43 +4,39 @@ import { isValidMove, getAllValidMoves, getPossibleMoves } from './pieceMovement
 export function createInitialBoard(): (ChessPiece | null)[][] {
   const board: (ChessPiece | null)[][] = Array(10).fill(null).map(() => Array(10).fill(null));
   
-  // Place white pieces (bottom, row 9) - centered like traditional chess
-  board[9][1] = createPiece('rook', 'white', 'w-rook-1');
-  board[9][2] = createPiece('knight', 'white', 'w-knight-2');
-  board[9][3] = createPiece('bishop', 'white', 'w-bishop-3');
-  board[9][4] = createPiece('queen', 'white', 'w-queen-4');
-  board[9][5] = createPiece('king', 'white', 'w-king-5');
-  board[9][6] = createPiece('bishop', 'white', 'w-bishop-6');
-  board[9][7] = createPiece('knight', 'white', 'w-knight-7');
-  board[9][8] = createPiece('rook', 'white', 'w-rook-8');
+  // White pieces (bottom row 9): rook, knight, bishop, wizard, queen, king, wizard, bishop, knight, rook
+  board[9][0] = createPiece('rook', 'white', 'w-rook-0');     // a1
+  board[9][1] = createPiece('knight', 'white', 'w-knight-1');  // b1
+  board[9][2] = createPiece('bishop', 'white', 'w-bishop-2');  // c1
+  board[9][3] = createPiece('wizard', 'white', 'w-wizard-3');  // d1
+  board[9][4] = createPiece('queen', 'white', 'w-queen-4');    // e1
+  board[9][5] = createPiece('king', 'white', 'w-king-5');      // f1
+  board[9][6] = createPiece('wizard', 'white', 'w-wizard-6');  // g1
+  board[9][7] = createPiece('bishop', 'white', 'w-bishop-7');  // h1
+  board[9][8] = createPiece('knight', 'white', 'w-knight-8');  // i1
+  board[9][9] = createPiece('rook', 'white', 'w-rook-9');      // j1
   
   // White pawns (row 8) - all 10 columns
   for (let col = 0; col < 10; col++) {
     board[8][col] = createPiece('pawn', 'white', `w-pawn-${col}`);
   }
   
-  // White wizards in corners
-  board[9][0] = createPiece('wizard', 'white', 'w-wizard-0'); // a1
-  board[9][9] = createPiece('wizard', 'white', 'w-wizard-9'); // j1
-  
-  // Place black pieces (top, row 0) - centered like traditional chess
-  board[0][1] = createPiece('rook', 'black', 'b-rook-1');
-  board[0][2] = createPiece('knight', 'black', 'b-knight-2');
-  board[0][3] = createPiece('bishop', 'black', 'b-bishop-3');
-  board[0][4] = createPiece('queen', 'black', 'b-queen-4');
-  board[0][5] = createPiece('king', 'black', 'b-king-5');
-  board[0][6] = createPiece('bishop', 'black', 'b-bishop-6');
-  board[0][7] = createPiece('knight', 'black', 'b-knight-7');
-  board[0][8] = createPiece('rook', 'black', 'b-rook-8');
+  // Black pieces (top row 0): rook, knight, bishop, wizard, queen, king, wizard, bishop, knight, rook
+  board[0][0] = createPiece('rook', 'black', 'b-rook-0');     // a10
+  board[0][1] = createPiece('knight', 'black', 'b-knight-1');  // b10
+  board[0][2] = createPiece('bishop', 'black', 'b-bishop-2');  // c10
+  board[0][3] = createPiece('wizard', 'black', 'b-wizard-3');  // d10
+  board[0][4] = createPiece('queen', 'black', 'b-queen-4');    // e10
+  board[0][5] = createPiece('king', 'black', 'b-king-5');      // f10
+  board[0][6] = createPiece('wizard', 'black', 'b-wizard-6');  // g10
+  board[0][7] = createPiece('bishop', 'black', 'b-bishop-7');  // h10
+  board[0][8] = createPiece('knight', 'black', 'b-knight-8');  // i10
+  board[0][9] = createPiece('rook', 'black', 'b-rook-9');      // j10
   
   // Black pawns (row 1) - all 10 columns
   for (let col = 0; col < 10; col++) {
     board[1][col] = createPiece('pawn', 'black', `b-pawn-${col}`);
   }
-  
-  // Black wizards in corners
-  board[0][0] = createPiece('wizard', 'black', 'b-wizard-0'); // a10
-  board[0][9] = createPiece('wizard', 'black', 'b-wizard-9'); // j10
   
   return board;
 }
@@ -160,6 +156,17 @@ export function makeMove(gameState: GameState, move: ChessMove, skipRepetitionCh
     // Wizard attacks: remove target piece but wizard stays in place
     newBoard[move.to.row][move.to.col] = null;
     newBoard[move.from.row][move.from.col] = { ...move.piece, hasMoved: true };
+  } else if (move.isCastling && move.rookMove) {
+    // Castling: move king and rook
+    newBoard[move.to.row][move.to.col] = { ...move.piece, hasMoved: true };
+    newBoard[move.from.row][move.from.col] = null;
+    
+    // Move the rook
+    const rook = newBoard[move.rookMove.from.row][move.rookMove.from.col];
+    if (rook) {
+      newBoard[move.rookMove.to.row][move.rookMove.to.col] = { ...rook, hasMoved: true };
+      newBoard[move.rookMove.from.row][move.rookMove.from.col] = null;
+    }
   } else {
     // Normal move or wizard teleport: move piece to new position
     let pieceToPlace = { ...move.piece, hasMoved: true };
