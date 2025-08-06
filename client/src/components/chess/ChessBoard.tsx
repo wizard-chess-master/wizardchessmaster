@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=king-normal-size`; // Kings now normal square size
+        img.src = `/assets/sprites/${piece}-${color}.png?v=king-larger-than-queen`; // Kings larger than queens
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
@@ -102,8 +102,8 @@ export function ChessBoard() {
             let sizeMultiplier = 1.0;
             
             if (piece.type === 'king') {
-              sizeMultiplier = 1.0; // Kings match square dimensions  
-              padding = 5; // Normal padding for square-sized pieces
+              sizeMultiplier = 1.15; // Kings slightly larger than queens (15% bigger)
+              padding = 4; // Slightly reduced padding for larger pieces
             } else if (piece.type === 'wizard') {
               sizeMultiplier = 1.2; // Make wizards slightly larger (20% bigger)
               padding = 3; // Slight padding reduction
