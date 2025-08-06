@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=height-reduced`; // Height-reduced kings and wizards
+        img.src = `/assets/sprites/${piece}-${color}.png?v=debug-sizing`; // Debug sizing changes
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
@@ -109,9 +109,11 @@ export function ChessBoard() {
             if (piece.type === 'king') {
               sizeMultiplier = 1.4; // Make kings larger and wider (40% bigger)
               padding = 2; // Reduce padding for larger pieces
+              console.log(`👑 King ${piece.color} size multiplier: ${sizeMultiplier}, padding: ${padding}`);
             } else if (piece.type === 'wizard') {
               sizeMultiplier = 1.2; // Make wizards slightly larger (20% bigger)
               padding = 3; // Slight padding reduction
+              console.log(`🧙 Wizard ${piece.color} size multiplier: ${sizeMultiplier}, padding: ${padding}`);
             }
             
             availableSize = (SQUARE_SIZE - (padding * 2)) * sizeMultiplier;
@@ -140,8 +142,10 @@ export function ChessBoard() {
             
             // Reduce height by 10% for kings and wizards
             if (piece.type === 'king' || piece.type === 'wizard') {
+              const originalHeight = drawHeight;
               drawHeight = drawHeight * 0.9; // 10% height reduction
               drawY = y + (SQUARE_SIZE - drawHeight) / 2; // Re-center vertically
+              console.log(`🔧 Height reduction for ${piece.type} ${piece.color}: ${originalHeight.toFixed(1)} → ${drawHeight.toFixed(1)} (${Math.round(originalHeight - drawHeight)}px shorter)`);
             }
             
             // Use ctx.drawImage with preserved aspect ratio and custom sizing
