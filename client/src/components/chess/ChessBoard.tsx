@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=${Date.now()}`; // Force reload with cache bust
+        img.src = `/assets/sprites/${piece}-${color}.png?v=transparent`; // Transparent background sprites
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
