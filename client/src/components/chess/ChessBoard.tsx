@@ -9,30 +9,36 @@ export function ChessBoard() {
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatingPiece, setAnimatingPiece] = useState<{piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number} | null>(null);
-  const [canvasSize, setCanvasSize] = useState(600);
-  const [squareSize, setSquareSize] = useState(60);
+  const [canvasSize, setCanvasSize] = useState(800);
+  const [squareSize, setSquareSize] = useState(80);
 
-  // Responsive canvas sizing - 600x600 base, scales down for mobile
+  // Responsive canvas sizing - 800x800 base, scales down for mobile
   useEffect(() => {
     const updateCanvasSize = () => {
       // Calculate available space for the board
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Base size is 600x600 for desktop
-      let maxSize = 600;
+      // Base size is 800x800 for desktop
+      let maxSize = 800;
       
       // Scale down for smaller screens, ensuring full visibility
-      if (viewportWidth < 768) {
-        // Mobile: use 85% of viewport width, max 500px
-        maxSize = Math.min(viewportWidth * 0.85, 500);
+      if (viewportWidth < 480) {
+        // Small mobile: use 90% of viewport width, max 400px
+        maxSize = Math.min(viewportWidth * 0.90, 400);
+      } else if (viewportWidth < 768) {
+        // Mobile: use 85% of viewport width, max 600px
+        maxSize = Math.min(viewportWidth * 0.85, 600);
       } else if (viewportWidth < 1024) {
-        // Tablet: use 80% of viewport width, max 600px
-        maxSize = Math.min(viewportWidth * 0.8, 600);
+        // Tablet: use 80% of viewport width, max 700px
+        maxSize = Math.min(viewportWidth * 0.80, 700);
+      } else if (viewportWidth < 1200) {
+        // Small desktop: use 70% of viewport width, max 800px
+        maxSize = Math.min(viewportWidth * 0.70, 800);
       }
       
       // Ensure minimum size for playability
-      maxSize = Math.max(maxSize, 300);
+      maxSize = Math.max(maxSize, 320);
       
       const newSquareSize = Math.floor(maxSize / 10);
       const newCanvasSize = newSquareSize * 10;
@@ -274,7 +280,7 @@ export function ChessBoard() {
         <div className="board-coordinates">
           {/* Column labels */}
           <div className="coord-row">
-            <div className="coord-corner" style={{ width: '30px', height: '30px' }}></div>
+            <div className="coord-corner" style={{ width: Math.max(30, squareSize * 0.4) + 'px', height: Math.max(30, squareSize * 0.4) + 'px' }}></div>
             {Array.from({ length: 10 }, (_, i) => (
               <div key={i} className="coord-label" style={{ width: squareSize }}>
                 {String.fromCharCode(65 + i)}
