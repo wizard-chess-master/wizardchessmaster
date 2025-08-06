@@ -20,7 +20,7 @@ export function ChessBoard() {
       colors.forEach(color => {
         const key = `${piece}-${color}`;
         const img = new Image(); // Use requested new Image() pattern
-        img.src = `/assets/sprites/${piece}-${color}.png?v=original`; // Back to original sprites
+        img.src = `/assets/sprites/${piece}-${color}.png?v=sized`; // Size-enhanced sprites
         console.log(`🖼️ Loading sprite: ${img.src}`);
         
         img.onload = () => {
@@ -101,8 +101,20 @@ export function ChessBoard() {
           if (img && img.complete && img.naturalWidth > 0) {
             // Calculate aspect ratio preservation for all pieces
             const imgAspect = img.naturalWidth / img.naturalHeight;
-            const padding = 5;
-            const availableSize = SQUARE_SIZE - (padding * 2);
+            let padding = 5;
+            let availableSize = SQUARE_SIZE - (padding * 2);
+            
+            // Apply size multipliers for specific pieces
+            let sizeMultiplier = 1.0;
+            if (piece.type === 'king') {
+              sizeMultiplier = 1.4; // Make kings larger and wider (40% bigger)
+              padding = 2; // Reduce padding for larger pieces
+            } else if (piece.type === 'wizard') {
+              sizeMultiplier = 1.2; // Make wizards slightly larger (20% bigger)
+              padding = 3; // Slight padding reduction
+            }
+            
+            availableSize = (SQUARE_SIZE - (padding * 2)) * sizeMultiplier;
             
             let drawWidth, drawHeight, drawX, drawY;
             
@@ -110,23 +122,23 @@ export function ChessBoard() {
               // Nearly square - center it
               drawWidth = availableSize;
               drawHeight = availableSize;
-              drawX = x + padding;
-              drawY = y + padding;
+              drawX = x + (SQUARE_SIZE - drawWidth) / 2;
+              drawY = y + (SQUARE_SIZE - drawHeight) / 2;
             } else if (imgAspect > 1) {
               // Wider than tall
               drawWidth = availableSize;
               drawHeight = availableSize / imgAspect;
-              drawX = x + padding;
-              drawY = y + padding + (availableSize - drawHeight) / 2;
+              drawX = x + (SQUARE_SIZE - drawWidth) / 2;
+              drawY = y + (SQUARE_SIZE - drawHeight) / 2;
             } else {
               // Taller than wide
               drawWidth = availableSize * imgAspect;
               drawHeight = availableSize;
-              drawX = x + padding + (availableSize - drawWidth) / 2;
-              drawY = y + padding;
+              drawX = x + (SQUARE_SIZE - drawWidth) / 2;
+              drawY = y + (SQUARE_SIZE - drawHeight) / 2;
             }
             
-            // Use ctx.drawImage with preserved aspect ratio
+            // Use ctx.drawImage with preserved aspect ratio and custom sizing
             ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
           } else {
             // Fallback: draw text symbol if image not loaded
