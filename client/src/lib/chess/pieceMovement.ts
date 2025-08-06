@@ -221,7 +221,7 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
   return moves;
 }
 
-// Simple check function to avoid circular dependency
+// Simple check function to avoid circular dependency - does NOT include castling moves
 function isKingUnderAttack(board: (ChessPiece | null)[][], kingPos: Position, kingColor: string): boolean {
   // Check if any opponent piece can attack the king position
   const opponentColor = kingColor === 'white' ? 'black' : 'white';
@@ -230,7 +230,8 @@ function isKingUnderAttack(board: (ChessPiece | null)[][], kingPos: Position, ki
     for (let col = 0; col < 10; col++) {
       const piece = board[row][col];
       if (piece && piece.color === opponentColor) {
-        const moves = getPossibleMoves(board, { row, col }, piece);
+        // Use simplified moves that DON'T include castling to prevent recursion
+        const moves = getSimpleAttackMoves(board, { row, col }, piece);
         if (moves.some(move => move.row === kingPos.row && move.col === kingPos.col)) {
           return true;
         }
@@ -239,6 +240,56 @@ function isKingUnderAttack(board: (ChessPiece | null)[][], kingPos: Position, ki
   }
   
   return false;
+}
+
+// Simplified move generation for attack checking - NEVER includes castling moves
+function getSimpleAttackMoves(
+  board: (ChessPiece | null)[][],
+  position: Position,
+  piece: ChessPiece
+): Position[] {
+  switch (piece.type) {
+    case 'pawn':
+      return getPawnMoves(board, position, piece);
+    case 'rook':
+      return getRookMoves(board, position, piece);
+    case 'knight':
+      return getKnightMoves(board, position, piece);
+    case 'bishop':
+      return getBishopMoves(board, position, piece);
+    case 'queen':
+      return getQueenMoves(board, position, piece);
+    case 'king':
+      return getSimpleKingMoves(board, position, piece); // NO castling moves
+    case 'wizard':
+      return getWizardMoves(board, position, piece);
+    default:
+      return [];
+  }
+}
+
+// King moves WITHOUT castling - prevents infinite recursion
+function getSimpleKingMoves(board: (ChessPiece | null)[][], pos: Position, piece: ChessPiece): Position[] {
+  const moves: Position[] = [];
+  const directions = [
+    [-1, -1], [-1, 0], [-1, 1],
+    [0, -1],           [0, 1],
+    [1, -1],  [1, 0],  [1, 1]
+  ];
+  
+  for (const [dr, dc] of directions) {
+    const newPos = { row: pos.row + dr, col: pos.col + dc };
+    
+    if (isValidPosition(newPos)) {
+      const target = board[newPos.row][newPos.col];
+      if (!target || target.color !== piece.color) {
+        moves.push(newPos);
+      }
+    }
+  }
+  
+  // NO castling moves here to prevent recursion
+  return moves;
 }
 
 function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: ChessPiece): Position[] {
