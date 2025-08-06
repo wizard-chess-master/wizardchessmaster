@@ -8,6 +8,7 @@ import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3, X, Home } from 'luc
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
 import { MassTrainingDialog } from './MassTrainingDialog';
+import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -120,6 +121,25 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   </Button>
                 </MassTrainingDialog>
 
+                <Button
+                  className="mode-button"
+                  variant="outline"
+                  onClick={() => {
+                    console.log('🧪 Running functionality verification...');
+                    try {
+                      runDebugVerification();
+                    } catch (error) {
+                      console.error('❌ Debug verification failed:', error);
+                    }
+                  }}
+                >
+                  <div className="mode-content">
+                    <Eye className="w-4 h-4" />
+                    <span>Debug & Verify System</span>
+                    <Badge variant="secondary">Test All</Badge>
+                  </div>
+                </Button>
+                
                 <Button
                   className="mode-button"
                   variant="outline"
