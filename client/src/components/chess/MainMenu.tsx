@@ -113,19 +113,18 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
 
                 <MassTrainingDialog>
                   <Button
-                    className="mode-button"
+                    className="medieval-btn mode-button"
                     variant="outline"
                   >
                     <div className="mode-content">
-                      <Brain className="w-4 h-4" />
-                      <span>Mass AI Training</span>
+                      <span>🧙 Mass AI Training</span>
                       <Badge variant="secondary">1-10000 Games</Badge>
                     </div>
                   </Button>
                 </MassTrainingDialog>
 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   variant="outline"
                   onClick={() => {
                     console.log('🧪 Running functionality verification...');
@@ -154,14 +153,13 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   }}
                 >
                   <div className="mode-content">
-                    <Eye className="w-4 h-4" />
-                    <span>Debug & Verify System</span>
+                    <span>🧪 Debug & Verify System</span>
                     <Badge variant="secondary">Test All</Badge>
                   </div>
                 </Button>
                 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   variant="outline"
                   onClick={() => {
                     console.log('🔄 Training reset requested...');
@@ -173,14 +171,13 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   }}
                 >
                   <div className="mode-content">
-                    <Zap className="w-4 h-4" />
                     <span>🔄 Reset AI Training</span>
                     <Badge variant="destructive">Clear All Data</Badge>
                   </div>
                 </Button>
                 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   variant="outline"
                   onClick={() => {
                     const stats = aiLearning.getLearningStats();
@@ -193,8 +190,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   }}
                 >
                   <div className="mode-content">
-                    <BarChart3 className="w-4 h-4" />
-                    <span>View AI Learning Stats</span>
+                    <span>📊 View AI Learning Stats</span>
                     <Badge variant="secondary">
                       {learningStats?.totalGamesAnalyzed || 0} Games
                     </Badge>
@@ -202,13 +198,12 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                 </Button>
                 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   variant="outline"
                   onClick={() => startGame('local')}
                 >
                   <div className="mode-content">
-                    <Users className="w-4 h-4" />
-                    <span>Local Multiplayer</span>
+                    <span>👥 Local Multiplayer</span>
                     <Badge variant="outline">Pass & Play</Badge>
                   </div>
                 </Button>

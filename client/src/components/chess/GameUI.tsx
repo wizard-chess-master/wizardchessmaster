@@ -79,10 +79,12 @@ export function GameUI({ onSettings }: GameUIProps) {
                 // Navigate to main menu by resetting game phase
                 window.location.reload();
               }}
-              className="medieval-btn"
+              className="medieval-btn mode-button"
             >
-              <Home className="w-4 h-4 mr-2" />
-              🏠 Main Menu
+              <div className="mode-content">
+                <span>🏠 Main Menu</span>
+                <Badge variant="secondary">Home</Badge>
+              </div>
             </Button>
             
             <Button
@@ -90,44 +92,36 @@ export function GameUI({ onSettings }: GameUIProps) {
               size="sm"
               onClick={undoMove}
               disabled={moveHistory.length === 0}
-              className="medieval-btn"
+              className="medieval-btn mode-button"
             >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              🔄 Undo
+              <div className="mode-content">
+                <span>🔄 Undo</span>
+                <Badge variant="secondary">Last Move</Badge>
+              </div>
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={toggleMute}
-              className="medieval-btn"
+              className="medieval-btn mode-button"
             >
-              {isMuted ? (
-                <VolumeX className="w-4 h-4 mr-2" />
-              ) : (
-                <Volume2 className="w-4 h-4 mr-2" />
-              )}
-              {isMuted ? '🔊 Unmute' : '🔇 Mute'}
+              <div className="mode-content">
+                <span>{isMuted ? '🔊 Unmute' : '🔇 Mute'}</span>
+                <Badge variant="secondary">Audio</Badge>
+              </div>
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={onSettings}
-              className="medieval-btn"
+              className="medieval-btn mode-button"
             >
-              <Settings className="w-4 h-4 mr-2" />
-              ⚙️ Settings
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={resetGame}
-              className="medieval-btn"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              🏠 Menu
+              <div className="mode-content">
+                <span>⚙️ Settings</span>
+                <Badge variant="secondary">Config</Badge>
+              </div>
             </Button>
           </div>
         </CardContent>

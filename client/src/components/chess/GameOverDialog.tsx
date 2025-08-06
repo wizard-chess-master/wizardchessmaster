@@ -138,8 +138,11 @@ export function GameOverDialog() {
               <p className="text-sm text-muted-foreground mb-2">
                 Enjoyed the game?
               </p>
-              <Button variant="outline" size="sm" disabled>
-                Remove Ads - $2.99
+              <Button variant="outline" size="sm" className="medieval-btn mode-button" disabled>
+                <div className="mode-content">
+                  <span>💰 Remove Ads - $2.99</span>
+                  <Badge variant="secondary">Premium</Badge>
+                </div>
               </Button>
             </CardContent>
           </Card>
@@ -148,19 +151,24 @@ export function GameOverDialog() {
         <div className="game-over-actions flex gap-3 justify-center">
           <Button
             size="lg"
+            className="medieval-btn mode-button"
             onClick={() => {
               if (gameMode === 'ai') startGame('ai', aiDifficulty);
               else if (gameMode === 'ai-vs-ai') startGame('ai-vs-ai', aiDifficulty);
               else startGame('local');
             }}
           >
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Start New Game
+            <div className="mode-content">
+              <span>🔄 Start New Game</span>
+              <Badge variant="secondary">Restart</Badge>
+            </div>
           </Button>
           
-          <Button variant="outline" size="lg" onClick={resetGame}>
-            <Home className="w-4 h-4 mr-2" />
-            Quit
+          <Button variant="outline" size="lg" className="medieval-btn mode-button" onClick={resetGame}>
+            <div className="mode-content">
+              <span>🏠 Quit</span>
+              <Badge variant="secondary">Menu</Badge>
+            </div>
           </Button>
         </div>
       </DialogContent>

@@ -268,55 +268,65 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
               {!isTraining ? (
                 <Button 
                   onClick={handleStartTraining} 
-                  className="gap-2" 
+                  className="medieval-btn mode-button" 
                   size="default"
                 >
-                  <Play className="w-4 h-4" />
-                  Start Training
+                  <div className="mode-content">
+                    <span>▶️ Start Training</span>
+                    <Badge variant="secondary">Begin</Badge>
+                  </div>
                 </Button>
               ) : (
                 <Button 
                   onClick={handleStopTraining} 
                   variant="destructive"
-                  className="gap-2" 
+                  className="medieval-btn mode-button" 
                   size="default"
                 >
-                  <Square className="w-4 h-4" />
-                  Stop Training
+                  <div className="mode-content">
+                    <span>⏹️ Stop Training</span>
+                    <Badge variant="destructive">Abort</Badge>
+                  </div>
                 </Button>
               )}
               
               <Button 
                 onClick={handleTestGame}
                 variant="secondary" 
-                className="gap-2"
+                className="medieval-btn mode-button"
                 disabled={isTraining}
                 size="default"
               >
-                <Zap className="w-4 h-4" />
-                Test 1 Game
+                <div className="mode-content">
+                  <span>⚡ Test 1 Game</span>
+                  <Badge variant="secondary">Quick Test</Badge>
+                </div>
               </Button>
               
               <Button 
                 onClick={handleReset}
                 variant="outline" 
-                className="gap-2"
+                className="medieval-btn mode-button"
                 disabled={isTraining}
                 size="default"
               >
-                <RotateCcw className="w-4 h-4" />
-                Reset Data
+                <div className="mode-content">
+                  <span>🔄 Reset Data</span>
+                  <Badge variant="destructive">Clear</Badge>
+                </div>
               </Button>
               
               <Button 
                 onClick={() => window.location.reload()}
                 variant="outline" 
-                className="gap-2"
+                className="medieval-btn mode-button"
                 disabled={isTraining}
                 size="default"
               >
-                <Home className="w-4 h-4" />
-                Main Menu
+                <div className="mode-content">
+                  <span>🏠 Main Menu</span>
+                  <Badge variant="secondary">Home</Badge>
+                </div>
               </Button>
             </div>
 

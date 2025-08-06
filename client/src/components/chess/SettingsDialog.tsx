@@ -8,6 +8,7 @@ import {
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { Switch } from '../ui/switch';
 import { Volume2, VolumeX, Info, Home } from 'lucide-react';
 
@@ -116,16 +117,22 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
         <div className="settings-footer">
           <Button 
             variant="outline"
+            className="medieval-btn mode-button"
             onClick={() => {
               onClose();
               window.location.reload();
             }}
           >
-            <Home className="w-4 h-4 mr-2" />
-            Main Menu
+            <div className="mode-content">
+              <span>🏠 Main Menu</span>
+              <Badge variant="secondary">Home</Badge>
+            </div>
           </Button>
-          <Button onClick={onClose}>
-            Close
+          <Button className="medieval-btn mode-button" onClick={onClose}>
+            <div className="mode-content">
+              <span>✕ Close</span>
+              <Badge variant="secondary">Cancel</Badge>
+            </div>
           </Button>
         </div>
       </DialogContent>
