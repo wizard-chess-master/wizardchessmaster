@@ -56,41 +56,41 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
             <CardContent>
               <div className="game-mode-buttons">
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   onClick={() => startGame('ai', 'easy')}
                 >
                   <div className="mode-content">
-                    <span>Player vs AI - Easy</span>
+                    <span>🧙 Player vs AI - Easy</span>
                     <Badge variant="secondary">Beginner</Badge>
                   </div>
                 </Button>
                 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   onClick={() => startGame('ai', 'medium')}
                 >
                   <div className="mode-content">
-                    <span>Player vs AI - Medium</span>
+                    <span>⚔️ Player vs AI - Medium</span>
                     <Badge variant="secondary">Intermediate</Badge>
                   </div>
                 </Button>
                 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   onClick={() => startGame('ai', 'hard')}
                 >
                   <div className="mode-content">
-                    <span>Player vs AI - Hard</span>
+                    <span>🏰 Player vs AI - Hard</span>
                     <Badge variant="secondary">Expert</Badge>
                   </div>
                 </Button>
                 
                 <Button
-                  className="mode-button"
+                  className="medieval-btn mode-button"
                   onClick={() => startGame('ai-vs-ai', 'hard')}
                 >
                   <div className="mode-content">
-                    <span>AI vs AI - Advanced</span>
+                    <span>⚔️ AI vs AI Battle</span>
                     <Badge variant="secondary">Strategic Battle</Badge>
                   </div>
                 </Button>
@@ -99,13 +99,13 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
 
                 {onTrainingViewer && (
                   <Button
-                    className="mode-button"
+                    className="medieval-btn mode-button"
                     variant="outline"
                     onClick={onTrainingViewer}
                   >
                     <div className="mode-content">
                       <Eye className="w-4 h-4" />
-                      <span>Watch AI Training</span>
+                      <span>🧙 Watch AI Training</span>
                       <Badge variant="secondary">Visual Mode</Badge>
                     </div>
                   </Button>

@@ -2,7 +2,21 @@
 
 This is a **Fantasy Chess** web application - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
 
+**NEW: Comprehensive Medieval Fantasy Visual Overhaul** - The application now features a fully immersive medieval fantasy theme with castle backgrounds, wooden UI elements, glowing highlights, smooth animations, and mobile-responsive design.
+
 ## Recent Changes (January 6, 2025)
+
+### MAJOR VISUAL OVERHAUL - Medieval Fantasy Theme
+- **Generated Medieval Assets**: Created castle background, wooden UI panels, and stone textures using AI image generation
+- **Complete CSS Redesign**: Implemented comprehensive medieval-theme.css with wooden buttons, gold accents, and atmospheric styling
+- **Enhanced Canvas Rendering**: Added glowing highlights for selected squares (gold) and valid moves (green) with shadow effects
+- **Smooth Animations**: Implemented 0.5s piece movement animations with glowing canvas effects during moves
+- **Responsive Design**: Full mobile responsiveness with adaptive grid layouts and scaled elements
+- **Subtle Ad Integration**: Added tasteful medieval-themed ad spaces that blend with the fantasy atmosphere
+- **Medieval Typography**: Integrated Cinzel font for authentic medieval text styling throughout the interface
+- **Interactive Elements**: All buttons, menus, and UI panels now use wooden textures with bronze borders and hover effects
+
+### Previous Updates (January 6, 2025)
 - **NEW: Updated Board Layout**: Changed starting positions - wizards now in home row (d1/g1), full 10-column setup
 - **NEW: Castling System**: Implemented castling with king moving 3 squares (to c1/g1), rook to d1/f1
 - **Castling Rules**: Proper validation - no pieces between, king not in check, neither piece has moved
@@ -54,9 +68,10 @@ Preferred communication style: Simple, everyday language.
 ### Frontend Architecture
 - **React with TypeScript** - Component-based UI with type safety
 - **Zustand State Management** - Lightweight state management for game state and audio
-- **Tailwind CSS + Radix UI** - Modern styling with accessible component primitives
+- **Tailwind CSS + Radix UI + Medieval Theme** - Modern styling with accessible components and comprehensive medieval fantasy CSS
 - **Vite Build Tool** - Fast development and optimized production builds
-- **Three.js Integration** - 3D graphics support via React Three Fiber (with GLSL shader support)
+- **Canvas-Based Chess Rendering** - Custom sprite rendering with smooth animations and glowing effects
+- **Responsive Medieval Design** - Mobile-first approach with fantasy-themed layouts and wooden UI elements
 
 ### Backend Architecture
 - **Express.js Server** - RESTful API with TypeScript

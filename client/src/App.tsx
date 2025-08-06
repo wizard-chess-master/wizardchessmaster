@@ -63,31 +63,78 @@ function App() {
   }, []);
 
   return (
-    <div className="chess-app">
-      {gamePhase === 'menu' && !showTrainingViewer && (
-        <MainMenu 
-          onSettings={() => setShowSettings(true)}
-          onTrainingViewer={() => setShowTrainingViewer(true)}
-        />
-      )}
-
-      {showTrainingViewer && (
-        <TrainingViewer onBack={() => setShowTrainingViewer(false)} />
-      )}
-      
-      {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
-        <>
-          <div className="game-container">
-            <ChessBoard />
-            <GameUI onSettings={() => setShowSettings(true)} />
+    <div className="App">
+      <div className="game-container">
+        {gamePhase === 'menu' && !showTrainingViewer && (
+          <div className="main-menu">
+            <h1>⚔️ Fantasy Wizard Chess ⚔️</h1>
+            <div className="menu-buttons">
+              <MainMenu 
+                onSettings={() => setShowSettings(true)}
+                onTrainingViewer={() => setShowTrainingViewer(true)}
+              />
+            </div>
+            
+            {/* Subtle Ad Banner */}
+            <div className="ad-banner-horizontal ad-banner">
+              <span style={{ opacity: 0.6 }}>🏰 Medieval Adventures Await 🏰</span>
+            </div>
           </div>
-          {gamePhase === 'ended' && <GameOverDialog />}
-        </>
-      )}
+        )}
 
-      {showSettings && (
-        <SettingsDialog onClose={() => setShowSettings(false)} />
-      )}
+        {showTrainingViewer && (
+          <div className="medieval-panel">
+            <TrainingViewer onBack={() => setShowTrainingViewer(false)} />
+          </div>
+        )}
+        
+        {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
+          <div className="game-ui">
+            {/* Left Panel - Game Controls */}
+            <div className="side-panel">
+              <h3>🎮 Game Controls</h3>
+              <div className="flex flex-col gap-3">
+                <button
+                  onClick={() => useChess.getState().resetGame()}
+                  className="medieval-btn"
+                >
+                  🏠 Back to Menu
+                </button>
+              </div>
+              
+              {/* Left Ad Space */}
+              <div className="ad-banner">
+                <span style={{ opacity: 0.7 }}>⚔️ Strategy Guide</span>
+              </div>
+            </div>
+
+            {/* Center - Game Board */}
+            <div className="board-container">
+              <ChessBoard />
+              <GameUI onSettings={() => setShowSettings(true)} />
+              {gamePhase === 'ended' && <GameOverDialog />}
+            </div>
+
+            {/* Right Panel - Game Info */}
+            <div className="side-panel">
+              <h3>📊 Game Status</h3>
+              <div className="medieval-text">
+                <div>Current Phase: <strong>{gamePhase}</strong></div>
+                <div>Turn: <strong>{useChess.getState().currentPlayer}</strong></div>
+              </div>
+              
+              {/* Right Ad Space */}
+              <div className="ad-banner">
+                <span style={{ opacity: 0.7 }}>🧙 Master Tips</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showSettings && (
+          <SettingsDialog onClose={() => setShowSettings(false)} />
+        )}
+      </div>
     </div>
   );
 }

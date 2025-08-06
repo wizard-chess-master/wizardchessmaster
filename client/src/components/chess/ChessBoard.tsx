@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { ChessPiece } from './ChessPiece';
 import { Position } from '../../lib/chess/types';
@@ -7,6 +7,8 @@ export function ChessBoard() {
   const { board, selectedPosition, validMoves, selectSquare } = useChess();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animatingPiece, setAnimatingPiece] = useState<{piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number} | null>(null);
   const SQUARE_SIZE = 60;
   const BOARD_SIZE = SQUARE_SIZE * 10;
 
@@ -65,14 +67,19 @@ export function ChessBoard() {
         const isLight = (row + col) % 2 === 0;
         ctx.fillStyle = isLight ? '#f0d9b5' : '#b58863';
         
-        // Highlight selected square
+        // Enhanced highlighting with glow effects
         if (selectedPosition?.row === row && selectedPosition?.col === col) {
-          ctx.fillStyle = '#7dd3fc'; // Light blue for selected
-        }
-        
-        // Highlight valid move squares
-        if (validMoves.some(move => move.row === row && move.col === col)) {
-          ctx.fillStyle = isLight ? '#90ee90' : '#68c968'; // Light green for valid moves
+          // Golden glow for selected square
+          ctx.fillStyle = '#ffd700'; // Gold for selected
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = '#ffd700';
+        } else if (validMoves.some(move => move.row === row && move.col === col)) {
+          // Green glow for valid moves
+          ctx.fillStyle = isLight ? '#90ee90' : '#68c968';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#00ff00';
+        } else {
+          ctx.shadowBlur = 0;
         }
         
         ctx.fillRect(x, y, SQUARE_SIZE, SQUARE_SIZE);
@@ -197,7 +204,7 @@ export function ChessBoard() {
     return symbols[color as keyof typeof symbols][pieceType as keyof typeof symbols.white] || '?';
   };
 
-  // Handle canvas clicks
+  // Handle canvas clicks with animation trigger
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -210,6 +217,10 @@ export function ChessBoard() {
     const row = Math.floor(y / SQUARE_SIZE);
     
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
+      // Trigger animation effect
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 500);
+      
       selectSquare({ row, col });
     }
   };
@@ -250,7 +261,7 @@ export function ChessBoard() {
             width={BOARD_SIZE}
             height={BOARD_SIZE}
             onClick={handleCanvasClick}
-            className="chess-canvas"
+            className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
             style={{ 
               border: '2px solid #333',
               cursor: 'pointer'

@@ -41,26 +41,26 @@ export function GameUI({ onSettings }: GameUIProps) {
   return (
     <div className="game-ui">
       {/* Game Status Card */}
-      <Card className="game-status">
+      <Card className="medieval-panel game-status">
         <CardHeader>
-          <CardTitle className="flex items-center justify-between">
-            <span>Chess Variant</span>
+          <CardTitle className="flex items-center justify-between medieval-text">
+            <span>🏰 Fantasy Chess</span>
             <Badge variant="outline">{getGameModeDisplay()}</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="status-info">
             <div className="current-player">
-              <span className={`player-indicator ${currentPlayer}`}>
+              <span className={`player-indicator ${currentPlayer} medieval-text`}>
                 {getCurrentPlayerDisplay()}
               </span>
               {isInCheck && (
                 <Badge variant="destructive" className="ml-2">
-                  Check!
+                  ⚠️ Check!
                 </Badge>
               )}
             </div>
-            <div className="move-count">
+            <div className="move-count medieval-text">
               Move: {Math.floor(moveHistory.length / 2) + 1}
             </div>
           </div>
@@ -68,7 +68,7 @@ export function GameUI({ onSettings }: GameUIProps) {
       </Card>
 
       {/* Game Controls */}
-      <Card className="game-controls">
+      <Card className="medieval-panel game-controls">
         <CardContent className="pt-6">
           <div className="control-buttons">
             <Button
@@ -79,9 +79,10 @@ export function GameUI({ onSettings }: GameUIProps) {
                 // Navigate to main menu by resetting game phase
                 window.location.reload();
               }}
+              className="medieval-btn"
             >
               <Home className="w-4 h-4 mr-2" />
-              Main Menu
+              🏠 Main Menu
             </Button>
             
             <Button
@@ -89,49 +90,53 @@ export function GameUI({ onSettings }: GameUIProps) {
               size="sm"
               onClick={undoMove}
               disabled={moveHistory.length === 0}
+              className="medieval-btn"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              Undo
+              🔄 Undo
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={toggleMute}
+              className="medieval-btn"
             >
               {isMuted ? (
                 <VolumeX className="w-4 h-4 mr-2" />
               ) : (
                 <Volume2 className="w-4 h-4 mr-2" />
               )}
-              {isMuted ? 'Unmute' : 'Mute'}
+              {isMuted ? '🔊 Unmute' : '🔇 Mute'}
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={onSettings}
+              className="medieval-btn"
             >
               <Settings className="w-4 h-4 mr-2" />
-              Settings
+              ⚙️ Settings
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={resetGame}
+              className="medieval-btn"
             >
               <Home className="w-4 h-4 mr-2" />
-              Menu
+              🏠 Menu
             </Button>
           </div>
         </CardContent>
       </Card>
 
       {/* Move History */}
-      <Card className="move-history">
+      <Card className="medieval-panel move-history">
         <CardHeader>
-          <CardTitle>Move History</CardTitle>
+          <CardTitle className="medieval-text">📜 Move History</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="history-list">
