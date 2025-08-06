@@ -89,45 +89,12 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
-          <div className="game-ui">
-            {/* Left Panel - Game Controls */}
-            <div className="side-panel">
-              <h3>🎮 Game Controls</h3>
-              <div className="flex flex-col gap-3">
-                <button
-                  onClick={() => useChess.getState().resetGame()}
-                  className="medieval-btn"
-                >
-                  🏠 Back to Menu
-                </button>
-              </div>
-              
-              {/* Left Ad Space */}
-              <div className="ad-banner">
-                <span style={{ opacity: 0.7 }}>⚔️ Strategy Guide</span>
-              </div>
-            </div>
-
-            {/* Center - Game Board */}
+          <div className="game-layout">
+            <GameUI onSettings={() => setShowSettings(true)} />
             <div className="board-container">
               <ChessBoard />
-              <GameUI onSettings={() => setShowSettings(true)} />
-              {gamePhase === 'ended' && <GameOverDialog />}
             </div>
-
-            {/* Right Panel - Game Info */}
-            <div className="side-panel">
-              <h3>📊 Game Status</h3>
-              <div className="medieval-text">
-                <div>Current Phase: <strong>{gamePhase}</strong></div>
-                <div>Turn: <strong>{useChess.getState().currentPlayer}</strong></div>
-              </div>
-              
-              {/* Right Ad Space */}
-              <div className="ad-banner">
-                <span style={{ opacity: 0.7 }}>🧙 Master Tips</span>
-              </div>
-            </div>
+            {gamePhase === 'ended' && <GameOverDialog />}
           </div>
         )}
 
