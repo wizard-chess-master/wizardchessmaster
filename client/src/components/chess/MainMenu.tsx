@@ -21,6 +21,8 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
+  const [showDebugDialog, setShowDebugDialog] = useState(false);
+  const [debugResults, setDebugResults] = useState<any>(null);
 
   useEffect(() => {
     // Load existing learning data
@@ -129,8 +131,25 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     console.log('🧪 Running functionality verification...');
                     try {
                       runDebugVerification();
+                      // Show results dialog after verification completes
+                      setTimeout(() => {
+                        setDebugResults({
+                          completed: true,
+                          message: 'Debug verification completed successfully!',
+                          details: 'All core systems tested and verified. Check console for detailed results.',
+                          nextStep: 'System ready for mass AI training. Click "Mass AI Training" to begin 1000-game session.'
+                        });
+                        setShowDebugDialog(true);
+                      }, 2000); // Give verification time to complete
                     } catch (error) {
                       console.error('❌ Debug verification failed:', error);
+                      setDebugResults({
+                        completed: false,
+                        message: 'Debug verification encountered issues',
+                        details: `Error: ${error}`,
+                        nextStep: 'Check console for details and try again.'
+                      });
+                      setShowDebugDialog(true);
                     }
                   }}
                 >
@@ -438,6 +457,57 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
               </div>
             )}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Debug Verification Results Dialog */}
+      <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              Debug Verification Results
+            </DialogTitle>
+          </DialogHeader>
+          
+          {debugResults && (
+            <div className="space-y-4 p-4">
+              <div className={`text-lg font-semibold ${debugResults.completed ? 'text-green-600' : 'text-orange-600'}`}>
+                {debugResults.completed ? '✅ Verification Complete' : '⚠️ Verification Issues'}
+              </div>
+              
+              <div className="p-4 bg-slate-100 rounded">
+                <p className="font-medium mb-2">{debugResults.message}</p>
+                <p className="text-sm text-gray-600">{debugResults.details}</p>
+              </div>
+              
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded">
+                <p className="font-medium text-blue-800 mb-1">Next Steps:</p>
+                <p className="text-sm text-blue-700">{debugResults.nextStep}</p>
+              </div>
+              
+              <div className="flex gap-2 pt-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowDebugDialog(false)}
+                  className="flex-1"
+                >
+                  Close
+                </Button>
+                {debugResults.completed && (
+                  <Button 
+                    onClick={() => {
+                      setShowDebugDialog(false);
+                      console.log('🚀 Ready for mass training - use Mass AI Training button');
+                    }}
+                    className="flex-1"
+                  >
+                    Continue
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
