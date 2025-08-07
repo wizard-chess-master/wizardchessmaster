@@ -287,24 +287,11 @@ export function MainMenu({ onSettings }: MainMenuProps) {
           <Button
             variant="outline"
             onClick={onSettings}
+            className="medieval-btn"
           >
             <Settings className="w-4 h-4 mr-2" />
             Settings
           </Button>
-          
-          {/* IAP Placeholder */}
-          <Card className="iap-placeholder">
-            <CardContent className="pt-4">
-              <div className="iap-content">
-                <p className="text-sm text-muted-foreground">
-                  Premium Features Available
-                </p>
-                <Button variant="outline" size="sm" disabled>
-                  Remove Ads - $2.99
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
 
