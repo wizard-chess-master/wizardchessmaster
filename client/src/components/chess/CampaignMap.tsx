@@ -78,20 +78,20 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* Campaign Progress Overview */}
       <Card className="medieval-card">
-        <CardContent className="p-3 sm:p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm sm:text-base font-medium">Campaign Progress</span>
-            <span className="text-xs sm:text-sm text-gray-400">{Math.round(playerProgress)}% Complete</span>
+        <CardContent className="p-4 sm:p-5">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-base sm:text-lg font-medium">Campaign Progress</span>
+            <span className="text-sm sm:text-base text-gray-400">{Math.round(playerProgress)}% Complete</span>
           </div>
-          <Progress value={playerProgress} className="h-2" />
+          <Progress value={playerProgress} className="h-3" />
         </CardContent>
       </Card>
 
       {/* Campaign Map */}
-      <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
         {levels.map((level, index) => {
           const winRate = getWinRate(level);
           const isCurrentLevel = level.unlocked && !level.completed;
@@ -99,14 +99,14 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
           return (
             <Card 
               key={level.id}
-              className={`w-72 mx-auto medieval-card transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
+              className={`medieval-card transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
                 !level.unlocked ? 'opacity-50' : 
                 level.completed ? 'border-green-500/50 bg-green-500/5' :
                 isCurrentLevel ? 'border-yellow-500/50 bg-yellow-500/5 shadow-lg shadow-yellow-500/10' : ''
               }`}
             >
-              <CardContent className="p-3 sm:p-4">
-                <div className="space-y-2.5 sm:space-y-3">
+              <CardContent className="p-4 sm:p-5">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Level Header */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -117,9 +117,9 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
                   </div>
                   
                   {/* Level Info */}
-                  <div className="min-h-[2.5rem] sm:min-h-[3rem]">
-                    <h4 className="font-bold text-xs sm:text-sm medieval-text mb-1 leading-tight">{level.name}</h4>
-                    <p className="text-xs text-gray-400 line-clamp-2 leading-tight">{level.description}</p>
+                  <div className="min-h-[3.5rem] sm:min-h-[4rem]">
+                    <h4 className="font-bold text-sm sm:text-base medieval-text mb-2 leading-tight">{level.name}</h4>
+                    <p className="text-xs sm:text-sm text-gray-400 line-clamp-3 leading-relaxed">{level.description}</p>
                   </div>
                   
                   {/* Level Stats */}
@@ -144,7 +144,7 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
                   
                   {/* Action Button */}
                   <Button
-                    className="w-full mx-auto medieval-btn text-sm h-10 font-bold flex items-center justify-center"
+                    className="w-full mx-auto medieval-btn text-sm sm:text-base h-11 font-bold flex items-center justify-center mt-4"
                     size="default"
                     disabled={!level.unlocked}
                     onClick={(e) => {
