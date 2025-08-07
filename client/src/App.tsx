@@ -6,6 +6,7 @@ import { gameEventTracker } from "./lib/achievements/gameEventTracker";
 import { MainMenu } from "./components/chess/MainMenu";
 import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
+import { BoardControls } from "./components/chess/BoardControls";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
@@ -144,19 +145,24 @@ function App() {
                 style={{ maxWidth: '600px', width: '100%' }}
               />
               
-              {/* Game Content - Board Above, Controls Below */}
-              <div className="flex flex-col gap-6 items-center">
+              {/* Game Content - Board with Side Controls */}
+              <div className="flex gap-6 items-start justify-center">
                 
-                {/* Chess Board Section - Centered */}
-                <div className="board-section flex justify-center w-full">
+                {/* Chess Board Section - Main Center */}
+                <div className="board-section flex justify-center">
                   <ChessBoard />
                 </div>
                 
-                {/* Game Controls Below Board - Full Width */}
-                <div className="controls-section w-full max-w-4xl">
-                  <GameUI onSettings={() => setShowSettings(true)} />
+                {/* Board Controls - Right Side Menu */}
+                <div className="board-controls-section">
+                  <BoardControls onSettings={() => setShowSettings(true)} />
                 </div>
                 
+              </div>
+              
+              {/* Game UI Below - Status and History */}
+              <div className="game-info-section w-full max-w-4xl mt-6">
+                <GameUI onSettings={() => setShowSettings(true)} />
               </div>
             </div>
             {gamePhase === 'ended' && <GameOverDialog />}

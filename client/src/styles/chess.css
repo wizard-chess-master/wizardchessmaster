@@ -867,6 +867,59 @@ body:has([data-state="open"][data-radix-dialog-overlay]) {
   color: #666;
 }
 
+/* Medieval-themed button styling */
+.medieval-btn {
+  background: linear-gradient(145deg, #8b4513, #654321);
+  border: 2px solid #d4af37;
+  color: #ffd700;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 215, 0, 0.3);
+}
+
+.medieval-btn:hover {
+  background: linear-gradient(145deg, #a0522d, #8b4513);
+  border-color: #ffd700;
+  color: #ffffff;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Compact mini button styling for side menu */
+.medieval-btn-mini {
+  background: linear-gradient(145deg, #8b4513, #654321);
+  border: 1px solid #d4af37;
+  color: #ffd700;
+  transition: all 0.2s ease;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 215, 0, 0.2);
+  font-size: 0.65rem;
+  min-height: 3rem;
+}
+
+.medieval-btn-mini:hover {
+  background: linear-gradient(145deg, #a0522d, #8b4513);
+  border-color: #ffd700;
+  color: #ffffff;
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 215, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.medieval-btn-mini:disabled {
+  background: linear-gradient(145deg, #4a4a4a, #333333);
+  border-color: #666666;
+  color: #999999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
 /* Placeholder Styles */
 .ad-placeholder,
 .iap-placeholder,
