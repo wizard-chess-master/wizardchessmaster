@@ -96,7 +96,7 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
           </TabsList>
 
           <div className="flex-1 overflow-y-auto bg-gray-900">
-            <TabsContent value="map" className="mt-0 space-y-6 p-6 text-center">
+            <TabsContent value="map" className="mt-0 space-y-6 p-6 flex flex-col items-center">
               <CampaignMap 
                 levels={levels}
                 onStartLevel={handleStartLevel}

@@ -91,7 +91,7 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
       </Card>
 
       {/* Campaign Map */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
         {levels.map((level, index) => {
           const winRate = getWinRate(level);
           const isCurrentLevel = level.unlocked && !level.completed;
@@ -99,7 +99,7 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
           return (
             <Card 
               key={level.id}
-              className={`medieval-card transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
+              className={`w-72 mx-auto medieval-card transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
                 !level.unlocked ? 'opacity-50' : 
                 level.completed ? 'border-green-500/50 bg-green-500/5' :
                 isCurrentLevel ? 'border-yellow-500/50 bg-yellow-500/5 shadow-lg shadow-yellow-500/10' : ''
@@ -144,8 +144,8 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
                   
                   {/* Action Button */}
                   <Button
-                    className="w-full medieval-btn text-xs h-8 sm:h-9"
-                    size="sm"
+                    className="w-full mx-auto medieval-btn text-sm h-10 font-bold flex items-center justify-center"
+                    size="default"
                     disabled={!level.unlocked}
                     onClick={() => onStartLevel(level)}
                   >
