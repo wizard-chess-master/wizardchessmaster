@@ -76,10 +76,10 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
         <DialogHeader className="pb-4 flex-shrink-0 bg-gray-800 p-6 border-b border-yellow-600">
           <DialogTitle className="flex items-center gap-3 text-2xl text-yellow-400 font-bold">
             <Trophy className="w-6 h-6" />
-            Campaign Mode - Centered Layout
+            Wizard's Quest
           </DialogTitle>
           <DialogDescription className="text-gray-300 mt-2">
-            Redesigned campaign interface with proper centering and responsive layout.
+            Embark on a magical journey through challenging wizard chess battles. Test your skills against increasingly powerful AI opponents.
           </DialogDescription>
         </DialogHeader>
 
