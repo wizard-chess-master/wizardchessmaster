@@ -634,6 +634,98 @@ body {
   }
 }
 
+/* Enhanced Game Rules and Controls Visibility */
+.rules-content,
+.controls-content {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2)) !important;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px 0;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.rule-item,
+.control-item {
+  color: var(--medieval-gold) !important;
+  text-shadow: 1px 1px 2px black !important;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3) !important;
+  padding: 12px 0;
+}
+
+.rule-item h4 {
+  color: #ffffff !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700 !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+}
+
+.rule-item p,
+.rule-item strong {
+  color: var(--medieval-gold) !important;
+  text-shadow: 1px 1px 2px black !important;
+  line-height: 1.6;
+  font-size: 0.95em;
+}
+
+.control-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--medieval-gold) !important;
+}
+
+.control-item span {
+  color: var(--medieval-gold) !important;
+  text-shadow: 1px 1px 2px black !important;
+}
+
+.control-key {
+  background: linear-gradient(145deg, rgba(212, 175, 55, 0.8), rgba(184, 134, 11, 0.9)) !important;
+  color: var(--medieval-dark) !important;
+  padding: 6px 12px !important;
+  border-radius: 6px !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  text-shadow: none !important;
+  border: 1px solid var(--medieval-bronze);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced card titles for better contrast */
+.card-title {
+  color: #ffffff !important;
+  font-family: 'Cinzel', serif !important;
+  font-weight: 700 !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+  font-size: 1.3em;
+  text-align: center;
+}
+
+/* Lighten card backgrounds for better text visibility */
+.card {
+  background: linear-gradient(145deg, 
+    rgba(0, 0, 0, 0.1), 
+    rgba(0, 0, 0, 0.05)
+  ), url('/assets/wood-panel.png') center/cover !important;
+  border: 3px solid var(--medieval-bronze) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+.card-header {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+  border-radius: 8px 8px 0 0;
+  margin: -15px -15px 15px -15px;
+  padding: 20px 15px 15px 15px;
+  border-bottom: 2px solid rgba(212, 175, 55, 0.3);
+}
+
+.card-content {
+  color: var(--medieval-gold) !important;
+}
+
 /* Mystical input styling */
 .medieval-input {
   background: rgba(0, 0, 0, 0.3);
