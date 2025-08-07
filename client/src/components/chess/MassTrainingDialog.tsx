@@ -183,9 +183,12 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
   };
 
   const handleStopTraining = () => {
-    console.log('Stopping training...');
+    console.log('🛑 EMERGENCY STOP: Stopping training...');
     setTrainingAborted(true);
     setIsTraining(false);
+    
+    // Force clear any ongoing processes
+    console.log('🛑 Training aborted by user');
   };
 
   const handleTestGame = async () => {
