@@ -14,6 +14,8 @@ import { AchievementPanel } from "./components/achievements/AchievementPanel";
 import { DiagnosticsPanel } from "./components/diagnostics/DiagnosticsPanel";
 import { useDiagnostics } from "./lib/stores/useDiagnostics";
 import { AdBanner } from "./components/monetization/AdBanner";
+import { RewardsScreen } from "./components/rewards/RewardsScreen";
+import { useGameSettings } from "./stores/gameSettings";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
 import { ambientManager } from "./lib/audio/ambientManager";
@@ -27,6 +29,8 @@ function App() {
   const { showDiagnostics, setShowDiagnostics } = useDiagnostics();
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
+  const [showCollection, setShowCollection] = useState(false);
+  const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
   // Initialize audio, monetization, and keyboard shortcuts
   useEffect(() => {
@@ -131,6 +135,7 @@ function App() {
           <MainMenu 
             onSettings={() => setShowSettings(true)} 
             onAchievements={() => setShowAchievements(true)}
+            onCollection={() => setShowCollection(true)}
           />
         )}
         
@@ -175,6 +180,16 @@ function App() {
 
         {showAchievements && (
           <AchievementPanel onClose={() => setShowAchievements(false)} />
+        )}
+
+        {showCollection && (
+          <RewardsScreen 
+            onClose={() => setShowCollection(false)}
+            selectedPieceSet={selectedPieceSet}
+            selectedBoardTheme={selectedBoardTheme}
+            onSelectPieceSet={setSelectedPieceSet}
+            onSelectBoardTheme={setSelectedBoardTheme}
+          />
         )}
 
         {showDiagnostics && (

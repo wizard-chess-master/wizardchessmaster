@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../ui/dialog';
-import { Settings, Sword, Users, Zap, Brain, BarChart3, X, Home, Trophy, Award } from 'lucide-react';
+import { Settings, Sword, Users, Zap, Brain, BarChart3, X, Home, Trophy, Award, Crown } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
@@ -21,9 +21,10 @@ import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 interface MainMenuProps {
   onSettings: () => void;
   onAchievements: () => void;
+  onCollection: () => void;
 }
 
-export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
+export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuProps) {
   const { startGame, resetGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
@@ -352,6 +353,15 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
           >
             <Trophy className="w-4 h-4 mr-2" />
             Achievements
+          </Button>
+          
+          <Button
+            variant="outline"
+            onClick={onCollection}
+            className="medieval-btn"
+          >
+            <Crown className="w-4 h-4 mr-2" />
+            Collection
           </Button>
           
           <LeaderboardDialog>

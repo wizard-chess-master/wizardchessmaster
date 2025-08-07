@@ -21,6 +21,9 @@ export interface AchievementReward {
   title?: string;
   badge?: string;
   unlockMessage: string;
+  pieceSet?: string; // ID of piece set to unlock
+  boardTheme?: string; // ID of board theme to unlock
+  coins?: number; // Premium currency reward
 }
 
 export interface PlayerProgress {
