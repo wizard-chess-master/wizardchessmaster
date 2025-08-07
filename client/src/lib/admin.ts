@@ -21,6 +21,17 @@ export const isAdminEnabled = (): boolean => {
   // Check session storage for admin authentication
   const adminSession = sessionStorage.getItem(ADMIN_SESSION_KEY);
   
+  // Log current status for testing
+  console.log('🔐 Admin Status Check:', {
+    envAdminMode,
+    isDevelopment,
+    hasSession: adminSession === 'authenticated',
+    envVars: {
+      VITE_ADMIN_MODE: import.meta.env.VITE_ADMIN_MODE,
+      DEV: import.meta.env.DEV
+    }
+  });
+  
   // Admin is enabled if:
   // 1. Explicitly enabled via environment variable, OR
   // 2. In development mode, OR  
@@ -34,11 +45,19 @@ export const isAdminEnabled = (): boolean => {
 export const authenticateAdmin = (key: string): boolean => {
   const adminKey = import.meta.env.VITE_ADMIN_KEY || 'wizard-admin-2025';
   
+  console.log('🔐 Authentication attempt:', {
+    providedKey: key.substring(0, 3) + '***',
+    expectedKey: adminKey.substring(0, 3) + '***',
+    matches: key === adminKey
+  });
+  
   if (key === adminKey) {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
+    console.log('✅ Admin authentication successful');
     return true;
   }
   
+  console.log('❌ Admin authentication failed');
   return false;
 };
 
@@ -53,7 +72,21 @@ export const logoutAdmin = (): void => {
  * Check if specific admin feature should be visible
  */
 export const isAdminFeatureEnabled = (feature: 'training' | 'debug' | 'stats' | 'reset'): boolean => {
-  if (!isAdminEnabled()) return false;
+  const adminEnabled = isAdminEnabled();
+  const hasSession = sessionStorage.getItem(ADMIN_SESSION_KEY) === 'authenticated';
+  
+  // In development mode, require session authentication for admin features
+  // This tests the security system even in development
+  const shouldShow = import.meta.env.DEV ? hasSession : adminEnabled;
+  
+  console.log(`🔐 Feature "${feature}" check:`, {
+    adminEnabled,
+    hasSession,
+    shouldShow,
+    isDev: import.meta.env.DEV
+  });
+  
+  if (!shouldShow) return false;
   
   // You can add feature-specific permissions here if needed
   switch (feature) {

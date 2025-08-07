@@ -130,6 +130,10 @@ export function AdminLogin({ onAuthChange }: AdminLoginProps) {
           </DialogTitle>
         </DialogHeader>
         
+        <div className="text-sm bg-blue-50 border border-blue-200 rounded p-3 mb-4">
+          <strong>Test Admin Key:</strong> wizard-admin-2025
+        </div>
+        
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Enter Admin Key</CardTitle>
