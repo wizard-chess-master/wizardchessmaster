@@ -11,8 +11,8 @@ export const debugGame = () => {
       currentPlayer: state.currentPlayer,
       boardDefined: !!state.board,
       boardSize: state.board?.length,
-      whitePawns: state.board?.[8]?.filter(p => p?.type === 'pawn' && p?.color === 'white').length,
-      blackPawns: state.board?.[1]?.filter(p => p?.type === 'pawn' && p?.color === 'black').length
+      whitePawns: state.board?.[8]?.filter((p: any) => p?.type === 'pawn' && p?.color === 'white').length,
+      blackPawns: state.board?.[1]?.filter((p: any) => p?.type === 'pawn' && p?.color === 'black').length
     });
   } catch (error) {
     console.error('❌ Chess store error:', error);

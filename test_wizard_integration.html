@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wizard Assistant Integration Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #1a1a1a; color: #fff; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background: #2d5a2d; }
+        .fail { background: #5a2d2d; }
+        .info { background: #2d2d5a; }
+        .test-button { padding: 10px 20px; background: #4a4a4a; color: white; border: none; border-radius: 5px; margin: 5px; cursor: pointer; }
+        .test-button:hover { background: #6a6a6a; }
+    </style>
+</head>
+<body>
+    <h1>🧙‍♂️ Wizard Assistant Integration Test</h1>
+    <div id="test-results"></div>
+    
+    <button class="test-button" onclick="testAppLoad()">Test App Load</button>
+    <button class="test-button" onclick="testWizardComponents()">Test Wizard Components</button>
+    <button class="test-button" onclick="testGameFlow()">Test Game Flow</button>
+    <button class="test-button" onclick="runFullDiagnostics()">Run Full Diagnostics</button>
+    
+    <iframe src="http://localhost:5000" width="100%" height="600" style="margin-top: 20px; border: 1px solid #666;"></iframe>
+    
+    <script>
+        const results = document.getElementById('test-results');
+        
+        function logResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `${new Date().toLocaleTimeString()} - ${message}`;
+            results.appendChild(div);
+            console.log(message);
+        }
+        
+        function testAppLoad() {
+            logResult('🧪 Testing app load...', 'info');
+            
+            fetch('http://localhost:5000')
+                .then(response => response.text())
+                .then(html => {
+                    if (html.includes('AdaptiveDifficultyWizardAssistant')) {
+                        logResult('✅ Wizard component found in HTML', 'pass');
+                    } else {
+                        logResult('❌ Wizard component NOT found in HTML', 'fail');
+                    }
+                    
+                    if (html.includes('useWizardAssistant')) {
+                        logResult('✅ Wizard store import found', 'pass');
+                    } else {
+                        logResult('❌ Wizard store import NOT found', 'fail');
+                    }
+                })
+                .catch(error => {
+                    logResult(`❌ App load failed: ${error.message}`, 'fail');
+                });
+        }
+        
+        function testWizardComponents() {
+            logResult('🧪 Testing wizard components via iframe...', 'info');
+            
+            const iframe = document.querySelector('iframe');
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                setTimeout(() => {
+                    // Test for wizard elements
+                    const wizardElements = iframeDoc.querySelectorAll('[class*="wizard"], [class*="purple-"], [class*="sparkles"]');
+                    if (wizardElements.length > 0) {
+                        logResult(`✅ Found ${wizardElements.length} wizard-related UI elements`, 'pass');
+                    } else {
+                        logResult('❌ No wizard UI elements found', 'fail');
+                    }
+                    
+                    // Test for wizard button
+                    const wizardButton = iframeDoc.querySelector('button[class*="purple-600"]');
+                    if (wizardButton) {
+                        logResult('✅ Wizard activation button found', 'pass');
+                    } else {
+                        logResult('❌ Wizard activation button NOT found', 'fail');
+                    }
+                    
+                    // Test console for wizard logs
+                    logResult('💡 Check browser console for wizard initialization logs', 'info');
+                }, 3000);
+                
+            } catch (error) {
+                logResult(`⚠️ Cannot access iframe content (CORS): ${error.message}`, 'info');
+            }
+        }
+        
+        function testGameFlow() {
+            logResult('🧪 Testing game flow integration...', 'info');
+            
+            // Test API endpoints
+            fetch('http://localhost:5000/api/server-stats')
+                .then(response => response.json())
+                .then(data => {
+                    logResult(`✅ Server stats: ${data.onlinePlayers} players online`, 'pass');
+                })
+                .catch(error => {
+                    logResult(`❌ Server stats failed: ${error.message}`, 'fail');
+                });
+            
+            logResult('💡 Manual test: Start a game vs AI to see wizard hints', 'info');
+        }
+        
+        function runFullDiagnostics() {
+            logResult('🧪 Running full diagnostics...', 'info');
+            
+            // Test all endpoints
+            const tests = [
+                { url: 'http://localhost:5000', name: 'Main App' },
+                { url: 'http://localhost:5000/api/server-stats', name: 'Server Stats' }
+            ];
+            
+            tests.forEach(test => {
+                fetch(test.url)
+                    .then(response => {
+                        if (response.ok) {
+                            logResult(`✅ ${test.name} endpoint working`, 'pass');
+                        } else {
+                            logResult(`❌ ${test.name} endpoint failed: ${response.status}`, 'fail');
+                        }
+                    })
+                    .catch(error => {
+                        logResult(`❌ ${test.name} error: ${error.message}`, 'fail');
+                    });
+            });
+            
+            logResult('🔍 Check the iframe below for visual confirmation', 'info');
+            logResult('💡 Look for a purple wizard button (✨) in bottom-right corner', 'info');
+            logResult('💡 Start a game to see wizard hints and personality changes', 'info');
+        }
+        
+        // Auto-run basic tests
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                logResult('🚀 Starting automatic diagnostics...', 'info');
+                testAppLoad();
+                setTimeout(testWizardComponents, 2000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
