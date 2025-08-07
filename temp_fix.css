@@ -1,0 +1,59 @@
+/* Temporary CSS file to rebuild without errors */
+
+/* Ad banner appears first (at top) - Match board width */
+.ad-banner {
+  order: 1;
+  background: url('/assets/stone-texture.png') center/cover !important;
+  border: 2px solid var(--medieval-stone) !important;
+  border-radius: 8px !important;
+  padding: 15px !important;
+  margin: 10px 0 !important;
+  min-height: 120px !important;
+  height: 120px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--medieval-gold) !important;
+  font-family: 'Cinzel', serif !important;
+  opacity: 0.8 !important;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease !important;
+  /* Match board container width */
+  width: 100% !important;
+  max-width: min(95vw, 850px) !important;
+  box-sizing: border-box !important;
+  /* Add mystical glow effect */
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+.ad-banner:hover {
+  opacity: 1 !important;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+.ad-banner-horizontal {
+  grid-column: 1 / -1;
+  min-height: 120px !important;
+  height: 120px !important;
+  margin: 20px 0 !important;
+  /* Match board container width */
+  width: 100% !important;
+  max-width: min(95vw, 850px) !important;
+  box-sizing: border-box !important;
+}
+
+/* Game UI Panel - Match board width */
+.game-ui {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+  justify-content: center;
+  align-items: start;
+  margin: 15px 0;
+  /* Match board container width */
+  max-width: min(95vw, 850px);
+  width: 100%;
+  padding: 0 8px;
+  order: 3;
+  box-sizing: border-box;
+}

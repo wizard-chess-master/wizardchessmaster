@@ -1,193 +1,30 @@
-/* ===== MEDIEVAL FANTASY CHESS THEME ===== */
+/* Medieval Theme CSS - Enhanced with Mystical Effects */
 
 /* Root Variables */
 :root {
   --medieval-gold: #d4af37;
   --medieval-bronze: #cd7f32;
-  --medieval-wood: #8b4513;
-  --medieval-stone: #696969;
-  --glow-blue: #4fc3f7;
-  --glow-green: #81c784;
-  --glow-red: #e57373;
-  --shadow-dark: rgba(0, 0, 0, 0.8);
+  --medieval-stone: #8b8682;
+  --medieval-dark: #2c2416;
+  --shadow-dark: rgba(0, 0, 0, 0.6);
+  --shadow-light: rgba(255, 255, 255, 0.1);
 }
 
-/* Main App Background */
-.App {
-  background: url('/assets/medieval-castle-bg.png') center/cover fixed;
-  min-height: 100vh;
-  background-attachment: fixed;
-  position: relative;
+/* Global Styles */
+* {
+  box-sizing: border-box;
 }
 
-.App::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 0;
-}
-
-/* Game Container */
-.game-container {
-  position: relative;
-  z-index: 1;
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-/* Medieval Panel Base */
-.medieval-panel {
-  background: url('/assets/wood-panel.png') center/cover;
-  border: 4px solid var(--medieval-bronze);
-  border-radius: 12px;
-  box-shadow: 
-    0 8px 32px var(--shadow-dark),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  padding: 20px;
-  position: relative;
-}
-
-.medieval-panel::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, var(--medieval-gold), var(--medieval-bronze));
-  border-radius: 14px;
-  z-index: -1;
-}
-
-/* Chess Board Container */
-.chess-board {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  margin: 20px 0;
-}
-
-.board-container {
-  background: url('/assets/stone-texture.png') center/cover;
-  padding: 30px;
-  border-radius: 20px;
-  box-shadow: 
-    0 12px 40px var(--shadow-dark),
-    inset 0 0 20px rgba(0, 0, 0, 0.5);
-  border: 6px solid var(--medieval-bronze);
-  position: relative;
-}
-
-.board-container::before {
-  content: '';
-  position: absolute;
-  top: -3px;
-  left: -3px;
-  right: -3px;
-  bottom: -3px;
-  background: linear-gradient(45deg, var(--medieval-gold), var(--medieval-bronze));
-  border-radius: 23px;
-  z-index: -1;
-}
-
-/* Canvas Enhancements */
-.chess-canvas {
-  border-radius: 8px;
-  box-shadow: 
-    0 0 20px rgba(0, 0, 0, 0.8),
-    0 0 40px rgba(212, 175, 55, 0.3);
-  transition: box-shadow 0.3s ease;
-  cursor: pointer;
-}
-
-.chess-canvas:hover {
-  box-shadow: 
-    0 0 30px rgba(0, 0, 0, 0.9),
-    0 0 60px rgba(212, 175, 55, 0.5);
-}
-
-/* Glowing Highlights for Selected/Valid Moves */
-.glow-selected {
-  animation: pulseGold 2s ease-in-out infinite;
-}
-
-.glow-valid {
-  animation: pulseGreen 2s ease-in-out infinite;
-}
-
-.glow-danger {
-  animation: pulseRed 2s ease-in-out infinite;
-}
-
-@keyframes pulseGold {
-  0%, 100% { box-shadow: 0 0 20px var(--medieval-gold), 0 0 40px var(--medieval-gold); }
-  50% { box-shadow: 0 0 30px var(--medieval-gold), 0 0 60px var(--medieval-gold); }
-}
-
-@keyframes pulseGreen {
-  0%, 100% { box-shadow: 0 0 20px var(--glow-green), 0 0 40px var(--glow-green); }
-  50% { box-shadow: 0 0 30px var(--glow-green), 0 0 60px var(--glow-green); }
-}
-
-@keyframes pulseRed {
-  0%, 100% { box-shadow: 0 0 20px var(--glow-red), 0 0 40px var(--glow-red); }
-  50% { box-shadow: 0 0 30px var(--glow-red), 0 0 60px var(--glow-red); }
-}
-
-/* Medieval Buttons */
-.medieval-btn {
-  background: linear-gradient(145deg, var(--medieval-wood), #654321);
-  color: var(--medieval-gold);
-  border: 2px solid var(--medieval-bronze);
-  border-radius: 8px;
-  padding: 12px 24px;
-  font-family: 'Cinzel', serif;
-  font-weight: 600;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-  box-shadow: 
-    0 4px 8px var(--shadow-dark),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  min-width: 280px;
-  white-space: nowrap;
-}
-
-.medieval-btn:hover {
-  background: linear-gradient(145deg, #a0522d, var(--medieval-wood));
-  box-shadow: 
-    0 6px 12px var(--shadow-dark),
-    0 0 20px var(--medieval-gold),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-}
-
-.medieval-btn:active {
-  transform: translateY(0);
-  box-shadow: 
-    0 2px 4px var(--shadow-dark),
-    inset 0 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-/* Body Layout for Top Positioning */
 body {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  min-height: 100vh;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font-family: 'Cinzel', serif;
+  background: url('/assets/medieval-castle-bg.png') center/cover fixed;
+  background-attachment: fixed;
+  min-height: 100vh;
   overflow-x: hidden;
-  max-width: 100vw;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  background-color: #1a1a2e;
+  background-image: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
 }
 
 #root {
@@ -216,7 +53,7 @@ body {
   box-sizing: border-box;
 }
 
-/* Ad banner appears first (at top) */
+/* Ad banner appears first (at top) - Match board width */
 .ad-banner {
   order: 1;
   background: url('/assets/stone-texture.png') center/cover !important;
@@ -232,31 +69,44 @@ body {
   color: var(--medieval-gold) !important;
   font-family: 'Cinzel', serif !important;
   opacity: 0.8 !important;
-  transition: opacity 0.3s ease !important;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease !important;
+  /* Match board container width */
+  width: 100% !important;
+  max-width: min(95vw, 850px) !important;
+  box-sizing: border-box !important;
+  /* Add mystical glow effect */
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Board appears second (middle) */
 .board-container {
   order: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: min(95vw, 850px);
+  padding: 10px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 /* Game UI appears third (at bottom) */
 .game-ui {
   order: 3;
-}
-
-/* Game UI Panel */
-.game-ui {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 15px;
   justify-content: center;
   align-items: start;
   margin: 15px 0;
-  max-width: min(100vw, 1600px);
+  /* Match board container width */
+  max-width: min(95vw, 850px);
   width: 100%;
   padding: 0 8px;
-  order: 3;
+  box-sizing: border-box;
 }
 
 .side-panel {
@@ -276,17 +126,21 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-/* Ad Spaces - Duplicate definition removed - now handled above with !important */
-
 .ad-banner:hover {
-  opacity: 1;
+  opacity: 1 !important;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+  transform: translateY(-2px) !important;
 }
 
 .ad-banner-horizontal {
   grid-column: 1 / -1;
   min-height: 120px !important;
-  height: 120px;
-  margin: 20px 0;
+  height: 120px !important;
+  margin: 20px 0 !important;
+  /* Match board container width */
+  width: 100% !important;
+  max-width: min(95vw, 850px) !important;
+  box-sizing: border-box !important;
 }
 
 /* Piece Movement Animation */
@@ -304,20 +158,6 @@ body {
 .piece-moving {
   animation: smoothSlide 0.5s ease-out;
   z-index: 10;
-}
-
-/* Board Container */
-.board-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  max-width: min(95vw, 850px);
-  padding: 10px;
-  box-sizing: border-box;
-  order: 1;
 }
 
 /* Chess Board Layout */
@@ -363,186 +203,83 @@ body {
   gap: 0;
 }
 
-.row-labels {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
 .row-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 30px;
+  height: 30px;
+  font-weight: bold;
+  color: var(--medieval-gold);
+  font-size: 12px;
+  font-family: 'Cinzel', serif;
 }
 
-/* Chess Canvas Responsive */
-.chess-canvas {
-  max-width: 800px !important;
-  max-height: 800px !important;
-  width: 100% !important;
-  height: auto !important;
-  aspect-ratio: 1;
-  border: 2px solid #333;
+#chessCanvas {
+  border: 3px solid var(--medieval-bronze);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
 }
 
-/* Tablet Responsive */
-@media (max-width: 1024px) {
-  .game-layout {
-    padding: 12px;
-    gap: 12px;
-  }
-  
-  .game-ui {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin: 12px 0;
-    max-width: 98vw;
-  }
-  
-  .board-container {
-    max-width: min(90vw, 700px);
-    padding: 10px;
-  }
-  
-  .chess-canvas {
-    max-width: 700px !important;
-    max-height: 700px !important;
-    width: 100% !important;
-  }
+/* Medieval Button Styling */
+.medieval-btn {
+  background: url('/assets/wood-panel.png') center/cover;
+  color: var(--medieval-gold);
+  border: 2px solid var(--medieval-bronze);
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-family: 'Cinzel', serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  min-width: 180px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  body {
-    align-items: flex-start;
-    padding-top: 10px;
-  }
-  
-  .game-layout {
-    padding: 8px;
-    gap: 10px;
-    overflow: hidden;
-    min-height: auto;
-  }
-  
-  .game-ui {
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin: 8px 0;
-    max-width: 95vw;
-  }
-  
-  .board-container {
-    max-width: min(95vw, 600px);
-    padding: 8px;
-  }
-  
-  .chess-canvas {
-    max-width: 600px !important;
-    max-height: 600px !important;
-    width: 100% !important;
-  }
-  
-  .coord-label {
-    min-width: 25px;
-    height: 25px;
-    font-size: 10px;
-  }
-  
-  .coord-corner {
-    width: 25px;
-    height: 25px;
-  }
-  
-  .row-label {
-    width: 25px;
-  }
-  
-  .side-panel {
-    padding: 12px;
-  }
-  
-  .medieval-btn {
-    padding: 8px 12px;
-    font-size: 13px;
-    min-width: 180px;
-  }
-  
-  .game-container {
-    padding: 5px;
-  }
-  
-  .main-menu {
-    max-width: 95vw;
-    padding: 12px;
-  }
-  
-  .control-buttons {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
+.medieval-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  border-color: var(--medieval-gold);
+  animation: float 2s ease-in-out infinite;
 }
 
-@media (max-width: 480px) {
-  body {
-    align-items: flex-start;
-    padding-top: 5px;
-  }
-  
-  .game-layout {
-    padding: 5px;
-    gap: 8px;
-    overflow: hidden;
-    min-height: auto;
-  }
-  
-  .board-container {
-    max-width: min(98vw, 400px);
-    padding: 5px;
-  }
-  
-  .chess-canvas {
-    max-width: 400px !important;
-    max-height: 400px !important;
-    width: 100% !important;
-  }
-  
-  .coord-label {
-    min-width: 18px;
-    height: 18px;
-    font-size: 8px;
-  }
-  
-  .coord-corner {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .row-label {
-    width: 18px;
-  }
-  
-  .medieval-btn {
-    padding: 6px 10px;
-    font-size: 11px;
-    min-width: 160px;
-  }
-  
-  .side-panel {
-    padding: 8px;
-  }
-  
-  .ad-banner {
-    padding: 15px !important;
-    min-height: 120px !important;
-    height: 120px !important;
-  }
-  
-  .game-ui {
-    padding: 0 3px;
-    gap: 6px;
-  }
+.medieval-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.medieval-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Medieval Panel Styling */
+.medieval-panel {
+  background: url('/assets/wood-panel.png') center/cover;
+  border: 3px solid var(--medieval-bronze);
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  color: var(--medieval-gold);
+  margin: 20px;
+  max-width: 90vw;
+  position: relative;
+}
+
+.medieval-panel h2,
+.medieval-panel h3 {
+  color: var(--medieval-gold);
+  font-family: 'Cinzel', serif;
+  text-align: center;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* Status Display */
@@ -559,14 +296,19 @@ body {
   margin: 15px 0;
 }
 
-/* Menu Styling */
+/* Menu Styling with Mystical Effects */
 .main-menu {
   background: url('/assets/wood-panel.png') center/cover;
   padding: 40px;
   border-radius: 20px;
   border: 4px solid var(--medieval-bronze);
-  box-shadow: 0 12px 40px var(--shadow-dark);
+  box-shadow: 
+    0 12px 40px var(--shadow-dark),
+    0 0 30px rgba(212, 175, 55, 0.4),
+    inset 0 0 30px rgba(255, 215, 0, 0.1);
   text-align: center;
+  position: relative;
+  overflow: hidden;
   max-width: 900px;
   margin: 50px auto;
 }
@@ -602,20 +344,287 @@ body {
   100% { transform: rotate(360deg); }
 }
 
+/* Mystical Effects and Animations */
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.8) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
+}
+
+@keyframes glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(212, 175, 55, 0.8), 0 0 60px rgba(255, 215, 0, 0.3);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Add sparkle effects to menu */
+.main-menu::before,
+.main-menu::after {
+  content: '✨';
+  position: absolute;
+  font-size: 20px;
+  animation: sparkle 3s infinite;
+  pointer-events: none;
+}
+
+.main-menu::before {
+  top: 20px;
+  left: 20px;
+  animation-delay: 0s;
+}
+
+.main-menu::after {
+  bottom: 20px;
+  right: 20px;
+  animation-delay: 1.5s;
+}
+
+/* Enhanced mystical font styling */
+.medieval-text, .main-menu h1 {
+  font-family: 'Cinzel', serif !important;
+  text-shadow: 
+    0 0 10px rgba(212, 175, 55, 0.8),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
+  animation: glow 4s ease-in-out infinite;
+}
+
+/* Mystical board container effects */
+.board-container::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+  border-radius: 15px;
+  z-index: -1;
+  animation: glow 6s ease-in-out infinite;
+}
+
+/* Responsive Navigation Buttons Enhancement */
+.game-ui .medieval-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.game-ui .medieval-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.2), transparent);
+  transition: left 0.5s;
+  z-index: -1;
+}
+
+.game-ui .medieval-btn:hover::before {
+  left: 100%;
+}
+
 /* Typography Enhancement */
 .medieval-text {
   font-family: 'Cinzel', serif;
   color: var(--medieval-gold);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Coordinate labels enhancement */
-.coord-label {
+/* Enhanced UI Components */
+.player-indicator {
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin: 5px 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.player-indicator.white {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(230, 230, 230, 0.9));
+  color: var(--medieval-dark);
+  border: 2px solid var(--medieval-bronze);
+}
+
+.player-indicator.black {
+  background: linear-gradient(145deg, rgba(44, 36, 22, 0.9), rgba(20, 20, 20, 0.9));
   color: var(--medieval-gold);
+  border: 2px solid var(--medieval-gold);
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+  .game-layout {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .board-container {
+    max-width: 95vw;
+    padding: 5px;
+  }
+  
+  #chessCanvas {
+    max-width: 90vw !important;
+    height: auto !important;
+  }
+  
+  .coord-label {
+    min-width: 18px;
+    height: 18px;
+    font-size: 8px;
+  }
+  
+  .coord-corner {
+    width: 18px;
+    height: 18px;
+  }
+  
+  .row-label {
+    width: 18px;
+  }
+  
+  .medieval-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    min-width: 160px;
+  }
+  
+  .side-panel {
+    padding: 8px;
+  }
+  
+  .ad-banner {
+    padding: 15px !important;
+    min-height: 120px !important;
+    height: 120px !important;
+    /* Maintain mystical effects on mobile */
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important;
+  }
+  
+  /* Mobile responsive sparkle effects */
+  .main-menu::before,
+  .main-menu::after {
+    font-size: 16px;
+  }
+  
+  /* Ensure navigation buttons are visible on mobile */
+  .game-ui .medieval-btn {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  .game-ui {
+    padding: 0 3px;
+    gap: 6px;
+  }
+}
+
+/* Card Styling */
+.card {
+  background: url('/assets/wood-panel.png') center/cover;
+  border: 2px solid var(--medieval-bronze);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.card-header,
+.card-content {
+  padding: 15px;
+  color: var(--medieval-gold);
+}
+
+.card-title {
   font-family: 'Cinzel', serif;
   font-weight: 600;
+  margin-bottom: 10px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Badge Styling */
+.badge {
+  background: linear-gradient(145deg, var(--medieval-bronze), var(--medieval-gold));
+  color: var(--medieval-dark);
+  border: 1px solid var(--medieval-gold);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Cinzel', serif;
+}
+
+/* Enhanced Check Indicator */
+.check-indicator {
+  color: #ff4444;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.8);
+  animation: glow 2s ease-in-out infinite;
+}
+
+/* Mystical input styling */
+.medieval-input {
   background: rgba(0, 0, 0, 0.3);
-  border-radius: 4px;
-  padding: 2px 6px;
+  border: 2px solid var(--medieval-bronze);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--medieval-gold);
+  font-family: 'Cinzel', serif;
+  transition: all 0.3s ease;
+}
+
+.medieval-input:focus {
+  border-color: var(--medieval-gold);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  outline: none;
+}
+
+/* Dialog Styling */
+.dialog-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.dialog-content {
+  background: url('/assets/wood-panel.png') center/cover;
+  border: 3px solid var(--medieval-bronze);
+  border-radius: 15px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+  color: var(--medieval-gold);
+}
+
+/* Enhanced scroll styling */
+.scroll-area {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--medieval-bronze), var(--medieval-gold));
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--medieval-gold), var(--medieval-bronze));
 }
