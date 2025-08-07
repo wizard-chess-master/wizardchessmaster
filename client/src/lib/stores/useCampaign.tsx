@@ -15,6 +15,25 @@ export interface CampaignLevel {
   bestMoveCount?: number;
   stars: number; // 0-3 stars based on performance
   requiredWinRate: number; // Required win rate to unlock next level
+  // Enhanced features for unlockable content
+  storyContent?: {
+    preGameStory: string;
+    postWinStory: string;
+    characterIntroduction?: string;
+  };
+  boardVariant?: 'classic' | 'forest' | 'castle' | 'mountain' | 'desert' | 'volcanic' | 'ice' | 'cosmic';
+  unlockRequirements?: {
+    previousLevelsCompleted: string[];
+    minimumStars: number;
+    specialCondition?: string;
+  };
+  rewards?: {
+    experiencePoints: number;
+    unlocksStory: boolean;
+    unlocksBoard: boolean;
+    unlocksBoardVariant?: string;
+  };
+  isPremiumLevel: boolean; // Requires premium subscription
 }
 
 export interface PlayerStats {
@@ -61,7 +80,19 @@ const initialLevels: CampaignLevel[] = [
     wins: 0,
     losses: 0,
     stars: 0,
-    requiredWinRate: 0.5, // More forgiving for beginners
+    requiredWinRate: 0.5,
+    isPremiumLevel: false,
+    boardVariant: 'classic',
+    storyContent: {
+      preGameStory: 'Welcome to the magical realm of Wizard Chess! Your journey begins here.',
+      postWinStory: 'Well done, apprentice! You have taken your first steps in mastering the ancient art.',
+      characterIntroduction: 'Meet Master Alric, your gentle guide in the ways of magical combat.'
+    },
+    rewards: {
+      experiencePoints: 100,
+      unlocksStory: true,
+      unlocksBoard: false
+    }
   },
   {
     id: 'level2',
@@ -76,6 +107,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.6,
+    isPremiumLevel: false,
+    boardVariant: 'forest',
+    storyContent: {
+      preGameStory: 'The ancient forest holds many secrets. Defend your position as nature spirits test your resolve.',
+      postWinStory: 'The forest spirits approve of your defensive skills. You may proceed deeper into the realm.',
+    },
+    rewards: { experiencePoints: 150, unlocksStory: true, unlocksBoard: false }
   },
   {
     id: 'level3',
@@ -90,6 +128,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.6,
+    isPremiumLevel: false,
+    boardVariant: 'castle',
+    storyContent: {
+      preGameStory: 'Within the castle walls, ancient magic flows. Master your wizard\'s unique abilities.',
+      postWinStory: 'You have unlocked the secrets of wizardry! Your magical prowess grows stronger.',
+    },
+    rewards: { experiencePoints: 200, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'castle' }
   },
   {
     id: 'level4',
@@ -104,6 +149,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.65,
+    isPremiumLevel: true,
+    boardVariant: 'mountain',
+    storyContent: {
+      preGameStory: 'High in the mountains, strategic minds are forged. Plan your moves carefully.',
+      postWinStory: 'Your strategic thinking has impressed the mountain lords. Premium content awaits.',
+    },
+    rewards: { experiencePoints: 300, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'mountain' }
   },
   {
     id: 'level5',
@@ -118,6 +170,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.65,
+    isPremiumLevel: false,
+    boardVariant: 'desert',
+    storyContent: {
+      preGameStory: 'In the scorching desert, battle mages hone their aggressive tactics.',
+      postWinStory: 'Your aggressive spirit has impressed the desert warriors.',
+    },
+    rewards: { experiencePoints: 250, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'desert' }
   },
   {
     id: 'level6',
@@ -132,6 +191,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.7,
+    isPremiumLevel: true,
+    boardVariant: 'volcanic',
+    storyContent: {
+      preGameStory: 'In the volcanic halls, patience and precision are tested against molten challenges.',
+      postWinStory: 'The volcanic spirits acknowledge your calculated mastery.',
+    },
+    rewards: { experiencePoints: 400, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'volcanic' }
   },
   {
     id: 'level7',
@@ -146,6 +212,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.7,
+    isPremiumLevel: true,
+    boardVariant: 'ice',
+    storyContent: {
+      preGameStory: 'The frozen realm of the Archmage tests both strategic minds and tactical prowess.',
+      postWinStory: 'You have passed the Archmage\'s trial. Greater challenges await.',
+    },
+    rewards: { experiencePoints: 500, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'ice' }
   },
   {
     id: 'level8',
@@ -160,6 +233,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.7,
+    isPremiumLevel: true,
+    boardVariant: 'cosmic',
+    storyContent: {
+      preGameStory: 'Among the stars, ancient wisdom transcends mortal understanding.',
+      postWinStory: 'The cosmic elders smile upon your growing wisdom.',
+    },
+    rewards: { experiencePoints: 600, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'cosmic' }
   },
   {
     id: 'level9',
@@ -174,6 +254,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.75,
+    isPremiumLevel: true,
+    boardVariant: 'forest',
+    storyContent: {
+      preGameStory: 'In the crucible of ancient magic, only the truly skilled survive.',
+      postWinStory: 'You have been forged in the wizard\'s crucible and emerged stronger.',
+    },
+    rewards: { experiencePoints: 750, unlocksStory: true, unlocksBoard: false }
   },
   {
     id: 'level10',
@@ -188,6 +275,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.75,
+    isPremiumLevel: true,
+    boardVariant: 'castle',
+    storyContent: {
+      preGameStory: 'The final examination approaches. Demonstrate the mastery you have gained.',
+      postWinStory: 'Congratulations, Master. You have proven your worth.',
+    },
+    rewards: { experiencePoints: 900, unlocksStory: true, unlocksBoard: false }
   },
   {
     id: 'level11',
@@ -202,6 +296,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.8,
+    isPremiumLevel: true,
+    boardVariant: 'cosmic',
+    storyContent: {
+      preGameStory: 'The legendary sorcerer awaits. This battle will echo through eternity.',
+      postWinStory: 'You have achieved legendary status. The cosmos acknowledges your mastery.',
+    },
+    rewards: { experiencePoints: 1000, unlocksStory: true, unlocksBoard: false }
   },
   {
     id: 'level12',
@@ -216,6 +317,13 @@ const initialLevels: CampaignLevel[] = [
     losses: 0,
     stars: 0,
     requiredWinRate: 0.8,
+    isPremiumLevel: true,
+    boardVariant: 'cosmic',
+    storyContent: {
+      preGameStory: 'The final challenge. Face the Supreme Enchanter in the ultimate test of wizardry.',
+      postWinStory: 'Congratulations, Supreme Master! You have conquered all challenges and become legend.',
+    },
+    rewards: { experiencePoints: 1500, unlocksStory: true, unlocksBoard: false }
   },
 ];
 

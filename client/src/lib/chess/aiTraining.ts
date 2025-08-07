@@ -41,41 +41,93 @@ export class AITrainer {
       return this.stats;
     }
 
+    // Optimize for low processing - limit to max 500 games
+    const optimizedGameCount = Math.min(numGames, 500);
+    if (numGames > 500) {
+      console.log(`🎯 Optimizing training: Limiting ${numGames} games to 500 for better performance`);
+    }
+
     this.isTraining = true;
     
     // Reset stats for fresh session
     this.resetStats();
     
-    console.log(`🧠 Starting AI training session: ${numGames} games at ${difficulty} difficulty`);
-    console.log('🎮 Training games will be played automatically...');
+    console.log(`🧠 Starting optimized AI training: ${optimizedGameCount} games at ${difficulty} difficulty`);
+    console.log('⚡ Using efficient batch processing for low resource usage');
 
-    for (let i = 0; i < numGames; i++) {
+    // Batch processing for better performance
+    const batchSize = 25; // Process 25 games at a time
+    const batches = Math.ceil(optimizedGameCount / batchSize);
+
+    for (let batch = 0; batch < batches; batch++) {
       if (!this.isTraining) break; // Allow stopping training
       
-      try {
-        const game = await this.playTrainingGame(i + 1, difficulty);
+      const batchStart = batch * batchSize;
+      const batchEnd = Math.min(batchStart + batchSize, optimizedGameCount);
+      const batchGames = batchEnd - batchStart;
+      
+      console.log(`📦 Processing batch ${batch + 1}/${batches} (${batchGames} games)`);
+      
+      // Process batch with small delays for CPU relief
+      const batchPromises: Promise<TrainingGame>[] = [];
+      for (let i = batchStart; i < batchEnd; i++) {
+        if (!this.isTraining) break;
+        
+        // Small delay between games to prevent CPU overload
+        const delay = i === batchStart ? 0 : 10;
+        batchPromises.push(
+          new Promise(resolve => 
+            setTimeout(async () => {
+              try {
+                const game = await this.playTrainingGame(i + 1, difficulty);
+                resolve(game);
+              } catch (error) {
+                console.error(`Error in training game ${i + 1}:`, error);
+                resolve(this.createErrorGame(i + 1));
+              }
+            }, delay)
+          )
+        );
+      }
+      
+      // Wait for batch to complete
+      const batchResults = await Promise.all(batchPromises);
+      batchResults.forEach(game => {
         this.games.push(game);
         this.updateStats(game);
-        
-        // Log progress every 5 games for better feedback
-        if ((i + 1) % 5 === 0 || i === 0) {
-          console.log(`📊 Progress: ${i + 1}/${numGames} games completed`);
-          this.logCurrentStats();
-        }
-      } catch (error) {
-        console.error(`Error in training game ${i + 1}:`, error);
-        continue;
+      });
+      
+      // Progress update per batch
+      console.log(`📊 Progress: ${batchEnd}/${optimizedGameCount} games completed (${Math.round((batchEnd/optimizedGameCount) * 100)}%)`);
+      this.logCurrentStats();
+      
+      // Brief pause between batches for system breathing room
+      if (batch < batches - 1) {
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
 
     this.isTraining = false;
-    console.log('🎓 Training session completed!');
+    console.log('🎓 Optimized training session completed!');
     this.logFinalStats();
     
     // Save completed games to AI learning system
     this.saveToLearningSystem();
     
     return this.stats;
+  }
+
+  // Helper method for error handling in batch processing
+  private createErrorGame(gameId: number): TrainingGame {
+    return {
+      id: gameId,
+      winner: null,
+      moves: 0,
+      duration: 0,
+      whiteStrategy: 'error',
+      blackStrategy: 'error',
+      evaluation: 0
+    };
   }
 
   private async playTrainingGame(gameId: number, difficulty: AIDifficulty): Promise<TrainingGame> {

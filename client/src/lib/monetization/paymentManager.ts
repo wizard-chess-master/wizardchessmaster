@@ -6,17 +6,71 @@
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { getAdManager } from './adManager';
 
+export interface PaymentPlan {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+  type: 'one-time' | 'subscription';
+  interval?: 'month' | 'year';
+  features: string[];
+  stripePriceId?: string;
+}
+
 export interface PaymentManager {
   initialize(): Promise<void>;
-  createUpgradeSession(): Promise<string | null>;
+  createUpgradeSession(planId: string): Promise<string | null>;
+  createSubscriptionSession(planId: string): Promise<string | null>;
   handleUpgradeSuccess(): void;
+  handleSubscriptionSuccess(): void;
   showUpgradeDialog(): void;
+  showPlanSelector(): void;
+  isUserPremium(): boolean;
+  getUserPlan(): PaymentPlan | null;
 }
+
+// Payment plan definitions
+const PAYMENT_PLANS: PaymentPlan[] = [
+  {
+    id: 'premium-one-time',
+    name: 'Premium Unlock',
+    price: 2.99,
+    currency: 'USD',
+    type: 'one-time',
+    features: [
+      'Remove all advertisements',
+      'Unlock campaign mode',
+      'Unlimited custom games',
+      'AI hint system',
+      'Unlimited undo moves',
+      'Premium board themes'
+    ],
+    stripePriceId: 'price_premium_one_time'
+  },
+  {
+    id: 'premium-monthly',
+    name: 'Premium Monthly',
+    price: 4.99,
+    currency: 'USD',
+    type: 'subscription',
+    interval: 'month',
+    features: [
+      'All Premium Unlock features',
+      'Monthly new board themes',
+      'Advanced AI training modes',
+      'Cloud save synchronization',
+      'Priority customer support',
+      'Beta access to new features'
+    ],
+    stripePriceId: 'price_premium_monthly'
+  }
+];
 
 class StripePaymentManager implements PaymentManager {
   private stripe: Stripe | null = null;
   private isInitialized = false;
   private publishableKey = 'pk_test_demo'; // Replace with real Stripe publishable key
+  private userPlan: PaymentPlan | null = null;
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
@@ -24,36 +78,85 @@ class StripePaymentManager implements PaymentManager {
     try {
       this.stripe = await loadStripe(this.publishableKey);
       this.isInitialized = true;
+      this.loadUserPlan();
       console.log('💳 Stripe initialized successfully');
       
       // Listen for upgrade prompts
       window.addEventListener('show-upgrade-prompt', () => {
-        this.showUpgradeDialog();
+        this.showPlanSelector();
       });
     } catch (error) {
       console.error('❌ Failed to initialize Stripe:', error);
     }
   }
 
-  async createUpgradeSession(): Promise<string | null> {
+  private loadUserPlan(): void {
+    const savedPlan = localStorage.getItem('wizard-chess-user-plan');
+    if (savedPlan) {
+      this.userPlan = JSON.parse(savedPlan);
+    }
+  }
+
+  private saveUserPlan(): void {
+    if (this.userPlan) {
+      localStorage.setItem('wizard-chess-user-plan', JSON.stringify(this.userPlan));
+    }
+  }
+
+  async createUpgradeSession(planId: string): Promise<string | null> {
     if (!this.stripe) {
       console.error('❌ Stripe not initialized');
       return null;
     }
 
+    const plan = PAYMENT_PLANS.find(p => p.id === planId);
+    if (!plan) {
+      console.error('❌ Invalid plan ID:', planId);
+      return null;
+    }
+
     try {
-      // In a real app, this would call your backend to create a Stripe session
-      // For demo purposes, we'll simulate the purchase flow
-      console.log('💳 Creating upgrade session...');
+      console.log('💳 Creating upgrade session for plan:', plan.name);
       
       // Simulate payment processing
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      // For demo, we'll just grant ad-free status
+      // For demo, grant upgrade
+      this.userPlan = plan;
+      this.saveUserPlan();
       this.handleUpgradeSuccess();
       return 'demo-session-id';
     } catch (error) {
       console.error('❌ Payment session creation failed:', error);
+      return null;
+    }
+  }
+
+  async createSubscriptionSession(planId: string): Promise<string | null> {
+    if (!this.stripe) {
+      console.error('❌ Stripe not initialized');
+      return null;
+    }
+
+    const plan = PAYMENT_PLANS.find(p => p.id === planId && p.type === 'subscription');
+    if (!plan) {
+      console.error('❌ Invalid subscription plan ID:', planId);
+      return null;
+    }
+
+    try {
+      console.log('💳 Creating subscription session for plan:', plan.name);
+      
+      // Simulate subscription processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // For demo, grant subscription
+      this.userPlan = plan;
+      this.saveUserPlan();
+      this.handleSubscriptionSuccess();
+      return 'demo-subscription-id';
+    } catch (error) {
+      console.error('❌ Subscription session creation failed:', error);
       return null;
     }
   }
@@ -69,10 +172,29 @@ class StripePaymentManager implements PaymentManager {
     this.showSuccessMessage();
   }
 
-  showUpgradeDialog(): void {
-    // Create upgrade dialog
+  handleSubscriptionSuccess(): void {
+    console.log('✅ Subscription successful! Premium features unlocked...');
+    
+    // Set ad-free status
+    const adManager = getAdManager();
+    adManager.setAdFreeStatus(true);
+    
+    // Show subscription success message
+    this.showSubscriptionSuccessMessage();
+  }
+
+  isUserPremium(): boolean {
+    return this.userPlan !== null;
+  }
+
+  getUserPlan(): PaymentPlan | null {
+    return this.userPlan;
+  }
+
+  showPlanSelector(): void {
+    // Create plan selector dialog
     const overlay = document.createElement('div');
-    overlay.id = 'upgrade-overlay';
+    overlay.id = 'plan-selector-overlay';
     overlay.style.cssText = `
       position: fixed;
       top: 0;
@@ -87,101 +209,134 @@ class StripePaymentManager implements PaymentManager {
     `;
 
     const dialog = document.createElement('div');
+    dialog.style.cssText = `
+      background: linear-gradient(135deg, #4a2c2a, #2d1810);
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 600px;
+      width: 90%;
+      color: white;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      border: 2px solid #8b6914;
+    `;
+
     dialog.innerHTML = `
-      <div style="
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-        max-width: 400px;
-        color: white;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      ">
-        <h2 style="margin: 0 0 20px 0; font-size: 24px;">🧙‍♂️ Wizard Chess Premium</h2>
-        <div style="margin-bottom: 25px;">
-          <p style="margin: 10px 0; font-size: 16px;">✨ Remove all ads forever</p>
-          <p style="margin: 10px 0; font-size: 16px;">🎯 Unlimited hints & undos</p>
-          <p style="margin: 10px 0; font-size: 16px;">🏆 Premium wizard themes</p>
-          <p style="margin: 10px 0; font-size: 16px;">⚡ Faster game loading</p>
+      <div style="text-align: center;">
+        <h2 style="color: #ffd700; margin-bottom: 20px; font-size: 24px;">🏆 Choose Your Adventure</h2>
+        <div style="display: flex; gap: 20px; margin: 20px 0;">
+          ${PAYMENT_PLANS.map(plan => `
+            <div style="
+              flex: 1;
+              background: rgba(255, 255, 255, 0.1);
+              border: 2px solid #8b6914;
+              border-radius: 10px;
+              padding: 20px;
+              cursor: pointer;
+              transition: transform 0.3s;
+            " onclick="window.selectPlan('${plan.id}')">
+              <h3 style="color: #ffd700; margin-bottom: 10px;">${plan.name}</h3>
+              <div style="font-size: 28px; font-weight: bold; margin: 15px 0;">
+                $${plan.price}${plan.interval ? '/' + plan.interval : ''}
+              </div>
+              <ul style="list-style: none; padding: 0; text-align: left; font-size: 14px;">
+                ${plan.features.map(feature => `<li style="margin: 5px 0;">✓ ${feature}</li>`).join('')}
+              </ul>
+            </div>
+          `).join('')}
         </div>
-        <div style="margin-bottom: 25px;">
-          <div style="font-size: 36px; font-weight: bold; color: #FFD700;">$2.99</div>
-          <div style="font-size: 14px; opacity: 0.8;">One-time purchase</div>
-        </div>
-        <div>
-          <button id="purchase-btn" style="
-            background: #FFD700;
-            color: #333;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-right: 10px;
-            transition: all 0.3s;
-          ">Purchase Now</button>
-          <button id="close-upgrade" style="
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-          ">Maybe Later</button>
-        </div>
-        <div style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
-          Secure payment powered by Stripe
-        </div>
+        <button onclick="window.closePlanSelector()" style="
+          background: #666;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-top: 20px;
+        ">Cancel</button>
       </div>
     `;
 
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
 
-    // Add hover effects
-    const purchaseBtn = document.getElementById('purchase-btn');
-    if (purchaseBtn) {
-      purchaseBtn.addEventListener('mouseenter', () => {
-        purchaseBtn.style.transform = 'scale(1.05)';
-        purchaseBtn.style.background = '#FFC107';
-      });
-      purchaseBtn.addEventListener('mouseleave', () => {
-        purchaseBtn.style.transform = 'scale(1)';
-        purchaseBtn.style.background = '#FFD700';
-      });
-    }
-
-    // Handle interactions
-    const closeBtn = document.getElementById('close-upgrade');
-    const buyBtn = document.getElementById('purchase-btn');
-
-    const cleanup = () => {
-      document.body.removeChild(overlay);
+    // Add global handlers
+    window.selectPlan = async (planId: string) => {
+      const plan = PAYMENT_PLANS.find(p => p.id === planId);
+      if (plan) {
+        if (plan.type === 'one-time') {
+          await this.createUpgradeSession(planId);
+        } else {
+          await this.createSubscriptionSession(planId);
+        }
+        this.closePlanSelector();
+      }
     };
 
-    closeBtn?.addEventListener('click', cleanup);
-    buyBtn?.addEventListener('click', async () => {
-      buyBtn.innerHTML = '⏳ Processing...';
-      buyBtn.style.background = '#9E9E9E';
-      buyBtn.style.cursor = 'not-allowed';
-      
-      const sessionId = await this.createUpgradeSession();
-      if (sessionId) {
-        cleanup();
-      } else {
-        buyBtn.innerHTML = 'Purchase Now';
-        buyBtn.style.background = '#FFD700';
-        buyBtn.style.cursor = 'pointer';
+    window.closePlanSelector = () => {
+      const overlay = document.getElementById('plan-selector-overlay');
+      if (overlay) {
+        document.body.removeChild(overlay);
       }
-    });
+    };
+  }
 
-    // Close on overlay click
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) cleanup();
-    });
+  showUpgradeDialog(): void {
+    this.showPlanSelector();
+  }
+
+  private showSubscriptionSuccessMessage(): void {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10002;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    `;
+
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+      background: linear-gradient(135deg, #2d5016, #1a3009);
+      border: 3px solid #ffd700;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      color: white;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    `;
+
+    dialog.innerHTML = `
+      <div>
+        <h2 style="color: #ffd700; margin-bottom: 20px;">🎉 Premium Activated!</h2>
+        <p style="margin-bottom: 20px;">Your monthly subscription is now active!</p>
+        <ul style="list-style: none; padding: 0; text-align: left;">
+          <li>✓ All ads removed</li>
+          <li>✓ Premium campaign unlocked</li>
+          <li>✓ Unlimited hints & undos</li>
+          <li>✓ Exclusive board themes</li>
+        </ul>
+        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                style="background: #8b6914; color: white; border: none; padding: 10px 20px; 
+                       border-radius: 5px; cursor: pointer; margin-top: 20px;">
+          Start Playing!
+        </button>
+      </div>
+    `;
+
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+
+    setTimeout(() => {
+      if (document.body.contains(overlay)) {
+        document.body.removeChild(overlay);
+      }
+    }, 5000);
   }
 
   private showSuccessMessage(): void {
@@ -199,41 +354,39 @@ class StripePaymentManager implements PaymentManager {
       justify-content: center;
     `;
 
-    const message = document.createElement('div');
-    message.innerHTML = `
-      <div style="
-        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-        padding: 30px;
-        border-radius: 12px;
-        text-align: center;
-        max-width: 300px;
-        color: white;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-      ">
-        <div style="font-size: 48px; margin-bottom: 15px;">🎉</div>
-        <h2 style="margin: 0 0 15px 0; font-size: 20px;">Welcome to Premium!</h2>
-        <p style="margin: 0 0 20px 0; opacity: 0.9;">All ads have been removed. Enjoy your enhanced Wizard Chess experience!</p>
-        <button id="success-ok" style="
-          background: white;
-          color: #4CAF50;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 6px;
-          font-weight: bold;
-          cursor: pointer;
-        ">Awesome!</button>
+    const dialog = document.createElement('div');
+    dialog.style.cssText = `
+      background: linear-gradient(135deg, #2d5016, #1a3009);
+      border: 3px solid #ffd700;
+      border-radius: 15px;
+      padding: 30px;
+      text-align: center;
+      color: white;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    `;
+
+    dialog.innerHTML = `
+      <div>
+        <h2 style="color: #ffd700; margin-bottom: 20px;">🎉 Premium Activated!</h2>
+        <p style="margin-bottom: 20px;">Your one-time purchase is complete!</p>
+        <ul style="list-style: none; padding: 0; text-align: left;">
+          <li>✓ All ads removed forever</li>
+          <li>✓ Campaign mode unlocked</li>
+          <li>✓ Unlimited hints & undos</li>
+          <li>✓ Premium board themes</li>
+        </ul>
+        <button onclick="this.parentElement.parentElement.parentElement.remove()" 
+                style="background: #8b6914; color: white; border: none; padding: 10px 20px; 
+                       border-radius: 5px; cursor: pointer; margin-top: 20px;">
+          Start Playing!
+        </button>
       </div>
     `;
 
-    overlay.appendChild(message);
+    overlay.appendChild(dialog);
     document.body.appendChild(overlay);
 
-    const okBtn = document.getElementById('success-ok');
-    okBtn?.addEventListener('click', () => {
-      document.body.removeChild(overlay);
-    });
-
-    // Auto-close after 5 seconds
     setTimeout(() => {
       if (document.body.contains(overlay)) {
         document.body.removeChild(overlay);
