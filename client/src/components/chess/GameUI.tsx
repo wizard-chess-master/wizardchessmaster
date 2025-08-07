@@ -75,229 +75,243 @@ export function GameUI({ onSettings }: GameUIProps) {
         style={{ maxWidth: '400px', width: '100%' }}
       />
 
-      {/* Game Status and Controls - Multi-column Grid Layout */}
-      <div className="game-sections-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
+      {/* Main Layout with Left Content and Right Control Panel */}
+      <div className="game-layout flex gap-3 w-full">
         
-        {/* Game Status Card */}
-        <Card className="medieval-panel game-status w-full">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center justify-between medieval-text text-sm">
-              <span>🏰 Fantasy Chess</span>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">{getGameModeDisplay()}</Badge>
-                {isAmbientEnabled && (
-                  <Badge 
-                    variant="outline" 
-                    className={`text-xs capitalize ${getIntensityColor(currentIntensity)} text-white border-transparent`}
-                  >
-                    {getIntensityIcon(currentIntensity)} {currentIntensity}
-                  </Badge>
-                )}
-              </div>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="status-info flex items-center justify-between">
-              <div className="current-player">
-                <span className={`player-indicator ${currentPlayer} medieval-text text-sm font-medium`}>
-                  {getCurrentPlayerDisplay()}
-                </span>
-                {isInCheck && (
-                  <Badge variant="destructive" className="ml-2 text-xs">
-                    ⚠️ Check!
-                  </Badge>
-                )}
-              </div>
-              <div className="move-count medieval-text text-sm text-muted-foreground">
-                Move: {Math.floor(moveHistory.length / 2) + 1}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Game Controls */}
-        <Card className="medieval-panel game-controls w-full">
-          <CardHeader className="pb-3">
-            <CardTitle className="medieval-text text-sm">🎮 Game Controls</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="control-buttons grid grid-cols-3 gap-2 w-full">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  resetGame();
-                  window.location.reload();
-                }}
-                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-              >
-                <span className="text-lg mb-1">🏠</span>
-                <span className="text-xs">Main Menu</span>
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const { board, currentPlayer, moveHistory } = useChess.getState();
-                  console.log('🎯 Generating hint for current position...');
-                  
-                  import('../../lib/chess/hintSystem').then(({ hintSystem }) => {
-                    const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
-                    if (hint) {
-                      console.log('💡 Hint generated:', hint);
-                    }
-                  });
-                }}
-                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-              >
-                <span className="text-lg mb-1">💡</span>
-                <span className="text-xs">Hint</span>
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const { isMuted, toggleMute, playBackgroundMusic, backgroundMusic } = useAudio.getState();
-                  console.log('🎵 Music button clicked:', { isMuted, hasBackgroundMusic: !!backgroundMusic });
-                  
-                  if (isMuted) {
-                    // Unmute and start background music
-                    toggleMute();
-                    setTimeout(() => playBackgroundMusic(), 100); // Small delay to ensure unmute is processed
-                  } else {
-                    // Mute all sounds
-                    toggleMute();
-                  }
-                }}
-                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-                title={isMuted ? "Enable Music & Sound" : "Mute Music & Sound"}
-              >
-                <span className="text-lg mb-1">
-                  {isMuted ? '🔇' : '🎵'}
-                </span>
-                <span className="text-xs">
-                  {isMuted ? 'Unmute' : 'Music'}
-                </span>
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onSettings}
-                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-              >
-                <Settings className="w-4 h-4 mb-1" />
-                <span className="text-xs">Settings</span>
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  import('../../lib/stores/useDiagnostics').then(({ useDiagnostics }) => {
-                    const { setShowDiagnostics } = useDiagnostics.getState();
-                    setShowDiagnostics(true);
-                  });
-                }}
-                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-                title="UI Diagnostics"
-              >
-                <span className="text-lg mb-1">🔍</span>
-                <span className="text-xs">Diagnostics</span>
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  const lastMove = moveHistory[moveHistory.length - 1];
-                  if (lastMove && gameMode !== 'ai-vs-ai') {
-                    console.log('🔄 Undoing last move...');
-                  }
-                }}
-                disabled={moveHistory.length === 0}
-                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-              >
-                <span className="text-lg mb-1">↶</span>
-                <span className="text-xs">Undo</span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Move History */}
-        <Card className="medieval-panel move-history w-full">
-          <CardHeader className="pb-3">
-            <CardTitle className="medieval-text text-sm">📜 Move History</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="move-list max-h-32 overflow-y-auto">
-              {moveHistory.length === 0 ? (
-                <p className="text-xs text-gray-400 italic">No moves yet</p>
-              ) : (
-                <div className="space-y-1">
-                  {moveHistory.slice(-8).map((move, index) => (
-                    <div key={index} className="text-xs flex justify-between items-center py-1">
-                      <span className="font-mono">
-                        {Math.floor((moveHistory.length - 8 + index) / 2) + 1}.
-                        {((moveHistory.length - 8 + index) % 2 === 0) ? ' ' : '.. '}
-                        {String.fromCharCode(97 + move.from.col)}{10 - move.from.row}→
-                        {String.fromCharCode(97 + move.to.col)}{10 - move.to.row}
-                      </span>
-                      <span className="text-gray-400">{move.piece.type}</span>
-                    </div>
-                  ))}
+        {/* Left Content Area */}
+        <div className="left-content flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+          
+          {/* Game Status Card */}
+          <Card className="medieval-panel game-status w-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center justify-between medieval-text text-sm">
+                <span>🏰 Fantasy Chess</span>
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-xs">{getGameModeDisplay()}</Badge>
+                  {isAmbientEnabled && (
+                    <Badge 
+                      variant="outline" 
+                      className={`text-xs capitalize ${getIntensityColor(currentIntensity)} text-white border-transparent`}
+                    >
+                      {getIntensityIcon(currentIntensity)} {currentIntensity}
+                    </Badge>
+                  )}
                 </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Keyboard Shortcuts - Collapsible */}
-        <Collapsible open={showControls} onOpenChange={setShowControls}>
-          <Card className="medieval-panel w-full">
-            <CollapsibleTrigger asChild>
-              <CardHeader className="pb-3 cursor-pointer hover:bg-white/5 transition-colors">
-                <CardTitle className="medieval-text text-sm flex items-center justify-between">
-                  ⌨️ Keyboard Shortcuts
-                  {showControls ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                </CardTitle>
-              </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <CardContent className="pt-0">
-                <div className="space-y-2 text-xs">
-                  <div className="control-item flex justify-between">
-                    <span className="control-key font-mono">Mouse Click</span>
-                    <span>Select piece / Make move</span>
-                  </div>
-                  
-                  <div className="control-item flex justify-between">
-                    <span className="control-key font-mono">Ctrl+Z</span>
-                    <span>Undo last move</span>
-                  </div>
-                  
-                  <div className="control-item flex justify-between">
-                    <span className="control-key font-mono">Escape</span>
-                    <span>Deselect piece</span>
-                  </div>
-                  
-                  <div className="control-item flex justify-between">
-                    <span className="control-key font-mono">Ctrl+M</span>
-                    <span>Toggle sound</span>
-                  </div>
-                  
-                  <div className="control-item flex justify-between">
-                    <span className="control-key font-mono">Ctrl+H</span>
-                    <span>Return to menu</span>
-                  </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="status-info flex items-center justify-between">
+                <div className="current-player">
+                  <span className={`player-indicator ${currentPlayer} medieval-text text-sm font-medium`}>
+                    {getCurrentPlayerDisplay()}
+                  </span>
+                  {isInCheck && (
+                    <Badge variant="destructive" className="ml-2 text-xs">
+                      ⚠️ Check!
+                    </Badge>
+                  )}
                 </div>
-              </CardContent>
-            </CollapsibleContent>
+                <div className="move-count medieval-text text-sm text-muted-foreground">
+                  Move: {Math.floor(moveHistory.length / 2) + 1}
+                </div>
+              </div>
+            </CardContent>
           </Card>
-        </Collapsible>
+
+          {/* Move History */}
+          <Card className="medieval-panel move-history w-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="medieval-text text-sm">📜 Move History</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="move-list max-h-32 overflow-y-auto">
+                {moveHistory.length === 0 ? (
+                  <p className="text-xs text-gray-400 italic">No moves yet</p>
+                ) : (
+                  <div className="space-y-1">
+                    {moveHistory.slice(-8).map((move, index) => (
+                      <div key={index} className="text-xs flex justify-between items-center py-1">
+                        <span className="font-mono">
+                          {Math.floor((moveHistory.length - 8 + index) / 2) + 1}.
+                          {((moveHistory.length - 8 + index) % 2 === 0) ? ' ' : '.. '}
+                          {String.fromCharCode(97 + move.from.col)}{10 - move.from.row}→
+                          {String.fromCharCode(97 + move.to.col)}{10 - move.to.row}
+                        </span>
+                        <span className="text-gray-400">{move.piece.type}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Keyboard Shortcuts - Collapsible - Full Width on Mobile */}
+          <div className="md:col-span-2">
+            <Collapsible open={showControls} onOpenChange={setShowControls}>
+              <Card className="medieval-panel w-full">
+                <CollapsibleTrigger asChild>
+                  <CardHeader className="pb-3 cursor-pointer hover:bg-white/5 transition-colors">
+                    <CardTitle className="medieval-text text-sm flex items-center justify-between">
+                      ⌨️ Keyboard Shortcuts
+                      {showControls ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </CardTitle>
+                  </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="pt-0">
+                    <div className="space-y-2 text-xs">
+                      <div className="control-item flex justify-between">
+                        <span className="control-key font-mono">Mouse Click</span>
+                        <span>Select piece / Make move</span>
+                      </div>
+                      
+                      <div className="control-item flex justify-between">
+                        <span className="control-key font-mono">Ctrl+Z</span>
+                        <span>Undo last move</span>
+                      </div>
+                      
+                      <div className="control-item flex justify-between">
+                        <span className="control-key font-mono">Escape</span>
+                        <span>Deselect piece</span>
+                      </div>
+                      
+                      <div className="control-item flex justify-between">
+                        <span className="control-key font-mono">Ctrl+M</span>
+                        <span>Toggle sound</span>
+                      </div>
+                      
+                      <div className="control-item flex justify-between">
+                        <span className="control-key font-mono">Ctrl+H</span>
+                        <span>Return to menu</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+          </div>
+        </div>
+
+        {/* Right Side Menu - Game Controls */}
+        <div className="right-controls flex-shrink-0 w-20 md:w-24">
+          <Card className="medieval-panel h-full">
+            <CardHeader className="pb-2 text-center">
+              <CardTitle className="medieval-text text-xs">🎮 Controls</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="side-menu-buttons flex flex-col gap-2">
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    resetGame();
+                    window.location.reload();
+                  }}
+                  className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+                  title="Main Menu"
+                >
+                  <span className="text-sm">🏠</span>
+                  <span className="text-xs leading-none">Menu</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const { board, currentPlayer, moveHistory } = useChess.getState();
+                    console.log('🎯 Generating hint for current position...');
+                    
+                    import('../../lib/chess/hintSystem').then(({ hintSystem }) => {
+                      const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
+                      if (hint) {
+                        console.log('💡 Hint generated:', hint);
+                      }
+                    });
+                  }}
+                  className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+                  title="Get Hint"
+                >
+                  <span className="text-sm">💡</span>
+                  <span className="text-xs leading-none">Hint</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const { isMuted, toggleMute, playBackgroundMusic, backgroundMusic } = useAudio.getState();
+                    console.log('🎵 Music button clicked:', { isMuted, hasBackgroundMusic: !!backgroundMusic });
+                    
+                    if (isMuted) {
+                      // Unmute and start background music
+                      toggleMute();
+                      setTimeout(() => playBackgroundMusic(), 100); // Small delay to ensure unmute is processed
+                    } else {
+                      // Mute all sounds
+                      toggleMute();
+                    }
+                  }}
+                  className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+                  title={isMuted ? "Enable Music & Sound" : "Mute Music & Sound"}
+                >
+                  <span className="text-sm">
+                    {isMuted ? '🔇' : '🎵'}
+                  </span>
+                  <span className="text-xs leading-none">
+                    {isMuted ? 'Sound' : 'Music'}
+                  </span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onSettings}
+                  className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+                  title="Settings"
+                >
+                  <Settings className="w-3 h-3" />
+                  <span className="text-xs leading-none">Settings</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    import('../../lib/stores/useDiagnostics').then(({ useDiagnostics }) => {
+                      const { setShowDiagnostics } = useDiagnostics.getState();
+                      setShowDiagnostics(true);
+                    });
+                  }}
+                  className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+                  title="UI Diagnostics"
+                >
+                  <span className="text-sm">🔍</span>
+                  <span className="text-xs leading-none">Debug</span>
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    const lastMove = moveHistory[moveHistory.length - 1];
+                    if (lastMove && gameMode !== 'ai-vs-ai') {
+                      console.log('🔄 Undoing last move...');
+                    }
+                  }}
+                  disabled={moveHistory.length === 0}
+                  className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+                  title="Undo Move"
+                >
+                  <span className="text-sm">↶</span>
+                  <span className="text-xs leading-none">Undo</span>
+                </Button>
+                
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         
       </div>
     </div>
