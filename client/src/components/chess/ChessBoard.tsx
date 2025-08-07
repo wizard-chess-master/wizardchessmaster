@@ -12,7 +12,8 @@ export function ChessBoard() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatingPiece, setAnimatingPiece] = useState<{piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number} | null>(null);
   const [animationProgress, setAnimationProgress] = useState(0);
-  const [particles, setParticles] = useState<Array<{x: number, y: number, vx: number, vy: number, life: number, maxLife: number, color: string}>>([]);
+  type Particle = {x: number, y: number, vx: number, vy: number, life: number, maxLife: number, color: string};
+  const [particles, setParticles] = useState<Particle[]>([]);
   const [captureEffect, setCaptureEffect] = useState<{x: number, y: number, timestamp: number} | null>(null);
   const [specialMoveEffect, setSpecialMoveEffect] = useState<{x: number, y: number, type: string, timestamp: number} | null>(null);
   const [canvasSize, setCanvasSize] = useState(800);
@@ -347,91 +348,6 @@ export function ChessBoard() {
     selectSquare({ row, col });
   };
 
-  // Animation system for smooth piece movements and effects
-  useEffect(() => {
-    let animationFrame: number;
-    
-    const animate = () => {
-      // Update particles
-      setParticles(prev => prev
-        .map(particle => ({
-          ...particle,
-          x: particle.x + particle.vx,
-          y: particle.y + particle.vy,
-          life: particle.life - 1,
-          vy: particle.vy + 0.1 // gravity
-        }))
-        .filter(particle => particle.life > 0)
-      );
-      
-      // Update capture effects
-      setCaptureEffect(prev => {
-        if (prev && Date.now() - prev.timestamp > 1000) {
-          return null;
-        }
-        return prev;
-      });
-      
-      // Update special move effects
-      setSpecialMoveEffect(prev => {
-        if (prev && Date.now() - prev.timestamp > 1500) {
-          return null;
-        }
-        return prev;
-      });
-      
-      // Redraw canvas with effects
-      if (particles.length > 0 || captureEffect || specialMoveEffect) {
-        drawBoard();
-        drawEffects();
-      }
-      
-      animationFrame = requestAnimationFrame(animate);
-    };
-    
-    animationFrame = requestAnimationFrame(animate);
-    
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
-      }
-    };
-  }, [particles, captureEffect, specialMoveEffect, drawBoard, drawEffects]);
-
-  // Create particle explosion for captures
-  const createCaptureParticles = (x: number, y: number, color: string) => {
-    const newParticles = [];
-    for (let i = 0; i < 12; i++) {
-      newParticles.push({
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 8,
-        vy: (Math.random() - 0.5) * 8,
-        life: 60,
-        maxLife: 60,
-        color: color === 'white' ? '#FFD700' : '#8B0000'
-      });
-    }
-    setParticles(prev => [...prev, ...newParticles]);
-  };
-
-  // Create magical sparkles for wizard moves
-  const createWizardSparkles = (x: number, y: number) => {
-    const newParticles = [];
-    for (let i = 0; i < 20; i++) {
-      newParticles.push({
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 6,
-        vy: (Math.random() - 0.5) * 6,
-        life: 90,
-        maxLife: 90,
-        color: ['#9370DB', '#FF69B4', '#00CED1', '#FFD700'][Math.floor(Math.random() * 4)]
-      });
-    }
-    setParticles(prev => [...prev, ...newParticles]);
-  };
-
   // Draw visual effects on canvas
   const drawEffects = () => {
     const canvas = canvasRef.current;
@@ -503,6 +419,91 @@ export function ChessBoard() {
     }
   };
 
+  // Create particle explosion for captures
+  const createCaptureParticles = (x: number, y: number, color: string) => {
+    const newParticles: Particle[] = [];
+    for (let i = 0; i < 12; i++) {
+      newParticles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 8,
+        vy: (Math.random() - 0.5) * 8,
+        life: 60,
+        maxLife: 60,
+        color: color === 'white' ? '#FFD700' : '#8B0000'
+      });
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
+  // Create magical sparkles for wizard moves
+  const createWizardSparkles = (x: number, y: number) => {
+    const newParticles: Particle[] = [];
+    for (let i = 0; i < 20; i++) {
+      newParticles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6,
+        life: 90,
+        maxLife: 90,
+        color: ['#9370DB', '#FF69B4', '#00CED1', '#FFD700'][Math.floor(Math.random() * 4)]
+      });
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
+  // Animation system for smooth piece movements and effects
+  useEffect(() => {
+    let animationFrame: number;
+    
+    const animate = () => {
+      // Update particles
+      setParticles(prev => prev
+        .map(particle => ({
+          ...particle,
+          x: particle.x + particle.vx,
+          y: particle.y + particle.vy,
+          life: particle.life - 1,
+          vy: particle.vy + 0.1 // gravity
+        }))
+        .filter(particle => particle.life > 0)
+      );
+      
+      // Update capture effects
+      setCaptureEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 1000) {
+          return null;
+        }
+        return prev;
+      });
+      
+      // Update special move effects
+      setSpecialMoveEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 1500) {
+          return null;
+        }
+        return prev;
+      });
+      
+      // Redraw canvas with effects
+      if (particles.length > 0 || captureEffect || specialMoveEffect) {
+        drawBoard();
+        drawEffects();
+      }
+      
+      animationFrame = requestAnimationFrame(animate);
+    };
+    
+    animationFrame = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [particles, captureEffect, specialMoveEffect]);
+
   // Enhanced click handler with animation triggers
   const handleCanvasClickWithEffects = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -513,7 +514,7 @@ export function ChessBoard() {
     const clickY = event.clientY - rect.top;
     
     // Trigger click sparkles
-    const sparkleParticles = [];
+    const sparkleParticles: Particle[] = [];
     for (let i = 0; i < 6; i++) {
       sparkleParticles.push({
         x: clickX,
@@ -539,9 +540,9 @@ export function ChessBoard() {
       const toY = lastMove.to.row * squareSize + squareSize / 2;
       
       // Create capture effect if piece was captured
-      if (lastMove.capturedPiece) {
+      if (lastMove.captured) {
         setCaptureEffect({ x: toX, y: toY, timestamp: Date.now() });
-        createCaptureParticles(toX, toY, lastMove.capturedPiece.color);
+        createCaptureParticles(toX, toY, lastMove.captured.color);
       }
       
       // Create special effects for wizard moves
@@ -551,7 +552,7 @@ export function ChessBoard() {
       }
       
       // Create spell effects for castling
-      if (lastMove.flags?.includes('castling')) {
+      if (lastMove.isCastling) {
         setSpecialMoveEffect({ x: toX, y: toY, type: 'spell', timestamp: Date.now() });
       }
     }

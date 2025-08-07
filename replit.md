@@ -54,6 +54,8 @@ Preferred communication style: Simple, everyday language.
 - **Castling System**: Implemented with king moving 3 squares and proper validation.
 - **Mass AI Training System**: Comprehensive training with improved minimax and neural network learning.
 - **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Debug tools, Reset AI Training, View AI Learning Stats).
+- **Dynamic Music System**: Multi-track background music with crossfading, adaptive music based on game state (calm, tension, victory, defeat), and varied playback rates for musical diversity.
+- **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
 
 ## External Dependencies
 
