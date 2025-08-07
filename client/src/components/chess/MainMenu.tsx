@@ -40,8 +40,8 @@ export function MainMenu({ onSettings }: MainMenuProps) {
       {/* Top Menu Ad Banner */}
       <AdBanner 
         id="menu-banner" 
-        className="mb-6"
-        style={{ maxWidth: '100%' }}
+        className="mb-4"
+        style={{ maxWidth: '600px', width: '100%' }}
       />
 
       <div className="menu-container">

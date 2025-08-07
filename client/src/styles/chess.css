@@ -10,16 +10,21 @@
 /* Main Menu Styles */
 .main-menu {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   padding: 1rem;
   background: radial-gradient(ellipse at center, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.3) 100%);
+  max-width: 100vw;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .menu-container {
-  max-width: 900px;
+  max-width: 600px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .title-section {
