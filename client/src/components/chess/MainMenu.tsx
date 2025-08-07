@@ -13,7 +13,7 @@ import { CampaignDialog } from './CampaignDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { AIDifficultyVisualization } from './AIDifficultyVisualization';
 import { AdminLogin } from './AdminLogin';
-import { isAdminFeatureEnabled } from '../../lib/admin';
+import { isAdminFeatureEnabled, isAdminEnabled } from '../../lib/admin';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 
@@ -30,6 +30,23 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
   const [adminRefresh, setAdminRefresh] = useState(0);
+
+  // Debug admin state on every render
+  useEffect(() => {
+    console.log('🔐 MainMenu: Checking admin state on render');
+    console.log('🔐 MainMenu: Admin refresh counter:', adminRefresh);
+    
+    // Check current admin status
+    const adminStatus = {
+      isEnabled: isAdminEnabled(),
+      trainingEnabled: isAdminFeatureEnabled('training'),
+      debugEnabled: isAdminFeatureEnabled('debug'),
+      statsEnabled: isAdminFeatureEnabled('stats'),
+      resetEnabled: isAdminFeatureEnabled('reset')
+    };
+    
+    console.log('🔐 MainMenu: Current admin status:', adminStatus);
+  }, [adminRefresh]);
 
   const refreshLearningStats = () => {
     const stats = aiLearning.getLearningStats();
@@ -348,7 +365,15 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
           </AIDifficultyVisualization>
           
           <AdminLogin 
-            onAuthChange={() => setAdminRefresh(prev => prev + 1)}
+            onAuthChange={(isAuthenticated) => {
+              console.log('🔐 MainMenu: AdminLogin onAuthChange called with:', isAuthenticated);
+              console.log('🔐 MainMenu: Incrementing admin refresh counter');
+              setAdminRefresh(prev => {
+                const newValue = prev + 1;
+                console.log('🔐 MainMenu: Admin refresh counter updated:', prev, '->', newValue);
+                return newValue;
+              });
+            }}
           />
         </div>
       </div>

@@ -65,7 +65,9 @@ export const authenticateAdmin = (key: string): boolean => {
  * Log out admin session
  */
 export const logoutAdmin = (): void => {
+  console.log('🔐 logoutAdmin: Removing session key from storage');
   sessionStorage.removeItem(ADMIN_SESSION_KEY);
+  console.log('🔐 logoutAdmin: Session cleared successfully');
 };
 
 /**
@@ -79,14 +81,20 @@ export const isAdminFeatureEnabled = (feature: 'training' | 'debug' | 'stats' | 
   // This tests the security system even in development
   const shouldShow = import.meta.env.DEV ? hasSession : adminEnabled;
   
+  // Also check if explicitly enabled via environment
+  const envForced = import.meta.env.VITE_ADMIN_MODE === 'true';
+  const finalShow = envForced || shouldShow;
+  
   console.log(`🔐 Feature "${feature}" check:`, {
     adminEnabled,
     hasSession,
     shouldShow,
+    envForced,
+    finalShow,
     isDev: import.meta.env.DEV
   });
   
-  if (!shouldShow) return false;
+  if (!finalShow) return false;
   
   // You can add feature-specific permissions here if needed
   switch (feature) {

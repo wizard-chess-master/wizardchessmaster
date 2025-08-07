@@ -20,20 +20,56 @@ export function AdminLogin({ onAuthChange }: AdminLoginProps) {
   const adminStatus = getAdminStatus();
 
   const handleLogin = () => {
-    if (authenticateAdmin(adminKey)) {
-      setError('');
-      setAdminKey('');
-      setIsOpen(false);
-      onAuthChange?.(true);
-    } else {
-      setError('Invalid admin key');
+    console.log('🔐 AdminLogin: handleLogin called with key:', adminKey.substring(0, 3) + '***');
+    
+    try {
+      const result = authenticateAdmin(adminKey);
+      console.log('🔐 AdminLogin: Authentication result:', result);
+      
+      if (result) {
+        console.log('🔐 AdminLogin: Authentication successful, clearing form and notifying parent');
+        setError('');
+        setAdminKey('');
+        setIsOpen(false);
+        
+        // Force a slight delay to ensure session is saved
+        setTimeout(() => {
+          console.log('🔐 AdminLogin: Calling onAuthChange(true)');
+          onAuthChange?.(true);
+          
+          // Force a page refresh to ensure all components re-render
+          console.log('🔐 AdminLogin: Forcing window reload to refresh all components');
+          window.location.reload();
+        }, 100);
+      } else {
+        console.log('🔐 AdminLogin: Authentication failed');
+        setError('Invalid admin key');
+      }
+    } catch (error) {
+      console.error('🔐 AdminLogin: Error during authentication:', error);
+      setError('Authentication error occurred');
     }
   };
 
   const handleLogout = () => {
-    logoutAdmin();
-    setIsOpen(false);
-    onAuthChange?.(false);
+    console.log('🔐 AdminLogin: handleLogout called');
+    
+    try {
+      logoutAdmin();
+      console.log('🔐 AdminLogin: Logout successful, closing dialog and notifying parent');
+      setIsOpen(false);
+      
+      // Force a slight delay and refresh
+      setTimeout(() => {
+        console.log('🔐 AdminLogin: Calling onAuthChange(false)');
+        onAuthChange?.(false);
+        
+        console.log('🔐 AdminLogin: Forcing window reload to hide admin features');
+        window.location.reload();
+      }, 100);
+    } catch (error) {
+      console.error('🔐 AdminLogin: Error during logout:', error);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -131,7 +167,10 @@ export function AdminLogin({ onAuthChange }: AdminLoginProps) {
         </DialogHeader>
         
         <div className="text-sm bg-blue-50 border border-blue-200 rounded p-3 mb-4">
-          <strong>Test Admin Key:</strong> wizard-admin-2025
+          <strong>Test Admin Key:</strong> wizard-admin-2025<br/>
+          <span className="text-xs text-gray-600">
+            After successful login, page will reload and admin features will appear in the main menu.
+          </span>
         </div>
         
         <Card>
