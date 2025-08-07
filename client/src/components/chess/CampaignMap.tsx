@@ -91,7 +91,7 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
       </Card>
 
       {/* Campaign Map */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 justify-items-center max-w-6xl mx-auto">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {levels.map((level, index) => {
           const winRate = getWinRate(level);
           const isCurrentLevel = level.unlocked && !level.completed;
