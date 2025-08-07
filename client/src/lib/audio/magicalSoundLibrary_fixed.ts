@@ -562,7 +562,7 @@ export const MAGICAL_SOUND_LIBRARY: MagicalSound[] = [
     audioData: MAGICAL_SOUND_DATA.mystical_wind,
     volume: 0.3,
     duration: 4000,
-    canLoop: true
+    canLoop: false
   },
   {
     id: 'arcane_energy',

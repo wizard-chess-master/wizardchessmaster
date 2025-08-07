@@ -202,6 +202,33 @@ export const useAudio = create<AudioState>((set, get) => ({
     });
   },
 
+  stopAllSounds: () => {
+    const { ambientSounds, backgroundMusic } = get();
+    
+    // Stop all ambient sounds
+    Object.values(ambientSounds).forEach(sound => {
+      if (sound) {
+        sound.pause();
+        sound.currentTime = 0;
+      }
+    });
+    
+    // Stop background music
+    if (backgroundMusic) {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+    }
+    
+    // Stop any looping HTML audio elements
+    const allAudioElements = document.querySelectorAll('audio');
+    allAudioElements.forEach(audio => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+    
+    console.log('🔇 All audio stopped');
+  },
+
   playBackgroundMusic: () => {
     const { currentTrack } = get();
     get().switchMusicTrack(currentTrack, false);
