@@ -283,12 +283,7 @@ export function GameUI({ onSettings }: GameUIProps) {
         </div>
       </div>
 
-      {/* Bottom Ad Banner */}
-      <AdBanner 
-        id="game-banner-bottom" 
-        className="mt-6"
-        style={{ maxWidth: '900px', width: '100%' }}
-      />
+
     </div>
   );
 }

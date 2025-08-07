@@ -6,6 +6,7 @@ import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
+import { AdBanner } from "./components/monetization/AdBanner";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
 import "@fontsource/inter";
@@ -85,6 +86,12 @@ function App() {
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
           <div className="game-layout">
+            {/* Ad Banner Above Chess Board */}
+            <AdBanner 
+              id="game-banner-above-board" 
+              className="mb-4"
+              style={{ maxWidth: '900px', width: '100%' }}
+            />
             <div className="board-container">
               <ChessBoard />
             </div>
