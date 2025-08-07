@@ -102,7 +102,7 @@ body {
   align-items: center;
   margin: 15px 0;
   /* Expanded width for 2-column layout */
-  max-width: min(95vw, 900px);
+  max-width: min(98vw, 900px);
   width: 100%;
   padding: 0 12px;
   box-sizing: border-box;

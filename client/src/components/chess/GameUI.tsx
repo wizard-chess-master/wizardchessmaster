@@ -48,7 +48,7 @@ export function GameUI({ onSettings }: GameUIProps) {
       <AdBanner 
         id="game-banner-top" 
         className="mb-3"
-        style={{ maxWidth: '600px', width: '100%' }}
+        style={{ maxWidth: '900px', width: '100%' }}
       />
 
       {/* Two Column Layout for Game Sections */}
@@ -84,8 +84,11 @@ export function GameUI({ onSettings }: GameUIProps) {
 
           {/* Game Controls */}
           <Card className="medieval-panel game-controls w-full">
-        <CardContent className="pt-4">
-          <div className="control-buttons grid grid-cols-2 gap-2 w-full max-w-md">
+            <CardHeader className="pb-3">
+              <CardTitle className="medieval-text text-sm">🎮 Game Controls</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+          <div className="control-buttons grid grid-cols-2 gap-3 w-full">
             <Button
               variant="outline"
               size="sm"
@@ -94,12 +97,10 @@ export function GameUI({ onSettings }: GameUIProps) {
                 // Navigate to main menu by resetting game phase
                 window.location.reload();
               }}
-              className="medieval-btn mode-button"
+              className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
             >
-              <div className="mode-content">
-                <span>🏠 Main Menu</span>
-                <Badge variant="secondary">Home</Badge>
-              </div>
+              <span className="text-lg mb-1">🏠</span>
+              <span className="text-xs">Main Menu</span>
             </Button>
             
             {/* Game Hints Component */}
@@ -133,58 +134,56 @@ export function GameUI({ onSettings }: GameUIProps) {
               variant="outline"
               size="sm"
               onClick={toggleMute}
-              className="medieval-btn mode-button"
+              className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
             >
-              <div className="mode-content">
-                <span>{isMuted ? '🔊 Unmute' : '🔇 Mute'}</span>
-                <Badge variant="secondary">Audio</Badge>
-              </div>
+              <span className="text-lg mb-1">{isMuted ? '🔊' : '🔇'}</span>
+              <span className="text-xs">{isMuted ? 'Unmute' : 'Mute'}</span>
             </Button>
             
             <Button
               variant="outline"
               size="sm"
               onClick={onSettings}
-              className="medieval-btn mode-button"
+              className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
             >
-              <div className="mode-content">
-                <span>⚙️ Settings</span>
-                <Badge variant="secondary">Config</Badge>
-              </div>
+              <span className="text-lg mb-1">⚙️</span>
+              <span className="text-xs">Settings</span>
             </Button>
           </div>
         </CardContent>
           </Card>
 
-          {/* Move History */}
-          <Card className="medieval-panel move-history w-full">
-        <CardHeader className="pb-3">
-          <CardTitle className="medieval-text text-sm">📜 Move History</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <div className="history-list max-h-32 overflow-y-auto">
-            {moveHistory.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No moves yet</p>
-            ) : (
-              moveHistory.slice(-6).map((move, index) => (
-                <div key={index} className="history-move text-xs py-1 flex gap-2">
-                  <span className="move-number font-mono">{moveHistory.length - 6 + index + 1}.</span>
-                  <span className="move-notation">
-                    {move.piece.type} {String.fromCharCode(65 + move.from.col)}{10 - move.from.row} → {String.fromCharCode(65 + move.to.col)}{10 - move.to.row}
-                    {move.captured && ` x${move.captured.type}`}
-                    {move.isWizardTeleport && ' (teleport)'}
-                    {move.isWizardAttack && ' (ranged)'}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        </CardContent>
-          </Card>
+
         </div>
 
         {/* Right Column */}
         <div className="game-section-right flex flex-col gap-3">
+          {/* Move History */}
+          <Card className="medieval-panel move-history w-full">
+            <CardHeader className="pb-3">
+              <CardTitle className="medieval-text text-sm">📜 Move History</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="history-list max-h-48 overflow-y-auto">
+                {moveHistory.length === 0 ? (
+                  <p className="text-muted-foreground text-sm">No moves yet</p>
+                ) : (
+                  moveHistory.slice(-10).map((move, index) => (
+                    <div key={index} className="history-move text-xs py-1 flex gap-2">
+                      <span className="move-number font-mono">{moveHistory.length - 10 + index + 1}.</span>
+                      <span className="move-notation">
+                        {move.piece.type} {String.fromCharCode(65 + move.from.col)}{10 - move.from.row} → {String.fromCharCode(65 + move.to.col)}{10 - move.to.row}
+                        {move.captured && ` x${move.captured.type}`}
+                        {move.isWizardTeleport && ' (teleport)'}
+                        {move.isWizardAttack && ' (ranged)'}
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Game Rules - Collapsible */}
           <Card className="medieval-panel game-help w-full">
         <CardHeader className="pb-0">
@@ -235,51 +234,51 @@ export function GameUI({ onSettings }: GameUIProps) {
         )}
           </Card>
 
-          {/* Game Controls - Collapsible */}
+          {/* Keyboard Shortcuts - Collapsible */}
           <Card className="medieval-panel game-help w-full">
-        <CardHeader className="pb-0">
-          <Button
-            variant="ghost"
-            onClick={() => setShowControls(!showControls)}
-            className="medieval-btn w-full justify-between p-3"
-          >
-            <div className="flex items-center gap-2">
-              <Gamepad2 className="w-4 h-4" />
-              <span className="medieval-text">🎮 Controls</span>
-            </div>
-            {showControls ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </Button>
-        </CardHeader>
-        {showControls && (
-          <CardContent>
-            <div className="controls-content">
-              <div className="control-item">
-                <span className="control-key">Mouse Click</span>
-                <span>Select piece / Make move</span>
-              </div>
-              
-              <div className="control-item">
-                <span className="control-key">Ctrl+Z</span>
-                <span>Undo last move</span>
-              </div>
-              
-              <div className="control-item">
-                <span className="control-key">Escape</span>
-                <span>Deselect piece</span>
-              </div>
-              
-              <div className="control-item">
-                <span className="control-key">Ctrl+M</span>
-                <span>Toggle sound</span>
-              </div>
-              
-              <div className="control-item">
-                <span className="control-key">Ctrl+H</span>
-                <span>Return to menu</span>
-              </div>
-            </div>
-          </CardContent>
-        )}
+            <CardHeader className="pb-0">
+              <Button
+                variant="ghost"
+                onClick={() => setShowControls(!showControls)}
+                className="medieval-btn w-full justify-between p-3"
+              >
+                <div className="flex items-center gap-2">
+                  <Gamepad2 className="w-4 h-4" />
+                  <span className="medieval-text">⌨️ Keyboard Shortcuts</span>
+                </div>
+                {showControls ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </Button>
+            </CardHeader>
+            {showControls && (
+              <CardContent>
+                <div className="controls-content">
+                  <div className="control-item">
+                    <span className="control-key">Mouse Click</span>
+                    <span>Select piece / Make move</span>
+                  </div>
+                  
+                  <div className="control-item">
+                    <span className="control-key">Ctrl+Z</span>
+                    <span>Undo last move</span>
+                  </div>
+                  
+                  <div className="control-item">
+                    <span className="control-key">Escape</span>
+                    <span>Deselect piece</span>
+                  </div>
+                  
+                  <div className="control-item">
+                    <span className="control-key">Ctrl+M</span>
+                    <span>Toggle sound</span>
+                  </div>
+                  
+                  <div className="control-item">
+                    <span className="control-key">Ctrl+H</span>
+                    <span>Return to menu</span>
+                  </div>
+                </div>
+              </CardContent>
+            )}
           </Card>
         </div>
       </div>
@@ -287,8 +286,8 @@ export function GameUI({ onSettings }: GameUIProps) {
       {/* Bottom Ad Banner */}
       <AdBanner 
         id="game-banner-bottom" 
-        className="mt-4"
-        style={{ maxWidth: '600px', width: '100%' }}
+        className="mt-6"
+        style={{ maxWidth: '900px', width: '100%' }}
       />
     </div>
   );
