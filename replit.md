@@ -6,6 +6,16 @@ This is **Wizard Chess Duel** - a 10x10 chess variant with magical wizards posit
 
 ## Recent Changes (August 7, 2025)
 
+### ADMIN SECURITY SYSTEM - FULLY OPERATIONAL
+- **Environment-Based Admin Control**: Admin features hidden in production deployment using VITE_ADMIN_MODE environment variable
+- **Session Authentication**: AdminLogin component with secure key-based authentication for accessing admin features
+- **Conditional Feature Rendering**: Mass AI Training, Debug tools, Reset AI Training, and View AI Learning Stats only visible to authenticated admins
+- **Development vs Production**: Development mode always enables admin features, production requires explicit environment configuration
+- **Secure Deployment Ready**: Public deployment will not expose sensitive admin functionality while keeping backend intact for internal use
+- **Admin Feature Management**: Granular control over training, debug, stats, and reset features with per-feature permissions
+
+## Previous Changes (August 7, 2025)
+
 ### ADAPTIVE AI DIFFICULTY PROGRESSION VISUALIZATION - FULLY OPERATIONAL
 - **Real-time Difficulty Tracking**: Visual charts showing AI difficulty changes over time based on player performance
 - **Performance Analytics**: Comprehensive metrics tracking win rates, game times, move accuracy, and skill progression
@@ -156,6 +166,31 @@ Preferred communication style: Simple, everyday language.
 - **HTML5 Audio** - Sound effects for moves and game events
 - **Mute Controls** - User-configurable audio settings
 - **Audio Store** - Centralized audio state management
+
+## Deployment Configuration
+
+### Environment Variables for Production
+For secure production deployment, configure these environment variables:
+
+```
+# Admin access control (set to 'false' to hide admin features in production)
+VITE_ADMIN_MODE=false
+
+# Admin authentication key (change for production security)
+VITE_ADMIN_KEY=your-secure-admin-key-here
+```
+
+### Admin Feature Security
+- **Development Mode**: Admin features always available for testing and development
+- **Production Mode**: Admin features hidden unless VITE_ADMIN_MODE=true
+- **Authentication**: Session-based admin login with configurable key
+- **Feature Control**: Individual admin features (training, debug, stats, reset) can be controlled separately
+
+### Admin Features (Hidden in Production)
+- **Mass AI Training**: 1-10000 game training sessions
+- **Debug & Verify System**: System functionality verification tools
+- **Reset AI Training**: Clear all AI learning data
+- **View AI Learning Stats**: Detailed AI performance analytics
 
 ## External Dependencies
 

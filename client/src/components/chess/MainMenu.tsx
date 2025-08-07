@@ -12,6 +12,8 @@ import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { AIDifficultyVisualization } from './AIDifficultyVisualization';
+import { AdminLogin } from './AdminLogin';
+import { isAdminFeatureEnabled } from '../../lib/admin';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 
@@ -27,6 +29,7 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
   const [showStatsDialog, setShowStatsDialog] = useState(false);
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
+  const [adminRefresh, setAdminRefresh] = useState(0);
 
   const refreshLearningStats = () => {
     const stats = aiLearning.getLearningStats();
@@ -127,86 +130,95 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
                   </Button>
                 </CampaignDialog>
 
-                <MassTrainingDialog onTrainingComplete={refreshLearningStats}>
+{/* Admin-only features */}
+                {isAdminFeatureEnabled('training') && (
+                  <MassTrainingDialog onTrainingComplete={refreshLearningStats}>
+                    <Button
+                      className="medieval-btn mode-button"
+                      variant="outline"
+                    >
+                      <div className="mode-content">
+                        <span>🧙 Mass AI Training</span>
+                        <Badge variant="secondary">1-10000 Games</Badge>
+                      </div>
+                    </Button>
+                  </MassTrainingDialog>
+                )}
+
+                {isAdminFeatureEnabled('debug') && (
                   <Button
                     className="medieval-btn mode-button"
                     variant="outline"
-                  >
-                    <div className="mode-content">
-                      <span>🧙 Mass AI Training</span>
-                      <Badge variant="secondary">1-10000 Games</Badge>
-                    </div>
-                  </Button>
-                </MassTrainingDialog>
-
-                <Button
-                  className="medieval-btn mode-button"
-                  variant="outline"
-                  onClick={() => {
-                    console.log('🧪 Running functionality verification...');
-                    try {
-                      runDebugVerification();
-                      // Show results dialog after verification completes
-                      setTimeout(() => {
+                    onClick={() => {
+                      console.log('🧪 Running functionality verification...');
+                      try {
+                        runDebugVerification();
+                        // Show results dialog after verification completes
+                        setTimeout(() => {
+                          setDebugResults({
+                            completed: true,
+                            message: 'Debug verification completed successfully!',
+                            details: 'All core systems tested and verified. Check console for detailed results.',
+                            nextStep: 'System ready for mass AI training. Click "Mass AI Training" to begin 10000-game session.'
+                          });
+                          setShowDebugDialog(true);
+                        }, 2000); // Give verification time to complete
+                      } catch (error) {
+                        console.error('❌ Debug verification failed:', error);
                         setDebugResults({
-                          completed: true,
-                          message: 'Debug verification completed successfully!',
-                          details: 'All core systems tested and verified. Check console for detailed results.',
-                          nextStep: 'System ready for mass AI training. Click "Mass AI Training" to begin 10000-game session.'
+                          completed: false,
+                          message: 'Debug verification encountered issues',
+                          details: `Error: ${error}`,
+                          nextStep: 'Check console for details and try again.'
                         });
                         setShowDebugDialog(true);
-                      }, 2000); // Give verification time to complete
-                    } catch (error) {
-                      console.error('❌ Debug verification failed:', error);
-                      setDebugResults({
-                        completed: false,
-                        message: 'Debug verification encountered issues',
-                        details: `Error: ${error}`,
-                        nextStep: 'Check console for details and try again.'
-                      });
-                      setShowDebugDialog(true);
-                    }
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>🧪 Debug & Verify System</span>
-                    <Badge variant="secondary">Test All</Badge>
-                  </div>
-                </Button>
+                      }
+                    }}
+                  >
+                    <div className="mode-content">
+                      <span>🧪 Debug & Verify System</span>
+                      <Badge variant="secondary">Test All</Badge>
+                    </div>
+                  </Button>
+                )}
                 
-                <Button
-                  className="medieval-btn mode-button"
-                  variant="outline"
-                  onClick={() => {
-                    console.log('🔄 Training reset requested...');
-                    try {
-                      confirmAndResetTraining();
-                    } catch (error) {
-                      console.error('❌ Training reset failed:', error);
-                    }
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>🔄 Reset AI Training</span>
-                    <Badge variant="destructive">Clear All Data</Badge>
-                  </div>
-                </Button>
+                {isAdminFeatureEnabled('reset') && (
+                  <Button
+                    className="medieval-btn mode-button"
+                    variant="outline"
+                    onClick={() => {
+                      console.log('🔄 Training reset requested...');
+                      try {
+                        confirmAndResetTraining();
+                      } catch (error) {
+                        console.error('❌ Training reset failed:', error);
+                      }
+                    }}
+                  >
+                    <div className="mode-content">
+                      <span>🔄 Reset AI Training</span>
+                      <Badge variant="destructive">Clear All Data</Badge>
+                    </div>
+                  </Button>
+                )}
                 
-                <Button
-                  className="medieval-btn mode-button"
-                  variant="outline"
-                  onClick={() => {
-                    refreshLearningStats();
-                    setShowStatsDialog(true);
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>📊 View AI Learning Stats</span>
-                    <Badge variant="secondary">
-                      {learningStats?.totalGamesAnalyzed || 0} Games
-                    </Badge>
-                  </div>
-                </Button>
+                {isAdminFeatureEnabled('stats') && (
+                  <Button
+                    className="medieval-btn mode-button"
+                    variant="outline"
+                    onClick={() => {
+                      refreshLearningStats();
+                      setShowStatsDialog(true);
+                    }}
+                  >
+                    <div className="mode-content">
+                      <span>📊 View AI Learning Stats</span>
+                      <Badge variant="secondary">
+                        {learningStats?.totalGamesAnalyzed || 0} Games
+                      </Badge>
+                    </div>
+                  </Button>
+                )}
                 
                 <Button
                   className="medieval-btn mode-button"
@@ -334,11 +346,16 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
               AI Difficulty
             </Button>
           </AIDifficultyVisualization>
+          
+          <AdminLogin 
+            onAuthChange={() => setAdminRefresh(prev => prev + 1)}
+          />
         </div>
       </div>
 
-      {/* AI Learning Stats Dialog */}
-      <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
+      {/* AI Learning Stats Dialog - Admin Only */}
+      {isAdminFeatureEnabled('stats') && (
+        <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
         <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -489,10 +506,12 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
             )}
           </div>
         </DialogContent>
-      </Dialog>
+        </Dialog>
+      )}
 
-      {/* Debug Verification Results Dialog */}
-      <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
+      {/* Debug Verification Results Dialog - Admin Only */}
+      {isAdminFeatureEnabled('debug') && (
+        <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -553,7 +572,8 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
             </div>
           )}
         </DialogContent>
-      </Dialog>
+        </Dialog>
+      )}
     </div>
   );
 }
