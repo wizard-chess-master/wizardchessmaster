@@ -82,6 +82,9 @@ export function MagicalSoundTestPanel() {
     return acc;
   }, {} as Record<MagicalSoundCategory, typeof MAGICAL_SOUND_LIBRARY>);
 
+  // Debug audio state
+  console.log('🎵 MagicalSoundTestPanel: Audio state check:', { isMuted });
+
   if (isMuted) {
     return (
       <Card className="w-full max-w-4xl mx-auto">
@@ -91,58 +94,116 @@ export function MagicalSoundTestPanel() {
             Magical Sound Library - Audio Muted
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <p className="text-muted-foreground text-center">
             Enable audio in settings to test magical sound effects
           </p>
+          <div className="text-center">
+            <Button 
+              onClick={() => {
+                // Try to unmute audio from within the panel
+                const audioStore = useAudio.getState();
+                audioStore.toggleMute();
+                console.log('🎵 Attempted to unmute audio from panel');
+              }}
+              variant="outline"
+            >
+              🔊 Enable Audio
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
+  // Debug rendering state
+  console.log('🎵 MagicalSoundTestPanel: Rendering full panel with:', {
+    totalSounds: MAGICAL_SOUND_LIBRARY.length,
+    categoriesCount: Object.keys(soundsByCategory).length,
+    categories: Object.keys(soundsByCategory),
+    firstFewSounds: MAGICAL_SOUND_LIBRARY.slice(0, 3).map(s => s.name),
+    lastPlayed,
+    isMuted
+  });
+
+  // Debug soundsByCategory
+  console.log('🎵 soundsByCategory structure:', soundsByCategory);
+
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      <Card>
+      <Card className="border-2 border-purple-500/20 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wand2 className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <Wand2 className="w-6 h-6 text-purple-600" />
             Magical Sound Effect Library
+            <Badge variant="secondary" className="ml-2 bg-purple-100 text-purple-800">
+              ✨ {MAGICAL_SOUND_LIBRARY.length} Sounds Ready
+            </Badge>
           </CardTitle>
-          <p className="text-sm text-muted-foreground">
-            Test the comprehensive magical audio system with {MAGICAL_SOUND_LIBRARY.length} immersive sound effects
+          <p className="text-base text-muted-foreground">
+            🎭 Test the comprehensive magical audio system with {MAGICAL_SOUND_LIBRARY.length} immersive sound effects across {Object.keys(soundsByCategory).length} categories
           </p>
           {lastPlayed && (
-            <Badge variant="outline" className="w-fit">
-              Last played: {lastPlayed}
+            <Badge variant="outline" className="w-fit bg-green-50 text-green-700 border-green-200">
+              🔊 Last played: {lastPlayed}
             </Badge>
           )}
         </CardHeader>
       </Card>
 
       <Tabs defaultValue="quick-tests" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="quick-tests">Quick Tests</TabsTrigger>
-          <TabsTrigger value="by-category">By Category</TabsTrigger>
-          <TabsTrigger value="ambient">Ambient Magic</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 mb-4 bg-purple-100 dark:bg-purple-900/20">
+          <TabsTrigger value="quick-tests" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+            🎯 Quick Tests
+          </TabsTrigger>
+          <TabsTrigger value="by-category" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+            📂 By Category
+          </TabsTrigger>
+          <TabsTrigger value="ambient" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+            ✨ Ambient Magic
+          </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="quick-tests" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <TabsContent value="quick-tests" className="space-y-6 mt-6">
+          {console.log('🎵 Rendering Quick Tests tab content')}
+          
+          {/* Fallback test if content doesn't render */}
+          <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20 p-4 rounded-lg border-2 border-yellow-400/50 mb-4">
+            <h3 className="font-bold text-lg text-yellow-800 dark:text-yellow-200 mb-2">
+              🎭 Magical Sound Library Status
+            </h3>
+            <p className="text-yellow-700 dark:text-yellow-300">
+              Loaded {MAGICAL_SOUND_LIBRARY.length} sounds across {Object.keys(soundsByCategory).length} categories
+            </p>
+            <Button 
+              className="mt-2 bg-yellow-600 hover:bg-yellow-700 text-white"
+              onClick={() => {
+                console.log('🎵 Test button clicked!');
+                setLastPlayed('Test click');
+              }}
+            >
+              🔊 Test Audio System
+            </Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Piece Movement Tests */}
-            <Card>
+            <Card className="border-2 border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-900/10">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg">Piece Movements</CardTitle>
+                <CardTitle className="text-lg flex items-center gap-2 text-blue-800 dark:text-blue-200">
+                  ♟️ Piece Movements
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              <CardContent className="space-y-3">
                 {['pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'wizard'].map(piece => (
                   <Button
                     key={piece}
                     variant="outline"
                     size="sm"
                     onClick={() => testPieceMovement(piece)}
-                    className="w-full capitalize"
+                    className="w-full capitalize bg-white dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900/20 border-blue-300"
                   >
-                    {piece}
+                    {piece === 'wizard' ? '🧙‍♂️' : piece === 'king' ? '👑' : piece === 'queen' ? '♛' : '♟️'} {piece}
                   </Button>
                 ))}
               </CardContent>
