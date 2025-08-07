@@ -326,10 +326,20 @@
 /* Modal and Dialog Z-index Management */
 [data-state="open"][data-radix-dialog-overlay] {
   z-index: 100 !important;
+  position: fixed !important;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
 }
 
 [data-state="open"][data-radix-dialog-content] {
   z-index: 101 !important;
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
 }
 
 /* Prevent body scroll when dialog is open */
