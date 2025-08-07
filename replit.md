@@ -56,6 +56,7 @@ Preferred communication style: Simple, everyday language.
 - **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Debug tools, Reset AI Training, View AI Learning Stats).
 - **Dynamic Music System**: Multi-track background music with crossfading, adaptive music based on game state (calm, tension, victory, defeat), and varied playback rates for musical diversity.
 - **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
+- **Immersive 3D Audio System**: Web Audio API-powered spatial audio with HRTF panning, piece-specific movement sounds, wizard teleport/attack effects, dynamic music intensity, medieval background music, convolution reverb for magical ambiance, and low-latency responsive audio optimized for Replit hosting.
 
 ## External Dependencies
 

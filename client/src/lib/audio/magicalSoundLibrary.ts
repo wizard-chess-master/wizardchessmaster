@@ -81,26 +81,26 @@ export interface MagicalSound {
   canLoop: boolean;
 }
 
-// Base64 encoded magical sound effects (shortened for demo - these would be actual audio data)
+// Real audio files mapped to magical sound categories with variations
 const MAGICAL_SOUND_DATA: Record<MagicalSoundEffect, string> = {
-  // Piece Movement Sounds
-  'piece_move_gentle': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'piece_move_swift': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'piece_move_heavy': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'knight_gallop': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'rook_slide': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'bishop_glide': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'queen_majesty': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'king_royal': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'pawn_step': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
+  // PIECE MOVEMENT SOUNDS (using success.mp3 and hit.mp3 with different contexts)
+  'piece_move_gentle': '/sounds/success.mp3',
+  'piece_move_swift': '/sounds/success.mp3', 
+  'piece_move_heavy': '/sounds/hit.mp3',
+  'knight_gallop': '/sounds/hit.mp3',
+  'rook_slide': '/sounds/success.mp3',
+  'bishop_glide': '/sounds/success.mp3',
+  'queen_majesty': '/sounds/success.mp3',
+  'king_royal': '/sounds/hit.mp3',
+  'pawn_step': '/sounds/success.mp3',
   
-  // Wizard Abilities
-  'wizard_teleport': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'wizard_ranged_attack': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'wizard_summon': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'teleport_whoosh': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'magical_zap': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
-  'arcane_blast': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',
+  // WIZARD ABILITIES (using hit.mp3 for impact effects)
+  'wizard_teleport': '/sounds/hit.mp3',
+  'wizard_ranged_attack': '/sounds/hit.mp3',
+  'wizard_summon': '/sounds/success.mp3',
+  'teleport_whoosh': '/sounds/hit.mp3',
+  'magical_zap': '/sounds/hit.mp3',
+  'arcane_blast': '/sounds/hit.mp3',
   
   // Capture Sounds
   'capture_clash': 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQCjiH3/LNeSsFJXfH8N2QQAoUXrTp66hVFApGn+DyvmYQ',

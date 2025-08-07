@@ -24,9 +24,10 @@ interface MainMenuProps {
   onSettings: () => void;
   onAchievements: () => void;
   onCollection: () => void;
+  onAudioTest?: () => void;
 }
 
-export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuProps) {
+export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest }: MainMenuProps) {
   const { startGame, resetGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
@@ -273,6 +274,20 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     <Badge variant="outline">43 Fantasy Audio Effects</Badge>
                   </div>
                 </Button>
+
+                {/* Immersive 3D Audio Test Panel */}
+                {onAudioTest && (
+                  <Button
+                    className="medieval-btn mode-button"
+                    variant="outline"
+                    onClick={onAudioTest}
+                  >
+                    <div className="mode-content">
+                      <span>🎭 Test 3D Spatial Audio</span>
+                      <Badge variant="outline">Web Audio API + 3D Chess Sounds</Badge>
+                    </div>
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>

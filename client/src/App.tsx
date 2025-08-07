@@ -20,6 +20,8 @@ import { useGameSettings } from "./stores/gameSettings";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
 import { ambientManager } from "./lib/audio/ambientManager";
+import ChessAudioController from "./components/audio/ChessAudioController";
+import ImmersiveAudioTestPanel from "./components/audio/ImmersiveAudioTestPanel";
 import "@fontsource/inter";
 import "./styles/chess.css";
 import "./styles/animations.css";
@@ -33,6 +35,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
+  const [showAudioTest, setShowAudioTest] = useState(false);
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
   // Initialize audio, monetization, and keyboard shortcuts
@@ -155,11 +158,15 @@ function App() {
   return (
     <div className="App">
       <div className="game-container">
+        {/* Immersive Audio Controller - manages 3D spatial audio for chess game */}
+        <ChessAudioController />
+        
         {gamePhase === 'menu' && (
           <MainMenu 
             onSettings={() => setShowSettings(true)} 
             onAchievements={() => setShowAchievements(true)}
             onCollection={() => setShowCollection(true)}
+            onAudioTest={() => setShowAudioTest(true)}
           />
         )}
         
@@ -222,6 +229,20 @@ function App() {
 
         {showDiagnostics && (
           <DiagnosticsPanel onClose={() => setShowDiagnostics(false)} />
+        )}
+
+        {showAudioTest && (
+          <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
+            <div className="relative w-full h-full max-w-7xl max-h-[90vh] overflow-auto">
+              <button
+                onClick={() => setShowAudioTest(false)}
+                className="absolute top-4 right-4 z-10 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium"
+              >
+                ✕ Close Audio Test
+              </button>
+              <ImmersiveAudioTestPanel />
+            </div>
+          </div>
         )}
 
         <AchievementNotificationQueue onViewAll={() => setShowAchievements(true)} />
