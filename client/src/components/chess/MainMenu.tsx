@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../ui/dialog';
 import { Settings, Sword, Users, Zap, Brain, BarChart3, X, Home, Trophy, Award, Crown } from 'lucide-react';
+import { Wand2 } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
@@ -637,14 +638,31 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
       {/* Magical Sound Test Panel Dialog */}
       {showSoundTestPanel && (
         <Dialog open={showSoundTestPanel} onOpenChange={setShowSoundTestPanel}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
-                🎵 Magical Sound Test Panel
+                <Wand2 className="w-5 h-5" />
+                Magical Sound Test Panel
               </DialogTitle>
               <DialogClose />
             </DialogHeader>
-            <MagicalSoundTestPanel />
+            
+            {/* Navigation button */}
+            <div className="flex gap-2 mb-4 pb-4 border-b">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowSoundTestPanel(false)}
+                className="medieval-btn"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Back to Menu
+              </Button>
+            </div>
+            
+            <div className="pr-2">
+              <MagicalSoundTestPanel />
+            </div>
           </DialogContent>
         </Dialog>
       )}
