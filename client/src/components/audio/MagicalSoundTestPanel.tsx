@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useAudio } from '../../lib/stores/useAudio';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
@@ -76,14 +76,15 @@ export function MagicalSoundTestPanel() {
     }
   };
 
-  const soundsByCategory = MAGICAL_SOUND_LIBRARY.reduce((acc, sound) => {
-    if (!acc[sound.category]) acc[sound.category] = [];
-    acc[sound.category].push(sound);
-    return acc;
-  }, {} as Record<MagicalSoundCategory, typeof MAGICAL_SOUND_LIBRARY>);
+  const soundsByCategory = useMemo(() => {
+    return MAGICAL_SOUND_LIBRARY.reduce((acc, sound) => {
+      if (!acc[sound.category]) acc[sound.category] = [];
+      acc[sound.category].push(sound);
+      return acc;
+    }, {} as Record<MagicalSoundCategory, typeof MAGICAL_SOUND_LIBRARY>);
+  }, []);
 
-  // Debug audio state
-  console.log('🎵 MagicalSoundTestPanel: Audio state check:', { isMuted });
+
 
   if (isMuted) {
     return (
@@ -116,18 +117,7 @@ export function MagicalSoundTestPanel() {
     );
   }
 
-  // Debug rendering state
-  console.log('🎵 MagicalSoundTestPanel: Rendering full panel with:', {
-    totalSounds: MAGICAL_SOUND_LIBRARY.length,
-    categoriesCount: Object.keys(soundsByCategory).length,
-    categories: Object.keys(soundsByCategory),
-    firstFewSounds: MAGICAL_SOUND_LIBRARY.slice(0, 3).map(s => s.name),
-    lastPlayed,
-    isMuted
-  });
 
-  // Debug soundsByCategory
-  console.log('🎵 soundsByCategory structure:', soundsByCategory);
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
@@ -165,7 +155,6 @@ export function MagicalSoundTestPanel() {
         </TabsList>
 
         <TabsContent value="quick-tests" className="space-y-6 mt-6">
-          {console.log('🎵 Rendering Quick Tests tab content')}
           
           {/* Fallback test if content doesn't render */}
           <div className="bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-yellow-900/20 dark:to-orange-900/20 p-4 rounded-lg border-2 border-yellow-400/50 mb-4">
