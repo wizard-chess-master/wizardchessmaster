@@ -63,18 +63,11 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      console.log('🚨 CAMPAIGN DIALOG STATE CHANGED:', open);
-      setIsOpen(open);
-    }}>
-      <DialogTrigger asChild onClick={(e) => {
-        console.log('🚨 CAMPAIGN BUTTON CLICKED!', e);
-        console.log('🚨 Current dialog state:', isOpen);
-        setIsOpen(true);
-      }}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-6xl h-[95vh] max-h-[800px] overflow-hidden medieval-panel flex flex-col z-[100]">
+      <DialogContent className="w-[90vw] max-w-7xl h-[90vh] medieval-panel flex flex-col fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50">
         <DialogHeader className="pb-3 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2 text-xl sm:text-2xl medieval-text">
             <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
@@ -84,7 +77,7 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
             </span>
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-400 mt-2">
-            🔥 COMPLETELY REDESIGNED CAMPAIGN MODE! 🔥 Progress through challenging AI opponents with improved mobile-friendly layout, better card design, and enhanced statistics tracking.
+            Progress through increasingly challenging AI opponents to improve your chess skills. Each level unlocks new challenges and tracks your performance.
           </DialogDescription>
         </DialogHeader>
 
@@ -102,8 +95,8 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 overflow-y-auto min-h-0 pr-1">
-            <TabsContent value="map" className="mt-0 space-y-4">
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <TabsContent value="map" className="mt-0 space-y-4 p-4">
               <CampaignMap 
                 levels={levels}
                 onStartLevel={handleStartLevel}
@@ -128,7 +121,7 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
               </div>
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-0">
+            <TabsContent value="stats" className="mt-0 p-4">
               <CampaignStats playerStats={playerStats} />
             </TabsContent>
           </div>

@@ -140,10 +140,10 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
 
 
                 <CampaignDialog>
-                  <Button className="medieval-btn mode-button campaign-button border-4 border-red-500 bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-bold shadow-lg animate-pulse">
+                  <Button className="medieval-btn mode-button">
                     <div className="mode-content">
-                      <span>🏆🔥 CAMPAIGN MODE - COMPLETELY REDESIGNED! 🔥🏆</span>
-                      <Badge variant="secondary" className="bg-red-700 text-yellow-300 font-bold">CLICK ME NOW!</Badge>
+                      <span>🏆 Campaign Mode</span>
+                      <Badge variant="secondary">Progressive AI</Badge>
                     </div>
                   </Button>
                 </CampaignDialog>
