@@ -193,6 +193,7 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     if (pathClear) {
       // King moves to c1/c10 (column 2)
       moves.push({ row: homeRow, col: 2 });
+      console.log('🏰 Queenside castling move available:', { row: homeRow, col: 2 });
     }
   }
   
@@ -215,6 +216,7 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     if (pathClear) {
       // King moves to g1/g10 (column 6)
       moves.push({ row: homeRow, col: 6 });
+      console.log('🏰 Kingside castling move available:', { row: homeRow, col: 6 });
     }
   }
   

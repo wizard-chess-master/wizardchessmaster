@@ -162,7 +162,7 @@ export const useChess = create<ChessStore>()(
       const isWizardAttack = isWizardMove && !!captured && captured.color !== piece.color;
       
       // Check for castling
-      const isCastling = piece.type === 'king' && Math.abs(to.col - from.col) === 3;
+      const isCastling = piece.type === 'king' && from.col === 5 && (to.col === 2 || to.col === 6);
       let rookMove: { from: Position; to: Position } | undefined = undefined;
       
       if (isCastling) {
@@ -172,11 +172,13 @@ export const useChess = create<ChessStore>()(
             from: { row: homeRow, col: 0 }, 
             to: { row: homeRow, col: 3 } 
           };
+          console.log('🏰 Queenside castling detected:', { kingMove: `${from.col}→${to.col}`, rookMove: `0→3` });
         } else if (to.col === 6) { // Kingside castling (king to g1/g10)  
           rookMove = { 
             from: { row: homeRow, col: 9 }, 
-            to: { row: homeRow, col: 5 } 
+            to: { row: homeRow, col: 7 } 
           };
+          console.log('🏰 Kingside castling detected:', { kingMove: `${from.col}→${to.col}`, rookMove: `9→7` });
         }
       }
       
