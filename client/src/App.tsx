@@ -132,16 +132,16 @@ function App() {
                 style={{ maxWidth: '600px', width: '100%' }}
               />
               
-              {/* Game Content - Board and Controls */}
-              <div className="flex flex-col lg:flex-row gap-6 items-start">
+              {/* Game Content - Board Above, Controls Below */}
+              <div className="flex flex-col gap-6 items-center">
                 
-                {/* Chess Board Section */}
-                <div className="board-section flex-1 flex justify-center">
+                {/* Chess Board Section - Centered */}
+                <div className="board-section flex justify-center w-full">
                   <ChessBoard />
                 </div>
                 
-                {/* Game Controls Sidebar */}
-                <div className="controls-section w-full lg:w-80 lg:flex-shrink-0">
+                {/* Game Controls Below Board - Full Width */}
+                <div className="controls-section w-full max-w-4xl">
                   <GameUI onSettings={() => setShowSettings(true)} />
                 </div>
                 

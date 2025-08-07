@@ -257,10 +257,17 @@ export function ChessBoard() {
     const y = event.clientY - rect.top;
     
     const col = Math.floor(x / squareSize);
-    const row = Math.floor(y / squareSize);
+    const rawRow = Math.floor(y / squareSize);
+    // Convert canvas row to board row (flip Y-axis since canvas row 0 is at top but board row 0 should be black pieces at top)
+    const row = rawRow; // Keep the same for now, let's verify the board setup
     
-    console.log('🎯 Canvas click:', { x, y, row, col, squareSize, canvasSize });
+    console.log('🎯 Canvas click:', { x, y, rawRow, row, col, squareSize, canvasSize });
     console.log('🔍 Board state at clicked position:', board[row]?.[col]);
+    console.log('🔍 Testing board positions:');
+    console.log('  Row 8 (white pawns):', board[8]?.map((p, i) => `${i}:${p?.type}`).join(' '));
+    console.log('  Row 7 (should be empty):', board[7]?.map((p, i) => `${i}:${p?.type || 'null'}`).join(' '));
+    console.log('  Clicked position [' + row + '][' + col + ']:', board[row]?.[col]);
+    console.log('  White pawn at [8][4]:', board[8]?.[4]);
     
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
       // Trigger animation effect

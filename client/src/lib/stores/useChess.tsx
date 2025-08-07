@@ -51,7 +51,9 @@ export const useChess = create<ChessStore>()(
       console.log('🔍 White pawn positions (row 8):', newBoard[8]);
       console.log('🔍 White back pieces (row 9):', newBoard[9]);
       console.log('🔍 Black pawns (row 1):', newBoard[1]);
-      console.log('🔍 Clicked position should have piece at row 8, col 4:', newBoard[8][4]);
+      console.log('🔍 Test piece at row 8, col 4:', newBoard[8][4]);
+      console.log('🔍 Test piece at row 7, col 4:', newBoard[7][4]);
+      console.log('🔍 Test piece at row 6, col 4:', newBoard[6][4]);
       
       set({
         board: newBoard,
@@ -68,6 +70,15 @@ export const useChess = create<ChessStore>()(
         winner: null,
         gameStartTime: Date.now()
       });
+      
+      // Verify board state after setting
+      setTimeout(() => {
+        const { board } = get();
+        console.log('✅ Board state verified after set:');
+        console.log('🔍 Row 8 (white pawns):', board[8]);
+        console.log('🔍 Row 7 (empty):', board[7]);
+        console.log('🔍 Piece at 8,4:', board[8][4]);
+      }, 100);
 
       // Start AI vs AI gameplay immediately
       if (mode === 'ai-vs-ai') {

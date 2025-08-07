@@ -37,8 +37,8 @@ export function GameUI({ onSettings }: GameUIProps) {
   const getGameModeDisplay = () => {
     switch(gameMode) {
       case 'local': return 'Local PvP';
-      case 'online': return 'Online PvP';
       case 'ai': return 'vs AI';
+      case 'ai-vs-ai': return 'AI vs AI';
       default: return 'Chess';
     }
   };
@@ -64,7 +64,7 @@ export function GameUI({ onSettings }: GameUIProps) {
   };
 
   return (
-    <div className="game-ui w-full max-w-sm mx-auto lg:max-w-none">
+    <div className="game-ui w-full">
       {/* Mobile Top Ad Banner - Hidden on Desktop */}
       <AdBanner 
         id="game-banner-mobile" 
@@ -72,8 +72,8 @@ export function GameUI({ onSettings }: GameUIProps) {
         style={{ maxWidth: '400px', width: '100%' }}
       />
 
-      {/* Game Status and Controls - Single Column Layout */}
-      <div className="game-sections-grid flex flex-col gap-3 w-full">
+      {/* Game Status and Controls - Multi-column Grid Layout */}
+      <div className="game-sections-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 w-full">
         
         {/* Game Status Card */}
         <Card className="medieval-panel game-status w-full">
@@ -167,7 +167,7 @@ export function GameUI({ onSettings }: GameUIProps) {
                 size="sm"
                 onClick={() => {
                   const lastMove = moveHistory[moveHistory.length - 1];
-                  if (lastMove && gameMode !== 'online') {
+                  if (lastMove && gameMode !== 'ai-vs-ai') {
                     console.log('🔄 Undoing last move...');
                   }
                 }}
