@@ -62,12 +62,17 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
     }
   };
 
+  const handleOpenDialog = () => {
+    console.log('Opening campaign dialog');
+    setIsOpen(true);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild onClick={handleOpenDialog}>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-6xl max-h-[90vh] medieval-panel flex flex-col overflow-hidden">
+      <DialogContent className="w-[95vw] max-w-6xl h-[85vh] medieval-panel flex flex-col">
         <DialogHeader className="pb-3 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2 text-xl sm:text-2xl medieval-text">
             <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
