@@ -142,19 +142,27 @@ function getKingMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ches
     [1, -1],  [1, 0],  [1, 1]
   ];
   
+  // Get castling moves first
+  const castlingMoves = getCastlingMoves(board, pos, piece);
+  
   for (const [dr, dc] of directions) {
     const newPos = { row: pos.row + dr, col: pos.col + dc };
     
     if (isValidPosition(newPos)) {
       const target = board[newPos.row][newPos.col];
       if (!target || target.color !== piece.color) {
-        moves.push(newPos);
+        // Don't add regular moves that conflict with castling moves
+        const isCastlingSquare = castlingMoves.some(castle => 
+          castle.row === newPos.row && castle.col === newPos.col
+        );
+        if (!isCastlingSquare) {
+          moves.push(newPos);
+        }
       }
     }
   }
   
   // Add castling moves
-  const castlingMoves = getCastlingMoves(board, pos, piece);
   moves.push(...castlingMoves);
   
   return moves;
@@ -214,9 +222,9 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     }
     
     if (pathClear) {
-      // King moves to g1/g10 (column 7) - standard castling is 2 squares
-      moves.push({ row: homeRow, col: 7 });
-      console.log('🏰 Kingside castling move available:', { row: homeRow, col: 7 });
+      // King moves to g1/g10 (column 6) - standard castling is 2 squares from e1 to g1
+      moves.push({ row: homeRow, col: 6 });
+      console.log('🏰 Kingside castling move available:', { row: homeRow, col: 6 });
     }
   }
   
