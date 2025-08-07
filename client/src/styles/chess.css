@@ -323,6 +323,39 @@
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
+/* Modal and Dialog Z-index Management */
+[data-state="open"][data-radix-dialog-overlay] {
+  z-index: 100 !important;
+}
+
+[data-state="open"][data-radix-dialog-content] {
+  z-index: 101 !important;
+}
+
+/* Prevent body scroll when dialog is open */
+body:has([data-state="open"][data-radix-dialog-overlay]) {
+  overflow: hidden;
+}
+
+/* Game UI Layout Improvements - Prevent Overlapping */
+.game-ui {
+  position: relative;
+  z-index: 1;
+}
+
+.game-sections-grid {
+  position: relative;
+  z-index: 2;
+  isolation: isolate; /* Create new stacking context */
+}
+
+/* Enhanced Modal Behavior */
+.medieval-dialog {
+  position: fixed !important;
+  z-index: 999 !important;
+  isolation: isolate;
+}
+
 .difficulty-metric-card {
   transition: all 0.2s ease;
   border-radius: 8px;

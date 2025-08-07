@@ -72,11 +72,11 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen} modal={true}>
       <DialogTrigger asChild onClick={handleOpenDialog}>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-4xl h-[85vh] bg-gray-900 border-2 border-yellow-600 rounded-lg flex flex-col overflow-hidden">
+      <DialogContent className="w-[90vw] max-w-4xl h-[85vh] bg-gray-900 border-2 border-yellow-600 rounded-lg flex flex-col overflow-hidden z-50 fixed inset-0 m-auto">
         <DialogHeader className="pb-4 flex-shrink-0 bg-gray-800 p-6 border-b border-yellow-600">
           <DialogTitle className="flex items-center gap-3 text-2xl text-yellow-400 font-bold">
             <Trophy className="w-6 h-6" />
