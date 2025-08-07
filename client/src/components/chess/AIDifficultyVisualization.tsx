@@ -80,19 +80,30 @@ const getTrendIcon = (trend: 'improving' | 'declining' | 'stable') => {
 
 function DifficultyChart({ data }: { data: DifficultyDataPoint[] }) {
   const chartData = useMemo(() => {
-    if (data.length === 0) return [];
+    if (!data || data.length === 0) return [];
     
     const maxPoints = 50;
     const step = Math.max(1, Math.floor(data.length / maxPoints));
     const samples = data.filter((_, index) => index % step === 0 || index === data.length - 1);
     
-    return samples.map((point, index) => ({
-      x: (index / (samples.length - 1)) * 100,
-      difficulty: (point.difficulty / 10) * 100,
-      performance: point.playerPerformance,
-      timestamp: point.timestamp,
-      outcome: point.gameOutcome
-    }));
+    if (samples.length === 0) return [];
+    
+    return samples.map((point, index) => {
+      // Handle division by zero for single data point
+      const xPos = samples.length === 1 ? 50 : (index / (samples.length - 1)) * 100;
+      // Ensure difficulty is a valid number
+      const difficultyValue = typeof point.difficulty === 'number' && !isNaN(point.difficulty) 
+        ? (point.difficulty / 10) * 100 
+        : 50; // Default to middle if invalid
+      
+      return {
+        x: xPos,
+        difficulty: Math.max(0, Math.min(100, difficultyValue)), // Clamp between 0-100
+        performance: typeof point.playerPerformance === 'number' ? point.playerPerformance : 50,
+        timestamp: point.timestamp || Date.now(),
+        outcome: point.gameOutcome || 'unknown'
+      };
+    });
   }, [data]);
 
   if (chartData.length === 0) {
@@ -123,37 +134,49 @@ function DifficultyChart({ data }: { data: DifficultyDataPoint[] }) {
         ))}
         
         {/* Difficulty line */}
-        <polyline
-          points={chartData.map(point => `${point.x * 4},${200 - point.difficulty * 2}`).join(' ')}
-          fill="none"
-          stroke="#6366f1"
-          strokeWidth="2"
-          className="drop-shadow-sm"
-        />
+        {chartData.length > 1 && (
+          <polyline
+            points={chartData.map(point => {
+              const x = isNaN(point.x) ? 0 : point.x * 4;
+              const y = isNaN(point.difficulty) ? 100 : 200 - point.difficulty * 2;
+              return `${x},${y}`;
+            }).join(' ')}
+            fill="none"
+            stroke="#6366f1"
+            strokeWidth="2"
+            className="drop-shadow-sm"
+          />
+        )}
         
         {/* Performance line */}
-        <polyline
-          points={chartData.map(point => `${point.x * 4},${200 - point.performance * 2}`).join(' ')}
-          fill="none"
-          stroke="#10b981"
-          strokeWidth="2"
-          strokeDasharray="5,5"
-          className="drop-shadow-sm"
-        />
+        {chartData.length > 1 && (
+          <polyline
+            points={chartData.map(point => {
+              const x = isNaN(point.x) ? 0 : point.x * 4;
+              const y = isNaN(point.performance) ? 100 : 200 - point.performance * 2;
+              return `${x},${y}`;
+            }).join(' ')}
+            fill="none"
+            stroke="#10b981"
+            strokeWidth="2"
+            strokeDasharray="5,5"
+            className="drop-shadow-sm"
+          />
+        )}
         
         {/* Data points */}
         {chartData.map((point, index) => (
           <g key={index}>
             <circle
-              cx={point.x * 4}
-              cy={200 - point.difficulty * 2}
+              cx={isNaN(point.x) ? 0 : point.x * 4}
+              cy={isNaN(point.difficulty) ? 100 : 200 - point.difficulty * 2}
               r="3"
               fill="#6366f1"
               className="drop-shadow-sm"
             />
             <circle
-              cx={point.x * 4}
-              cy={200 - point.performance * 2}
+              cx={isNaN(point.x) ? 0 : point.x * 4}
+              cy={isNaN(point.performance) ? 100 : 200 - point.performance * 2}
               r="2"
               fill={point.outcome === 'win' ? '#10b981' : point.outcome === 'loss' ? '#ef4444' : '#f59e0b'}
             />
