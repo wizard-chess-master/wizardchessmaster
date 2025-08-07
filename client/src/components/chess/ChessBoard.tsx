@@ -9,15 +9,40 @@ export function ChessBoard() {
   const { playPieceMovementSound, playGameEvent, playUISound, playWizardAbility } = useAudio();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
+  // Enhanced animation state management
   const [isAnimating, setIsAnimating] = useState(false);
-  const [animatingPiece, setAnimatingPiece] = useState<{piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number} | null>(null);
+  const [animatingPiece, setAnimatingPiece] = useState<{
+    piece: any, 
+    fromRow: number, 
+    fromCol: number, 
+    toRow: number, 
+    toCol: number,
+    type: 'normal' | 'wizard-teleport' | 'attack' | 'castling',
+    progress: number,
+    startTime: number,
+    duration: number
+  } | null>(null);
   const [animationProgress, setAnimationProgress] = useState(0);
-  type Particle = {x: number, y: number, vx: number, vy: number, life: number, maxLife: number, color: string};
+  
+  // Enhanced particle system
+  type Particle = {x: number, y: number, vx: number, vy: number, life: number, maxLife: number, color: string, size?: number};
   const [particles, setParticles] = useState<Particle[]>([]);
-  const [captureEffect, setCaptureEffect] = useState<{x: number, y: number, timestamp: number} | null>(null);
+  
+  // Enhanced visual effects
+  const [captureEffect, setCaptureEffect] = useState<{x: number, y: number, timestamp: number, intensity: number} | null>(null);
   const [specialMoveEffect, setSpecialMoveEffect] = useState<{x: number, y: number, type: string, timestamp: number} | null>(null);
+  const [attackBurstEffect, setAttackBurstEffect] = useState<{x: number, y: number, timestamp: number, color: string} | null>(null);
+  const [wizardTeleportEffect, setWizardTeleportEffect] = useState<{
+    fromX: number, fromY: number, toX: number, toY: number, 
+    timestamp: number, phase: 'fade-out' | 'fade-in'
+  } | null>(null);
+  
+  // Canvas and sizing
   const [canvasSize, setCanvasSize] = useState(800);
   const [squareSize, setSquareSize] = useState(80);
+  
+  // Animation frame reference
+  const animationFrameRef = useRef<number>();
 
   // Responsive canvas sizing - 800x800 base, scales down for mobile
   useEffect(() => {
@@ -141,80 +166,13 @@ export function ChessBoard() {
         ctx.strokeStyle = '#999';
         ctx.strokeRect(x, y, squareSize, squareSize);
         
-        // Draw piece if present
+        // Draw piece if present (skip if it's the animating piece)
         const piece = board[row][col];
-        if (piece && imagesRef.current) {
-          const spriteKey = getSpriteKey(piece.type, piece.color);
-          const img = imagesRef.current[spriteKey];
-          
-          // Debug only for kings and wizards to reduce console spam
-          if (piece.type === 'king' || piece.type === 'wizard') {
-            console.log(`🔍 Drawing ${piece.type} ${piece.color} at ${row},${col}`);
-          }
-          
-          if (img && img.complete && img.naturalWidth > 0) {
-            // Calculate aspect ratio preservation for all pieces
-            const imgAspect = img.naturalWidth / img.naturalHeight;
-            let padding = 5;
-            let availableSize = squareSize - (padding * 2);
-            
-            // Apply size multipliers for specific pieces
-            let sizeMultiplier = 1.0;
-            
-            if (piece.type === 'king') {
-              sizeMultiplier = 1.15; // Kings slightly larger than queens (15% bigger)
-              padding = 4; // Slightly reduced padding for larger pieces
-            } else if (piece.type === 'wizard') {
-              sizeMultiplier = 1.2; // Make wizards slightly larger (20% bigger)
-              padding = 3; // Slight padding reduction
-            }
-            
-            availableSize = (squareSize - (padding * 2)) * sizeMultiplier;
-            
-            let drawWidth, drawHeight, drawX, drawY;
-            
-            if (Math.abs(imgAspect - 1.0) < 0.1) {
-              // Nearly square - center it
-              drawWidth = availableSize;
-              drawHeight = availableSize;
-              drawX = x + (squareSize - drawWidth) / 2;
-              drawY = y + (squareSize - drawHeight) / 2;
-            } else if (imgAspect > 1) {
-              // Wider than tall
-              drawWidth = availableSize;
-              drawHeight = availableSize / imgAspect;
-              drawX = x + (squareSize - drawWidth) / 2;
-              drawY = y + (squareSize - drawHeight) / 2;
-            } else {
-              // Taller than wide
-              drawWidth = availableSize * imgAspect;
-              drawHeight = availableSize;
-              drawX = x + (squareSize - drawWidth) / 2;
-              drawY = y + (squareSize - drawHeight) / 2;
-            }
-            
-            // Reduce height by 10% for kings and wizards
-            if (piece.type === 'king' || piece.type === 'wizard') {
-              drawHeight = drawHeight * 0.9; // 10% height reduction
-              drawY = y + (squareSize - drawHeight) / 2; // Re-center vertically
-            }
-            
-            // Use ctx.drawImage with preserved aspect ratio and custom sizing
-            ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-          } else {
-            // Fallback: draw text symbol if image not loaded
-            const symbols = {
-              white: { king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙', wizard: '🧙' },
-              black: { king: '♚', queen: '♛', rook: '♜', bishop: '♝', knight: '♞', pawn: '♟', wizard: '🧙' }
-            };
-            const symbol = symbols[piece.color as keyof typeof symbols][piece.type as keyof typeof symbols.white] || '?';
-            
-            ctx.fillStyle = piece.color === 'white' ? '#fff' : '#000';
-            ctx.font = '30px serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(symbol, x + squareSize / 2, y + squareSize / 2);
-          }
+        const isAnimatingPiece = animatingPiece && 
+          animatingPiece.fromRow === row && animatingPiece.fromCol === col;
+        
+        if (piece && imagesRef.current && !isAnimatingPiece) {
+          drawPieceAtPosition(ctx, piece, x, y);
         }
         
         // Draw move indicators
@@ -253,6 +211,128 @@ export function ChessBoard() {
           }
         }
       }
+    }
+    
+    // Draw animating piece with smooth interpolation
+    if (animatingPiece) {
+      const elapsed = Date.now() - animatingPiece.startTime;
+      const progress = Math.min(elapsed / animatingPiece.duration, 1);
+      
+      // Smooth easing function (ease-out cubic)
+      const easedProgress = animatingPiece.type === 'wizard-teleport' 
+        ? progress // Linear for teleport (instant)
+        : 1 - Math.pow(1 - progress, 3); // Cubic ease-out for smooth movement
+      
+      // Calculate current position using linear interpolation (lerp)
+      const fromX = animatingPiece.fromCol * squareSize;
+      const fromY = animatingPiece.fromRow * squareSize;
+      const toX = animatingPiece.toCol * squareSize;
+      const toY = animatingPiece.toRow * squareSize;
+      
+      const currentX = fromX + (toX - fromX) * easedProgress;
+      const currentY = fromY + (toY - fromY) * easedProgress;
+      
+      // Handle wizard teleport fade effect
+      if (animatingPiece.type === 'wizard-teleport') {
+        const fadeProgress = progress * 2; // 0-2 range
+        let alpha = 1;
+        
+        if (fadeProgress < 1) {
+          // Fade out phase (first half)
+          alpha = 1 - fadeProgress;
+        } else {
+          // Fade in phase (second half)
+          alpha = fadeProgress - 1;
+        }
+        
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, Math.min(1, alpha));
+        
+        // Draw at destination position during fade-in
+        const drawX = fadeProgress < 1 ? fromX : toX;
+        const drawY = fadeProgress < 1 ? fromY : toY;
+        drawPieceAtPosition(ctx, animatingPiece.piece, drawX, drawY);
+        ctx.restore();
+      } else {
+        // Normal smooth movement
+        drawPieceAtPosition(ctx, animatingPiece.piece, currentX, currentY);
+      }
+      
+      // Check if animation is complete
+      if (progress >= 1) {
+        setAnimatingPiece(null);
+        setIsAnimating(false);
+      }
+    }
+  };
+
+  // Helper function to draw a piece at given position
+  const drawPieceAtPosition = (ctx: CanvasRenderingContext2D, piece: any, x: number, y: number) => {
+    const spriteKey = getSpriteKey(piece.type, piece.color);
+    const img = imagesRef.current[spriteKey];
+    
+    if (img && img.complete && img.naturalWidth > 0) {
+      // Calculate aspect ratio preservation for all pieces
+      const imgAspect = img.naturalWidth / img.naturalHeight;
+      let padding = 5;
+      let availableSize = squareSize - (padding * 2);
+      
+      // Apply size multipliers for specific pieces
+      let sizeMultiplier = 1.0;
+      
+      if (piece.type === 'king') {
+        sizeMultiplier = 1.15; // Kings slightly larger than queens (15% bigger)
+        padding = 4; // Slightly reduced padding for larger pieces
+      } else if (piece.type === 'wizard') {
+        sizeMultiplier = 1.2; // Make wizards slightly larger (20% bigger)
+        padding = 3; // Slight padding reduction
+      }
+      
+      availableSize = (squareSize - (padding * 2)) * sizeMultiplier;
+      
+      let drawWidth, drawHeight, drawX, drawY;
+      
+      if (Math.abs(imgAspect - 1.0) < 0.1) {
+        // Nearly square - center it
+        drawWidth = availableSize;
+        drawHeight = availableSize;
+        drawX = x + (squareSize - drawWidth) / 2;
+        drawY = y + (squareSize - drawHeight) / 2;
+      } else if (imgAspect > 1) {
+        // Wider than tall
+        drawWidth = availableSize;
+        drawHeight = availableSize / imgAspect;
+        drawX = x + (squareSize - drawWidth) / 2;
+        drawY = y + (squareSize - drawHeight) / 2;
+      } else {
+        // Taller than wide
+        drawWidth = availableSize * imgAspect;
+        drawHeight = availableSize;
+        drawX = x + (squareSize - drawWidth) / 2;
+        drawY = y + (squareSize - drawHeight) / 2;
+      }
+      
+      // Reduce height by 10% for kings and wizards
+      if (piece.type === 'king' || piece.type === 'wizard') {
+        drawHeight = drawHeight * 0.9; // 10% height reduction
+        drawY = y + (squareSize - drawHeight) / 2; // Re-center vertically
+      }
+      
+      // Use ctx.drawImage with preserved aspect ratio and custom sizing
+      ctx.drawImage(img, drawX, drawY, drawWidth, drawHeight);
+    } else {
+      // Fallback: draw text symbol if image not loaded
+      const symbols = {
+        white: { king: '♔', queen: '♕', rook: '♖', bishop: '♗', knight: '♘', pawn: '♙', wizard: '🧙' },
+        black: { king: '♚', queen: '♛', rook: '♜', bishop: '♝', knight: '♞', pawn: '♟', wizard: '🧙' }
+      };
+      const symbol = symbols[piece.color as keyof typeof symbols][piece.type as keyof typeof symbols.white] || '?';
+      
+      ctx.fillStyle = piece.color === 'white' ? '#fff' : '#000';
+      ctx.font = '30px serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(symbol, x + squareSize / 2, y + squareSize / 2);
     }
   };
 
@@ -331,7 +411,7 @@ export function ChessBoard() {
     selectSquare({ row, col });
   };
 
-  // Draw visual effects on canvas
+  // Enhanced visual effects rendering
   const drawEffects = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -339,170 +419,552 @@ export function ChessBoard() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Draw particles
+    // Draw particles with size support
     particles.forEach(particle => {
       const alpha = particle.life / particle.maxLife;
+      const size = particle.size || 3;
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.fillStyle = particle.color;
+      ctx.shadowBlur = 5;
+      ctx.shadowColor = particle.color;
       ctx.beginPath();
-      ctx.arc(particle.x, particle.y, 3, 0, 2 * Math.PI);
+      ctx.arc(particle.x, particle.y, size, 0, 2 * Math.PI);
       ctx.fill();
       ctx.restore();
     });
     
-    // Draw capture effect
+    // Draw enhanced capture effect with intensity
     if (captureEffect) {
       const elapsed = Date.now() - captureEffect.timestamp;
-      const progress = elapsed / 1000; // 1 second duration
-      const alpha = 1 - progress;
-      const size = 20 + progress * 30;
+      const progress = elapsed / 500; // Faster 0.5 second duration
+      const alpha = (1 - progress) * captureEffect.intensity;
+      const size = 15 + progress * 25;
       
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.strokeStyle = '#FF4500';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 4;
+      ctx.shadowBlur = 20;
+      ctx.shadowColor = '#FF4500';
       ctx.beginPath();
       ctx.arc(captureEffect.x, captureEffect.y, size, 0, 2 * Math.PI);
       ctx.stroke();
+      
+      // Inner glow
+      ctx.globalAlpha = alpha * 0.3;
+      ctx.fillStyle = '#FF4500';
+      ctx.fill();
       ctx.restore();
     }
     
-    // Draw special move effect (wizard abilities)
+    // Draw attack burst effect (0.2s glowing burst with radial gradient)
+    if (attackBurstEffect) {
+      const elapsed = Date.now() - attackBurstEffect.timestamp;
+      const progress = elapsed / 200; // 0.2 second duration
+      
+      if (progress < 1) {
+        const alpha = 1 - progress;
+        const size = 10 + progress * 40;
+        
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        
+        // Create radial gradient burst
+        const gradient = ctx.createRadialGradient(
+          attackBurstEffect.x, attackBurstEffect.y, 0,
+          attackBurstEffect.x, attackBurstEffect.y, size
+        );
+        gradient.addColorStop(0, attackBurstEffect.color);
+        gradient.addColorStop(0.5, attackBurstEffect.color + '80'); // Semi-transparent
+        gradient.addColorStop(1, attackBurstEffect.color + '00'); // Fully transparent
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(attackBurstEffect.x, attackBurstEffect.y, size, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.restore();
+      } else {
+        setAttackBurstEffect(null);
+      }
+    }
+    
+    // Draw wizard teleport effect (0.3s fade-out/fade-in)
+    if (wizardTeleportEffect) {
+      const elapsed = Date.now() - wizardTeleportEffect.timestamp;
+      const progress = elapsed / 300; // 0.3 second total duration
+      
+      if (progress < 1) {
+        ctx.save();
+        
+        if (wizardTeleportEffect.phase === 'fade-out') {
+          // Fade out at origin with swirling effect
+          const alpha = 1 - (progress * 2); // Fade out in first half
+          if (alpha > 0) {
+            ctx.globalAlpha = Math.max(0, alpha);
+            ctx.strokeStyle = '#9370DB';
+            ctx.lineWidth = 3;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#9370DB';
+            
+            // Swirling circles
+            for (let i = 0; i < 4; i++) {
+              const radius = 8 + i * 6 + (progress * 2) * 15;
+              const rotation = progress * Math.PI * 4;
+              ctx.beginPath();
+              ctx.arc(
+                wizardTeleportEffect.fromX + Math.cos(rotation + i) * 5,
+                wizardTeleportEffect.fromY + Math.sin(rotation + i) * 5,
+                radius, 0, 2 * Math.PI
+              );
+              ctx.stroke();
+            }
+          }
+        } else {
+          // Fade in at destination
+          const alpha = progress * 2 - 1; // Fade in during second half
+          if (alpha > 0) {
+            ctx.globalAlpha = Math.min(1, alpha);
+            ctx.fillStyle = '#9370DB';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#9370DB';
+            
+            // Materializing effect
+            const sparkleSize = (1 - alpha) * 20;
+            ctx.beginPath();
+            ctx.arc(wizardTeleportEffect.toX, wizardTeleportEffect.toY, 8 + sparkleSize, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+        }
+        
+        ctx.restore();
+      } else {
+        setWizardTeleportEffect(null);
+      }
+    }
+    
+    // Draw special move effects (enhanced)
     if (specialMoveEffect) {
       const elapsed = Date.now() - specialMoveEffect.timestamp;
-      const progress = elapsed / 1500; // 1.5 second duration
+      const progress = elapsed / 1500;
       const alpha = 1 - progress;
       
       if (specialMoveEffect.type === 'teleport') {
-        // Teleport swirl effect
+        // Enhanced teleport swirl effect
         ctx.save();
         ctx.globalAlpha = alpha;
         ctx.strokeStyle = '#9370DB';
         ctx.lineWidth = 2;
-        for (let i = 0; i < 5; i++) {
-          const radius = 10 + i * 8 + progress * 20;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = '#9370DB';
+        
+        for (let i = 0; i < 6; i++) {
+          const radius = 8 + i * 6 + progress * 25;
+          const rotation = progress * Math.PI * 6;
           ctx.beginPath();
-          ctx.arc(specialMoveEffect.x, specialMoveEffect.y, radius, 0, 2 * Math.PI);
+          ctx.arc(
+            specialMoveEffect.x + Math.cos(rotation + i) * 3,
+            specialMoveEffect.y + Math.sin(rotation + i) * 3,
+            radius, 0, 2 * Math.PI
+          );
           ctx.stroke();
         }
         ctx.restore();
       } else if (specialMoveEffect.type === 'spell') {
-        // Magical glow effect
+        // Enhanced magical glow effect
         ctx.save();
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = '#FFD700';
+        const glowSize = 15 + progress * 10;
+        
+        // Create magical gradient
+        const gradient = ctx.createRadialGradient(
+          specialMoveEffect.x, specialMoveEffect.y, 0,
+          specialMoveEffect.x, specialMoveEffect.y, glowSize
+        );
+        gradient.addColorStop(0, '#FFD700');
+        gradient.addColorStop(0.6, '#FF8C00');
+        gradient.addColorStop(1, '#FF4500');
+        
+        ctx.fillStyle = gradient;
+        ctx.shadowBlur = 25;
         ctx.shadowColor = '#FFD700';
-        ctx.shadowBlur = 20;
         ctx.beginPath();
-        ctx.arc(specialMoveEffect.x, specialMoveEffect.y, 15, 0, 2 * Math.PI);
+        ctx.arc(specialMoveEffect.x, specialMoveEffect.y, glowSize, 0, 2 * Math.PI);
         ctx.fill();
         ctx.restore();
       }
     }
   };
 
-  // Create particle explosion for captures
+  // Enhanced particle creation functions
   const createCaptureParticles = (x: number, y: number, color: string) => {
     const newParticles: Particle[] = [];
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
+      const speed = 3 + Math.random() * 5;
       newParticles.push({
         x,
         y,
-        vx: (Math.random() - 0.5) * 8,
-        vy: (Math.random() - 0.5) * 8,
-        life: 60,
-        maxLife: 60,
-        color: color === 'white' ? '#FFD700' : '#8B0000'
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 45,
+        maxLife: 45,
+        color: color === 'white' ? '#FFD700' : '#8B0000',
+        size: 2 + Math.random() * 3
       });
     }
     setParticles(prev => [...prev, ...newParticles]);
+    
+    // Trigger audio effect
+    if (color === 'white') {
+      playGameEvent('capture');
+    }
   };
 
-  // Create magical sparkles for wizard moves
+  // Create enhanced wizard sparkles with more variety
   const createWizardSparkles = (x: number, y: number) => {
     const newParticles: Particle[] = [];
-    for (let i = 0; i < 20; i++) {
+    const colors = ['#9370DB', '#FF69B4', '#00CED1', '#FFD700', '#FF4500', '#32CD32'];
+    
+    for (let i = 0; i < 25; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 4;
       newParticles.push({
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 6,
-        vy: (Math.random() - 0.5) * 6,
-        life: 90,
-        maxLife: 90,
-        color: ['#9370DB', '#FF69B4', '#00CED1', '#FFD700'][Math.floor(Math.random() * 4)]
+        x: x + (Math.random() - 0.5) * 20,
+        y: y + (Math.random() - 0.5) * 20,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 60 + Math.random() * 30,
+        maxLife: 60 + Math.random() * 30,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        size: 1 + Math.random() * 2
       });
     }
     setParticles(prev => [...prev, ...newParticles]);
   };
 
-  // Animation system for smooth piece movements and effects - SIMPLIFIED FOR DEBUGGING
+  // Create attack burst effect (0.2s burst with audio sync)
+  const createAttackBurst = (x: number, y: number, attackerColor: string, isWizard: boolean = false) => {
+    const color = attackerColor === 'white' ? '#FFD700' : '#8B0000';
+    
+    setAttackBurstEffect({
+      x, y,
+      timestamp: Date.now(),
+      color
+    });
+    
+    // Create intense particles for the burst
+    const burstParticles: Particle[] = [];
+    for (let i = 0; i < 20; i++) {
+      const angle = (i / 20) * Math.PI * 2;
+      const speed = 6 + Math.random() * 4;
+      burstParticles.push({
+        x, y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 30,
+        maxLife: 30,
+        color,
+        size: 3 + Math.random() * 2
+      });
+    }
+    setParticles(prev => [...prev, ...burstParticles]);
+    
+    // Trigger audio with spatial positioning
+    if (isWizard) {
+      playWizardAbility('attack', x / canvasSize, y / canvasSize);
+    } else {
+      playGameEvent('capture');
+    }
+  };
+
+  // Create smooth piece movement animation
+  const animatePieceMove = (piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number, moveType: 'normal' | 'wizard-teleport' | 'attack' | 'castling' = 'normal') => {
+    const duration = moveType === 'wizard-teleport' ? 300 : moveType === 'attack' ? 200 : 500; // 0.3s for teleport, 0.2s for attack, 0.5s for normal
+    
+    setAnimatingPiece({
+      piece,
+      fromRow,
+      fromCol,
+      toRow,
+      toCol,
+      type: moveType,
+      progress: 0,
+      startTime: Date.now(),
+      duration
+    });
+    
+    setIsAnimating(true);
+    
+    // Play appropriate sound with spatial audio
+    const centerX = (fromCol + toCol) * 0.5 * squareSize + squareSize * 0.5;
+    const centerY = (fromRow + toRow) * 0.5 * squareSize + squareSize * 0.5;
+    const spatialX = centerX / canvasSize;
+    const spatialY = centerY / canvasSize;
+    
+    if (moveType === 'wizard-teleport') {
+      // Wizard teleport with fade effect
+      setWizardTeleportEffect({
+        fromX: fromCol * squareSize + squareSize * 0.5,
+        fromY: fromRow * squareSize + squareSize * 0.5,
+        toX: toCol * squareSize + squareSize * 0.5,
+        toY: toRow * squareSize + squareSize * 0.5,
+        timestamp: Date.now(),
+        phase: 'fade-out'
+      });
+      
+      // Switch to fade-in after half duration
+      setTimeout(() => {
+        setWizardTeleportEffect(prev => 
+          prev ? { ...prev, phase: 'fade-in' } : null
+        );
+      }, 150);
+      
+      playWizardAbility('teleport', spatialX, spatialY);
+      createWizardSparkles(fromCol * squareSize + squareSize * 0.5, fromRow * squareSize + squareSize * 0.5);
+      setTimeout(() => {
+        createWizardSparkles(toCol * squareSize + squareSize * 0.5, toRow * squareSize + squareSize * 0.5);
+      }, 150);
+      
+    } else if (moveType === 'attack') {
+      createAttackBurst(toCol * squareSize + squareSize * 0.5, toRow * squareSize + squareSize * 0.5, piece.color, piece.type === 'wizard');
+      
+    } else if (piece.type === 'wizard') {
+      playWizardAbility('move', spatialX, spatialY);
+      createWizardSparkles(centerX, centerY);
+      
+    } else {
+      playPieceMovementSound(piece.type, spatialX, spatialY);
+    }
+  };
+
+  // Enhanced animation system with smooth 60fps rendering
   useEffect(() => {
-    let animationFrame: number;
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+    }
     
     const animate = () => {
-      // Only redraw if there are active effects to prevent infinite loops
-      if (particles.length > 0 || captureEffect || specialMoveEffect) {
-        // Update particles
-        setParticles(prev => prev
+      let shouldContinue = false;
+      
+      // Update particles with physics
+      setParticles(prev => {
+        const updatedParticles = prev
           .map(particle => ({
             ...particle,
             x: particle.x + particle.vx,
             y: particle.y + particle.vy,
             life: particle.life - 1,
-            vy: particle.vy + 0.1 // gravity
+            vy: particle.vy + 0.15, // Enhanced gravity for more realistic physics
+            vx: particle.vx * 0.99 // Air resistance
           }))
-          .filter(particle => particle.life > 0)
-        );
+          .filter(particle => particle.life > 0);
         
-        // Update capture effects
-        setCaptureEffect(prev => {
-          if (prev && Date.now() - prev.timestamp > 1000) {
-            return null;
-          }
-          return prev;
-        });
-        
-        // Update special move effects
-        setSpecialMoveEffect(prev => {
-          if (prev && Date.now() - prev.timestamp > 1500) {
-            return null;
-          }
-          return prev;
-        });
-        
-        // Redraw canvas with effects
-        drawBoard();
-        drawEffects();
-        
-        animationFrame = requestAnimationFrame(animate);
+        if (updatedParticles.length > 0) shouldContinue = true;
+        return updatedParticles;
+      });
+      
+      // Update effects timers
+      setCaptureEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 500) {
+          return null;
+        }
+        if (prev) shouldContinue = true;
+        return prev;
+      });
+      
+      setSpecialMoveEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 1500) {
+          return null;
+        }
+        if (prev) shouldContinue = true;
+        return prev;
+      });
+      
+      setAttackBurstEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 200) {
+          return null;
+        }
+        if (prev) shouldContinue = true;
+        return prev;
+      });
+      
+      setWizardTeleportEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 300) {
+          return null;
+        }
+        if (prev) shouldContinue = true;
+        return prev;
+      });
+      
+      // Check if piece animation is ongoing
+      if (animatingPiece) {
+        shouldContinue = true;
+      }
+      
+      // Redraw canvas with all effects
+      drawBoard();
+      drawEffects();
+      
+      // Continue animation loop if needed
+      if (shouldContinue) {
+        animationFrameRef.current = requestAnimationFrame(animate);
       }
     };
     
-    // Only start animation if there are effects to show
-    if (particles.length > 0 || captureEffect || specialMoveEffect) {
-      animationFrame = requestAnimationFrame(animate);
+    // Start animation if there are effects to show
+    const hasActiveEffects = particles.length > 0 || captureEffect || specialMoveEffect || 
+                           attackBurstEffect || wizardTeleportEffect || animatingPiece || isAnimating;
+    
+    if (hasActiveEffects) {
+      animationFrameRef.current = requestAnimationFrame(animate);
     }
     
     return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [particles, captureEffect, specialMoveEffect]);
+  }, [particles, captureEffect, specialMoveEffect, attackBurstEffect, wizardTeleportEffect, animatingPiece, isAnimating]);
 
-  // Simplified click handler - disable effects for debugging
+  // Move detection and animation triggering
+  useEffect(() => {
+    if (moveHistory.length > 0) {
+      const lastMove = moveHistory[moveHistory.length - 1];
+      console.log('🎬 Detected move:', lastMove);
+      
+      // Extract move details
+      const moveNotation = lastMove.notation || lastMove.move || '';
+      const isCapture = moveNotation.includes('x') || moveNotation.includes('X');
+      const isCheck = moveNotation.includes('+');
+      const isCheckmate = moveNotation.includes('#');
+      const isCastling = moveNotation.includes('O-O') || moveNotation.includes('0-0');
+      
+      // Try to extract positions from the move notation or move object
+      let fromRow = -1, fromCol = -1, toRow = -1, toCol = -1;
+      
+      // If move object has position data
+      if (lastMove.from && lastMove.to) {
+        fromRow = lastMove.from.row || 0;
+        fromCol = lastMove.from.col || 0;
+        toRow = lastMove.to.row || 0;
+        toCol = lastMove.to.col || 0;
+      } else if (typeof lastMove.move === 'string' && lastMove.move.length >= 4) {
+        // Parse algebraic notation like "e2e4"
+        const moveStr = lastMove.move.toLowerCase();
+        if (moveStr.length >= 4) {
+          fromCol = moveStr.charCodeAt(0) - 97; // 'a' = 97
+          fromRow = 10 - parseInt(moveStr[1]);
+          toCol = moveStr.charCodeAt(2) - 97;
+          toRow = 10 - parseInt(moveStr[3]);
+        }
+      }
+      
+      // Get the moved piece
+      const movedPiece = toRow >= 0 && toCol >= 0 ? board[toRow][toCol] : null;
+      
+      if (movedPiece && fromRow >= 0 && fromCol >= 0 && toRow >= 0 && toCol >= 0) {
+        console.log('🎭 Animating piece movement:', {
+          piece: movedPiece.type,
+          from: { row: fromRow, col: fromCol },
+          to: { row: toRow, col: toCol },
+          type: isCastling ? 'castling' : 
+                (movedPiece.type === 'wizard' && Math.abs(fromRow - toRow) > 1 || Math.abs(fromCol - toCol) > 1) ? 'wizard-teleport' :
+                isCapture ? 'attack' : 'normal'
+        });
+        
+        // Trigger appropriate animation
+        let animationType: 'normal' | 'wizard-teleport' | 'attack' | 'castling' = 'normal';
+        
+        if (isCastling) {
+          animationType = 'castling';
+        } else if (movedPiece.type === 'wizard' && (Math.abs(fromRow - toRow) > 1 || Math.abs(fromCol - toCol) > 1)) {
+          animationType = 'wizard-teleport';
+        } else if (isCapture) {
+          animationType = 'attack';
+        }
+        
+        // Start animation
+        animatePieceMove(movedPiece, fromRow, fromCol, toRow, toCol, animationType);
+        
+        // Add special effects for captures
+        if (isCapture) {
+          const centerX = toCol * squareSize + squareSize * 0.5;
+          const centerY = toRow * squareSize + squareSize * 0.5;
+          createCaptureParticles(centerX, centerY, movedPiece.color);
+          
+          setCaptureEffect({
+            x: centerX,
+            y: centerY,
+            timestamp: Date.now(),
+            intensity: isCheckmate ? 2.0 : isCheck ? 1.5 : 1.0
+          });
+        }
+        
+        // Add special effects for check/checkmate
+        if (isCheck || isCheckmate) {
+          const kingColor = movedPiece.color === 'white' ? 'black' : 'white';
+          // Find king position and add warning effect
+          for (let row = 0; row < 10; row++) {
+            for (let col = 0; col < 10; col++) {
+              const piece = board[row][col];
+              if (piece && piece.type === 'king' && piece.color === kingColor) {
+                const kingX = col * squareSize + squareSize * 0.5;
+                const kingY = row * squareSize + squareSize * 0.5;
+                
+                setSpecialMoveEffect({
+                  x: kingX,
+                  y: kingY,
+                  type: isCheckmate ? 'checkmate' : 'check',
+                  timestamp: Date.now()
+                });
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
+  }, [moveHistory.length, board, squareSize]); // Depend on moveHistory length to detect new moves
+
+  // Enhanced click handler with visual feedback
   const handleCanvasClickWithEffects = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    console.log('🎯 Canvas clicked - calling basic handler');
-    // Call original click handler without effects for now
+    console.log('🎯 Enhanced canvas clicked');
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    
+    // Create click ripple effect
+    const centerX = Math.floor(x / squareSize) * squareSize + squareSize * 0.5;
+    const centerY = Math.floor(y / squareSize) * squareSize + squareSize * 0.5;
+    
+    // Add subtle click particles
+    const clickParticles: Particle[] = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (i / 6) * Math.PI * 2;
+      const speed = 2 + Math.random() * 2;
+      clickParticles.push({
+        x: centerX,
+        y: centerY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 20,
+        maxLife: 20,
+        color: '#FFD700',
+        size: 1
+      });
+    }
+    setParticles(prev => [...prev, ...clickParticles]);
+    
+    // Play UI sound with spatial audio
+    playUISound('click', x / canvasSize, y / canvasSize);
+    
+    // Call original click handler
     handleCanvasClick(event);
   };
-
-  // Disable animation effects for debugging
-  useEffect(() => {
-    console.log('📝 Move history updated:', moveHistory.length, 'moves');
-    // Temporarily disable move effects for debugging
-  }, [moveHistory, squareSize]);
 
   return (
     <div className="board-container">
