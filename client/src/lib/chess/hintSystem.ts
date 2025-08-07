@@ -3,8 +3,8 @@
  * Provides intelligent hints for player moves using simplified AI evaluation
  */
 
-import { ChessPiece, Position, ChessMove } from './types';
-import * as aiPlayerModule from './aiPlayer';
+import { ChessPiece, Position, ChessMove, GameState } from './types';
+import { getAIMove } from './aiPlayer';
 
 export interface HintInfo {
   from: Position;
@@ -27,8 +27,24 @@ class ChessHintSystem {
     try {
       console.log('🎯 Generating hint for', currentPlayer);
 
+      // Create a game state for the AI to analyze
+      const gameState: GameState = {
+        board,
+        currentPlayer,
+        selectedPosition: null,
+        validMoves: [],
+        gamePhase: 'playing',
+        gameMode: 'ai',
+        aiDifficulty: 'hard',
+        moveHistory,
+        isInCheck: false,
+        isCheckmate: false,
+        isStalemate: false,
+        winner: null
+      };
+
       // Use AI player to find the best move
-      const bestMove = aiPlayerModule.getBestMove(board, currentPlayer, moveHistory, 2); // Depth 2 for hints
+      const bestMove = getAIMove(gameState);
       
       if (!bestMove) {
         console.log('❌ No valid moves found for hint');
