@@ -240,6 +240,15 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                     <strong>Ranged Attack:</strong> Attack enemies within 2 squares without moving
                   </p>
                 </div>
+                
+                <div className="rule-item">
+                  <h4>🏰 Castling Rules</h4>
+                  <p>
+                    <strong>King Movement:</strong> Moves 3 squares towards rook (to c1 or g1)<br/>
+                    <strong>Rook Movement:</strong> Moves to square next to king (d1 or f1)<br/>
+                    <strong>Requirements:</strong> No pieces between king and rook, king not in check, neither piece has moved before
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
