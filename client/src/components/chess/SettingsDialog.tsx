@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAudio } from '../../lib/stores/useAudio';
+import { useAudio, GameIntensity } from '../../lib/stores/useAudio';
 import { useChess } from '../../lib/stores/useChess';
 import {
   Dialog,
@@ -18,7 +18,7 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ onClose }: SettingsDialogProps) {
-  const { isMuted, toggleMute } = useAudio();
+  const { isMuted, toggleMute, isAmbientEnabled, toggleAmbient, currentIntensity } = useAudio();
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -49,6 +49,33 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
                   onCheckedChange={toggleMute}
                 />
               </div>
+              
+              <div className="setting-item">
+                <div className="setting-info">
+                  <label>Ambient Sounds</label>
+                  <p className="text-sm text-muted-foreground">
+                    Dynamic background music that adapts to game intensity
+                  </p>
+                </div>
+                <Switch
+                  checked={isAmbientEnabled}
+                  onCheckedChange={toggleAmbient}
+                />
+              </div>
+              
+              {isAmbientEnabled && (
+                <div className="setting-item">
+                  <div className="setting-info">
+                    <label>Current Intensity</label>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically adjusts based on game state
+                    </p>
+                  </div>
+                  <Badge variant="outline" className="capitalize">
+                    {currentIntensity}
+                  </Badge>
+                </div>
+              )}
             </CardContent>
           </Card>
 

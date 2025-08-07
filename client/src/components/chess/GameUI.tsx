@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
-import { useAudio } from '../../lib/stores/useAudio';
+import { useAudio, GameIntensity } from '../../lib/stores/useAudio';
 import { AdBanner } from '../monetization/AdBanner';
 import { GameHints } from '../monetization/GameHints';
 import { Button } from '../ui/button';
@@ -24,7 +24,7 @@ export function GameUI({ onSettings }: GameUIProps) {
     undoMove
   } = useChess();
   
-  const { isMuted, toggleMute } = useAudio();
+  const { isMuted, toggleMute, currentIntensity, isAmbientEnabled } = useAudio();
   const [showRules, setShowRules] = useState(false);
   const [showControls, setShowControls] = useState(false);
 
@@ -40,6 +40,26 @@ export function GameUI({ onSettings }: GameUIProps) {
       return `vs AI (${aiDifficulty})`;
     }
     return 'Local Multiplayer';
+  };
+
+  const getIntensityColor = (intensity: GameIntensity) => {
+    const colors: Record<GameIntensity, string> = {
+      calm: 'bg-blue-500',
+      moderate: 'bg-green-500', 
+      tense: 'bg-yellow-500',
+      critical: 'bg-red-500'
+    };
+    return colors[intensity];
+  };
+
+  const getIntensityIcon = (intensity: GameIntensity) => {
+    const icons: Record<GameIntensity, string> = {
+      calm: '🌙',
+      moderate: '⚡',
+      tense: '🔥',
+      critical: '⚔️'
+    };
+    return icons[intensity];
   };
 
   return (
@@ -60,7 +80,17 @@ export function GameUI({ onSettings }: GameUIProps) {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between medieval-text text-sm">
             <span>🏰 Fantasy Chess</span>
-            <Badge variant="outline" className="text-xs">{getGameModeDisplay()}</Badge>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">{getGameModeDisplay()}</Badge>
+              {isAmbientEnabled && (
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs capitalize ${getIntensityColor(currentIntensity)} text-white border-transparent`}
+                >
+                  {getIntensityIcon(currentIntensity)} {currentIntensity}
+                </Badge>
+              )}
+            </div>
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">

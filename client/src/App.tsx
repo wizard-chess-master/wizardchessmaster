@@ -9,36 +9,52 @@ import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AdBanner } from "./components/monetization/AdBanner";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
+import { ambientManager } from "./lib/audio/ambientManager";
 import "@fontsource/inter";
 import "./styles/chess.css";
 
 function App() {
-  const { gamePhase } = useChess();
-  const { setHitSound, setSuccessSound } = useAudio();
+  const { gamePhase, ...gameState } = useChess();
+  const { setHitSound, setSuccessSound, setBackgroundMusic } = useAudio();
   const [showSettings, setShowSettings] = useState(false);
 
   // Initialize audio, monetization, and keyboard shortcuts
   useEffect(() => {
     const hitAudio = new Audio("/sounds/hit.mp3");
     const successAudio = new Audio("/sounds/success.mp3");
+    const backgroundMusic = new Audio("/sounds/background.mp3");
     
     setHitSound(hitAudio);
     setSuccessSound(successAudio);
+    setBackgroundMusic(backgroundMusic);
 
-    // Initialize monetization systems
-    const initMonetization = async () => {
+    // Initialize monetization and ambient sound systems
+    const initSystems = async () => {
       try {
         console.log('💳 Initializing monetization systems...');
         await initializeAds();
         await initializePayments();
         console.log('✅ Monetization systems initialized');
+        
+        console.log('🎵 Initializing ambient sound system...');
+        await ambientManager.initializeAmbientSounds();
+        console.log('✅ Ambient sound system initialized');
       } catch (error) {
-        console.error('❌ Failed to initialize monetization:', error);
+        console.error('❌ Failed to initialize systems:', error);
       }
     };
     
-    initMonetization();
-  }, [setHitSound, setSuccessSound]);
+    initSystems();
+  }, [setHitSound, setSuccessSound, setBackgroundMusic]);
+
+  // Monitor game state for ambient sound intensity changes
+  useEffect(() => {
+    if (gamePhase === 'playing') {
+      ambientManager.analyzeGameIntensity({ gamePhase, ...gameState });
+    } else if (gamePhase === 'menu') {
+      ambientManager.reset();
+    }
+  }, [gamePhase, gameState.board, gameState.moveHistory, gameState.isInCheck, gameState.isCheckmate]);
 
   // Keyboard shortcuts
   useEffect(() => {
