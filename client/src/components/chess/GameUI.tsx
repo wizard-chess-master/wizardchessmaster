@@ -157,9 +157,22 @@ export function GameUI({ onSettings }: GameUIProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  const { playHit } = useAudio.getState();
-                  console.log('🔊 Testing sound manually...');
-                  playHit();
+                  console.log('🔊 Testing sound with direct audio play...');
+                  try {
+                    // Create a direct audio element for immediate feedback
+                    const audio = new Audio('/sounds/hit.mp3');
+                    audio.volume = 0.5;
+                    audio.play().then(() => {
+                      console.log('✅ Direct audio played successfully');
+                    }).catch(error => {
+                      console.log('❌ Direct audio failed:', error);
+                      // Fallback to store method
+                      const { playHit } = useAudio.getState();
+                      playHit();
+                    });
+                  } catch (error) {
+                    console.log('❌ Audio creation failed:', error);
+                  }
                 }}
                 className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
                 title="Test Sound"

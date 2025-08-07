@@ -22,39 +22,53 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="settings-dialog">
+      <DialogContent className="settings-dialog max-h-[85vh] overflow-y-auto max-w-md">
         <DialogHeader>
           <DialogTitle>Game Settings</DialogTitle>
         </DialogHeader>
         
-        <div className="settings-content">
+        <div className="settings-content space-y-4">
           {/* Audio Settings */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                 Audio Settings
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="setting-item">
-                <div className="setting-info">
-                  <label>Sound Effects</label>
-                  <p className="text-sm text-muted-foreground">
+            <CardContent className="pt-0 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">Sound Effects</label>
+                  <p className="text-xs text-muted-foreground">
                     Play sounds for moves and captures
                   </p>
                 </div>
-                <Switch
-                  checked={!isMuted}
-                  onCheckedChange={toggleMute}
-                />
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const audio = new Audio('/sounds/hit.mp3');
+                      audio.volume = 0.5;
+                      audio.play().catch(e => console.log('Test sound failed:', e));
+                    }}
+                    className="text-xs"
+                  >
+                    Test
+                  </Button>
+                  <Switch
+                    checked={!isMuted}
+                    onCheckedChange={toggleMute}
+                  />
+                </div>
               </div>
               
-              <div className="setting-item">
-                <div className="setting-info">
-                  <label>Ambient Sounds</label>
-                  <p className="text-sm text-muted-foreground">
-                    Dynamic background music that adapts to game intensity
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium">Ambient Sounds</label>
+                  <p className="text-xs text-muted-foreground">
+                    Dynamic background music
                   </p>
                 </div>
                 <Switch
@@ -64,11 +78,11 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
               </div>
               
               {isAmbientEnabled && (
-                <div className="setting-item">
-                  <div className="setting-info">
-                    <label>Current Intensity</label>
-                    <p className="text-sm text-muted-foreground">
-                      Automatically adjusts based on game state
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium">Current Intensity</label>
+                    <p className="text-xs text-muted-foreground">
+                      Auto-adjusts based on game state
                     </p>
                   </div>
                   <Badge variant="outline" className="capitalize">
@@ -79,90 +93,59 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
             </CardContent>
           </Card>
 
-          {/* Game Information */}
+          {/* Quick Info */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
                 <Info className="w-5 h-5" />
-                About
+                Game Info
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="about-content">
-                <div className="info-item">
-                  <h4>Fantasy Chess Variant</h4>
-                  <p>A magical twist on traditional chess with a larger board and mystical Wizard pieces.</p>
-                </div>
-                
-                <div className="info-item">
-                  <h4>Version</h4>
-                  <p>1.0.0</p>
-                </div>
-                
-                <div className="info-item">
-                  <h4>Features</h4>
-                  <ul>
-                    <li>10x10 chess board</li>
-                    <li>Traditional chess pieces</li>
-                    <li>Magical Wizard pieces</li>
-                    <li>AI opponents (3 difficulty levels)</li>
-                    <li>Local multiplayer</li>
-                    <li>Move history and undo</li>
-                  </ul>
-                </div>
+            <CardContent className="pt-0 space-y-3">
+              <div className="text-sm">
+                <p className="font-medium">Fantasy Chess v1.0</p>
+                <p className="text-xs text-muted-foreground">10x10 board with Wizard pieces</p>
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Keyboard Shortcuts */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Keyboard Shortcuts</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="shortcuts-list">
-                <div className="shortcut-item">
-                  <kbd>Ctrl + Z</kbd>
-                  <span>Undo move</span>
+              
+              <div className="grid grid-cols-2 gap-3 text-xs">
+                <div className="flex justify-between">
+                  <span>Escape</span>
+                  <span className="text-muted-foreground">Deselect</span>
                 </div>
-                <div className="shortcut-item">
-                  <kbd>Escape</kbd>
-                  <span>Deselect piece</span>
+                <div className="flex justify-between">
+                  <span>Ctrl+Z</span>
+                  <span className="text-muted-foreground">Undo</span>
                 </div>
-                <div className="shortcut-item">
-                  <kbd>Ctrl + M</kbd>
-                  <span>Toggle sound</span>
+                <div className="flex justify-between">
+                  <span>Ctrl+M</span>
+                  <span className="text-muted-foreground">Mute</span>
                 </div>
-                <div className="shortcut-item">
-                  <kbd>Ctrl + H</kbd>
-                  <span>Return to menu</span>
+                <div className="flex justify-between">
+                  <span>Ctrl+H</span>
+                  <span className="text-muted-foreground">Menu</span>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="settings-footer">
+        <div className="flex gap-2 pt-4">
           <Button 
             variant="outline"
-            className="medieval-btn mode-button"
+            className="flex-1"
             onClick={() => {
               onClose();
-              // Use resetGame from useChess instead of window.location.reload()
               const { resetGame } = useChess.getState();
               resetGame();
             }}
           >
-            <div className="mode-content">
-              <span>🏠 Main Menu</span>
-              <Badge variant="secondary">Home</Badge>
-            </div>
+            🏠 Main Menu
           </Button>
-          <Button className="medieval-btn mode-button" onClick={onClose}>
-            <div className="mode-content">
-              <span>✕ Close</span>
-              <Badge variant="secondary">Cancel</Badge>
-            </div>
+          <Button 
+            className="flex-1" 
+            onClick={onClose}
+          >
+            ✕ Close
           </Button>
         </div>
       </DialogContent>
