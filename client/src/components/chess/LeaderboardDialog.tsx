@@ -9,6 +9,7 @@ import { ScrollArea } from '../ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { Trophy, Medal, Award, Crown, Swords, Target, Clock, Zap, User, Edit } from 'lucide-react';
 import { useLeaderboard, CampaignStats, PvPStats, LeaderboardEntry } from '../../lib/stores/useLeaderboard';
+import { OnlineLeaderboard } from './OnlineLeaderboard';
 
 interface LeaderboardDialogProps {
   children: React.ReactNode;
@@ -275,14 +276,18 @@ export function LeaderboardDialog({ children }: LeaderboardDialogProps) {
           <PlayerSetup />
 
           <Tabs defaultValue="campaign" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="campaign" className="flex items-center gap-2">
                 <Crown className="w-4 h-4" />
                 Campaign
               </TabsTrigger>
               <TabsTrigger value="pvp" className="flex items-center gap-2">
                 <Swords className="w-4 h-4" />
-                Player vs Player
+                Local PvP
+              </TabsTrigger>
+              <TabsTrigger value="online" className="flex items-center gap-2">
+                <Trophy className="w-4 h-4" />
+                Online
               </TabsTrigger>
             </TabsList>
 
@@ -312,7 +317,7 @@ export function LeaderboardDialog({ children }: LeaderboardDialogProps) {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Swords className="w-5 h-5" />
-                    PvP Rankings
+                    Local PvP Rankings
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -321,11 +326,15 @@ export function LeaderboardDialog({ children }: LeaderboardDialogProps) {
                   ) : (
                     <div className="text-center py-8 text-gray-500">
                       <Swords className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>No PvP data yet. Play local multiplayer games to appear on the leaderboard!</p>
+                      <p>No local PvP data yet. Play local multiplayer games to appear on the leaderboard!</p>
                     </div>
                   )}
                 </CardContent>
               </Card>
+            </TabsContent>
+
+            <TabsContent value="online" className="space-y-4">
+              <OnlineLeaderboard />
             </TabsContent>
           </Tabs>
         </div>

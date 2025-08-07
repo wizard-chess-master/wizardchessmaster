@@ -10,6 +10,7 @@ import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
+import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { AIDifficultyVisualization } from './AIDifficultyVisualization';
 import { AdminLogin } from './AdminLogin';
@@ -146,6 +147,15 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
                     </div>
                   </Button>
                 </CampaignDialog>
+
+                <OnlineMultiplayerDialog>
+                  <Button className="medieval-btn mode-button">
+                    <div className="mode-content">
+                      <span>🌐 Online Multiplayer</span>
+                      <Badge variant="secondary">Player vs Player</Badge>
+                    </div>
+                  </Button>
+                </OnlineMultiplayerDialog>
 
 {/* Admin-only features */}
                 {isAdminFeatureEnabled('training') && (

@@ -1,4 +1,24 @@
+import { drizzle } from 'drizzle-orm/neon-http';
+import { neon } from '@neondatabase/serverless';
 import { users, type User, type InsertUser } from "@shared/schema";
+
+// Database connection (optional for development)
+let db: any = null;
+
+if (process.env.DATABASE_URL) {
+  const sql = neon(process.env.DATABASE_URL);
+  db = drizzle(sql);
+} else {
+  console.log('⚠️ No DATABASE_URL found - online multiplayer features will be disabled');
+}
+
+// Export database instance for multiplayer
+export function getDB() {
+  if (!db) {
+    throw new Error('Database not available - please set DATABASE_URL environment variable');
+  }
+  return db;
+}
 
 // modify the interface with any CRUD methods
 // you might need
@@ -30,7 +50,12 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId++;
-    const user: User = { ...insertUser, id };
+    const user: User = { 
+      ...insertUser, 
+      id,
+      createdAt: new Date(),
+      lastSeen: new Date()
+    };
     this.users.set(id, user);
     return user;
   }
