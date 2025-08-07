@@ -22,12 +22,13 @@ export function ChessBoard() {
   // Responsive canvas sizing - 800x800 base, scales down for mobile
   useEffect(() => {
     const updateCanvasSize = () => {
+      console.log('🎨 Updating canvas size...');
       // Calculate available space for the board
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Base size is 880x880 for desktop
-      let maxSize = 880;
+      // Base size is 800x800 for desktop (reduced from 880 for better performance)
+      let maxSize = 800;
       
       // Scale down for smaller screens, ensuring full visibility
       if (viewportWidth < 480) {
@@ -37,11 +38,11 @@ export function ChessBoard() {
         // Mobile: use 85% of viewport width, max 600px
         maxSize = Math.min(viewportWidth * 0.85, 600);
       } else if (viewportWidth < 1024) {
-        // Tablet: use 85% of viewport width, max 800px
-        maxSize = Math.min(viewportWidth * 0.85, 800);
+        // Tablet: use 80% of viewport width, max 700px
+        maxSize = Math.min(viewportWidth * 0.80, 700);
       } else if (viewportWidth < 1200) {
-        // Small desktop: use 75% of viewport width, max 880px
-        maxSize = Math.min(viewportWidth * 0.75, 880);
+        // Small desktop: use 70% of viewport width, max 800px
+        maxSize = Math.min(viewportWidth * 0.70, 800);
       }
       
       // Ensure minimum size for playability
@@ -49,6 +50,11 @@ export function ChessBoard() {
       
       const newSquareSize = Math.floor(maxSize / 10);
       const newCanvasSize = newSquareSize * 10;
+      
+      console.log('🎨 Canvas size calculated:', { 
+        viewport: { width: viewportWidth, height: viewportHeight },
+        canvas: { size: newCanvasSize, squareSize: newSquareSize }
+      });
       
       setCanvasSize(newCanvasSize);
       setSquareSize(newSquareSize);
@@ -279,8 +285,9 @@ export function ChessBoard() {
     return symbols[color as keyof typeof symbols][pieceType as keyof typeof symbols.white] || '?';
   };
 
-  // Handle canvas clicks with animation trigger
+  // Handle canvas clicks - simplified for better reliability
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    console.log('🎯 Canvas clicked!');
     const canvas = canvasRef.current;
     if (!canvas) {
       console.log('❌ No canvas reference');
@@ -292,50 +299,26 @@ export function ChessBoard() {
     const y = event.clientY - rect.top;
     
     const col = Math.floor(x / squareSize);
-    const rawRow = Math.floor(y / squareSize);
+    const row = Math.floor(y / squareSize);
     
-    // Fix coordinate mapping - ensure clicks map to correct board positions
-    // Canvas drawing: row 0 at top, row 9 at bottom
-    // Board state: row 0 = black pieces (top), row 9 = white pieces (bottom) 
-    const row = rawRow;
-    
-    // Add boundary checking and better coordinate conversion
-    const expectedWhitePawnRow = 8;
-    const canvasBottomArea = canvasSize - (squareSize * 2); // Bottom 2 rows area
-    
-    console.log('🎯 Canvas click debug:', { 
-      x, y, rawRow, row, col, squareSize, canvasSize,
-      canvasBottomArea,
-      isInWhiteArea: y >= canvasBottomArea,
-      expectedWhitePawnY: expectedWhitePawnRow * squareSize
+    console.log('🎯 Click coordinates:', { 
+      canvas: { x, y },
+      grid: { row, col },
+      squareSize,
+      piece: board[row]?.[col]
     });
     
-    // Check if click is close to white pieces area and adjust if needed
-    if (y >= (expectedWhitePawnRow * squareSize) - (squareSize / 2) && y < (expectedWhitePawnRow + 1) * squareSize + (squareSize / 2)) {
-      console.log('🔧 Click is in white pawn area - using row 8');
-      const adjustedRow = expectedWhitePawnRow;
-      console.log('🔍 Adjusted position [' + adjustedRow + '][' + col + ']:', board[adjustedRow]?.[col]);
-      
-      if (adjustedRow >= 0 && adjustedRow < 10 && col >= 0 && col < 10) {
-        setIsAnimating(true);
-        setTimeout(() => setIsAnimating(false), 500);
-        console.log('✅ Selecting adjusted square:', { row: adjustedRow, col });
-        selectSquare({ row: adjustedRow, col });
-        return;
-      }
-    }
-    
-    console.log('🔍 Using original coordinates [' + row + '][' + col + ']:', board[row]?.[col]);
-    
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
-      // Trigger animation effect
-      setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 500);
+      console.log('✅ Valid square clicked:', { row, col });
+      console.log('🔍 Piece at position:', board[row][col]);
       
-      console.log('✅ Selecting square:', { row, col });
+      // Trigger simple animation
+      setIsAnimating(true);
+      setTimeout(() => setIsAnimating(false), 300);
+      
       selectSquare({ row, col });
     } else {
-      console.log('❌ Click outside board bounds');
+      console.log('❌ Click outside board bounds:', { row, col });
     }
   };
 
@@ -453,49 +436,53 @@ export function ChessBoard() {
     setParticles(prev => [...prev, ...newParticles]);
   };
 
-  // Animation system for smooth piece movements and effects
+  // Animation system for smooth piece movements and effects - SIMPLIFIED FOR DEBUGGING
   useEffect(() => {
     let animationFrame: number;
     
     const animate = () => {
-      // Update particles
-      setParticles(prev => prev
-        .map(particle => ({
-          ...particle,
-          x: particle.x + particle.vx,
-          y: particle.y + particle.vy,
-          life: particle.life - 1,
-          vy: particle.vy + 0.1 // gravity
-        }))
-        .filter(particle => particle.life > 0)
-      );
-      
-      // Update capture effects
-      setCaptureEffect(prev => {
-        if (prev && Date.now() - prev.timestamp > 1000) {
-          return null;
-        }
-        return prev;
-      });
-      
-      // Update special move effects
-      setSpecialMoveEffect(prev => {
-        if (prev && Date.now() - prev.timestamp > 1500) {
-          return null;
-        }
-        return prev;
-      });
-      
-      // Redraw canvas with effects
+      // Only redraw if there are active effects to prevent infinite loops
       if (particles.length > 0 || captureEffect || specialMoveEffect) {
+        // Update particles
+        setParticles(prev => prev
+          .map(particle => ({
+            ...particle,
+            x: particle.x + particle.vx,
+            y: particle.y + particle.vy,
+            life: particle.life - 1,
+            vy: particle.vy + 0.1 // gravity
+          }))
+          .filter(particle => particle.life > 0)
+        );
+        
+        // Update capture effects
+        setCaptureEffect(prev => {
+          if (prev && Date.now() - prev.timestamp > 1000) {
+            return null;
+          }
+          return prev;
+        });
+        
+        // Update special move effects
+        setSpecialMoveEffect(prev => {
+          if (prev && Date.now() - prev.timestamp > 1500) {
+            return null;
+          }
+          return prev;
+        });
+        
+        // Redraw canvas with effects
         drawBoard();
         drawEffects();
+        
+        animationFrame = requestAnimationFrame(animate);
       }
-      
-      animationFrame = requestAnimationFrame(animate);
     };
     
-    animationFrame = requestAnimationFrame(animate);
+    // Only start animation if there are effects to show
+    if (particles.length > 0 || captureEffect || specialMoveEffect) {
+      animationFrame = requestAnimationFrame(animate);
+    }
     
     return () => {
       if (animationFrame) {
@@ -504,58 +491,17 @@ export function ChessBoard() {
     };
   }, [particles, captureEffect, specialMoveEffect]);
 
-  // Enhanced click handler with animation triggers
+  // Simplified click handler - disable effects for debugging
   const handleCanvasClickWithEffects = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const rect = canvas.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
-    
-    // Trigger click sparkles
-    const sparkleParticles: Particle[] = [];
-    for (let i = 0; i < 6; i++) {
-      sparkleParticles.push({
-        x: clickX,
-        y: clickY,
-        vx: (Math.random() - 0.5) * 4,
-        vy: (Math.random() - 0.5) * 4,
-        life: 30,
-        maxLife: 30,
-        color: '#00BFFF'
-      });
-    }
-    setParticles(prev => [...prev, ...sparkleParticles]);
-    
-    // Call original click handler
+    console.log('🎯 Canvas clicked - calling basic handler');
+    // Call original click handler without effects for now
     handleCanvasClick(event);
   };
 
-  // Monitor move history for animations
+  // Disable animation effects for debugging
   useEffect(() => {
-    if (moveHistory.length > 0) {
-      const lastMove = moveHistory[moveHistory.length - 1];
-      const toX = lastMove.to.col * squareSize + squareSize / 2;
-      const toY = lastMove.to.row * squareSize + squareSize / 2;
-      
-      // Create capture effect if piece was captured
-      if (lastMove.captured) {
-        setCaptureEffect({ x: toX, y: toY, timestamp: Date.now() });
-        createCaptureParticles(toX, toY, lastMove.captured.color);
-      }
-      
-      // Create special effects for wizard moves
-      if (lastMove.piece.type === 'wizard') {
-        setSpecialMoveEffect({ x: toX, y: toY, type: 'teleport', timestamp: Date.now() });
-        createWizardSparkles(toX, toY);
-      }
-      
-      // Create spell effects for castling
-      if (lastMove.isCastling) {
-        setSpecialMoveEffect({ x: toX, y: toY, type: 'spell', timestamp: Date.now() });
-      }
-    }
+    console.log('📝 Move history updated:', moveHistory.length, 'moves');
+    // Temporarily disable move effects for debugging
   }, [moveHistory, squareSize]);
 
   return (

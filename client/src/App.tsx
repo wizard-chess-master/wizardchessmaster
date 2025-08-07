@@ -22,6 +22,7 @@ import { ambientManager } from "./lib/audio/ambientManager";
 import "@fontsource/inter";
 import "./styles/chess.css";
 import "./styles/animations.css";
+import "./debug";
 
 function App() {
   const { gamePhase, ...gameState } = useChess();
