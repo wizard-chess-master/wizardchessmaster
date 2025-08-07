@@ -2,7 +2,7 @@ export type PieceType = 'pawn' | 'rook' | 'knight' | 'bishop' | 'queen' | 'king'
 export type PieceColor = 'white' | 'black';
 export type GamePhase = 'menu' | 'playing' | 'ended';
 export type GameMode = 'local' | 'ai' | 'ai-vs-ai';
-export type AIDifficulty = 'easy' | 'medium' | 'hard';
+export type AIDifficulty = 'easy' | 'medium' | 'hard' | 'advanced';
 
 export interface Position {
   row: number;

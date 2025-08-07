@@ -6,8 +6,12 @@ import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
 import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
+import { useCampaign } from "./useCampaign";
 
 interface ChessStore extends GameState {
+  // Campaign tracking
+  gameStartTime: number;
+  
   // Actions
   startGame: (mode: GameMode, aiDifficulty?: AIDifficulty) => void;
   selectSquare: (position: Position | null) => void;
@@ -36,6 +40,7 @@ const initialState: GameState = {
 export const useChess = create<ChessStore>()(
   subscribeWithSelector((set, get) => ({
     ...initialState,
+    gameStartTime: Date.now(),
 
     startGame: (mode: GameMode, aiDifficulty: AIDifficulty = 'medium') => {
       set({
@@ -43,7 +48,8 @@ export const useChess = create<ChessStore>()(
         board: createInitialBoard(),
         gamePhase: 'playing',
         gameMode: mode,
-        aiDifficulty: aiDifficulty
+        aiDifficulty: aiDifficulty,
+        gameStartTime: Date.now()
       });
 
       // Start AI vs AI gameplay immediately
@@ -164,6 +170,15 @@ export const useChess = create<ChessStore>()(
       if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
         const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
         aiLearning.analyzeGame(newState, aiColor, 'human');
+        
+        // Update campaign progress if in campaign mode
+        const { isInCampaign, currentLevelId, completeCampaignGame } = useCampaign.getState();
+        if (isInCampaign && currentLevelId) {
+          const playerWon = newState.winner === 'white';
+          const gameTime = Date.now() - state.gameStartTime;
+          const moveCount = newState.moveHistory.length;
+          completeCampaignGame(currentLevelId, playerWon, moveCount, gameTime);
+        }
       }
 
       // If playing against AI and it's AI's turn, make AI move after a delay

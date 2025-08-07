@@ -9,6 +9,7 @@ import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
+import { CampaignDialog } from './CampaignDialog';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 
@@ -114,6 +115,15 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
 
 
 
+
+                <CampaignDialog>
+                  <Button className="medieval-btn mode-button campaign-button">
+                    <div className="mode-content">
+                      <span>🏆 Campaign Mode</span>
+                      <Badge variant="secondary">Progressive AI</Badge>
+                    </div>
+                  </Button>
+                </CampaignDialog>
 
                 <MassTrainingDialog onTrainingComplete={refreshLearningStats}>
                   <Button
