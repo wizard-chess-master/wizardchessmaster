@@ -6,7 +6,6 @@ import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
-import { TrainingViewer } from "./components/chess/TrainingViewer";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
 import "@fontsource/inter";
@@ -16,7 +15,6 @@ function App() {
   const { gamePhase } = useChess();
   const { setHitSound, setSuccessSound } = useAudio();
   const [showSettings, setShowSettings] = useState(false);
-  const [showTrainingViewer, setShowTrainingViewer] = useState(false);
 
   // Initialize audio, monetization, and keyboard shortcuts
   useEffect(() => {
@@ -81,36 +79,12 @@ function App() {
   return (
     <div className="App">
       <div className="game-container">
-        {gamePhase === 'menu' && !showTrainingViewer && (
-          <div className="main-menu">
-            <h1>🪄 Fantasy Wizard Chess 🪄</h1>
-            <div className="menu-buttons">
-              <MainMenu 
-                onSettings={() => setShowSettings(true)}
-                onTrainingViewer={() => setShowTrainingViewer(true)}
-              />
-            </div>
-            
-            {/* Subtle Ad Banner */}
-            <div className="ad-banner-horizontal ad-banner">
-              <span style={{ opacity: 0.6 }}>🏰 Medieval Adventures Await 🏰</span>
-            </div>
-          </div>
-        )}
-
-        {showTrainingViewer && (
-          <div className="medieval-panel">
-            <TrainingViewer onBack={() => setShowTrainingViewer(false)} />
-          </div>
+        {gamePhase === 'menu' && (
+          <MainMenu onSettings={() => setShowSettings(true)} />
         )}
         
-        {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
+        {(gamePhase === 'playing' || gamePhase === 'ended') && (
           <div className="game-layout">
-            {/* Ad Banner Above Board - Same Size as Bottom */}
-            <div className="ad-banner-horizontal ad-banner">
-              <span style={{ opacity: 0.6 }}>🏰 Medieval Adventures Await 🏰</span>
-            </div>
-            
             <div className="board-container">
               <ChessBoard />
             </div>

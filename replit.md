@@ -15,6 +15,7 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 - **Ad-Free Experience**: Premium users get unlimited hints/undos and complete ad removal
 - **Balanced Monetization**: Designed to encourage upgrades without breaking core gameplay
 - **User Experience**: Tasteful ad integration that maintains medieval fantasy atmosphere
+- **Streamlined UI**: Removed redundant "Watch AI Training" feature - AI vs AI Battle mode now serves as both training and entertainment
 
 ## Previous Changes (January 6, 2025)
 
