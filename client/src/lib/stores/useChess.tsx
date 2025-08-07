@@ -71,6 +71,12 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
+      // Set dynamic music based on game mode
+      setTimeout(() => {
+        const { setDynamicMusic } = useAudio.getState();
+        setDynamicMusic('playing');
+      }, 500);
+      
       // Verify board state after setting
       setTimeout(() => {
         const { board } = get();
@@ -241,17 +247,28 @@ export const useChess = create<ChessStore>()(
       const newState = makeMove(state, move);
       set(newState);
       
-      // Play game event sounds for check/checkmate
+      // Play game event sounds for check/checkmate and update music
       if (!isMuted) {
         if (newState.isCheckmate) {
           const playerWon = newState.winner === 'white';
           if (playerWon) {
             playGameEvent('checkmate_win').catch(e => console.log('🎭 Checkmate victory sound failed:', e));
+            // Switch to victory music
+            const { setDynamicMusic } = useAudio.getState();
+            setDynamicMusic('victory');
           } else {
             playGameEvent('checkmate_lose').catch(e => console.log('🎭 Checkmate defeat sound failed:', e));
+            // Switch to defeat music
+            const { setDynamicMusic } = useAudio.getState();
+            setDynamicMusic('defeat');
           }
         } else if (newState.isInCheck) {
           playGameEvent('check').catch(e => console.log('🎭 Check warning sound failed:', e));
+          // Switch to tension music for check
+          setTimeout(() => {
+            const { setDynamicMusic } = useAudio.getState();
+            setDynamicMusic('check');
+          }, 200);
         }
       }
 

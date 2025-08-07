@@ -11,6 +11,10 @@ export function ChessBoard() {
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatingPiece, setAnimatingPiece] = useState<{piece: any, fromRow: number, fromCol: number, toRow: number, toCol: number} | null>(null);
+  const [animationProgress, setAnimationProgress] = useState(0);
+  const [particles, setParticles] = useState<Array<{x: number, y: number, vx: number, vy: number, life: number, maxLife: number, color: string}>>([]);
+  const [captureEffect, setCaptureEffect] = useState<{x: number, y: number, timestamp: number} | null>(null);
+  const [specialMoveEffect, setSpecialMoveEffect] = useState<{x: number, y: number, type: string, timestamp: number} | null>(null);
   const [canvasSize, setCanvasSize] = useState(800);
   const [squareSize, setSquareSize] = useState(80);
 
@@ -343,6 +347,216 @@ export function ChessBoard() {
     selectSquare({ row, col });
   };
 
+  // Animation system for smooth piece movements and effects
+  useEffect(() => {
+    let animationFrame: number;
+    
+    const animate = () => {
+      // Update particles
+      setParticles(prev => prev
+        .map(particle => ({
+          ...particle,
+          x: particle.x + particle.vx,
+          y: particle.y + particle.vy,
+          life: particle.life - 1,
+          vy: particle.vy + 0.1 // gravity
+        }))
+        .filter(particle => particle.life > 0)
+      );
+      
+      // Update capture effects
+      setCaptureEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 1000) {
+          return null;
+        }
+        return prev;
+      });
+      
+      // Update special move effects
+      setSpecialMoveEffect(prev => {
+        if (prev && Date.now() - prev.timestamp > 1500) {
+          return null;
+        }
+        return prev;
+      });
+      
+      // Redraw canvas with effects
+      if (particles.length > 0 || captureEffect || specialMoveEffect) {
+        drawBoard();
+        drawEffects();
+      }
+      
+      animationFrame = requestAnimationFrame(animate);
+    };
+    
+    animationFrame = requestAnimationFrame(animate);
+    
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [particles, captureEffect, specialMoveEffect, drawBoard, drawEffects]);
+
+  // Create particle explosion for captures
+  const createCaptureParticles = (x: number, y: number, color: string) => {
+    const newParticles = [];
+    for (let i = 0; i < 12; i++) {
+      newParticles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 8,
+        vy: (Math.random() - 0.5) * 8,
+        life: 60,
+        maxLife: 60,
+        color: color === 'white' ? '#FFD700' : '#8B0000'
+      });
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
+  // Create magical sparkles for wizard moves
+  const createWizardSparkles = (x: number, y: number) => {
+    const newParticles = [];
+    for (let i = 0; i < 20; i++) {
+      newParticles.push({
+        x,
+        y,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6,
+        life: 90,
+        maxLife: 90,
+        color: ['#9370DB', '#FF69B4', '#00CED1', '#FFD700'][Math.floor(Math.random() * 4)]
+      });
+    }
+    setParticles(prev => [...prev, ...newParticles]);
+  };
+
+  // Draw visual effects on canvas
+  const drawEffects = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Draw particles
+    particles.forEach(particle => {
+      const alpha = particle.life / particle.maxLife;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = particle.color;
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, 3, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.restore();
+    });
+    
+    // Draw capture effect
+    if (captureEffect) {
+      const elapsed = Date.now() - captureEffect.timestamp;
+      const progress = elapsed / 1000; // 1 second duration
+      const alpha = 1 - progress;
+      const size = 20 + progress * 30;
+      
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#FF4500';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(captureEffect.x, captureEffect.y, size, 0, 2 * Math.PI);
+      ctx.stroke();
+      ctx.restore();
+    }
+    
+    // Draw special move effect (wizard abilities)
+    if (specialMoveEffect) {
+      const elapsed = Date.now() - specialMoveEffect.timestamp;
+      const progress = elapsed / 1500; // 1.5 second duration
+      const alpha = 1 - progress;
+      
+      if (specialMoveEffect.type === 'teleport') {
+        // Teleport swirl effect
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.strokeStyle = '#9370DB';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 5; i++) {
+          const radius = 10 + i * 8 + progress * 20;
+          ctx.beginPath();
+          ctx.arc(specialMoveEffect.x, specialMoveEffect.y, radius, 0, 2 * Math.PI);
+          ctx.stroke();
+        }
+        ctx.restore();
+      } else if (specialMoveEffect.type === 'spell') {
+        // Magical glow effect
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = '#FFD700';
+        ctx.shadowColor = '#FFD700';
+        ctx.shadowBlur = 20;
+        ctx.beginPath();
+        ctx.arc(specialMoveEffect.x, specialMoveEffect.y, 15, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+  };
+
+  // Enhanced click handler with animation triggers
+  const handleCanvasClickWithEffects = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const clickX = event.clientX - rect.left;
+    const clickY = event.clientY - rect.top;
+    
+    // Trigger click sparkles
+    const sparkleParticles = [];
+    for (let i = 0; i < 6; i++) {
+      sparkleParticles.push({
+        x: clickX,
+        y: clickY,
+        vx: (Math.random() - 0.5) * 4,
+        vy: (Math.random() - 0.5) * 4,
+        life: 30,
+        maxLife: 30,
+        color: '#00BFFF'
+      });
+    }
+    setParticles(prev => [...prev, ...sparkleParticles]);
+    
+    // Call original click handler
+    handleCanvasClick(event);
+  };
+
+  // Monitor move history for animations
+  useEffect(() => {
+    if (moveHistory.length > 0) {
+      const lastMove = moveHistory[moveHistory.length - 1];
+      const toX = lastMove.to.col * squareSize + squareSize / 2;
+      const toY = lastMove.to.row * squareSize + squareSize / 2;
+      
+      // Create capture effect if piece was captured
+      if (lastMove.capturedPiece) {
+        setCaptureEffect({ x: toX, y: toY, timestamp: Date.now() });
+        createCaptureParticles(toX, toY, lastMove.capturedPiece.color);
+      }
+      
+      // Create special effects for wizard moves
+      if (lastMove.piece.type === 'wizard') {
+        setSpecialMoveEffect({ x: toX, y: toY, type: 'teleport', timestamp: Date.now() });
+        createWizardSparkles(toX, toY);
+      }
+      
+      // Create spell effects for castling
+      if (lastMove.flags?.includes('castling')) {
+        setSpecialMoveEffect({ x: toX, y: toY, type: 'spell', timestamp: Date.now() });
+      }
+    }
+  }, [moveHistory, squareSize]);
+
   return (
     <div className="board-container">
       <div className="chess-board">
@@ -371,7 +585,7 @@ export function ChessBoard() {
               ref={canvasRef}
               width={canvasSize}
               height={canvasSize}
-              onClick={handleCanvasClick}
+              onClick={handleCanvasClickWithEffects}
               className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
               style={{ 
                 cursor: 'pointer',

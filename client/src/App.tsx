@@ -21,10 +21,11 @@ import { initializePayments } from "./lib/monetization/paymentManager";
 import { ambientManager } from "./lib/audio/ambientManager";
 import "@fontsource/inter";
 import "./styles/chess.css";
+import "./styles/animations.css";
 
 function App() {
   const { gamePhase, ...gameState } = useChess();
-  const { setHitSound, setSuccessSound, setBackgroundMusic, initializeAudio } = useAudio();
+  const { setHitSound, setSuccessSound, setBackgroundMusic, setMusicTracks, initializeAudio } = useAudio();
   const { updateProgress } = useAchievements();
   const { showDiagnostics, setShowDiagnostics } = useDiagnostics();
   const [showSettings, setShowSettings] = useState(false);
@@ -41,6 +42,22 @@ function App() {
     setHitSound(hitAudio);
     setSuccessSound(successAudio);
     setBackgroundMusic(backgroundMusic);
+    
+    // Initialize multiple music tracks for dynamic music experience
+    const tracks = {
+      main_theme: new Audio("/sounds/background.mp3"),
+      battle_theme: new Audio("/sounds/background.mp3"), // Will use variations or same track
+      victory_theme: new Audio("/sounds/background.mp3"),
+      tension_theme: new Audio("/sounds/background.mp3"),
+      wizard_theme: new Audio("/sounds/background.mp3")
+    };
+    
+    // Set different playback rates for variety
+    tracks.battle_theme.playbackRate = 1.1; // Slightly faster for battle
+    tracks.tension_theme.playbackRate = 0.9; // Slower for tension
+    tracks.wizard_theme.playbackRate = 1.05; // Slightly faster for wizard theme
+    
+    setMusicTracks(tracks);
     
     // Ensure audio starts unmuted and start background music
     initializeAudio();
@@ -73,7 +90,7 @@ function App() {
     };
     
     initSystems();
-  }, [setHitSound, setSuccessSound, setBackgroundMusic]);
+  }, [setHitSound, setSuccessSound, setBackgroundMusic, setMusicTracks]);
 
   // Monitor game state for ambient sound intensity changes and achievement tracking
   useEffect(() => {
