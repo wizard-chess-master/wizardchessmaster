@@ -63,8 +63,15 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      console.log('🚨 CAMPAIGN DIALOG STATE CHANGED:', open);
+      setIsOpen(open);
+    }}>
+      <DialogTrigger asChild onClick={(e) => {
+        console.log('🚨 CAMPAIGN BUTTON CLICKED!', e);
+        console.log('🚨 Current dialog state:', isOpen);
+        setIsOpen(true);
+      }}>
         {children}
       </DialogTrigger>
       <DialogContent className="w-[95vw] max-w-6xl h-[95vh] max-h-[800px] overflow-hidden medieval-panel flex flex-col z-[100]">
@@ -77,7 +84,7 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
             </span>
           </DialogTitle>
           <DialogDescription className="text-sm text-gray-400 mt-2">
-            Progress through increasingly challenging AI opponents to improve your chess skills. Each level unlocks new challenges and tracks your performance.
+            🔥 COMPLETELY REDESIGNED CAMPAIGN MODE! 🔥 Progress through challenging AI opponents with improved mobile-friendly layout, better card design, and enhanced statistics tracking.
           </DialogDescription>
         </DialogHeader>
 
