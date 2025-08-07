@@ -726,6 +726,24 @@ body {
   color: var(--medieval-gold) !important;
 }
 
+/* Game help sections styling */
+.game-help {
+  margin-top: 10px;
+}
+
+.game-help .medieval-btn {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.1));
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--medieval-gold);
+  text-shadow: 1px 1px 2px black;
+  font-family: 'Cinzel', serif;
+}
+
+.game-help .medieval-btn:hover {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2));
+  border-color: var(--medieval-gold);
+}
+
 /* Mystical input styling */
 .medieval-input {
   background: rgba(0, 0, 0, 0.3);

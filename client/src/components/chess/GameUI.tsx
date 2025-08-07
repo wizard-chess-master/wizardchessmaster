@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
-import { Settings, RotateCcw, Home, Volume2, VolumeX } from 'lucide-react';
+import { Settings, RotateCcw, Home, Volume2, VolumeX, ChevronDown, ChevronUp, BookOpen, Gamepad2 } from 'lucide-react';
 
 interface GameUIProps {
   onSettings: () => void;
@@ -23,6 +23,8 @@ export function GameUI({ onSettings }: GameUIProps) {
   } = useChess();
   
   const { isMuted, toggleMute } = useAudio();
+  const [showRules, setShowRules] = useState(false);
+  const [showControls, setShowControls] = useState(false);
 
   const getCurrentPlayerDisplay = () => {
     if (gameMode === 'ai') {
@@ -151,6 +153,103 @@ export function GameUI({ onSettings }: GameUIProps) {
             )}
           </div>
         </CardContent>
+      </Card>
+
+      {/* Game Rules - Collapsible */}
+      <Card className="medieval-panel game-help">
+        <CardHeader>
+          <Button
+            variant="ghost"
+            onClick={() => setShowRules(!showRules)}
+            className="medieval-btn w-full justify-between p-3"
+          >
+            <div className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              <span className="medieval-text">📖 Game Rules</span>
+            </div>
+            {showRules ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </Button>
+        </CardHeader>
+        {showRules && (
+          <CardContent>
+            <div className="rules-content">
+              <div className="rule-item">
+                <h4>Board Size</h4>
+                <p>10x10 squares instead of traditional 8x8</p>
+              </div>
+              
+              <div className="rule-item">
+                <h4>Standard Pieces</h4>
+                <p>All traditional chess pieces with standard movement</p>
+              </div>
+              
+              <div className="rule-item">
+                <h4>🧙‍♂️ Wizard Pieces</h4>
+                <p>
+                  <strong>Position:</strong> Two wizards per side in corners (a1/j1 for white, a10/j10 for black)<br/>
+                  <strong>Teleport:</strong> Move to any unoccupied square within 2 spaces<br/>
+                  <strong>Ranged Attack:</strong> Attack enemies within 2 squares without moving
+                </p>
+              </div>
+              
+              <div className="rule-item">
+                <h4>🏰 Castling Rules</h4>
+                <p>
+                  <strong>King Movement:</strong> Moves 3 squares towards rook (to c1 or g1)<br/>
+                  <strong>Rook Movement:</strong> Moves to square next to king (d1 or f1)<br/>
+                  <strong>Requirements:</strong> No pieces between king and rook, king not in check, neither piece has moved before
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        )}
+      </Card>
+
+      {/* Game Controls - Collapsible */}
+      <Card className="medieval-panel game-help">
+        <CardHeader>
+          <Button
+            variant="ghost"
+            onClick={() => setShowControls(!showControls)}
+            className="medieval-btn w-full justify-between p-3"
+          >
+            <div className="flex items-center gap-2">
+              <Gamepad2 className="w-4 h-4" />
+              <span className="medieval-text">🎮 Controls</span>
+            </div>
+            {showControls ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </Button>
+        </CardHeader>
+        {showControls && (
+          <CardContent>
+            <div className="controls-content">
+              <div className="control-item">
+                <span className="control-key">Mouse Click</span>
+                <span>Select piece / Make move</span>
+              </div>
+              
+              <div className="control-item">
+                <span className="control-key">Ctrl+Z</span>
+                <span>Undo last move</span>
+              </div>
+              
+              <div className="control-item">
+                <span className="control-key">Escape</span>
+                <span>Deselect piece</span>
+              </div>
+              
+              <div className="control-item">
+                <span className="control-key">Ctrl+M</span>
+                <span>Toggle sound</span>
+              </div>
+              
+              <div className="control-item">
+                <span className="control-key">Ctrl+H</span>
+                <span>Return to menu</span>
+              </div>
+            </div>
+          </CardContent>
+        )}
       </Card>
 
       {/* Ad Placeholder */}
