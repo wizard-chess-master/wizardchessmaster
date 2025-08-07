@@ -63,18 +63,18 @@ export function GameUI({ onSettings }: GameUIProps) {
   };
 
   return (
-    <div className="game-ui">
-      {/* Top Ad Banner */}
+    <div className="game-ui w-full">
+      {/* Mobile Top Ad Banner - Hidden on Desktop */}
       <AdBanner 
-        id="game-banner-top" 
-        className="mb-3"
-        style={{ maxWidth: '900px', width: '100%' }}
+        id="game-banner-mobile" 
+        className="mb-3 lg:hidden"
+        style={{ maxWidth: '400px', width: '100%' }}
       />
 
-      {/* Two Column Layout for Game Sections */}
-      <div className="game-sections-grid grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
-        {/* Left Column */}
-        <div className="game-section-left flex flex-col gap-3">
+      {/* Responsive Layout for Game Sections */}
+      <div className="game-sections-grid flex flex-col lg:grid lg:grid-cols-2 gap-3 w-full max-w-6xl">
+        {/* Mobile-First Game Status */}
+        <div className="game-section-left flex flex-col gap-3 order-2 lg:order-1">
           {/* Game Status Card */}
           <Card className="medieval-panel game-status w-full">
         <CardHeader className="pb-3">
@@ -186,8 +186,8 @@ export function GameUI({ onSettings }: GameUIProps) {
 
         </div>
 
-        {/* Right Column */}
-        <div className="game-section-right flex flex-col gap-3">
+        {/* Chess Board Section - Priority on Mobile */}
+        <div className="game-section-right flex flex-col gap-3 items-center order-1 lg:order-2">
           {/* Move History */}
           <Card className="medieval-panel move-history w-full">
             <CardHeader className="pb-3">

@@ -53,6 +53,9 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
       'grandmaster': 'advanced' // Map to advanced for now
     };
     const aiDifficulty = aiDifficultyMap[level.difficulty] || 'medium';
+    console.log('Starting campaign level:', level.name, 'with difficulty:', aiDifficulty);
+    // Close dialog before starting game
+    setIsOpen(false);
     startGame('ai', aiDifficulty);
   };
 

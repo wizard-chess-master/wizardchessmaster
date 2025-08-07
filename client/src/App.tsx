@@ -122,17 +122,23 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <div className="game-layout">
-            {/* Ad Banner Above Chess Board */}
-            <AdBanner 
-              id="game-banner-above-board" 
-              className="mb-4"
-              style={{ maxWidth: '900px', width: '100%' }}
-            />
-            <div className="board-container">
-              <ChessBoard />
+          <div className="game-layout flex flex-col lg:flex-row gap-4 w-full max-w-7xl mx-auto px-2">
+            {/* Chess Board Section - Mobile First */}
+            <div className="board-section flex flex-col items-center gap-4 lg:flex-1">
+              {/* Ad Banner Above Chess Board */}
+              <AdBanner 
+                id="game-banner-above-board" 
+                className="w-full max-w-2xl"
+                style={{ maxWidth: '600px', width: '100%' }}
+              />
+              <div className="board-container w-full flex justify-center">
+                <ChessBoard />
+              </div>
             </div>
-            <GameUI onSettings={() => setShowSettings(true)} />
+            {/* Game Controls - Responsive Sidebar */}
+            <div className="controls-section w-full lg:w-96 lg:min-w-96">
+              <GameUI onSettings={() => setShowSettings(true)} />
+            </div>
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
         )}
