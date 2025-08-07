@@ -54,9 +54,10 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
     };
     const aiDifficulty = aiDifficultyMap[level.difficulty] || 'medium';
     console.log('Starting campaign level:', level.name, 'with difficulty:', aiDifficulty);
-    // Close dialog before starting game
-    setIsOpen(false);
+    console.log('🎮 Starting game with mode: ai, difficulty:', aiDifficulty);
     startGame('ai', aiDifficulty);
+    // Close dialog after starting game
+    setIsOpen(false);
   };
 
   const handleResetCampaign = () => {

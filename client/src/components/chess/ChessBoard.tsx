@@ -247,7 +247,10 @@ export function ChessBoard() {
   // Handle canvas clicks with animation trigger
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      console.log('❌ No canvas reference');
+      return;
+    }
     
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -256,12 +259,17 @@ export function ChessBoard() {
     const col = Math.floor(x / squareSize);
     const row = Math.floor(y / squareSize);
     
+    console.log('🎯 Canvas click:', { x, y, row, col, squareSize, canvasSize });
+    
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
       // Trigger animation effect
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 500);
       
+      console.log('✅ Selecting square:', { row, col });
       selectSquare({ row, col });
+    } else {
+      console.log('❌ Click outside board bounds');
     }
   };
 

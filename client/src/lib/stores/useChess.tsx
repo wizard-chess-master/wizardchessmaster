@@ -64,10 +64,18 @@ export const useChess = create<ChessStore>()(
 
     selectSquare: (position: Position | null) => {
       const state = get();
-      if (state.gamePhase !== 'playing') return;
+      console.log('🎯 selectSquare called:', { position, gamePhase: state.gamePhase, gameMode: state.gameMode, currentPlayer: state.currentPlayer });
+      
+      if (state.gamePhase !== 'playing') {
+        console.log('❌ Game not in playing phase:', state.gamePhase);
+        return;
+      }
       
       // Disable player interaction in AI vs AI mode
-      if (state.gameMode === 'ai-vs-ai') return;
+      if (state.gameMode === 'ai-vs-ai') {
+        console.log('❌ AI vs AI mode - player interaction disabled');
+        return;
+      }
 
       // Handle explicit clearing
       if (!position) {
@@ -82,7 +90,9 @@ export const useChess = create<ChessStore>()(
       
       // If clicking on own piece, select it
       if (piece && piece.color === state.currentPlayer) {
+        console.log('✅ Selecting piece:', piece, 'at', position);
         const validMoves = getValidMovesForPosition(state, position);
+        console.log('📋 Valid moves:', validMoves);
         set({
           selectedPosition: position,
           validMoves: validMoves
