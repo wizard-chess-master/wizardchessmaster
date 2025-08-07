@@ -1,4 +1,4 @@
-import { GameState, ChessMove, AIDifficulty } from './types';
+import { GameState, ChessMove, AIDifficulty, ChessPiece } from './types';
 import { createInitialBoard, makeMove } from './gameEngine';
 import { getAIMove } from './aiPlayer';
 import { aiLearning } from './aiLearning';
@@ -108,7 +108,7 @@ export class AITrainer {
       const currentStrategy = gameState.currentPlayer === 'white' ? whiteStrategy : blackStrategy;
       const strategicDifficulty = currentStrategy.difficulty;
       
-      const aiMove = getAIMove(gameState, gameState.currentPlayer, strategicDifficulty);
+      const aiMove = getAIMove(gameState);
       if (!aiMove) {
         // No valid moves available - end game
         console.log(`No AI move available at move ${moveCount + 1}, ending game`);
@@ -223,7 +223,7 @@ export class AITrainer {
     
     // King safety evaluation
     const whiteKing = whitePieces.find(p => p!.type === 'king');
-    const blackKing = blackPieces.find(p => p!.type === 'black');
+    const blackKing = blackPieces.find(p => p!.type === 'king');
     let kingThreat: 'white' | 'black' | 'none' = 'none';
     
     if (!whiteKing) kingThreat = 'white';
@@ -334,7 +334,7 @@ export class AITrainer {
     console.log(`🚀 Average game speed: ${Math.round(avgDuration)}ms | Length: ${this.stats.averageMoves} moves`);
     
     // Log strategy diversity
-    const strategies = [...new Set(this.games.flatMap(g => [g.whiteStrategy, g.blackStrategy]))];
+    const strategies = Array.from(new Set(this.games.flatMap(g => [g.whiteStrategy, g.blackStrategy])));
     console.log(`🎯 Active strategies: ${strategies.length} (${strategies.slice(0, 3).join(', ')}...)`);
   }
 
