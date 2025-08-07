@@ -51,7 +51,7 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
             <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands left-wands" />
             <h1 className="game-title">
               <Zap className="title-icon" />
-              Fantasy Chess
+              Enchanted Chess Duel
             </h1>
             <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands right-wands" />
           </div>
