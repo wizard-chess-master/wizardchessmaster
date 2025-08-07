@@ -38,7 +38,7 @@ export const useAudio = create<AudioState>((set, get) => ({
     critical: null
   },
   currentIntensity: 'calm',
-  isMuted: true, // Start muted by default
+  isMuted: false, // Start unmuted by default
   isAmbientEnabled: true,
   
   setBackgroundMusic: (music) => set({ backgroundMusic: music }),

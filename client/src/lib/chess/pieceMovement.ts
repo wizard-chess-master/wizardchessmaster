@@ -347,6 +347,31 @@ export function getAllValidMoves(board: (ChessPiece | null)[][], color: string):
         const validMoves = pieceMoves.filter(to => {
           const testBoard = board.map(r => [...r]);
           
+          // Special handling for castling moves
+          if (piece.type === 'king' && from.col === 5 && (to.col === 2 || to.col === 6)) {
+            const homeRow = piece.color === 'white' ? 9 : 0;
+            
+            // For castling, check that king doesn't pass through check
+            if (to.col === 2) { // Queenside castling
+              // Check that squares king passes through (f1->d1->c1) are not under attack
+              for (let col = 5; col >= 2; col--) {
+                const testPos = { row: homeRow, col };
+                if (isKingUnderAttack(board, testPos, color)) {
+                  return false;
+                }
+              }
+            } else if (to.col === 6) { // Kingside castling
+              // Check that squares king passes through (f1->g1) are not under attack
+              for (let col = 5; col <= 6; col++) {
+                const testPos = { row: homeRow, col };
+                if (isKingUnderAttack(board, testPos, color)) {
+                  return false;
+                }
+              }
+            }
+            return true; // Castling is valid if king doesn't pass through check
+          }
+          
           // Make the test move
           if (piece.type === 'wizard' && board[to.row][to.col] && board[to.row][to.col]!.color !== piece.color) {
             // Wizard attack: remove target but keep wizard in place
