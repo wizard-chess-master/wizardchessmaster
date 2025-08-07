@@ -2,6 +2,7 @@ import { ChessPiece, Position, ChessMove, GameState, PieceColor, PieceType } fro
 import { isValidMove, getAllValidMoves, getPossibleMoves } from './pieceMovement';
 
 export function createInitialBoard(): (ChessPiece | null)[][] {
+  console.log('🏁 Creating initial board setup...');
   const board: (ChessPiece | null)[][] = Array(10).fill(null).map(() => Array(10).fill(null));
   
   // White pieces (bottom row 9): rook, knight, bishop, wizard, queen, king, wizard, bishop, knight, rook

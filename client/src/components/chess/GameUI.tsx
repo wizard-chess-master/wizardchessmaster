@@ -118,7 +118,7 @@ export function GameUI({ onSettings }: GameUIProps) {
             <CardTitle className="medieval-text text-sm">🎮 Game Controls</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <div className="control-buttons grid grid-cols-2 gap-3 w-full">
+            <div className="control-buttons grid grid-cols-3 gap-2 w-full">
               <Button
                 variant="outline"
                 size="sm"
@@ -150,6 +150,21 @@ export function GameUI({ onSettings }: GameUIProps) {
               >
                 <span className="text-lg mb-1">💡</span>
                 <span className="text-xs">Hint</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  const { playHit } = useAudio.getState();
+                  console.log('🔊 Testing sound manually...');
+                  playHit();
+                }}
+                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
+                title="Test Sound"
+              >
+                <span className="text-lg mb-1">🔊</span>
+                <span className="text-xs">Sound</span>
               </Button>
               
               <Button

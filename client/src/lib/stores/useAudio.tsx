@@ -154,6 +154,7 @@ export const useAudio = create<AudioState>((set, get) => ({
   
   playHit: () => {
     const { hitSound, isMuted } = get();
+    console.log('🎵 playHit called:', { hasHitSound: !!hitSound, isMuted });
     if (hitSound) {
       // If sound is muted, don't play anything
       if (isMuted) {
@@ -163,10 +164,15 @@ export const useAudio = create<AudioState>((set, get) => ({
       
       // Clone the sound to allow overlapping playback
       const soundClone = hitSound.cloneNode() as HTMLAudioElement;
-      soundClone.volume = 0.3;
-      soundClone.play().catch(error => {
+      soundClone.volume = 0.5; // Increase volume
+      console.log('🎵 Playing sound clone...');
+      soundClone.play().then(() => {
+        console.log('🎵 Sound played successfully');
+      }).catch(error => {
         console.log("Hit sound play prevented:", error);
       });
+    } else {
+      console.log('❌ No hit sound available');
     }
   },
   

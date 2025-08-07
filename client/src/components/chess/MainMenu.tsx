@@ -97,7 +97,10 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
               <div className="game-mode-buttons">
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => startGame('ai', 'easy')}
+                  onClick={() => {
+                    console.log('🎮 Starting new AI game - easy mode');
+                    startGame('ai', 'easy');
+                  }}
                 >
                   <div className="mode-content">
                     <span>🧙 Player vs AI - Easy</span>

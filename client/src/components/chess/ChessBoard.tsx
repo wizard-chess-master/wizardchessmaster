@@ -207,9 +207,13 @@ export function ChessBoard() {
         // Draw move indicators
         if (validMoves.some(move => move.row === row && move.col === col)) {
           // Special styling for castling moves
-          const isCastlingMove = selectedPosition?.row === row && selectedPosition?.col === 5 && 
-                                 selectedPosition && board[selectedPosition.row][selectedPosition.col]?.type === 'king' &&
-                                 (col === 2 || col === 6);
+          const piece = selectedPosition ? board[selectedPosition.row][selectedPosition.col] : null;
+          const isCastlingMove = piece?.type === 'king' && selectedPosition &&
+                                 selectedPosition.col === 5 && (col === 2 || col === 6);
+          
+          if (isCastlingMove) {
+            console.log('🏰 Drawing castling indicator at:', { row, col });
+          }
           
           if (isCastlingMove) {
             // Draw castling indicator - larger golden circle

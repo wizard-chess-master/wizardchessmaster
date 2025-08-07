@@ -120,6 +120,19 @@ export const useChess = create<ChessStore>()(
         console.log('✅ Selecting piece:', piece, 'at', position);
         const validMoves = getValidMovesForPosition(state, position);
         console.log('📋 Valid moves found:', validMoves.length, validMoves);
+        
+        // Debug current board state for castling
+        if (piece.type === 'king') {
+          const homeRow = piece.color === 'white' ? 9 : 0;
+          const leftRook = state.board[homeRow][0];
+          const rightRook = state.board[homeRow][9];
+          console.log('🏰 Castling debug:', {
+            kingHasMoved: piece.hasMoved,
+            leftRook: leftRook ? {type: leftRook.type, hasMoved: leftRook.hasMoved} : null,
+            rightRook: rightRook ? {type: rightRook.type, hasMoved: rightRook.hasMoved} : null,
+            pathClear: 'checking...'
+          });
+        }
         set({
           selectedPosition: position,
           validMoves: validMoves
@@ -200,10 +213,16 @@ export const useChess = create<ChessStore>()(
         rookMove
       };
 
-      // Play move sound
-      const { playHit } = useAudio.getState();
+      // Play move sound - force play even if no capture
+      const { playHit, isMuted } = useAudio.getState();
+      console.log('🎵 Attempting to play sound:', { captured: !!captured, isWizardAttack, isMuted });
       if (captured || isWizardAttack) {
         playHit();
+        console.log('🎵 Hit sound played');
+      } else {
+        // Play a move sound even for regular moves
+        playHit();
+        console.log('🎵 Move sound played');
       }
 
       const newState = makeMove(state, move);
