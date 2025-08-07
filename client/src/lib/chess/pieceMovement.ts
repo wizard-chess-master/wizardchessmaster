@@ -151,11 +151,9 @@ function getKingMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ches
     if (isValidPosition(newPos)) {
       const target = board[newPos.row][newPos.col];
       if (!target || target.color !== piece.color) {
-        // Don't add regular moves that conflict with castling moves
-        const isCastlingSquare = castlingMoves.some(castle => 
-          castle.row === newPos.row && castle.col === newPos.col
-        );
-        if (!isCastlingSquare) {
+        // Don't add regular moves that conflict with castling columns to prevent rendering conflicts
+        const conflictsWithCastling = castlingMoves.length > 0 && (newPos.col === 2 || newPos.col === 6);
+        if (!conflictsWithCastling) {
           moves.push(newPos);
         }
       }
