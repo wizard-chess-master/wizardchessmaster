@@ -25,6 +25,8 @@ interface AudioState {
   playSuccess: () => void;
   playAmbient: (intensity?: GameIntensity) => void;
   stopAmbient: () => void;
+  playBackgroundMusic: () => void;
+  stopBackgroundMusic: () => void;
   initializeAudio: () => void;
 }
 
@@ -48,32 +50,46 @@ export const useAudio = create<AudioState>((set, get) => ({
   setAmbientSounds: (sounds) => set({ ambientSounds: sounds }),
   
   toggleMute: () => {
-    const { isMuted, ambientSounds, currentIntensity } = get();
+    const { isMuted, ambientSounds, currentIntensity, backgroundMusic } = get();
     const newMutedState = !isMuted;
     
-    // Stop ambient sounds if muting
+    console.log(`🔊 Toggling mute: ${isMuted} → ${newMutedState}`);
+    
     if (newMutedState) {
+      // Stop all sounds when muting
       Object.values(ambientSounds).forEach(sound => {
         if (sound) {
           sound.pause();
           sound.currentTime = 0;
         }
       });
+      
+      // Stop background music
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        console.log('🎵 Background music paused (muted)');
+      }
     } else {
-      // Resume ambient sound if unmuting
+      // Resume sounds when unmuting
       const currentAmbient = ambientSounds[currentIntensity];
       if (currentAmbient && get().isAmbientEnabled) {
         currentAmbient.play().catch(error => {
           console.log("Ambient sound play prevented:", error);
         });
       }
+      
+      // Resume background music
+      if (backgroundMusic) {
+        backgroundMusic.play().then(() => {
+          console.log('🎵 Background music resumed (unmuted)');
+        }).catch(error => {
+          console.log('❌ Background music play failed:', error);
+        });
+      }
     }
     
-    // Just update the muted state
     set({ isMuted: newMutedState });
-    
-    // Log the change
-    console.log(`Sound ${newMutedState ? 'muted' : 'unmuted'}`);
+    console.log(`🔊 Sound ${newMutedState ? 'muted' : 'unmuted'}`);
   },
 
   toggleAmbient: () => {
@@ -150,6 +166,37 @@ export const useAudio = create<AudioState>((set, get) => ({
         sound.currentTime = 0;
       }
     });
+  },
+
+  playBackgroundMusic: () => {
+    const { backgroundMusic, isMuted } = get();
+    
+    console.log('🎵 playBackgroundMusic called:', { hasMusic: !!backgroundMusic, isMuted });
+    
+    if (backgroundMusic && !isMuted) {
+      backgroundMusic.loop = true;
+      backgroundMusic.volume = 0.3; // Lower volume for background music
+      backgroundMusic.currentTime = 0;
+      backgroundMusic.play().then(() => {
+        console.log('🎵 Background music started playing');
+      }).catch(error => {
+        console.log('❌ Background music play failed:', error);
+      });
+    } else if (isMuted) {
+      console.log('🎵 Background music skipped (muted)');
+    } else {
+      console.log('❌ No background music available');
+    }
+  },
+
+  stopBackgroundMusic: () => {
+    const { backgroundMusic } = get();
+    
+    if (backgroundMusic) {
+      backgroundMusic.pause();
+      backgroundMusic.currentTime = 0;
+      console.log('🎵 Background music stopped');
+    }
   },
   
   playHit: () => {

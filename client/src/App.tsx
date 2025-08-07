@@ -37,8 +37,14 @@ function App() {
     setSuccessSound(successAudio);
     setBackgroundMusic(backgroundMusic);
     
-    // Ensure audio starts unmuted
+    // Ensure audio starts unmuted and start background music
     initializeAudio();
+    
+    // Start background music automatically with a small delay for browser autoplay policies
+    setTimeout(() => {
+      const { playBackgroundMusic } = useAudio.getState();
+      playBackgroundMusic();
+    }, 1000);
 
     // Initialize monetization and ambient sound systems
     const initSystems = async () => {

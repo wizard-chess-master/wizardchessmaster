@@ -26,6 +26,8 @@ export function GameUI({ onSettings }: GameUIProps) {
     resetGame 
   } = useChess();
   
+  const { isMuted } = useAudio();
+  
   // const { isEnabled: isAmbientEnabled, currentIntensity } = useAmbientSound();
   const isAmbientEnabled = false;
   const currentIntensity: GameIntensity = 'calm';
@@ -157,28 +159,27 @@ export function GameUI({ onSettings }: GameUIProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  console.log('🔊 Testing sound with direct audio play...');
-                  try {
-                    // Create a direct audio element for immediate feedback
-                    const audio = new Audio('/sounds/hit.mp3');
-                    audio.volume = 0.5;
-                    audio.play().then(() => {
-                      console.log('✅ Direct audio played successfully');
-                    }).catch(error => {
-                      console.log('❌ Direct audio failed:', error);
-                      // Fallback to store method
-                      const { playHit } = useAudio.getState();
-                      playHit();
-                    });
-                  } catch (error) {
-                    console.log('❌ Audio creation failed:', error);
+                  const { isMuted, toggleMute, playBackgroundMusic, backgroundMusic } = useAudio.getState();
+                  console.log('🎵 Music button clicked:', { isMuted, hasBackgroundMusic: !!backgroundMusic });
+                  
+                  if (isMuted) {
+                    // Unmute and start background music
+                    toggleMute();
+                    setTimeout(() => playBackgroundMusic(), 100); // Small delay to ensure unmute is processed
+                  } else {
+                    // Mute all sounds
+                    toggleMute();
                   }
                 }}
                 className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
-                title="Test Sound"
+                title={isMuted ? "Enable Music & Sound" : "Mute Music & Sound"}
               >
-                <span className="text-lg mb-1">🔊</span>
-                <span className="text-xs">Sound</span>
+                <span className="text-lg mb-1">
+                  {isMuted ? '🔇' : '🎵'}
+                </span>
+                <span className="text-xs">
+                  {isMuted ? 'Unmute' : 'Music'}
+                </span>
               </Button>
               
               <Button
