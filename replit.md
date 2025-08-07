@@ -1,130 +1,13 @@
 # Overview
 
-This is **Wizard Chess Duel** - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
+**Wizard Chess Duel** is a full-stack TypeScript application featuring a 10x10 chess variant with magical wizards. It offers local multiplayer and AI opponent modes, all within a comprehensive medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with advanced AI capabilities and a robust monetization framework.
 
-**NEW: Comprehensive Medieval Fantasy Visual Overhaul** - The application now features a fully immersive medieval fantasy theme with castle backgrounds, wooden UI elements, glowing highlights, smooth animations, and mobile-responsive design.
-
-## Recent Changes (August 7, 2025)
-
-### ADMIN SECURITY SYSTEM - FULLY OPERATIONAL
-- **Environment-Based Admin Control**: Admin features hidden in production deployment using VITE_ADMIN_MODE environment variable
-- **Session Authentication**: AdminLogin component with secure key-based authentication for accessing admin features
-- **Conditional Feature Rendering**: Mass AI Training, Debug tools, Reset AI Training, and View AI Learning Stats only visible to authenticated admins
-- **Development vs Production**: Development mode always enables admin features, production requires explicit environment configuration
-- **Secure Deployment Ready**: Public deployment will not expose sensitive admin functionality while keeping backend intact for internal use
-- **Admin Feature Management**: Granular control over training, debug, stats, and reset features with per-feature permissions
-
-## Previous Changes (August 7, 2025)
-
-### ADAPTIVE AI DIFFICULTY PROGRESSION VISUALIZATION - FULLY OPERATIONAL
-- **Real-time Difficulty Tracking**: Visual charts showing AI difficulty changes over time based on player performance
-- **Performance Analytics**: Comprehensive metrics tracking win rates, game times, move accuracy, and skill progression
-- **Adaptive Algorithm**: AI automatically adjusts difficulty based on player performance patterns and winning streaks
-- **Historical Analysis**: Detailed progression charts with performance vs difficulty correlation visualization
-- **Adjustment Logging**: Complete history of difficulty changes with reasons and trigger events
-- **Prediction Engine**: AI predicts future difficulty adjustments based on current performance trends
-- **Interactive Controls**: Time range filters, adaptation toggles, and visualization customization options
-- **Performance Metrics Dashboard**: Real-time display of current difficulty, win rates, and skill level assessment
-
-### COMPREHENSIVE LEADERBOARD SYSTEM - FULLY OPERATIONAL
-- **Campaign Leaderboard**: Tracks campaign progress, completion times, experience points, and calculated scores
-- **Player vs Player Leaderboard**: ELO-style rating system with win/loss records and performance metrics
-- **Advanced Statistics**: Detailed tracking of win rates, best times, streaks, and skill progression
-- **Player Identity System**: Persistent player names and statistics across game sessions
-- **Visual Rankings**: Medal/trophy system with special highlighting for top players and current player
-- **Real-time Updates**: Automatic leaderboard updates after each completed game
-- **Local Storage Persistence**: Leaderboard data saved and restored between sessions
-- **Responsive Design**: Mobile-optimized leaderboard interface with medieval theme integration
-
-### GAME REBRANDING - WIZARD CHESS DUEL
-- **Updated Game Name**: Changed from "Fantasy Chess" to "Wizard Chess Duel" across all interfaces
-- **Enhanced Branding**: Updated browser title, meta descriptions, and main menu display
-- **Consistent Identity**: All references now reflect the focused wizard chess theme
-
-## Previous Changes (August 7, 2025)
-
-### COMPREHENSIVE MONETIZATION SYSTEM - FULLY OPERATIONAL
-- **Complete Ad Framework**: Implemented Google AdSense integration with banner ads, interstitial ads, and rewarded videos
-- **Strategic Ad Placement**: Banner ads in MainMenu and GameUI, interstitial ads after game completion
-- **Rewarded Video System**: Watch ads for extra hints (2 free per game) and undos (1 free per game)
-- **Stripe Payment Integration**: $2.99 ad-free upgrade with secure Stripe checkout process
-- **Game Hints System**: AI-powered hint system with tactical analysis and move reasoning
-- **Ad-Free Experience**: Premium users get unlimited hints/undos and complete ad removal
-- **Balanced Monetization**: Designed to encourage upgrades without breaking core gameplay
-- **User Experience**: Tasteful ad integration that maintains medieval fantasy atmosphere
-- **Streamlined UI**: Removed redundant "Watch AI Training" feature - AI vs AI Battle mode now serves as both training and entertainment
-
-### COMPREHENSIVE LAYOUT OPTIMIZATION (August 7, 2025)
-- **Eliminated Excessive Blank Space**: Reduced menu container from 1200px to 600px maximum width
-- **Single Column Layout**: Changed from multi-column grid to single column to eliminate right-side gaps
-- **Compact Ad Banners**: Reduced ad banner height from 120px to 60px with subtle gradient styling
-- **Streamlined Components**: Removed redundant IAP placeholder card to reduce clutter
-- **Responsive Design**: Added proper overflow handling and box-sizing for consistent layout
-- **Mobile Optimization**: Enhanced mobile responsiveness with reduced padding and margins
-
-### GAME AREA LAYOUT CLEANUP (August 7, 2025)
-- **Organized Game UI**: Changed from auto-fit grid to structured flex column layout
-- **Consistent Width Constraints**: All game components now constrained to 600px max width matching menu
-- **Compact Component Design**: Reduced card headers, padding, and content spacing for cleaner appearance
-- **Streamlined Control Layout**: Organized control buttons in efficient 2-column grid structure
-- **Enhanced Move History**: Limited display to last 6 moves with scrollable container for space efficiency
-- **Unified Visual Design**: Applied consistent width classes and spacing across all game UI components
-- **Improved Responsiveness**: Better mobile layout with proper overflow handling and constrained widths
-
-## Previous Changes (January 6, 2025)
-
-### MAJOR VISUAL OVERHAUL - Medieval Fantasy Theme
-- **Generated Medieval Assets**: Created castle background, wooden UI panels, and stone textures using AI image generation
-- **Complete CSS Redesign**: Implemented comprehensive medieval-theme.css with wooden buttons, gold accents, and atmospheric styling
-- **Enhanced Canvas Rendering**: Added glowing highlights for selected squares (gold) and valid moves (green) with shadow effects
-- **Smooth Animations**: Implemented 0.5s piece movement animations with glowing canvas effects during moves
-- **Responsive Design**: Full mobile responsiveness with adaptive grid layouts and scaled elements
-- **Subtle Ad Integration**: Added tasteful medieval-themed ad spaces that blend with the fantasy atmosphere
-- **Medieval Typography**: Integrated Cinzel font for authentic medieval text styling throughout the interface
-- **Interactive Elements**: All buttons, menus, and UI panels now use wooden textures with bronze borders and hover effects
-
-### Previous Updates (January 6, 2025)
-- **NEW: Updated Board Layout**: Changed starting positions - wizards now in home row (d1/g1), full 10-column setup
-- **NEW: Castling System**: Implemented castling with king moving 3 squares (to c1/g1), rook to d1/f1
-- **Castling Rules**: Proper validation - no pieces between, king not in check, neither piece has moved
-- **Board Setup**: White: rook, knight, bishop, wizard, queen, king, wizard, bishop, knight, rook (mirrored for black)
-- **Wizard Movement Fixed**: Corrected wizard attack/teleport logic in all game modes
-
-## Previous Changes (January 5, 2025)
-- **Advanced Minimax AI Integration**: Implemented user-specified minimax algorithm with alpha-beta pruning (depth 4+)
-- **Updated Piece Values**: All AI systems now use user-specified values (pawn 10, knight 30, bishop 30, rook 50, queen 90, king 900, wizard 35)
-- **AIManager Class**: Clean minimax implementation matching user pseudocode structure with simplified evaluation
-- **Mass AI Training System - FULLY OPERATIONAL**: Comprehensive training system with 1-10000 game range, now using improved minimax
-- **Fixed Learning Stats Dialog**: "Back to Menu" button moved to top of dialog for guaranteed visibility
-- **Advanced AI Training System**: Dual AI system with both neural network learning and pure minimax approaches
-- **Neural Network Learning**: AI learns from game outcomes using adaptive weights for material, position, king safety, and mobility
-- **Strategy Pattern Recognition**: AI discovers and logs strategic patterns (aggressive-tactical, strategic-development, wizard-focused, etc.)
-- **Unified Training Interface**: Single, comprehensive UI for all training needs - removed redundant training options
-- **Training Controls**: Start/stop functionality, configurable game counts, and real-time progress tracking
-- **JSON Strategy Logging**: Export/import training data with neural weights, strategy patterns, and game statistics
-- **10% Exploration**: Built-in randomness for varied gameplay and strategy discovery (in neural AI)
-- **Transposition Tables**: Optimized move search with position caching for better performance
-- **UI Improvements**: Fixed win rate display issues, added main menu navigation, eliminated redundant controls
-- **Performance Optimization**: Limited AI learning records to prevent UI freezing during large training sessions
-- Enhanced AI tactical intelligence: threat analysis, piece defense evaluation, blunder prevention
-- Improved AI strategic diversity: penalties for overusing same pieces, coordination bonuses, piece development incentives
-
-## Bug Fixes (January 4, 2025)
-- Fixed wizard movement logic: Wizards can now teleport to any unoccupied square within 2 squares in straight lines
-- Added missing pawn promotion: Pawns now auto-promote to queen when reaching the opposite end
-- Fixed AI move validation: AI moves now properly check if they would put own king in check
-- Improved getAllValidMoves function: Now properly validates moves don't put own king in check
-- Fixed keyboard shortcut selection clearing: Escape key now properly clears piece selection
-- Enhanced move validation for wizard attacks in AI player logic
-- Updated wizard teleportation: Wizards can now teleport over pieces to reach empty squares
-- Fixed wizard attack rules: Wizards can now attack any enemy within 2 squares through occupied squares
-- Added AI vs AI mode: Fully automated gameplay for testing and demonstration purposes using advanced AI difficulty
-- Implemented AI training system: Runs multiple games to analyze strategies and improve AI performance
-- Added visual AI training viewer: Watch AI games in slow motion with controls and statistics
-- Implemented comprehensive AI learning system: AI analyzes every completed game (human vs AI and AI vs AI) to learn patterns, track strategies, and improve over time
-- Added learning statistics display: Shows total games analyzed, win rates, move patterns learned, and preferred strategies
-- AI now uses learned patterns when available, falling back to original difficulty-based strategies
-- Learning data persists in localStorage and can be reset via the UI
+Key features include:
+- A unique 10x10 board with custom wizard pieces.
+- AI opponents with adjustable difficulty, including an advanced minimax AI and a neural network learning system.
+- Comprehensive leaderboards for campaign and PvP modes.
+- A robust monetization system with ad integration and an ad-free premium upgrade.
+- A fully immersive medieval fantasy visual overhaul, including custom assets, UI, and animations.
 
 ## User Preferences
 
@@ -133,93 +16,74 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
-- **React with TypeScript** - Component-based UI with type safety
-- **Zustand State Management** - Lightweight state management for game state and audio
-- **Tailwind CSS + Radix UI + Medieval Theme** - Modern styling with accessible components and comprehensive medieval fantasy CSS
-- **Vite Build Tool** - Fast development and optimized production builds
-- **Canvas-Based Chess Rendering** - Custom sprite rendering with smooth animations and glowing effects
-- **Responsive Medieval Design** - Mobile-first approach with fantasy-themed layouts and wooden UI elements
+- **React with TypeScript**: Component-based UI for type safety.
+- **Zustand State Management**: Lightweight state management for game state and audio.
+- **Tailwind CSS + Radix UI + Medieval Theme**: Modern styling with accessible components and a comprehensive medieval fantasy CSS design.
+- **Vite Build Tool**: Fast development and optimized production builds.
+- **Canvas-Based Chess Rendering**: Custom sprite rendering with smooth animations and glowing effects.
+- **Responsive Medieval Design**: Mobile-first approach with fantasy-themed layouts and wooden UI elements.
 
 ### Backend Architecture
-- **Express.js Server** - RESTful API with TypeScript
-- **Modular Route System** - Organized route handlers with consistent error handling
-- **In-Memory Storage** - Simple storage interface with potential for database integration
-- **Development/Production Separation** - Vite integration for dev, static serving for production
+- **Express.js Server**: RESTful API with TypeScript.
+- **Modular Route System**: Organized route handlers with consistent error handling.
+- **In-Memory Storage**: Simple storage interface, designed for future database integration.
 
 ### Data Storage Solutions
-- **Drizzle ORM** - Type-safe database toolkit configured for PostgreSQL
-- **Neon Database** - Serverless PostgreSQL via `@neondatabase/serverless`
-- **Schema Management** - Shared schema definitions with Zod validation
-- **Migration System** - Database migrations managed via Drizzle Kit
+- **Drizzle ORM**: Type-safe database toolkit configured for PostgreSQL.
+- **Neon Database**: Serverless PostgreSQL hosting.
+- **Schema Management**: Shared schema definitions with Zod validation.
+- **Migration System**: Database migrations managed via Drizzle Kit.
 
 ### Game Logic Architecture
-- **Chess Engine** - Complete 10x10 chess implementation with piece movement validation
-- **Advanced AI System** - Minimax with alpha-beta pruning, neural network learning, strategy pattern recognition
-- **Unified Training System** - Comprehensive training interface handling 1-1000 games with full control capabilities
-- **AI Difficulty Levels** - Easy/medium/hard with different strategies plus advanced minimax AI
-- **State Management** - Zustand stores for game state, audio controls, and UI state
-- **Move Validation** - Comprehensive piece movement rules including special wizard abilities
-- **Neural Learning** - Adaptive AI that learns from game outcomes and adjusts evaluation weights
-- **Training Features** - Start/stop controls, configurable game counts (1-10000), real-time statistics, and performance optimization
+- **Chess Engine**: Complete 10x10 chess implementation with piece movement validation, including custom wizard abilities.
+- **Advanced AI System**: Integrates Minimax with alpha-beta pruning, neural network learning, and strategy pattern recognition.
+- **AI Difficulty Levels**: Easy, medium, hard, plus an advanced minimax AI and adaptive difficulty based on player performance.
+- **Comprehensive AI Training System**: Allows for 1-10000 game training sessions with real-time statistics and progress tracking.
+- **Adaptive AI Difficulty Progression**: Real-time tracking and visualization of AI difficulty adjustments.
+- **Audio System**: HTML5 Audio for sound effects with user-configurable mute controls managed via a centralized audio store.
 
-### Audio System
-- **HTML5 Audio** - Sound effects for moves and game events
-- **Mute Controls** - User-configurable audio settings
-- **Audio Store** - Centralized audio state management
+### UI/UX Decisions
+- **Medieval Fantasy Visual Overhaul**: Features castle backgrounds, wooden UI panels, stone textures, gold accents, and atmospheric styling.
+- **Enhanced Canvas Rendering**: Glowing highlights for selected squares and valid moves, with shadow effects.
+- **Smooth Animations**: 0.5s piece movement animations and glowing canvas effects.
+- **Medieval Typography**: Integrated Cinzel font for authentic text styling.
+- **Layout Optimization**: Streamlined component design, reduced blank space, single-column layouts, and consistent width constraints for improved responsiveness.
+- **Comprehensive Leaderboard System**: Tracks campaign progress and PvP ratings with visual rankings, advanced statistics, and real-time updates.
 
-## Deployment Configuration
-
-### Environment Variables for Production
-For secure production deployment, configure these environment variables:
-
-```
-# Admin access control (set to 'false' to hide admin features in production)
-VITE_ADMIN_MODE=false
-
-# Admin authentication key (change for production security)
-VITE_ADMIN_KEY=your-secure-admin-key-here
-```
-
-### Admin Feature Security
-- **Development Mode**: Admin features always available for testing and development
-- **Production Mode**: Admin features hidden unless VITE_ADMIN_MODE=true
-- **Authentication**: Session-based admin login with configurable key
-- **Feature Control**: Individual admin features (training, debug, stats, reset) can be controlled separately
-
-### Admin Features (Hidden in Production)
-- **Mass AI Training**: 1-10000 game training sessions
-- **Debug & Verify System**: System functionality verification tools
-- **Reset AI Training**: Clear all AI learning data
-- **View AI Learning Stats**: Detailed AI performance analytics
+### Technical Implementations
+- **Castling System**: Implemented with king moving 3 squares and proper validation.
+- **Mass AI Training System**: Comprehensive training with improved minimax and neural network learning.
+- **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Debug tools, Reset AI Training, View AI Learning Stats).
 
 ## External Dependencies
 
 ### Database & ORM
-- **Neon Database** - Serverless PostgreSQL hosting
-- **Drizzle ORM** - Database queries and schema management
-- **PostgreSQL** - Primary database dialect
+- **Neon Database**: Serverless PostgreSQL hosting.
+- **Drizzle ORM**: Database queries and schema management.
+- **PostgreSQL**: Primary database dialect.
 
 ### UI & Styling
-- **Radix UI** - Accessible component primitives (dialogs, buttons, forms, etc.)
-- **Tailwind CSS** - Utility-first CSS framework
-- **Lucide React** - Icon library
-- **Inter Font** - Typography via Fontsource
+- **Radix UI**: Accessible component primitives.
+- **Tailwind CSS**: Utility-first CSS framework.
+- **Lucide React**: Icon library.
+- **Inter Font**: Typography via Fontsource.
 
 ### 3D Graphics
-- **Three.js** - 3D rendering engine
-- **React Three Fiber** - React renderer for Three.js
-- **React Three Drei** - Useful helpers for R3F
-- **GLSL Shaders** - Custom shader support via vite-plugin-glsl
+- **Three.js**: 3D rendering engine.
+- **React Three Fiber**: React renderer for Three.js.
+- **React Three Drei**: Helpers for R3F.
+- **GLSL Shaders**: Custom shader support via vite-plugin-glsl.
 
 ### Development Tools
-- **Vite** - Build tool and dev server
-- **ESBuild** - Fast bundling for production
-- **TypeScript** - Type checking and compilation
-- **Replit Integration** - Error overlay and development utilities
+- **Vite**: Build tool and dev server.
+- **ESBuild**: Fast bundling for production.
+- **TypeScript**: Type checking and compilation.
 
 ### State & Data Management
-- **Zustand** - State management library
-- **TanStack Query** - Server state management and caching
-- **Zod** - Runtime type validation
+- **Zustand**: State management library.
+- **TanStack Query**: Server state management and caching.
+- **Zod**: Runtime type validation.
 
-The application follows a clean separation between client and server code, with shared type definitions and schemas. The chess game logic is entirely client-side, while the backend provides user management and potential multiplayer functionality in the future.
+### Monetization
+- **Google AdSense**: Integration for banner, interstitial, and rewarded video ads.
+- **Stripe**: Payment integration for ad-free upgrades.
