@@ -573,6 +573,67 @@ body {
   animation: glow 2s ease-in-out infinite;
 }
 
+/* Title with wizard wands */
+.title-with-wands {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Crossed wizard wands styling */
+.crossed-wands {
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.8)) drop-shadow(0 0 20px rgba(75, 0, 130, 0.6));
+  animation: wand-glow 3s ease-in-out infinite alternate;
+}
+
+.left-wands {
+  transform: rotate(-15deg);
+}
+
+.right-wands {
+  transform: rotate(15deg);
+}
+
+@keyframes wand-glow {
+  0% {
+    filter: drop-shadow(0 0 10px rgba(138, 43, 226, 0.8)) drop-shadow(0 0 20px rgba(75, 0, 130, 0.6));
+  }
+  100% {
+    filter: drop-shadow(0 0 15px rgba(138, 43, 226, 1)) drop-shadow(0 0 30px rgba(75, 0, 130, 0.8)) drop-shadow(0 0 40px rgba(138, 43, 226, 0.4));
+  }
+}
+
+/* Override game title styling from chess.css with medieval theme */
+.game-title {
+  font-family: 'Cinzel', serif !important;
+  font-size: clamp(2rem, 4vw, 2.5rem) !important;
+  font-weight: 700 !important;
+  color: var(--medieval-gold) !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.5rem !important;
+  position: relative !important;
+  margin: 0 !important;
+}
+
+/* Mobile responsive wizard wands */
+@media (max-width: 768px) {
+  .crossed-wands {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .title-with-wands {
+    gap: 0.5rem;
+  }
+}
+
 /* Mystical input styling */
 .medieval-input {
   background: rgba(0, 0, 0, 0.3);

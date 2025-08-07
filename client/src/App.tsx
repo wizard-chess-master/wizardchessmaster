@@ -67,7 +67,7 @@ function App() {
       <div className="game-container">
         {gamePhase === 'menu' && !showTrainingViewer && (
           <div className="main-menu">
-            <h1>⚔️ Fantasy Wizard Chess ⚔️</h1>
+            <h1>🪄 Fantasy Wizard Chess 🪄</h1>
             <div className="menu-buttons">
               <MainMenu 
                 onSettings={() => setShowSettings(true)}

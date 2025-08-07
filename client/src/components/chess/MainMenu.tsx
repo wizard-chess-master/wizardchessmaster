@@ -35,10 +35,14 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
     <div className="main-menu">
       <div className="menu-container">
         <div className="title-section">
-          <h1 className="game-title">
-            <Zap className="title-icon" />
-            Fantasy Chess
-          </h1>
+          <div className="title-with-wands">
+            <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands left-wands" />
+            <h1 className="game-title">
+              <Zap className="title-icon" />
+              Fantasy Chess
+            </h1>
+            <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands right-wands" />
+          </div>
           <p className="game-subtitle">
             10x10 Chess with Magical Wizards
           </p>
@@ -49,7 +53,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
           <Card className="menu-card">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sword className="w-5 h-5" />
+                <Zap className="w-5 h-5" />
                 Play Game
               </CardTitle>
             </CardHeader>
@@ -70,7 +74,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   onClick={() => startGame('ai', 'medium')}
                 >
                   <div className="mode-content">
-                    <span>⚔️ Player vs AI - Medium</span>
+                    <span>🪄 Player vs AI - Medium</span>
                     <Badge variant="secondary">Intermediate</Badge>
                   </div>
                 </Button>
@@ -90,7 +94,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   onClick={() => startGame('ai-vs-ai', 'hard')}
                 >
                   <div className="mode-content">
-                    <span>⚔️ AI vs AI Battle</span>
+                    <span>🪄 AI vs AI Battle</span>
                     <Badge variant="secondary">Strategic Battle</Badge>
                   </div>
                 </Button>
