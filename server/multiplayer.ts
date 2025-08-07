@@ -73,16 +73,20 @@ class MultiplayerManager {
         }
 
         try {
-          // Add to database queue
-          const db = getDB();
-          await db.insert(matchmakingQueue).values({
-            userId: player.userId,
-            username: player.username,
-            displayName: player.displayName,
-            rating: player.rating,
-            timeControl: data.timeControl || 600, // 10 minutes default
-            status: 'waiting'
-          });
+          // Add to database queue (if available)
+          try {
+            const db = getDB();
+            await db.insert(matchmakingQueue).values({
+              userId: player.userId,
+              username: player.username,
+              displayName: player.displayName,
+              rating: player.rating,
+              timeControl: data.timeControl || 600, // 10 minutes default
+              status: 'waiting'
+            });
+          } catch (dbError) {
+            console.log('⚠️ Skipping database queue entry - database not available');
+          }
 
           // Add to local queue
           this.matchmakingQueue.push(player);
@@ -108,9 +112,13 @@ class MultiplayerManager {
         if (!player) return;
 
         try {
-          // Remove from database queue
-          const db = getDB();
-          await db.delete(matchmakingQueue).where(eq(matchmakingQueue.userId, player.userId));
+          // Remove from database queue (if available)
+          try {
+            const db = getDB();
+            await db.delete(matchmakingQueue).where(eq(matchmakingQueue.userId, player.userId));
+          } catch (dbError) {
+            console.log('⚠️ Skipping database queue removal - database not available');
+          }
           
           // Remove from local queue
           this.matchmakingQueue = this.matchmakingQueue.filter(p => p.socketId !== socket.id);
@@ -152,15 +160,19 @@ class MultiplayerManager {
           game.gameState = data.move.gameState;
           game.currentTurn = game.currentTurn === 'white' ? 'black' : 'white';
           
-          // Update database
-          const db = getDB();
-          await db.update(onlineGames)
-            .set({
-              gameState: game.gameState,
-              currentTurn: game.currentTurn,
-              moveHistory: data.move.moveHistory || []
-            })
-            .where(eq(onlineGames.gameId, data.gameId));
+          // Update database (if available)
+          try {
+            const db = getDB();
+            await db.update(onlineGames)
+              .set({
+                gameState: game.gameState,
+                currentTurn: game.currentTurn,
+                moveHistory: data.move.moveHistory || []
+              })
+              .where(eq(onlineGames.gameId, data.gameId));
+          } catch (dbError) {
+            console.log('⚠️ Skipping database game state update - database not available');
+          }
 
           // Broadcast move to both players
           this.io.to(`game:${data.gameId}`).emit('game:move', {
@@ -187,9 +199,14 @@ class MultiplayerManager {
           // Remove from matchmaking queue
           this.matchmakingQueue = this.matchmakingQueue.filter(p => p.socketId !== socket.id);
           
-          // Clean up database queue entry
-          const db = getDB();
-          db.delete(matchmakingQueue).where(eq(matchmakingQueue.userId, player.userId)).catch(console.error);
+          // Clean up database queue entry only if database is available
+          try {
+            const db = getDB();
+            db.delete(matchmakingQueue).where(eq(matchmakingQueue.userId, player.userId)).catch(console.error);
+          } catch (error) {
+            // Database not available, skip database cleanup
+            console.log('⚠️ Skipping database cleanup - database not available');
+          }
           
           this.connectedPlayers.delete(socket.id);
         }
@@ -237,31 +254,35 @@ class MultiplayerManager {
     this.activeGames.set(gameId, gameData);
 
     try {
-      // Save to database
-      const db = getDB();
-      await db.insert(onlineGames).values({
-        gameId,
-        player1Id: player1.userId,
-        player2Id: player2.userId,
-        player1Name: player1.displayName,
-        player2Name: player2.displayName,
-        gameState: gameData.gameState,
-        currentTurn: 'white',
-        status: 'active',
-        moveHistory: [],
-        timeControl: 600,
-        player1Time: 600,
-        player2Time: 600,
-        startedAt: new Date()
-      });
+      // Save to database (if available)
+      try {
+        const db = getDB();
+        await db.insert(onlineGames).values({
+          gameId,
+          player1Id: player1.userId,
+          player2Id: player2.userId,
+          player1Name: player1.displayName,
+          player2Name: player2.displayName,
+          gameState: gameData.gameState,
+          currentTurn: 'white',
+          status: 'active',
+          moveHistory: [],
+          timeControl: 600,
+          player1Time: 600,
+          player2Time: 600,
+          startedAt: new Date()
+        });
 
-      // Remove from matchmaking queue in database
-      await db.delete(matchmakingQueue).where(
-        or(
-          eq(matchmakingQueue.userId, player1.userId),
-          eq(matchmakingQueue.userId, player2.userId)
-        )
-      );
+        // Remove from matchmaking queue in database
+        await db.delete(matchmakingQueue).where(
+          or(
+            eq(matchmakingQueue.userId, player1.userId),
+            eq(matchmakingQueue.userId, player2.userId)
+          )
+        );
+      } catch (dbError) {
+        console.log('⚠️ Skipping database game creation - database not available');
+      }
 
       // Join both players to game room
       this.io.sockets.sockets.get(player1.socketId)?.join(`game:${gameId}`);
@@ -307,15 +328,19 @@ class MultiplayerManager {
     }
 
     try {
-      // Update database
-      const db = getDB();
-      await db.update(onlineGames)
-        .set({
-          status: 'completed',
-          winner,
-          completedAt: new Date()
-        })
-        .where(eq(onlineGames.gameId, gameId));
+      // Update database (if available)
+      try {
+        const db = getDB();
+        await db.update(onlineGames)
+          .set({
+            status: 'completed',
+            winner,
+            completedAt: new Date()
+          })
+          .where(eq(onlineGames.gameId, gameId));
+      } catch (dbError) {
+        console.log('⚠️ Skipping database game end update - database not available');
+      }
 
       // Notify players
       this.io.to(`game:${gameId}`).emit('game:ended', {
@@ -408,7 +433,7 @@ class MultiplayerManager {
         pvp: pvpData
       };
     } catch (error) {
-      console.error('Error fetching leaderboards:', error);
+      console.log('⚠️ Database not available for leaderboards - returning empty data');
       return { campaign: [], pvp: [] };
     }
   }
