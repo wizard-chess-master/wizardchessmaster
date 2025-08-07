@@ -49,65 +49,60 @@ export function isValidPosition(pos: Position): boolean {
   return pos.row >= 0 && pos.row < 10 && pos.col >= 0 && pos.col < 10;
 }
 
-// Helper function to detect move cycles
-function detectMoveCycles(moveHistory: ChessMove[], cycleLength: number = 6): boolean {
-  if (moveHistory.length < cycleLength * 2) return false;
+// More lenient cycle detection - only for very long repeating patterns
+function detectMoveCycles(moveHistory: ChessMove[], cycleLength: number = 20): boolean {
+  if (moveHistory.length < cycleLength * 3) return false; // Require 3 full cycles before detecting
   
-  const recentMoves = moveHistory.slice(-cycleLength * 2);
-  const firstHalf = recentMoves.slice(0, cycleLength);
-  const secondHalf = recentMoves.slice(cycleLength);
+  const recentMoves = moveHistory.slice(-cycleLength * 3);
+  const firstCycle = recentMoves.slice(0, cycleLength);
+  const secondCycle = recentMoves.slice(cycleLength, cycleLength * 2);
+  const thirdCycle = recentMoves.slice(cycleLength * 2);
   
-  // Check if the moves repeat exactly
+  // Check if all three cycles are identical
   for (let i = 0; i < cycleLength; i++) {
-    const move1 = firstHalf[i];
-    const move2 = secondHalf[i];
+    const move1 = firstCycle[i];
+    const move2 = secondCycle[i];
+    const move3 = thirdCycle[i];
     
-    if (move1.from.row !== move2.from.row || 
-        move1.from.col !== move2.from.col ||
-        move1.to.row !== move2.to.row || 
-        move1.to.col !== move2.to.col ||
-        move1.piece.type !== move2.piece.type ||
-        move1.piece.color !== move2.piece.color) {
+    if (move1.from.row !== move2.from.row || move1.from.row !== move3.from.row ||
+        move1.from.col !== move2.from.col || move1.from.col !== move3.from.col ||
+        move1.to.row !== move2.to.row || move1.to.row !== move3.to.row ||
+        move1.to.col !== move2.to.col || move1.to.col !== move3.to.col ||
+        move1.piece.type !== move2.piece.type || move1.piece.type !== move3.piece.type ||
+        move1.piece.color !== move2.piece.color || move1.piece.color !== move3.piece.color) {
       return false;
     }
   }
   
-  console.log(`🔄 Detected ${cycleLength}-move cycle, declaring stalemate to prevent infinite loop`);
+  console.log(`🔄 Detected ${cycleLength}-move cycle repeated 3 times (${moveHistory.length} total moves), declaring draw to prevent infinite loop`);
   return true;
 }
 
-// Simpler 2-move repetition detection for faster resolution
+// Much more lenient 2-move repetition detection - only for very long games
 function detectSimpleRepetition(moveHistory: ChessMove[]): boolean {
-  if (moveHistory.length < 8) return false; // Need at least 4 cycles of 2 moves each
+  if (moveHistory.length < 24) return false; // Require at least 24 moves (12 per player)
   
-  const last4 = moveHistory.slice(-4);
-  const move1 = last4[0];
-  const move2 = last4[1];
-  const move3 = last4[2];
-  const move4 = last4[3];
+  // Look for 6 consecutive repetitions of the same 2-move pattern
+  const last12 = moveHistory.slice(-12);
   
-  console.log('🔍 Checking for repetition in last 4 moves:', {
-    move1: `${move1.piece.type} ${move1.from.row},${move1.from.col} -> ${move1.to.row},${move1.to.col}`,
-    move2: `${move2.piece.type} ${move2.from.row},${move2.from.col} -> ${move2.to.row},${move2.to.col}`,
-    move3: `${move3.piece.type} ${move3.from.row},${move3.from.col} -> ${move3.to.row},${move3.to.col}`,
-    move4: `${move4.piece.type} ${move4.from.row},${move4.from.col} -> ${move4.to.row},${move4.to.col}`
-  });
-  
-  // Check if last 4 moves show A-B-A-B pattern
-  const isRepeating = (
-    move1.from.row === move3.from.row && move1.from.col === move3.from.col &&
-    move1.to.row === move3.to.row && move1.to.col === move3.to.col &&
-    move2.from.row === move4.from.row && move2.from.col === move4.from.col &&
-    move2.to.row === move4.to.row && move2.to.col === move4.to.col &&
-    move1.piece.type === move3.piece.type && move2.piece.type === move4.piece.type
-  );
-  
-  if (isRepeating) {
-    console.log('🔄 DETECTED 2-move repetition (A-B-A-B), declaring stalemate!');
-    return true;
+  // Check if last 12 moves show A-B-A-B-A-B-A-B-A-B-A-B pattern (6 repetitions)
+  for (let i = 0; i < 10; i += 2) {
+    const moveA1 = last12[i];
+    const moveB1 = last12[i + 1];
+    const moveA2 = last12[i + 2];
+    const moveB2 = last12[i + 3];
+    
+    if (!(moveA1.from.row === moveA2.from.row && moveA1.from.col === moveA2.from.col &&
+          moveA1.to.row === moveA2.to.row && moveA1.to.col === moveA2.to.col &&
+          moveB1.from.row === moveB2.from.row && moveB1.from.col === moveB2.from.col &&
+          moveB1.to.row === moveB2.to.row && moveB1.to.col === moveB2.to.col &&
+          moveA1.piece.type === moveA2.piece.type && moveB1.piece.type === moveB2.piece.type)) {
+      return false; // Pattern broken
+    }
   }
   
-  return false;
+  console.log('🔄 DETECTED excessive 2-move repetition (6+ cycles), declaring stalemate after', moveHistory.length, 'moves');
+  return true;
 }
 
 // More aggressive repetition detection - shorter cycles
@@ -190,9 +185,10 @@ export function makeMove(gameState: GameState, move: ChessMove, skipRepetitionCh
   // Switch players
   const nextPlayer: PieceColor = gameState.currentPlayer === 'white' ? 'black' : 'white';
   
-  // Re-enable basic repetition detection but with higher thresholds for AI training
+  // More lenient repetition detection for AI training
   const hasCycles = skipRepetitionCheck ? false : (
-    detectMoveCycles(newMoveHistory, 12) // Allow more moves before detecting cycles
+    detectMoveCycles(newMoveHistory, 20) || // Much higher threshold - 20-move cycles
+    (newMoveHistory.length > 150 && detectSimpleRepetition(newMoveHistory)) // Only check simple repetition after 150+ moves
   );
   
   // Check for check, checkmate, stalemate

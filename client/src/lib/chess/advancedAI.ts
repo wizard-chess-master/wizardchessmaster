@@ -19,8 +19,8 @@ export class AdvancedAIPlayer {
     const moves = this.getAllValidMoves(gameState, color);
     if (moves.length === 0) return null;
 
-    // 10% exploration - random move
-    if (Math.random() < this.explorationRate) {
+    // Reduced exploration rate for more decisive play
+    if (Math.random() < this.explorationRate * 0.3) { // Reduced from 10% to 3%
       console.log('🎲 AI exploring with random move');
       return moves[Math.floor(Math.random() * moves.length)];
     }

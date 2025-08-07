@@ -96,7 +96,7 @@ export class AITrainer {
     };
 
     let moveCount = 0;
-    const maxMoves = 80; // Shorter games for faster training
+    const maxMoves = 120; // Increased to allow more natural game conclusions
     let consecutiveNoProgress = 0; // Track if game is stuck
     
     // Assign different strategies to white and black for competitive variety
