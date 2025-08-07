@@ -24,11 +24,15 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
 
-  useEffect(() => {
-    // Load existing learning data
+  const refreshLearningStats = () => {
     const stats = aiLearning.getLearningStats();
     setLearningStats(stats);
-    console.log('✅ AI learning data loaded:', stats);
+    console.log('🔄 AI learning stats refreshed:', stats);
+  };
+
+  useEffect(() => {
+    // Load existing learning data
+    refreshLearningStats();
   }, []);
 
   return (
@@ -115,7 +119,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   </Button>
                 )}
 
-                <MassTrainingDialog>
+                <MassTrainingDialog onTrainingComplete={refreshLearningStats}>
                   <Button
                     className="medieval-btn mode-button"
                     variant="outline"
@@ -184,12 +188,7 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
                   className="medieval-btn mode-button"
                   variant="outline"
                   onClick={() => {
-                    const stats = aiLearning.getLearningStats();
-                    console.log('🧠 Raw AI Learning Statistics:', stats);
-                    console.log('🧠 Stats type:', typeof stats);
-                    console.log('🧠 Stats keys:', stats ? Object.keys(stats) : 'null');
-                    console.log('🧠 totalGamesAnalyzed:', stats?.totalGamesAnalyzed);
-                    setLearningStats(stats);
+                    refreshLearningStats();
                     setShowStatsDialog(true);
                   }}
                 >

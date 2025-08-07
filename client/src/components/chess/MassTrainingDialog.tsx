@@ -11,9 +11,10 @@ import { aiLearning } from '../../lib/chess/aiLearning';
 
 interface MassTrainingDialogProps {
   children: React.ReactNode;
+  onTrainingComplete?: () => void; // Callback to refresh parent stats
 }
 
-export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children }) => {
+export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children, onTrainingComplete }) => {
   const { resetGame } = useChess();
   const [gameCount, setGameCount] = useState(1000); // Default to 1000 for better performance
   const [isTraining, setIsTraining] = useState(false);
@@ -166,6 +167,11 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
       
       // Show success message without blocking
       console.log(`✅ Training completed! ${result.whiteWins} white wins, ${result.blackWins} black wins, ${result.draws} draws`);
+      
+      // Notify parent component to refresh stats
+      if (onTrainingComplete) {
+        onTrainingComplete();
+      }
       
     } catch (error) {
       console.error('Training failed:', error);
