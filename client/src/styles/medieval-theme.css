@@ -216,14 +216,19 @@ body {
   box-sizing: border-box;
 }
 
-/* Ensure board appears first (at top) */
-.board-container {
+/* Ad banner appears first (at top) */
+.ad-banner {
   order: 1;
 }
 
-/* Game UI appears second (at bottom) */
-.game-ui {
+/* Board appears second (middle) */
+.board-container {
   order: 2;
+}
+
+/* Game UI appears third (at bottom) */
+.game-ui {
+  order: 3;
 }
 
 /* Game UI Panel */
@@ -237,7 +242,7 @@ body {
   max-width: min(100vw, 1600px);
   width: 100%;
   padding: 0 8px;
-  order: 2;
+  order: 3;
 }
 
 .side-panel {

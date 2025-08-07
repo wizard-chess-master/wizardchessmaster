@@ -90,6 +90,11 @@ function App() {
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
           <div className="game-layout">
+            {/* Ad Banner Above Board */}
+            <div className="ad-banner-horizontal ad-banner">
+              <span style={{ opacity: 0.6 }}>🏰 Medieval Adventures Await 🏰</span>
+            </div>
+            
             <div className="board-container">
               <ChessBoard />
             </div>
