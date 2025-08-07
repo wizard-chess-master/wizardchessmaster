@@ -51,13 +51,21 @@ export const useChess = create<ChessStore>()(
       console.log('🔍 White pawn positions (row 8):', newBoard[8]);
       console.log('🔍 White back pieces (row 9):', newBoard[9]);
       console.log('🔍 Black pawns (row 1):', newBoard[1]);
+      console.log('🔍 Clicked position should have piece at row 8, col 4:', newBoard[8][4]);
       
       set({
-        ...initialState,
         board: newBoard,
+        currentPlayer: 'white',
+        selectedPosition: null,
+        validMoves: [],
         gamePhase: 'playing',
         gameMode: mode,
         aiDifficulty: aiDifficulty,
+        moveHistory: [],
+        isInCheck: false,
+        isCheckmate: false,
+        isStalemate: false,
+        winner: null,
         gameStartTime: Date.now()
       });
 

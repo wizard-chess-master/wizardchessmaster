@@ -260,6 +260,7 @@ export function ChessBoard() {
     const row = Math.floor(y / squareSize);
     
     console.log('🎯 Canvas click:', { x, y, row, col, squareSize, canvasSize });
+    console.log('🔍 Board state at clicked position:', board[row]?.[col]);
     
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
       // Trigger animation effect

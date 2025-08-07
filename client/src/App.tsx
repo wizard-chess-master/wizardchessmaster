@@ -122,22 +122,30 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <div className="game-layout flex flex-col lg:flex-row gap-4 w-full max-w-7xl mx-auto px-2">
-            {/* Chess Board Section - Mobile First */}
-            <div className="board-section flex flex-col items-center gap-4 lg:flex-1">
-              {/* Ad Banner Above Chess Board */}
+          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
+            <div className="max-w-6xl mx-auto">
+              
+              {/* Top Ad Banner */}
               <AdBanner 
-                id="game-banner-above-board" 
-                className="w-full max-w-2xl"
+                id="game-banner-top" 
+                className="mb-4 w-full max-w-2xl mx-auto"
                 style={{ maxWidth: '600px', width: '100%' }}
               />
-              <div className="board-container w-full flex justify-center">
-                <ChessBoard />
+              
+              {/* Game Content - Board and Controls */}
+              <div className="flex flex-col lg:flex-row gap-6 items-start">
+                
+                {/* Chess Board Section */}
+                <div className="board-section flex-1 flex justify-center">
+                  <ChessBoard />
+                </div>
+                
+                {/* Game Controls Sidebar */}
+                <div className="controls-section w-full lg:w-80 lg:flex-shrink-0">
+                  <GameUI onSettings={() => setShowSettings(true)} />
+                </div>
+                
               </div>
-            </div>
-            {/* Game Controls - Responsive Sidebar */}
-            <div className="controls-section w-full lg:w-96 lg:min-w-96">
-              <GameUI onSettings={() => setShowSettings(true)} />
             </div>
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
