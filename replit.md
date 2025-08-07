@@ -6,6 +6,16 @@ This is **Wizard Chess Duel** - a 10x10 chess variant with magical wizards posit
 
 ## Recent Changes (August 7, 2025)
 
+### COMPREHENSIVE LEADERBOARD SYSTEM - FULLY OPERATIONAL
+- **Campaign Leaderboard**: Tracks campaign progress, completion times, experience points, and calculated scores
+- **Player vs Player Leaderboard**: ELO-style rating system with win/loss records and performance metrics
+- **Advanced Statistics**: Detailed tracking of win rates, best times, streaks, and skill progression
+- **Player Identity System**: Persistent player names and statistics across game sessions
+- **Visual Rankings**: Medal/trophy system with special highlighting for top players and current player
+- **Real-time Updates**: Automatic leaderboard updates after each completed game
+- **Local Storage Persistence**: Leaderboard data saved and restored between sessions
+- **Responsive Design**: Mobile-optimized leaderboard interface with medieval theme integration
+
 ### GAME REBRANDING - WIZARD CHESS DUEL
 - **Updated Game Name**: Changed from "Fantasy Chess" to "Wizard Chess Duel" across all interfaces
 - **Enhanced Branding**: Updated browser title, meta descriptions, and main menu display

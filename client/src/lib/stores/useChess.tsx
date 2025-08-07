@@ -7,6 +7,7 @@ import { useAudio } from "./useAudio";
 import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
 import { useCampaign } from "./useCampaign";
+import { useLeaderboard } from "./useLeaderboard";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -166,6 +167,14 @@ export const useChess = create<ChessStore>()(
       const newState = makeMove(state, move);
       set(newState);
 
+      // Record PvP stats for local multiplayer games
+      if (state.gameMode === 'local' && newState.gamePhase === 'ended') {
+        const { recordPvPGame } = useLeaderboard.getState();
+        const gameLength = Date.now() - state.gameStartTime;
+        const result = newState.winner ? 'win' : 'draw'; // For local games, we'll consider both as wins
+        recordPvPGame(result, gameLength);
+      }
+
       // Analyze completed games for AI learning
       if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
         const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
@@ -178,6 +187,11 @@ export const useChess = create<ChessStore>()(
           const gameTime = Date.now() - state.gameStartTime;
           const moveCount = newState.moveHistory.length;
           completeCampaignGame(currentLevelId, playerWon, moveCount, gameTime);
+          
+          // Record campaign stats for leaderboard
+          const { recordCampaignGame } = useLeaderboard.getState();
+          const levelNumber = parseInt(currentLevelId.replace('level_', ''));
+          recordCampaignGame(playerWon, gameTime, levelNumber);
         }
       }
 

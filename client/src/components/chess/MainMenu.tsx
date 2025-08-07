@@ -10,6 +10,7 @@ import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
+import { LeaderboardDialog } from './LeaderboardDialog';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 
@@ -312,6 +313,16 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
             <Trophy className="w-4 h-4 mr-2" />
             Achievements
           </Button>
+          
+          <LeaderboardDialog>
+            <Button
+              variant="outline"
+              className="medieval-btn"
+            >
+              <Award className="w-4 h-4 mr-2" />
+              Leaderboards
+            </Button>
+          </LeaderboardDialog>
         </div>
       </div>
 
