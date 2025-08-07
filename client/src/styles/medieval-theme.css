@@ -101,11 +101,21 @@ body {
   justify-content: center;
   align-items: center;
   margin: 15px 0;
-  /* Match board container width */
-  max-width: min(95vw, 600px);
+  /* Expanded width for 2-column layout */
+  max-width: min(95vw, 900px);
   width: 100%;
   padding: 0 12px;
   box-sizing: border-box;
+}
+
+/* Two-column grid for game sections */
+.game-sections-grid {
+  width: 100%;
+}
+
+.game-section-left,
+.game-section-right {
+  min-height: 0; /* Allow equal height columns */
 }
 
 .side-panel {

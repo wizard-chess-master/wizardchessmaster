@@ -51,8 +51,12 @@ export function GameUI({ onSettings }: GameUIProps) {
         style={{ maxWidth: '600px', width: '100%' }}
       />
 
-      {/* Game Status Card */}
-      <Card className="medieval-panel game-status w-full max-w-md">
+      {/* Two Column Layout for Game Sections */}
+      <div className="game-sections-grid grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-4xl">
+        {/* Left Column */}
+        <div className="game-section-left flex flex-col gap-3">
+          {/* Game Status Card */}
+          <Card className="medieval-panel game-status w-full">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between medieval-text text-sm">
             <span>🏰 Fantasy Chess</span>
@@ -76,10 +80,10 @@ export function GameUI({ onSettings }: GameUIProps) {
             </div>
           </div>
         </CardContent>
-      </Card>
+          </Card>
 
-      {/* Game Controls */}
-      <Card className="medieval-panel game-controls w-full max-w-md">
+          {/* Game Controls */}
+          <Card className="medieval-panel game-controls w-full">
         <CardContent className="pt-4">
           <div className="control-buttons grid grid-cols-2 gap-2 w-full max-w-md">
             <Button
@@ -150,10 +154,10 @@ export function GameUI({ onSettings }: GameUIProps) {
             </Button>
           </div>
         </CardContent>
-      </Card>
+          </Card>
 
-      {/* Move History */}
-      <Card className="medieval-panel move-history w-full max-w-md">
+          {/* Move History */}
+          <Card className="medieval-panel move-history w-full">
         <CardHeader className="pb-3">
           <CardTitle className="medieval-text text-sm">📜 Move History</CardTitle>
         </CardHeader>
@@ -176,10 +180,13 @@ export function GameUI({ onSettings }: GameUIProps) {
             )}
           </div>
         </CardContent>
-      </Card>
+          </Card>
+        </div>
 
-      {/* Game Rules - Collapsible */}
-      <Card className="medieval-panel game-help w-full max-w-md">
+        {/* Right Column */}
+        <div className="game-section-right flex flex-col gap-3">
+          {/* Game Rules - Collapsible */}
+          <Card className="medieval-panel game-help w-full">
         <CardHeader className="pb-0">
           <Button
             variant="ghost"
@@ -226,10 +233,10 @@ export function GameUI({ onSettings }: GameUIProps) {
             </div>
           </CardContent>
         )}
-      </Card>
+          </Card>
 
-      {/* Game Controls - Collapsible */}
-      <Card className="medieval-panel game-help w-full max-w-md">
+          {/* Game Controls - Collapsible */}
+          <Card className="medieval-panel game-help w-full">
         <CardHeader className="pb-0">
           <Button
             variant="ghost"
@@ -273,12 +280,14 @@ export function GameUI({ onSettings }: GameUIProps) {
             </div>
           </CardContent>
         )}
-      </Card>
+          </Card>
+        </div>
+      </div>
 
       {/* Bottom Ad Banner */}
       <AdBanner 
         id="game-banner-bottom" 
-        className="mt-3"
+        className="mt-4"
         style={{ maxWidth: '600px', width: '100%' }}
       />
     </div>
