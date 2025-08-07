@@ -219,6 +219,20 @@ body {
 /* Ad banner appears first (at top) */
 .ad-banner {
   order: 1;
+  background: url('/assets/stone-texture.png') center/cover !important;
+  border: 2px solid var(--medieval-stone) !important;
+  border-radius: 8px !important;
+  padding: 15px !important;
+  margin: 10px 0 !important;
+  min-height: 120px !important;
+  height: 120px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: var(--medieval-gold) !important;
+  font-family: 'Cinzel', serif !important;
+  opacity: 0.8 !important;
+  transition: opacity 0.3s ease !important;
 }
 
 /* Board appears second (middle) */
@@ -262,23 +276,7 @@ body {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-/* Ad Spaces - Subtle Integration */
-.ad-banner {
-  background: url('/assets/stone-texture.png') center/cover;
-  border: 2px solid var(--medieval-stone);
-  border-radius: 8px;
-  padding: 15px;
-  margin: 10px 0;
-  min-height: 120px;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--medieval-gold);
-  font-family: 'Cinzel', serif;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-}
+/* Ad Spaces - Duplicate definition removed - now handled above with !important */
 
 .ad-banner:hover {
   opacity: 1;
@@ -536,8 +534,9 @@ body {
   }
   
   .ad-banner {
-    padding: 6px;
-    min-height: 50px;
+    padding: 15px !important;
+    min-height: 120px !important;
+    height: 120px !important;
   }
   
   .game-ui {
