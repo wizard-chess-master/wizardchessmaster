@@ -323,33 +323,44 @@ export function MagicalSoundTestPanel() {
           </div>
         </TabsContent>
 
-        <TabsContent value="by-category" className="space-y-4">
+        <TabsContent value="by-category" className="space-y-6 mt-6">
+          
+          {/* Category Status */}
+          <div className="bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-lg border-2 border-blue-400/50">
+            <h3 className="font-bold text-lg text-blue-800 dark:text-blue-200 mb-2">
+              📂 Sound Categories
+            </h3>
+            <p className="text-blue-700 dark:text-blue-300">
+              Browse {Object.keys(soundsByCategory).length} categories with {MAGICAL_SOUND_LIBRARY.length} total sounds
+            </p>
+          </div>
+          
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {Object.entries(soundsByCategory).map(([category, sounds]) => (
-              <Card key={category}>
-                <CardHeader className="pb-3">
+              <Card key={category} className="border-2 border-gray-200 dark:border-gray-700 hover:border-purple-400 dark:hover:border-purple-500 transition-colors">
+                <CardHeader className="pb-3 bg-gradient-to-r from-gray-50 to-purple-50 dark:from-gray-800 dark:to-purple-900/20">
                   <CardTitle className="flex items-center gap-2 text-lg capitalize">
                     {getCategoryIcon(category as MagicalSoundCategory)}
                     {category.replace('_', ' ')}
                   </CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    {sounds.length} sounds
+                  <p className="text-sm text-muted-foreground font-medium">
+                    {sounds.length} magical sounds available
                   </p>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-2 max-h-80 overflow-y-auto">
+                <CardContent className="pt-4">
+                  <div className="space-y-3 max-h-80 overflow-y-auto">
                     {sounds.map(sound => (
-                      <div key={sound.id} className="flex items-center justify-between p-2 border rounded">
+                      <div key={sound.id} className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-purple-50 dark:hover:bg-purple-900/10 transition-colors">
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{sound.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">
+                          <p className="font-medium text-sm truncate text-gray-900 dark:text-gray-100">{sound.name}</p>
+                          <p className="text-xs text-muted-foreground truncate mt-1">
                             {sound.description}
                           </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="secondary" className="text-xs">
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800">
                               {sound.duration}ms
                             </Badge>
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs border-green-300 text-green-700">
                               Vol: {(sound.volume * 100).toFixed(0)}%
                             </Badge>
                           </div>
@@ -359,6 +370,7 @@ export function MagicalSoundTestPanel() {
                           size="sm"
                           onClick={() => playSound(sound.id, sound.name)}
                           disabled={isPlaying === sound.id}
+                          className="ml-3 hover:bg-purple-200 dark:hover:bg-purple-700"
                         >
                           {isPlaying === sound.id ? '🔊' : '▶️'}
                         </Button>
