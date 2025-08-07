@@ -5,6 +5,7 @@ import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess
 import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
 import { aiLearning } from "../chess/aiLearning";
+import { gameEventTracker } from "../achievements/gameEventTracker";
 
 interface ChessStore extends GameState {
   // Actions

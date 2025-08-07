@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAudio } from "./lib/stores/useAudio";
 import { useChess } from "./lib/stores/useChess";
+import { useAchievements } from "./lib/achievements/achievementSystem";
+import { gameEventTracker } from "./lib/achievements/gameEventTracker";
 import { MainMenu } from "./components/chess/MainMenu";
 import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
+import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
+import { AchievementPanel } from "./components/achievements/AchievementPanel";
 import { AdBanner } from "./components/monetization/AdBanner";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
@@ -16,7 +20,9 @@ import "./styles/chess.css";
 function App() {
   const { gamePhase, ...gameState } = useChess();
   const { setHitSound, setSuccessSound, setBackgroundMusic } = useAudio();
+  const { updateProgress } = useAchievements();
   const [showSettings, setShowSettings] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
 
   // Initialize audio, monetization, and keyboard shortcuts
   useEffect(() => {
@@ -47,14 +53,26 @@ function App() {
     initSystems();
   }, [setHitSound, setSuccessSound, setBackgroundMusic]);
 
-  // Monitor game state for ambient sound intensity changes
+  // Monitor game state for ambient sound intensity changes and achievement tracking
   useEffect(() => {
     if (gamePhase === 'playing') {
       ambientManager.analyzeGameIntensity({ gamePhase, ...gameState });
+      
+      // Start achievement tracking when game begins
+      if (gameState.moveHistory.length === 0) {
+        gameEventTracker.startGame();
+      }
     } else if (gamePhase === 'menu') {
       ambientManager.reset();
+    } else if (gamePhase === 'ended' && gameState.winner) {
+      // Track game completion for achievements
+      gameEventTracker.trackGameEnd(
+        gameState.winner, 
+        gameState.isCheckmate, 
+        gameState.gameMode
+      );
     }
-  }, [gamePhase, gameState.board, gameState.moveHistory, gameState.isInCheck, gameState.isCheckmate]);
+  }, [gamePhase, gameState.board, gameState.moveHistory, gameState.isInCheck, gameState.isCheckmate, gameState.winner, gameState.gameMode]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -97,7 +115,10 @@ function App() {
     <div className="App">
       <div className="game-container">
         {gamePhase === 'menu' && (
-          <MainMenu onSettings={() => setShowSettings(true)} />
+          <MainMenu 
+            onSettings={() => setShowSettings(true)} 
+            onAchievements={() => setShowAchievements(true)}
+          />
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
@@ -119,6 +140,12 @@ function App() {
         {showSettings && (
           <SettingsDialog onClose={() => setShowSettings(false)} />
         )}
+
+        {showAchievements && (
+          <AchievementPanel onClose={() => setShowAchievements(false)} />
+        )}
+
+        <AchievementNotificationQueue onViewAll={() => setShowAchievements(true)} />
       </div>
     </div>
   );
