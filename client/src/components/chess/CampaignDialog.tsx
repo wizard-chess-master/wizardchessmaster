@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -34,6 +35,7 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
   } = useCampaign();
   const { startGame } = useChess();
   const [activeTab, setActiveTab] = useState('map');
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     initializeCampaign();
@@ -61,11 +63,11 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-6xl h-[95vh] max-h-[800px] overflow-hidden medieval-panel flex flex-col">
+      <DialogContent className="w-[95vw] max-w-6xl h-[95vh] max-h-[800px] overflow-hidden medieval-panel flex flex-col z-[100]">
         <DialogHeader className="pb-3 flex-shrink-0">
           <DialogTitle className="flex items-center gap-2 text-xl sm:text-2xl medieval-text">
             <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
@@ -74,6 +76,9 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
               - Progressive AI Challenge
             </span>
           </DialogTitle>
+          <DialogDescription className="text-sm text-gray-400 mt-2">
+            Progress through increasingly challenging AI opponents to improve your chess skills. Each level unlocks new challenges and tracks your performance.
+          </DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
