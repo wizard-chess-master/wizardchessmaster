@@ -7,6 +7,8 @@ import { GameUI } from "./components/chess/GameUI";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { TrainingViewer } from "./components/chess/TrainingViewer";
+import { initializeAds } from "./lib/monetization/adManager";
+import { initializePayments } from "./lib/monetization/paymentManager";
 import "@fontsource/inter";
 import "./styles/chess.css";
 
@@ -16,13 +18,27 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showTrainingViewer, setShowTrainingViewer] = useState(false);
 
-  // Initialize audio and keyboard shortcuts
+  // Initialize audio, monetization, and keyboard shortcuts
   useEffect(() => {
     const hitAudio = new Audio("/sounds/hit.mp3");
     const successAudio = new Audio("/sounds/success.mp3");
     
     setHitSound(hitAudio);
     setSuccessSound(successAudio);
+
+    // Initialize monetization systems
+    const initMonetization = async () => {
+      try {
+        console.log('💳 Initializing monetization systems...');
+        await initializeAds();
+        await initializePayments();
+        console.log('✅ Monetization systems initialized');
+      } catch (error) {
+        console.error('❌ Failed to initialize monetization:', error);
+      }
+    };
+    
+    initMonetization();
   }, [setHitSound, setSuccessSound]);
 
   // Keyboard shortcuts

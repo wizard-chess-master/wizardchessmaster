@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { AdBanner } from '../monetization/AdBanner';
+import { GameHints } from '../monetization/GameHints';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -42,6 +44,13 @@ export function GameUI({ onSettings }: GameUIProps) {
 
   return (
     <div className="game-ui">
+      {/* Top Ad Banner */}
+      <AdBanner 
+        id="game-banner-top" 
+        className="mb-4"
+        style={{ maxWidth: '100%' }}
+      />
+
       {/* Game Status Card */}
       <Card className="medieval-panel game-status">
         <CardHeader>
@@ -89,18 +98,32 @@ export function GameUI({ onSettings }: GameUIProps) {
               </div>
             </Button>
             
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={undoMove}
-              disabled={moveHistory.length === 0}
-              className="medieval-btn mode-button"
-            >
-              <div className="mode-content">
-                <span>🔄 Undo</span>
-                <Badge variant="secondary">Last Move</Badge>
-              </div>
-            </Button>
+            {/* Game Hints Component */}
+            <GameHints
+              onHint={() => {
+                const { board, currentPlayer, moveHistory } = useChess.getState();
+                console.log('🎯 Generating hint for current position...');
+                
+                // Import hint system dynamically to avoid circular dependencies
+                import('../../lib/chess/hintSystem').then(({ hintSystem }) => {
+                  const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
+                  if (hint) {
+                    console.log('💡 Hint:', hint.description);
+                    console.log('🧠 Reasoning:', hint.reasoning);
+                    
+                    // You could highlight the suggested move on the board here
+                    // For now, just log the hint
+                    alert(`Hint: ${hint.description}\nReasoning: ${hint.reasoning}`);
+                  } else {
+                    console.log('❌ No hint available');
+                    alert('No hint available for current position');
+                  }
+                });
+              }}
+              onUndo={() => undoMove()}
+              canUndo={moveHistory.length > 0}
+              gameStarted={gamePhase === 'playing'}
+            />
             
             <Button
               variant="outline"
@@ -252,19 +275,12 @@ export function GameUI({ onSettings }: GameUIProps) {
         )}
       </Card>
 
-      {/* Ad Placeholder */}
-      <Card className="ad-placeholder">
-        <CardContent className="pt-6">
-          <div className="ad-content">
-            <p className="text-sm text-muted-foreground text-center">
-              Advertisement Space
-            </p>
-            <div className="ad-banner">
-              <span>Your Ad Here</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Bottom Ad Banner */}
+      <AdBanner 
+        id="game-banner-bottom" 
+        className="mt-4"
+        style={{ maxWidth: '100%' }}
+      />
     </div>
   );
 }

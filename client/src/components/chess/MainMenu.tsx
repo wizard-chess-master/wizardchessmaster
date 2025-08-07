@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '.
 import { Settings, Sword, Users, Zap, Brain, Eye, BarChart3, X, Home } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
+import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
@@ -37,6 +38,13 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
 
   return (
     <div className="main-menu">
+      {/* Top Menu Ad Banner */}
+      <AdBanner 
+        id="menu-banner" 
+        className="mb-6"
+        style={{ maxWidth: '100%' }}
+      />
+
       <div className="menu-container">
         <div className="title-section">
           <div className="title-with-wands">

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { getAdManager } from '../../lib/monetization/adManager';
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,12 @@ export function GameOverDialog() {
   React.useEffect(() => {
     if (winner) {
       playSuccess();
+      
+      // Show interstitial ad after game completion
+      const adManager = getAdManager();
+      setTimeout(() => {
+        adManager.showInterstitialAd();
+      }, 2000); // 2 second delay after game ends
     }
   }, [winner, playSuccess]);
 
@@ -138,10 +145,20 @@ export function GameOverDialog() {
               <p className="text-sm text-muted-foreground mb-2">
                 Enjoyed the game?
               </p>
-              <Button variant="outline" size="sm" className="medieval-btn mode-button" disabled>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="medieval-btn mode-button bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0"
+                onClick={() => {
+                  const adManager = getAdManager();
+                  if (!adManager.isAdFree()) {
+                    window.dispatchEvent(new CustomEvent('show-upgrade-prompt'));
+                  }
+                }}
+              >
                 <div className="mode-content">
                   <span>💰 Remove Ads - $2.99</span>
-                  <Badge variant="secondary">Premium</Badge>
+                  <Badge variant="secondary" className="bg-white text-yellow-600">Premium</Badge>
                 </div>
               </Button>
             </CardContent>

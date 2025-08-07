@@ -4,7 +4,19 @@ This is a **Fantasy Chess** web application - a 10x10 chess variant with magical
 
 **NEW: Comprehensive Medieval Fantasy Visual Overhaul** - The application now features a fully immersive medieval fantasy theme with castle backgrounds, wooden UI elements, glowing highlights, smooth animations, and mobile-responsive design.
 
-## Recent Changes (January 6, 2025)
+## Recent Changes (August 7, 2025)
+
+### COMPREHENSIVE MONETIZATION SYSTEM - FULLY OPERATIONAL
+- **Complete Ad Framework**: Implemented Google AdSense integration with banner ads, interstitial ads, and rewarded videos
+- **Strategic Ad Placement**: Banner ads in MainMenu and GameUI, interstitial ads after game completion
+- **Rewarded Video System**: Watch ads for extra hints (2 free per game) and undos (1 free per game)
+- **Stripe Payment Integration**: $2.99 ad-free upgrade with secure Stripe checkout process
+- **Game Hints System**: AI-powered hint system with tactical analysis and move reasoning
+- **Ad-Free Experience**: Premium users get unlimited hints/undos and complete ad removal
+- **Balanced Monetization**: Designed to encourage upgrades without breaking core gameplay
+- **User Experience**: Tasteful ad integration that maintains medieval fantasy atmosphere
+
+## Previous Changes (January 6, 2025)
 
 ### MAJOR VISUAL OVERHAUL - Medieval Fantasy Theme
 - **Generated Medieval Assets**: Created castle background, wooden UI panels, and stone textures using AI image generation
