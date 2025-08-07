@@ -1,10 +1,17 @@
 # Overview
 
-This is **Enchanted Chess Duel** - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
+This is **Wizard Chess Duel** - a 10x10 chess variant with magical wizards positioned in corners. The project is built as a full-stack TypeScript application with React frontend and Express backend, featuring both local multiplayer and AI opponent modes with different difficulty levels.
 
 **NEW: Comprehensive Medieval Fantasy Visual Overhaul** - The application now features a fully immersive medieval fantasy theme with castle backgrounds, wooden UI elements, glowing highlights, smooth animations, and mobile-responsive design.
 
 ## Recent Changes (August 7, 2025)
+
+### GAME REBRANDING - WIZARD CHESS DUEL
+- **Updated Game Name**: Changed from "Fantasy Chess" to "Wizard Chess Duel" across all interfaces
+- **Enhanced Branding**: Updated browser title, meta descriptions, and main menu display
+- **Consistent Identity**: All references now reflect the focused wizard chess theme
+
+## Previous Changes (August 7, 2025)
 
 ### COMPREHENSIVE MONETIZATION SYSTEM - FULLY OPERATIONAL
 - **Complete Ad Framework**: Implemented Google AdSense integration with banner ads, interstitial ads, and rewarded videos
