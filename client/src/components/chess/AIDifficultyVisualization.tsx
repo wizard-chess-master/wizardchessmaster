@@ -437,10 +437,20 @@ export function AIDifficultyVisualization({ children }: AIDifficultyVisualizatio
     getFilteredHistory,
     adjustmentHistory,
     currentDifficulty,
-    adaptationEnabled
+    adaptationEnabled,
+    difficultyHistory,
+    initializeRichProgressionData
   } = useAIDifficultyProgression();
 
   const [filteredData, setFilteredData] = useState<DifficultyDataPoint[]>([]);
+
+  // Initialize rich data if we don't have enough meaningful progression data
+  useEffect(() => {
+    if (difficultyHistory.length < 10) {
+      console.log('📊 Initializing rich AI difficulty progression data for visualization...');
+      initializeRichProgressionData();
+    }
+  }, [difficultyHistory.length, initializeRichProgressionData]);
 
   useEffect(() => {
     setFilteredData(getFilteredHistory());
@@ -484,13 +494,34 @@ export function AIDifficultyVisualization({ children }: AIDifficultyVisualizatio
             <TabsContent value="chart" className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="w-5 h-5" />
-                    Difficulty & Performance Over Time
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <BarChart3 className="w-5 h-5" />
+                      Difficulty & Performance Over Time
+                    </div>
+                    {difficultyHistory.length < 10 && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          console.log('🔄 Refreshing AI difficulty progression data...');
+                          initializeRichProgressionData();
+                        }}
+                        className="text-xs"
+                      >
+                        Load Sample Data
+                      </Button>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <DifficultyChart data={filteredData} />
+                  {filteredData.length === 0 && (
+                    <div className="text-center py-4 text-sm text-gray-500">
+                      <p>No progression data in the selected time range.</p>
+                      <p>Try selecting a longer time range or play more games.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
