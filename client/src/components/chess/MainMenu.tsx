@@ -14,6 +14,7 @@ import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { AIDifficultyVisualization } from './AIDifficultyVisualization';
 import { AdminLogin } from './AdminLogin';
+import { MagicalSoundTestPanel } from '../audio/MagicalSoundTestPanel';
 import { isAdminFeatureEnabled, isAdminEnabled } from '../../lib/admin';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
@@ -32,6 +33,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
   const [adminRefresh, setAdminRefresh] = useState(0);
+  const [showSoundTestPanel, setShowSoundTestPanel] = useState(false);
 
   // Debug admin state on every render
   useEffect(() => {
@@ -256,6 +258,18 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   <div className="mode-content">
                     <span>👥 Local Multiplayer</span>
                     <Badge variant="outline">Pass & Play</Badge>
+                  </div>
+                </Button>
+                
+                {/* Magical Sound Test Panel */}
+                <Button
+                  className="medieval-btn mode-button"
+                  variant="outline"
+                  onClick={() => setShowSoundTestPanel(true)}
+                >
+                  <div className="mode-content">
+                    <span>🎵 Test Magical Sounds</span>
+                    <Badge variant="outline">43 Fantasy Audio Effects</Badge>
                   </div>
                 </Button>
               </div>
@@ -617,6 +631,21 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </div>
           )}
         </DialogContent>
+        </Dialog>
+      )}
+      
+      {/* Magical Sound Test Panel Dialog */}
+      {showSoundTestPanel && (
+        <Dialog open={showSoundTestPanel} onOpenChange={setShowSoundTestPanel}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                🎵 Magical Sound Test Panel
+              </DialogTitle>
+              <DialogClose />
+            </DialogHeader>
+            <MagicalSoundTestPanel />
+          </DialogContent>
         </Dialog>
       )}
     </div>

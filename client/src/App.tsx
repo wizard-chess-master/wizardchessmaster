@@ -62,6 +62,11 @@ function App() {
         console.log('🎵 Initializing ambient sound system...');
         await ambientManager.initializeAmbientSounds();
         console.log('✅ Ambient sound system initialized');
+        
+        console.log('✨ Initializing Magical Sound Library...');
+        const { initializeMagicalSounds } = useAudio.getState();
+        await initializeMagicalSounds();
+        console.log('✅ Magical Sound Library initialized');
       } catch (error) {
         console.error('❌ Failed to initialize systems:', error);
       }

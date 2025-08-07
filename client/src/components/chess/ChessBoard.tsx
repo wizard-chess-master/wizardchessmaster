@@ -1,10 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
+import { useAudio } from '../../lib/stores/useAudio';
 import { ChessPiece } from './ChessPiece';
 import { Position } from '../../lib/chess/types';
 
 export function ChessBoard() {
-  const { board, selectedPosition, validMoves, selectSquare } = useChess();
+  const { board, selectedPosition, validMoves, selectSquare, moveHistory, isInCheck } = useChess();
+  const { playPieceMovementSound, playGameEvent, playUISound, playWizardAbility } = useAudio();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
   const [isAnimating, setIsAnimating] = useState(false);

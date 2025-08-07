@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { magicalSoundLibrary, type MagicalSoundEffect } from '../audio/magicalSoundLibrary';
 
 export type GameIntensity = 'calm' | 'moderate' | 'tense' | 'critical';
 
@@ -28,6 +29,20 @@ interface AudioState {
   playBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
   initializeAudio: () => void;
+  
+  // Magical Sound Library functions
+  playMagicalSound: (soundId: MagicalSoundEffect, options?: {
+    volume?: number;
+    playbackRate?: number;
+    delay?: number;
+  }) => Promise<void>;
+  playPieceMovementSound: (pieceType: string, isCapture?: boolean) => Promise<void>;
+  playWizardAbility: (abilityType: 'teleport' | 'ranged_attack' | 'summon') => Promise<void>;
+  playGameEvent: (eventType: 'check' | 'checkmate_win' | 'checkmate_lose' | 'castling' | 'promotion' | 'game_start') => Promise<void>;
+  playUISound: (uiType: 'hover' | 'click' | 'menu_open' | 'menu_close' | 'success' | 'error' | 'notification') => Promise<void>;
+  playAmbientMagic: (intensityLevel: 'low' | 'medium' | 'high') => Promise<void>;
+  stopAmbientMagic: () => void;
+  initializeMagicalSounds: () => Promise<void>;
 }
 
 export const useAudio = create<AudioState>((set, get) => ({
@@ -242,5 +257,97 @@ export const useAudio = create<AudioState>((set, get) => ({
   initializeAudio: () => {
     console.log('🎵 Initializing audio system - setting to unmuted');
     set({ isMuted: false });
+  },
+  
+  // Magical Sound Library Implementation
+  initializeMagicalSounds: async () => {
+    try {
+      await magicalSoundLibrary.initialize();
+      console.log('✨ Magical Sound Library initialized successfully');
+    } catch (error) {
+      console.error('❌ Failed to initialize Magical Sound Library:', error);
+    }
+  },
+  
+  playMagicalSound: async (soundId: MagicalSoundEffect, options?: {
+    volume?: number;
+    playbackRate?: number;
+    delay?: number;
+  }) => {
+    const { isMuted } = get();
+    if (isMuted) {
+      console.log(`🎭 Magical sound skipped (muted): ${soundId}`);
+      return;
+    }
+    
+    try {
+      await magicalSoundLibrary.playSound(soundId, options);
+    } catch (error) {
+      console.log(`🎭 Failed to play magical sound: ${soundId}`, error);
+    }
+  },
+  
+  playPieceMovementSound: async (pieceType: string, isCapture: boolean = false) => {
+    const { isMuted } = get();
+    if (isMuted) return;
+    
+    try {
+      await magicalSoundLibrary.playPieceMovementSound(pieceType, isCapture);
+    } catch (error) {
+      console.log(`🎭 Failed to play piece movement sound for: ${pieceType}`, error);
+    }
+  },
+  
+  playWizardAbility: async (abilityType: 'teleport' | 'ranged_attack' | 'summon') => {
+    const { isMuted } = get();
+    if (isMuted) return;
+    
+    try {
+      await magicalSoundLibrary.playWizardAbility(abilityType);
+    } catch (error) {
+      console.log(`🎭 Failed to play wizard ability sound: ${abilityType}`, error);
+    }
+  },
+  
+  playGameEvent: async (eventType: 'check' | 'checkmate_win' | 'checkmate_lose' | 'castling' | 'promotion' | 'game_start') => {
+    const { isMuted } = get();
+    if (isMuted) return;
+    
+    try {
+      await magicalSoundLibrary.playGameEvent(eventType);
+    } catch (error) {
+      console.log(`🎭 Failed to play game event sound: ${eventType}`, error);
+    }
+  },
+  
+  playUISound: async (uiType: 'hover' | 'click' | 'menu_open' | 'menu_close' | 'success' | 'error' | 'notification') => {
+    const { isMuted } = get();
+    if (isMuted) return;
+    
+    try {
+      await magicalSoundLibrary.playUISound(uiType);
+    } catch (error) {
+      console.log(`🎭 Failed to play UI sound: ${uiType}`, error);
+    }
+  },
+  
+  playAmbientMagic: async (intensityLevel: 'low' | 'medium' | 'high') => {
+    const { isMuted, isAmbientEnabled } = get();
+    if (isMuted || !isAmbientEnabled) return;
+    
+    try {
+      await magicalSoundLibrary.playAmbientMagic(intensityLevel);
+    } catch (error) {
+      console.log(`🎭 Failed to play ambient magic: ${intensityLevel}`, error);
+    }
+  },
+  
+  stopAmbientMagic: () => {
+    try {
+      magicalSoundLibrary.stopAmbientSounds();
+      console.log('🎭 Ambient magical sounds stopped');
+    } catch (error) {
+      console.log('🎭 Failed to stop ambient magical sounds', error);
+    }
   }
 }));

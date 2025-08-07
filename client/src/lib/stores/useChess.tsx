@@ -213,20 +213,47 @@ export const useChess = create<ChessStore>()(
         rookMove
       };
 
-      // Play move sound - force play even if no capture
-      const { playHit, isMuted } = useAudio.getState();
-      console.log('🎵 Attempting to play sound:', { captured: !!captured, isWizardAttack, isMuted });
-      if (captured || isWizardAttack) {
-        playHit();
-        console.log('🎵 Hit sound played');
-      } else {
-        // Play a move sound even for regular moves
-        playHit();
-        console.log('🎵 Move sound played');
+      // Play enhanced magical sounds based on move type
+      const { playPieceMovementSound, playWizardAbility, playGameEvent, isMuted } = useAudio.getState();
+      console.log('🎭 Playing magical sound for:', { piece: piece.type, captured: !!captured, isWizardAttack, isWizardTeleport, isCastling, promotion, isMuted });
+      
+      if (!isMuted) {
+        // Wizard-specific sounds
+        if (isWizardTeleport) {
+          playWizardAbility('teleport').catch(e => console.log('🎭 Wizard teleport sound failed:', e));
+        } else if (isWizardAttack) {
+          playWizardAbility('ranged_attack').catch(e => console.log('🎭 Wizard attack sound failed:', e));
+        }
+        // Castling sound
+        else if (isCastling) {
+          playGameEvent('castling').catch(e => console.log('🎭 Castling sound failed:', e));
+        }
+        // Pawn promotion sound
+        else if (promotion) {
+          playGameEvent('promotion').catch(e => console.log('🎭 Promotion sound failed:', e));
+        }
+        // Regular piece movement (with capture detection)
+        else {
+          playPieceMovementSound(piece.type, !!captured).catch(e => console.log('🎭 Piece movement sound failed:', e));
+        }
       }
 
       const newState = makeMove(state, move);
       set(newState);
+      
+      // Play game event sounds for check/checkmate
+      if (!isMuted) {
+        if (newState.isCheckmate) {
+          const playerWon = newState.winner === 'white';
+          if (playerWon) {
+            playGameEvent('checkmate_win').catch(e => console.log('🎭 Checkmate victory sound failed:', e));
+          } else {
+            playGameEvent('checkmate_lose').catch(e => console.log('🎭 Checkmate defeat sound failed:', e));
+          }
+        } else if (newState.isInCheck) {
+          playGameEvent('check').catch(e => console.log('🎭 Check warning sound failed:', e));
+        }
+      }
 
       // Record PvP stats for local multiplayer games
       if (state.gameMode === 'local' && newState.gamePhase === 'ended') {
@@ -281,10 +308,20 @@ export const useChess = create<ChessStore>()(
 
       const aiMove = getAIMove(state);
       if (aiMove) {
-        // Play move sound
-        const { playHit } = useAudio.getState();
-        if (aiMove.captured || aiMove.isWizardAttack) {
-          playHit();
+        // Play enhanced magical sounds for AI vs AI moves
+        const { playPieceMovementSound, playWizardAbility, playGameEvent, isMuted } = useAudio.getState();
+        if (!isMuted && aiMove.piece) {
+          if (aiMove.isWizardTeleport) {
+            playWizardAbility('teleport').catch(e => console.log('🎭 AI vs AI wizard teleport sound failed:', e));
+          } else if (aiMove.isWizardAttack) {
+            playWizardAbility('ranged_attack').catch(e => console.log('🎭 AI vs AI wizard attack sound failed:', e));
+          } else if (aiMove.isCastling) {
+            playGameEvent('castling').catch(e => console.log('🎭 AI vs AI castling sound failed:', e));
+          } else if (aiMove.promotion) {
+            playGameEvent('promotion').catch(e => console.log('🎭 AI vs AI promotion sound failed:', e));
+          } else {
+            playPieceMovementSound(aiMove.piece.type, !!aiMove.captured).catch(e => console.log('🎭 AI vs AI piece movement sound failed:', e));
+          }
         }
 
         // Skip repetition detection in AI vs AI mode to allow competitive evaluation
@@ -314,10 +351,20 @@ export const useChess = create<ChessStore>()(
 
       const aiMove = getAIMove(state);
       if (aiMove) {
-        // Play move sound
-        const { playHit } = useAudio.getState();
-        if (aiMove.captured || aiMove.isWizardAttack) {
-          playHit();
+        // Play enhanced magical sounds for AI moves
+        const { playPieceMovementSound, playWizardAbility, playGameEvent, isMuted } = useAudio.getState();
+        if (!isMuted && aiMove.piece) {
+          if (aiMove.isWizardTeleport) {
+            playWizardAbility('teleport').catch(e => console.log('🎭 AI wizard teleport sound failed:', e));
+          } else if (aiMove.isWizardAttack) {
+            playWizardAbility('ranged_attack').catch(e => console.log('🎭 AI wizard attack sound failed:', e));
+          } else if (aiMove.isCastling) {
+            playGameEvent('castling').catch(e => console.log('🎭 AI castling sound failed:', e));
+          } else if (aiMove.promotion) {
+            playGameEvent('promotion').catch(e => console.log('🎭 AI promotion sound failed:', e));
+          } else {
+            playPieceMovementSound(aiMove.piece.type, !!aiMove.captured).catch(e => console.log('🎭 AI piece movement sound failed:', e));
+          }
         }
 
         const newState = makeMove(state, aiMove);
