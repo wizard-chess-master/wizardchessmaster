@@ -10,6 +10,8 @@ import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
+import { DiagnosticsPanel } from "./components/diagnostics/DiagnosticsPanel";
+import { useDiagnostics } from "./lib/stores/useDiagnostics";
 import { AdBanner } from "./components/monetization/AdBanner";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
@@ -21,6 +23,7 @@ function App() {
   const { gamePhase, ...gameState } = useChess();
   const { setHitSound, setSuccessSound, setBackgroundMusic, initializeAudio } = useAudio();
   const { updateProgress } = useAchievements();
+  const { showDiagnostics, setShowDiagnostics } = useDiagnostics();
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
 
@@ -160,6 +163,10 @@ function App() {
 
         {showAchievements && (
           <AchievementPanel onClose={() => setShowAchievements(false)} />
+        )}
+
+        {showDiagnostics && (
+          <DiagnosticsPanel onClose={() => setShowDiagnostics(false)} />
         )}
 
         <AchievementNotificationQueue onViewAll={() => setShowAchievements(true)} />

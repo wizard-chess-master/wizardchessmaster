@@ -195,6 +195,22 @@ export function GameUI({ onSettings }: GameUIProps) {
                 variant="outline"
                 size="sm"
                 onClick={() => {
+                  import('../../lib/stores/useDiagnostics').then(({ useDiagnostics }) => {
+                    const { setShowDiagnostics } = useDiagnostics.getState();
+                    setShowDiagnostics(true);
+                  });
+                }}
+                className="medieval-btn flex flex-col items-center justify-center p-3 h-auto"
+                title="UI Diagnostics"
+              >
+                <span className="text-lg mb-1">🔍</span>
+                <span className="text-xs">Diagnostics</span>
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
                   const lastMove = moveHistory[moveHistory.length - 1];
                   if (lastMove && gameMode !== 'ai-vs-ai') {
                     console.log('🔄 Undoing last move...');

@@ -365,6 +365,7 @@ export function ChessBoard() {
               ))}
             </div>
             <canvas
+              id="chess-canvas"
               ref={canvasRef}
               width={canvasSize}
               height={canvasSize}
