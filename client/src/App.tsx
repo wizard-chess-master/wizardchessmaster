@@ -19,7 +19,7 @@ import "./styles/chess.css";
 
 function App() {
   const { gamePhase, ...gameState } = useChess();
-  const { setHitSound, setSuccessSound, setBackgroundMusic } = useAudio();
+  const { setHitSound, setSuccessSound, setBackgroundMusic, initializeAudio } = useAudio();
   const { updateProgress } = useAchievements();
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
@@ -33,6 +33,9 @@ function App() {
     setHitSound(hitAudio);
     setSuccessSound(successAudio);
     setBackgroundMusic(backgroundMusic);
+    
+    // Ensure audio starts unmuted
+    initializeAudio();
 
     // Initialize monetization and ambient sound systems
     const initSystems = async () => {

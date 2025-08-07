@@ -206,10 +206,34 @@ export function ChessBoard() {
         
         // Draw move indicators
         if (validMoves.some(move => move.row === row && move.col === col)) {
-          ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
-          ctx.beginPath();
-          ctx.arc(x + squareSize / 2, y + squareSize / 2, 8, 0, 2 * Math.PI);
-          ctx.fill();
+          // Special styling for castling moves
+          const isCastlingMove = selectedPosition?.row === row && selectedPosition?.col === 5 && 
+                                 selectedPosition && board[selectedPosition.row][selectedPosition.col]?.type === 'king' &&
+                                 (col === 2 || col === 6);
+          
+          if (isCastlingMove) {
+            // Draw castling indicator - larger golden circle
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.5)'; // Gold
+            ctx.strokeStyle = 'rgba(255, 215, 0, 0.8)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(x + squareSize / 2, y + squareSize / 2, 20, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.stroke();
+            
+            // Add castling text
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.font = 'bold 12px serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('CASTLE', x + squareSize / 2, y + squareSize / 2);
+          } else {
+            // Regular move indicator
+            ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+            ctx.beginPath();
+            ctx.arc(x + squareSize / 2, y + squareSize / 2, 8, 0, 2 * Math.PI);
+            ctx.fill();
+          }
         }
       }
     }

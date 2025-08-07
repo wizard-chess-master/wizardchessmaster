@@ -25,6 +25,7 @@ interface AudioState {
   playSuccess: () => void;
   playAmbient: (intensity?: GameIntensity) => void;
   stopAmbient: () => void;
+  initializeAudio: () => void;
 }
 
 export const useAudio = create<AudioState>((set, get) => ({
@@ -183,5 +184,10 @@ export const useAudio = create<AudioState>((set, get) => ({
         console.log("Success sound play prevented:", error);
       });
     }
+  },
+
+  initializeAudio: () => {
+    console.log('🎵 Initializing audio system - setting to unmuted');
+    set({ isMuted: false });
   }
 }));
