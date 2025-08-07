@@ -72,36 +72,31 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
       <DialogTrigger asChild onClick={handleOpenDialog}>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[95vw] max-w-6xl h-[85vh] medieval-panel flex flex-col">
-        <DialogHeader className="pb-3 flex-shrink-0">
-          <DialogTitle className="flex items-center gap-2 text-xl sm:text-2xl medieval-text">
-            <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-400" />
-            Campaign Mode
-            <span className="text-xs sm:text-sm font-normal text-gray-400 ml-2 hidden sm:inline">
-              - Progressive AI Challenge
-            </span>
+      <DialogContent className="w-[90vw] max-w-4xl max-h-[85vh] bg-gray-900 border-2 border-yellow-600 rounded-lg flex flex-col overflow-hidden">
+        <DialogHeader className="pb-4 flex-shrink-0 bg-gray-800 p-6 border-b border-yellow-600">
+          <DialogTitle className="flex items-center gap-3 text-2xl text-yellow-400 font-bold">
+            <Trophy className="w-6 h-6" />
+            Campaign Mode - Centered Layout
           </DialogTitle>
-          <DialogDescription className="text-sm text-gray-400 mt-2">
-            Progress through increasingly challenging AI opponents to improve your chess skills. Each level unlocks new challenges and tracks your performance.
+          <DialogDescription className="text-gray-300 mt-2">
+            Redesigned campaign interface with proper centering and responsive layout.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
-          <TabsList className="grid w-full grid-cols-2 mb-3 flex-shrink-0">
-            <TabsTrigger value="map" className="flex items-center gap-2 text-sm">
-              <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Campaign Map</span>
-              <span className="sm:hidden">Map</span>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col bg-gray-900">
+          <TabsList className="grid w-full grid-cols-2 mb-4 mx-6 mt-4 bg-gray-800 border border-yellow-600/30">
+            <TabsTrigger value="map" className="flex items-center gap-2 text-yellow-400">
+              <MapPin className="w-4 h-4" />
+              Campaign Map
             </TabsTrigger>
-            <TabsTrigger value="stats" className="flex items-center gap-2 text-sm">
-              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Statistics</span>
-              <span className="sm:hidden">Stats</span>
+            <TabsTrigger value="stats" className="flex items-center gap-2 text-yellow-400">
+              <BarChart3 className="w-4 h-4" />
+              Statistics
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 overflow-y-auto min-h-0">
-            <TabsContent value="map" className="mt-0 space-y-4 p-6">
+          <div className="flex-1 overflow-y-auto bg-gray-900">
+            <TabsContent value="map" className="mt-0 space-y-6 p-6 text-center">
               <CampaignMap 
                 levels={levels}
                 onStartLevel={handleStartLevel}
@@ -126,7 +121,8 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
               </div>
             </TabsContent>
 
-            <TabsContent value="stats" className="mt-0 p-6">
+            <TabsContent value="stats" className="mt-0 p-6 bg-gray-900 text-center">
+              <div className="text-yellow-400 text-xl font-bold mb-4">Campaign Statistics - Centered</div>
               <CampaignStats playerStats={playerStats} />
             </TabsContent>
           </div>
