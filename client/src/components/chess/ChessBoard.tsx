@@ -19,8 +19,8 @@ export function ChessBoard() {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Base size is 850x850 for desktop
-      let maxSize = 850;
+      // Base size is 880x880 for desktop
+      let maxSize = 880;
       
       // Scale down for smaller screens, ensuring full visibility
       if (viewportWidth < 480) {
@@ -30,11 +30,11 @@ export function ChessBoard() {
         // Mobile: use 85% of viewport width, max 600px
         maxSize = Math.min(viewportWidth * 0.85, 600);
       } else if (viewportWidth < 1024) {
-        // Tablet: use 80% of viewport width, max 750px
-        maxSize = Math.min(viewportWidth * 0.80, 750);
+        // Tablet: use 85% of viewport width, max 800px
+        maxSize = Math.min(viewportWidth * 0.85, 800);
       } else if (viewportWidth < 1200) {
-        // Small desktop: use 70% of viewport width, max 850px
-        maxSize = Math.min(viewportWidth * 0.70, 850);
+        // Small desktop: use 75% of viewport width, max 880px
+        maxSize = Math.min(viewportWidth * 0.75, 880);
       }
       
       // Ensure minimum size for playability

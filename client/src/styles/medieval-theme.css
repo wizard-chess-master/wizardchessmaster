@@ -86,8 +86,8 @@ body {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  max-width: min(95vw, 850px);
-  padding: 8px;
+  max-width: min(98vw, 900px);
+  padding: 4px;
   box-sizing: border-box;
   position: relative;
 }
