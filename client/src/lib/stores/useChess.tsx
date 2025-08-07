@@ -197,8 +197,12 @@ export const useChess = create<ChessStore>()(
           aiLearning.analyzeGame(newState, aiColor, 'ai');
         }
         
-        // Don't auto-continue AI moves - let the TrainingViewer control the timing
-        // This prevents conflicts with the training viewer's speed control
+        // Continue AI vs AI game automatically if game is still playing
+        if (newState.gamePhase === 'playing') {
+          setTimeout(() => {
+            get().makeAIVsAIMove();
+          }, 1000); // 1 second delay between moves for visibility
+        }
       }
     },
 
