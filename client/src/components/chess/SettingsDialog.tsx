@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAudio, GameIntensity } from '../../lib/stores/useAudio';
+import { useAudio } from '../../lib/stores/useAudio';
 import { useChess } from '../../lib/stores/useChess';
 import {
   Dialog,
@@ -11,7 +11,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Switch } from '../ui/switch';
-import { Volume2, VolumeX, Info, Home } from 'lucide-react';
+import { Volume2, VolumeX, Info } from 'lucide-react';
 
 interface SettingsDialogProps {
   onClose: () => void;
@@ -22,12 +22,12 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="settings-dialog max-h-[85vh] overflow-y-auto max-w-md">
+      <DialogContent className="max-h-[85vh] overflow-y-auto max-w-md">
         <DialogHeader>
           <DialogTitle>Game Settings</DialogTitle>
         </DialogHeader>
         
-        <div className="settings-content space-y-4">
+        <div className="space-y-4">
           {/* Audio Settings */}
           <Card>
             <CardHeader className="pb-3">
