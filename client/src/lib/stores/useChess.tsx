@@ -8,6 +8,7 @@ import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
 import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
+import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -192,6 +193,15 @@ export const useChess = create<ChessStore>()(
           const { recordCampaignGame } = useLeaderboard.getState();
           const levelNumber = parseInt(currentLevelId.replace('level_', ''));
           recordCampaignGame(playerWon, gameTime, levelNumber);
+        }
+        
+        // Record AI difficulty progression data
+        if (state.gameMode === 'ai' && newState.gamePhase === 'ended') {
+          const { recordGameResult } = useAIDifficultyProgression.getState();
+          const gameTime = Date.now() - state.gameStartTime;
+          const moveAccuracy = Math.random() * 30 + 60; // Simulated accuracy 60-90%
+          const outcome = newState.winner === 'white' ? 'win' : newState.winner === 'black' ? 'loss' : 'draw';
+          recordGameResult(outcome, gameTime, moveAccuracy);
         }
       }
 

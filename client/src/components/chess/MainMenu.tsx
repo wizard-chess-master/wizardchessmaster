@@ -11,6 +11,7 @@ import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
+import { AIDifficultyVisualization } from './AIDifficultyVisualization';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 
@@ -323,6 +324,16 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
               Leaderboards
             </Button>
           </LeaderboardDialog>
+          
+          <AIDifficultyVisualization>
+            <Button
+              variant="outline"
+              className="medieval-btn"
+            >
+              <Brain className="w-4 h-4 mr-2" />
+              AI Difficulty
+            </Button>
+          </AIDifficultyVisualization>
         </div>
       </div>
 
