@@ -9,6 +9,7 @@ import { gameEventTracker } from "../achievements/gameEventTracker";
 import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
+import { useWizardAssistant } from "./useWizardAssistant";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -299,13 +300,28 @@ export const useChess = create<ChessStore>()(
           recordCampaignGame(playerWon, gameTime, levelNumber);
         }
         
-        // Record AI difficulty progression data
+        // Record AI difficulty progression data and wizard assistant data
         if (state.gameMode === 'ai' && newState.gamePhase === 'ended') {
           const { recordGameResult } = useAIDifficultyProgression.getState();
+          const { recordGamePerformance, generateHint, isActive } = useWizardAssistant.getState();
           const gameTime = Date.now() - state.gameStartTime;
           const moveAccuracy = Math.random() * 30 + 60; // Simulated accuracy 60-90%
           const outcome = newState.winner === 'white' ? 'win' : newState.winner === 'black' ? 'loss' : 'draw';
+          const playerWon = newState.winner === 'white';
+          
+          // Record for difficulty progression
           recordGameResult(outcome, gameTime, moveAccuracy);
+          
+          // Record for wizard assistant
+          recordGamePerformance(playerWon, newState.moveHistory.length, gameTime);
+          
+          // Generate post-game hint from wizard
+          if (isActive) {
+            const hintContext = playerWon 
+              ? "Excellent victory! Your strategic mind grows stronger with each triumph."
+              : "A valuable learning experience. Every master has faced such challenges - analyze and adapt.";
+            setTimeout(() => generateHint(newState, hintContext), 1000);
+          }
         }
       }
 
