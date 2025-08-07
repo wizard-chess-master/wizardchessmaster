@@ -147,7 +147,14 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
                     className="w-full mx-auto medieval-btn text-sm h-10 font-bold flex items-center justify-center"
                     size="default"
                     disabled={!level.unlocked}
-                    onClick={() => onStartLevel(level)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log('🎯 Campaign level button clicked:', level.name, 'unlocked:', level.unlocked);
+                      if (level.unlocked) {
+                        onStartLevel(level);
+                      }
+                    }}
                   >
                     {level.unlocked ? (
                       <>

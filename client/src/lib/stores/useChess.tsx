@@ -45,9 +45,16 @@ export const useChess = create<ChessStore>()(
     gameStartTime: Date.now(),
 
     startGame: (mode: GameMode, aiDifficulty: AIDifficulty = 'medium') => {
+      const newBoard = createInitialBoard();
+      console.log('🎮 Starting new game:', { mode, aiDifficulty });
+      console.log('📋 Initial board created:', newBoard);
+      console.log('🔍 White pawn positions (row 8):', newBoard[8]);
+      console.log('🔍 White back pieces (row 9):', newBoard[9]);
+      console.log('🔍 Black pawns (row 1):', newBoard[1]);
+      
       set({
         ...initialState,
-        board: createInitialBoard(),
+        board: newBoard,
         gamePhase: 'playing',
         gameMode: mode,
         aiDifficulty: aiDifficulty,
@@ -87,18 +94,21 @@ export const useChess = create<ChessStore>()(
       }
 
       const piece = state.board[position.row][position.col];
+      console.log('🔍 Clicked position:', position, 'Piece found:', piece, 'Current player:', state.currentPlayer);
       
       // If clicking on own piece, select it
       if (piece && piece.color === state.currentPlayer) {
         console.log('✅ Selecting piece:', piece, 'at', position);
         const validMoves = getValidMovesForPosition(state, position);
-        console.log('📋 Valid moves:', validMoves);
+        console.log('📋 Valid moves found:', validMoves.length, validMoves);
         set({
           selectedPosition: position,
           validMoves: validMoves
         });
         return;
       }
+      
+      console.log('❌ Cannot select:', { pieceExists: !!piece, pieceColor: piece?.color, currentPlayer: state.currentPlayer });
 
       // If a piece is selected and clicking on valid move, make the move
       if (state.selectedPosition) {

@@ -76,7 +76,7 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
       <DialogTrigger asChild onClick={handleOpenDialog}>
         {children}
       </DialogTrigger>
-      <DialogContent className="w-[90vw] max-w-4xl max-h-[85vh] bg-gray-900 border-2 border-yellow-600 rounded-lg flex flex-col overflow-hidden">
+      <DialogContent className="w-[90vw] max-w-4xl h-[85vh] bg-gray-900 border-2 border-yellow-600 rounded-lg flex flex-col overflow-hidden">
         <DialogHeader className="pb-4 flex-shrink-0 bg-gray-800 p-6 border-b border-yellow-600">
           <DialogTitle className="flex items-center gap-3 text-2xl text-yellow-400 font-bold">
             <Trophy className="w-6 h-6" />
@@ -99,8 +99,8 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 overflow-y-auto bg-gray-900">
-            <TabsContent value="map" className="mt-0 space-y-6 p-6 flex flex-col items-center">
+          <div className="flex-1 overflow-y-auto bg-gray-900 min-h-0">
+            <TabsContent value="map" className="mt-0 space-y-6 p-6 flex flex-col items-center h-full">
               <CampaignMap 
                 levels={levels}
                 onStartLevel={handleStartLevel}
@@ -109,19 +109,21 @@ export function CampaignDialog({ children }: CampaignDialogProps) {
               
               <Separator />
               
-              {/* Reset Campaign */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pt-2 mt-4 border-t border-gray-700/50">
-                <div className="text-xs sm:text-sm text-gray-400">
-                  Progress is automatically saved. Reset to start fresh.
+              {/* Reset Campaign - Fixed positioning */}
+              <div className="mt-auto pt-4 border-t border-gray-700/50 w-full max-w-4xl">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                  <div className="text-xs sm:text-sm text-gray-400">
+                    Progress is automatically saved. Reset to start fresh.
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="medieval-btn flex items-center gap-2 text-sm w-full sm:w-auto flex-shrink-0"
+                    onClick={handleResetCampaign}
+                  >
+                    <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" />
+                    Reset Campaign
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  className="medieval-btn flex items-center gap-2 text-sm w-full sm:w-auto"
-                  onClick={handleResetCampaign}
-                >
-                  <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4" />
-                  Reset Campaign
-                </Button>
               </div>
             </TabsContent>
 
