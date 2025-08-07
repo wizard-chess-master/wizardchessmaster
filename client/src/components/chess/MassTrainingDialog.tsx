@@ -4,6 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Brain, Play, Square, Zap, RotateCcw, Home } from 'lucide-react';
+import { useChess } from '../../lib/stores/useChess';
 // Temporarily using simulation to prevent UI issues
 // import { massTraining } from '../../lib/chess/massTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
@@ -13,11 +14,13 @@ interface MassTrainingDialogProps {
 }
 
 export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children }) => {
+  const { resetGame } = useChess();
   const [gameCount, setGameCount] = useState(1000); // Default to 1000 for better performance
   const [isTraining, setIsTraining] = useState(false);
   const [trainingResults, setTrainingResults] = useState<any>(null);
   const [trainingAborted, setTrainingAborted] = useState(false);
   const [trainingProgress, setTrainingProgress] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   const handleStartTraining = async () => {
     console.log('Starting mass training with', gameCount, 'games');
@@ -233,9 +236,9 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <div className="relative">
+        <div className="relative" onClick={() => setIsOpen(true)}>
           {children}
           <Badge variant="secondary" className="absolute -top-1 -right-1 text-xs">
             Neural Network
@@ -343,7 +346,11 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
               </Button>
               
               <Button 
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  // Close dialog and navigate to menu
+                  setIsOpen(false);
+                  resetGame();
+                }}
                 variant="outline" 
                 className="medieval-btn mode-button"
                 disabled={isTraining}

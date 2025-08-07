@@ -166,8 +166,8 @@ export function GameOverDialog() {
           
           <Button variant="outline" size="lg" className="medieval-btn mode-button" onClick={resetGame}>
             <div className="mode-content">
-              <span>🏠 Quit</span>
-              <Badge variant="secondary">Menu</Badge>
+              <span>🏠 Return to Menu</span>
+              <Badge variant="secondary">Home</Badge>
             </div>
           </Button>
         </div>

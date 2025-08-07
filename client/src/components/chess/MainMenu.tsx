@@ -465,6 +465,19 @@ export function MainMenu({ onSettings, onTrainingViewer }: MainMenuProps) {
             </DialogTitle>
           </DialogHeader>
           
+          {/* Navigation button at top */}
+          <div className="flex gap-2 mb-4 pb-4 border-b">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowDebugDialog(false)}
+              className="medieval-btn"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Back to Menu
+            </Button>
+          </div>
+          
           {debugResults && (
             <div className="space-y-4 p-4">
               <div className={`text-lg font-semibold ${debugResults.completed ? 'text-green-600' : 'text-orange-600'}`}>

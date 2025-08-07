@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAudio } from '../../lib/stores/useAudio';
+import { useChess } from '../../lib/stores/useChess';
 import {
   Dialog,
   DialogContent,
@@ -120,7 +121,9 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
             className="medieval-btn mode-button"
             onClick={() => {
               onClose();
-              window.location.reload();
+              // Use resetGame from useChess instead of window.location.reload()
+              const { resetGame } = useChess.getState();
+              resetGame();
             }}
           >
             <div className="mode-content">
