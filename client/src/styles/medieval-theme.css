@@ -86,8 +86,8 @@ body {
   justify-content: center;
   gap: 10px;
   width: 100%;
-  max-width: min(95vw, 850px);
-  padding: 10px;
+  max-width: min(95vw, 600px);
+  padding: 8px;
   box-sizing: border-box;
   position: relative;
 }
@@ -95,16 +95,16 @@ body {
 /* Game UI appears third (at bottom) */
 .game-ui {
   order: 3;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   justify-content: center;
-  align-items: start;
+  align-items: center;
   margin: 15px 0;
   /* Match board container width */
-  max-width: min(95vw, 850px);
+  max-width: min(95vw, 600px);
   width: 100%;
-  padding: 0 8px;
+  padding: 0 12px;
   box-sizing: border-box;
 }
 

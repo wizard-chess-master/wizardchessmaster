@@ -47,31 +47,31 @@ export function GameUI({ onSettings }: GameUIProps) {
       {/* Top Ad Banner */}
       <AdBanner 
         id="game-banner-top" 
-        className="mb-4"
-        style={{ maxWidth: '100%' }}
+        className="mb-3"
+        style={{ maxWidth: '600px', width: '100%' }}
       />
 
       {/* Game Status Card */}
-      <Card className="medieval-panel game-status">
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between medieval-text">
+      <Card className="medieval-panel game-status w-full max-w-md">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center justify-between medieval-text text-sm">
             <span>🏰 Fantasy Chess</span>
-            <Badge variant="outline">{getGameModeDisplay()}</Badge>
+            <Badge variant="outline" className="text-xs">{getGameModeDisplay()}</Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="status-info">
+        <CardContent className="pt-0">
+          <div className="status-info flex items-center justify-between">
             <div className="current-player">
-              <span className={`player-indicator ${currentPlayer} medieval-text`}>
+              <span className={`player-indicator ${currentPlayer} medieval-text text-sm font-medium`}>
                 {getCurrentPlayerDisplay()}
               </span>
               {isInCheck && (
-                <Badge variant="destructive" className="ml-2">
+                <Badge variant="destructive" className="ml-2 text-xs">
                   ⚠️ Check!
                 </Badge>
               )}
             </div>
-            <div className="move-count medieval-text">
+            <div className="move-count medieval-text text-sm text-muted-foreground">
               Move: {Math.floor(moveHistory.length / 2) + 1}
             </div>
           </div>
@@ -79,9 +79,9 @@ export function GameUI({ onSettings }: GameUIProps) {
       </Card>
 
       {/* Game Controls */}
-      <Card className="medieval-panel game-controls">
-        <CardContent className="pt-6">
-          <div className="control-buttons flex flex-wrap gap-2 justify-center">
+      <Card className="medieval-panel game-controls w-full max-w-md">
+        <CardContent className="pt-4">
+          <div className="control-buttons grid grid-cols-2 gap-2 w-full max-w-md">
             <Button
               variant="outline"
               size="sm"
@@ -153,18 +153,18 @@ export function GameUI({ onSettings }: GameUIProps) {
       </Card>
 
       {/* Move History */}
-      <Card className="medieval-panel move-history">
-        <CardHeader>
-          <CardTitle className="medieval-text">📜 Move History</CardTitle>
+      <Card className="medieval-panel move-history w-full max-w-md">
+        <CardHeader className="pb-3">
+          <CardTitle className="medieval-text text-sm">📜 Move History</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="history-list">
+        <CardContent className="pt-0">
+          <div className="history-list max-h-32 overflow-y-auto">
             {moveHistory.length === 0 ? (
-              <p className="text-muted-foreground">No moves yet</p>
+              <p className="text-muted-foreground text-sm">No moves yet</p>
             ) : (
-              moveHistory.slice(-10).map((move, index) => (
-                <div key={index} className="history-move">
-                  <span className="move-number">{moveHistory.length - 10 + index + 1}.</span>
+              moveHistory.slice(-6).map((move, index) => (
+                <div key={index} className="history-move text-xs py-1 flex gap-2">
+                  <span className="move-number font-mono">{moveHistory.length - 6 + index + 1}.</span>
                   <span className="move-notation">
                     {move.piece.type} {String.fromCharCode(65 + move.from.col)}{10 - move.from.row} → {String.fromCharCode(65 + move.to.col)}{10 - move.to.row}
                     {move.captured && ` x${move.captured.type}`}
@@ -179,8 +179,8 @@ export function GameUI({ onSettings }: GameUIProps) {
       </Card>
 
       {/* Game Rules - Collapsible */}
-      <Card className="medieval-panel game-help">
-        <CardHeader>
+      <Card className="medieval-panel game-help w-full max-w-md">
+        <CardHeader className="pb-0">
           <Button
             variant="ghost"
             onClick={() => setShowRules(!showRules)}
@@ -229,8 +229,8 @@ export function GameUI({ onSettings }: GameUIProps) {
       </Card>
 
       {/* Game Controls - Collapsible */}
-      <Card className="medieval-panel game-help">
-        <CardHeader>
+      <Card className="medieval-panel game-help w-full max-w-md">
+        <CardHeader className="pb-0">
           <Button
             variant="ghost"
             onClick={() => setShowControls(!showControls)}
@@ -278,8 +278,8 @@ export function GameUI({ onSettings }: GameUIProps) {
       {/* Bottom Ad Banner */}
       <AdBanner 
         id="game-banner-bottom" 
-        className="mt-4"
-        style={{ maxWidth: '100%' }}
+        className="mt-3"
+        style={{ maxWidth: '600px', width: '100%' }}
       />
     </div>
   );
