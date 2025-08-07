@@ -78,20 +78,20 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Campaign Progress Overview */}
       <Card className="medieval-card">
-        <CardContent className="p-4">
+        <CardContent className="p-3 sm:p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Campaign Progress</span>
-            <span className="text-sm text-gray-400">{Math.round(playerProgress)}% Complete</span>
+            <span className="text-sm sm:text-base font-medium">Campaign Progress</span>
+            <span className="text-xs sm:text-sm text-gray-400">{Math.round(playerProgress)}% Complete</span>
           </div>
           <Progress value={playerProgress} className="h-2" />
         </CardContent>
       </Card>
 
       {/* Campaign Map */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {levels.map((level, index) => {
           const winRate = getWinRate(level);
           const isCurrentLevel = level.unlocked && !level.completed;
@@ -99,37 +99,37 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
           return (
             <Card 
               key={level.id}
-              className={`medieval-card transition-all duration-200 hover:scale-105 ${
+              className={`medieval-card transition-all duration-200 hover:scale-[1.02] hover:shadow-lg ${
                 !level.unlocked ? 'opacity-50' : 
                 level.completed ? 'border-green-500/50 bg-green-500/5' :
-                isCurrentLevel ? 'border-yellow-500/50 bg-yellow-500/5 shadow-lg' : ''
+                isCurrentLevel ? 'border-yellow-500/50 bg-yellow-500/5 shadow-lg shadow-yellow-500/10' : ''
               }`}
             >
-              <CardContent className="p-4">
-                <div className="space-y-3">
+              <CardContent className="p-3 sm:p-4">
+                <div className="space-y-2.5 sm:space-y-3">
                   {/* Level Header */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {getLevelIcon(level)}
-                      <div className="text-sm font-medium">Level {index + 1}</div>
+                      <div className="text-xs sm:text-sm font-medium">Level {index + 1}</div>
                     </div>
-                    <div className={`w-3 h-3 rounded-full ${getDifficultyColor(level.difficulty)}`} />
+                    <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full ${getDifficultyColor(level.difficulty)}`} />
                   </div>
                   
                   {/* Level Info */}
-                  <div>
-                    <h4 className="font-bold text-sm medieval-text mb-1">{level.name}</h4>
-                    <p className="text-xs text-gray-400 line-clamp-2">{level.description}</p>
+                  <div className="min-h-[2.5rem] sm:min-h-[3rem]">
+                    <h4 className="font-bold text-xs sm:text-sm medieval-text mb-1 leading-tight">{level.name}</h4>
+                    <p className="text-xs text-gray-400 line-clamp-2 leading-tight">{level.description}</p>
                   </div>
                   
                   {/* Level Stats */}
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-0.5 sm:gap-1">
                       {renderStars(level.stars)}
                     </div>
                     {level.attempts > 0 && (
                       <div className="text-xs text-gray-400">
-                        {winRate.toFixed(0)}% win rate
+                        {winRate.toFixed(0)}%
                       </div>
                     )}
                   </div>
@@ -137,14 +137,14 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
                   {/* Difficulty Badge */}
                   <Badge 
                     variant="outline" 
-                    className="text-xs capitalize"
+                    className="text-xs capitalize w-full justify-center"
                   >
                     {level.difficulty}
                   </Badge>
                   
                   {/* Action Button */}
                   <Button
-                    className="w-full medieval-btn text-xs"
+                    className="w-full medieval-btn text-xs h-8 sm:h-9"
                     size="sm"
                     disabled={!level.unlocked}
                     onClick={() => onStartLevel(level)}
@@ -164,7 +164,7 @@ export function CampaignMap({ levels, onStartLevel, playerProgress }: CampaignMa
                   
                   {/* Unlock Requirements */}
                   {!level.unlocked && index > 0 && (
-                    <div className="text-xs text-gray-500 text-center">
+                    <div className="text-xs text-gray-500 text-center leading-tight">
                       Complete previous level
                     </div>
                   )}

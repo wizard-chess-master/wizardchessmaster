@@ -51,104 +51,106 @@ export function CampaignStats({ playerStats }: CampaignStatsProps) {
     color?: string;
     subtitle?: string;
   }) => (
-    <div className="text-center p-3 rounded-lg bg-gray-800/20">
-      <Icon className={`w-5 h-5 mx-auto mb-2 ${color}`} />
-      <div className={`text-lg font-bold ${color}`}>
+    <div className="text-center p-2.5 sm:p-3 rounded-lg bg-gray-800/20 min-h-[4rem] sm:min-h-[4.5rem] flex flex-col justify-center">
+      <Icon className={`w-4 h-4 sm:w-5 sm:h-5 mx-auto mb-1.5 sm:mb-2 ${color}`} />
+      <div className={`text-sm sm:text-lg font-bold ${color} leading-tight`}>
         {value}
       </div>
-      <div className="text-xs text-gray-400">{label}</div>
+      <div className="text-xs text-gray-400 leading-tight">{label}</div>
       {subtitle && (
-        <div className="text-xs text-gray-500 mt-1">{subtitle}</div>
+        <div className="text-xs text-gray-500 mt-0.5 sm:mt-1 leading-tight">{subtitle}</div>
       )}
     </div>
   );
 
   return (
-    <Card className="medieval-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg medieval-text">
-          <Target className="w-5 h-5" />
-          Your Statistics
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Skill Level & Progress */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <skillLevel.icon className={`w-5 h-5 ${skillLevel.color}`} />
-              <span className="font-medium">Skill Level</span>
+    <div className="space-y-4">
+      <Card className="medieval-card">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg medieval-text">
+            <Target className="w-4 h-4 sm:w-5 sm:h-5" />
+            Your Statistics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4 sm:space-y-6">
+          {/* Skill Level & Progress */}
+          <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <skillLevel.icon className={`w-4 h-4 sm:w-5 sm:h-5 ${skillLevel.color}`} />
+                <span className="font-medium text-sm sm:text-base">Skill Level</span>
+              </div>
+              <Badge className={`${skillLevel.color} border-current text-xs sm:text-sm w-fit`}>
+                {skillLevel.name}
+              </Badge>
             </div>
-            <Badge className={`${skillLevel.color} border-current`}>
-              {skillLevel.name}
-            </Badge>
-          </div>
-          
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Rating: {playerStats.skillRating}</span>
-              <span>Progress: {Math.round(playerStats.campaignProgress)}%</span>
+            
+            <div className="space-y-2">
+              <div className="flex justify-between text-xs sm:text-sm">
+                <span>Rating: {playerStats.skillRating}</span>
+                <span>Progress: {Math.round(playerStats.campaignProgress)}%</span>
+              </div>
+              <Progress value={playerStats.campaignProgress} className="h-2" />
             </div>
-            <Progress value={playerStats.campaignProgress} className="h-2" />
           </div>
-        </div>
 
-        {/* Core Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <StatCard
-            icon={Trophy}
-            label="Victories"
-            value={playerStats.totalWins}
-            color="text-yellow-400"
-          />
-          
-          <StatCard
-            icon={TrendingUp}
-            label="Win Rate"
-            value={`${winRate.toFixed(0)}%`}
-            color={winRate >= 70 ? "text-green-400" : winRate >= 50 ? "text-yellow-400" : "text-red-400"}
-          />
-          
-          <StatCard
-            icon={Zap}
-            label="Win Streak"
-            value={playerStats.winStreak}
-            color="text-blue-400"
-            subtitle={`Best: ${playerStats.bestWinStreak}`}
-          />
-          
-          <StatCard
-            icon={Clock}
-            label="Avg Time"
-            value={formatTime(avgGameTime)}
-            color="text-purple-400"
-          />
-        </div>
+          {/* Core Stats Grid */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            <StatCard
+              icon={Trophy}
+              label="Victories"
+              value={playerStats.totalWins}
+              color="text-yellow-400"
+            />
+            
+            <StatCard
+              icon={TrendingUp}
+              label="Win Rate"
+              value={`${winRate.toFixed(0)}%`}
+              color={winRate >= 70 ? "text-green-400" : winRate >= 50 ? "text-yellow-400" : "text-red-400"}
+            />
+            
+            <StatCard
+              icon={Zap}
+              label="Win Streak"
+              value={playerStats.winStreak}
+              color="text-blue-400"
+              subtitle={`Best: ${playerStats.bestWinStreak}`}
+            />
+            
+            <StatCard
+              icon={Clock}
+              label="Avg Time"
+              value={formatTime(avgGameTime)}
+              color="text-purple-400"
+            />
+          </div>
 
-        {/* Additional Stats */}
-        <div className="grid grid-cols-3 gap-3 pt-3 border-t border-gray-700">
-          <div className="text-center">
-            <div className="text-sm font-semibold text-gray-300">
-              {playerStats.totalGames}
+          {/* Additional Stats */}
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-3 border-t border-gray-700">
+            <div className="text-center">
+              <div className="text-sm sm:text-base font-semibold text-gray-300">
+                {playerStats.totalGames}
+              </div>
+              <div className="text-xs text-gray-500 leading-tight">Total Games</div>
             </div>
-            <div className="text-xs text-gray-500">Total Games</div>
-          </div>
-          
-          <div className="text-center">
-            <div className="text-sm font-semibold text-gray-300">
-              {playerStats.averageMovesPerGame.toFixed(0)}
+            
+            <div className="text-center">
+              <div className="text-sm sm:text-base font-semibold text-gray-300">
+                {playerStats.averageMovesPerGame.toFixed(0)}
+              </div>
+              <div className="text-xs text-gray-500 leading-tight">Avg Moves</div>
             </div>
-            <div className="text-xs text-gray-500">Avg Moves</div>
-          </div>
-          
-          <div className="text-center">
-            <div className="text-sm font-semibold text-gray-300">
-              {formatTime((playerStats.totalPlayTime || 0) / 1000)}
+            
+            <div className="text-center">
+              <div className="text-sm sm:text-base font-semibold text-gray-300">
+                {formatTime((playerStats.totalPlayTime || 0) / 1000)}
+              </div>
+              <div className="text-xs text-gray-500 leading-tight">Play Time</div>
             </div>
-            <div className="text-xs text-gray-500">Play Time</div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
