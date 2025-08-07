@@ -134,10 +134,7 @@ export function MainMenu({ onSettings, onAchievements }: MainMenuProps) {
                     <Badge variant="secondary">Training</Badge>
                   </div>
                 </Button>
-
-
-
-
+                
 
                 <CampaignDialog>
                   <Button className="medieval-btn mode-button">
