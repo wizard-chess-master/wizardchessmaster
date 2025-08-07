@@ -5,6 +5,7 @@ import { Badge } from '../ui/badge';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../ui/collapsible';
 import { ChevronDown, Settings, ChevronUp } from 'lucide-react';
 import { useChess } from '../../lib/stores/useChess';
+import { useAudio } from '../../lib/stores/useAudio';
 // import { GameHints } from './GameHints';
 import { AdBanner } from '../monetization/AdBanner';
 // import { useAmbientSound } from '../../lib/stores/useAmbientSound';
