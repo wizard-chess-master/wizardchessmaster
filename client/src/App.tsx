@@ -90,10 +90,10 @@ function App() {
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && !showTrainingViewer && (
           <div className="game-layout">
-            <GameUI onSettings={() => setShowSettings(true)} />
             <div className="board-container">
               <ChessBoard />
             </div>
+            <GameUI onSettings={() => setShowSettings(true)} />
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
         )}
