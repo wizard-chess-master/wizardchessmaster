@@ -73,9 +73,29 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
-      // Audio managed by ChessAudioController component
+      // Initialize Theme-music1.mp3 directly in game start function as requested
+      const cleanAudio = () => {
+        new AudioContext().close();
+        document.querySelectorAll('audio').forEach(a => a.remove());
+        console.log('Audio cleanup:', document.querySelectorAll('audio').length);
+      };
       
-      // Audio managed by ChessAudioController component
+      // Call cleanup function first
+      cleanAudio();
+      
+      // Create and play theme music as requested
+      const theme = new Audio('/assets/music/Theme-music1.mp3?v=16');
+      theme.loop = true;
+      theme.volume = 0.42;
+      console.log('Theme created:', theme.src);
+      
+      theme.play()
+        .then(() => {
+          console.log('✅ Theme-music1.mp3 v=16 started successfully from game start');
+        })
+        .catch((error) => {
+          console.error('❌ Failed to play theme music from game start:', error);
+        });
       
       // Verify board state after setting
       setTimeout(() => {

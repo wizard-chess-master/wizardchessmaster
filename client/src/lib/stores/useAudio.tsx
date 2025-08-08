@@ -113,8 +113,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       return;
     }
 
-    // Create new Audio instance with v=15 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=15');
+    // Create new Audio instance with v=16 cache busting as requested
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=16');
     theme.loop = true;
     theme.volume = 0.42; // Set exact volume as requested
     
@@ -130,7 +130,7 @@ export const useAudio = create<AudioState>((set, get) => ({
     theme.play()
       .then(() => {
         console.log('✅ Background music started successfully');
-        console.log('✅ Theme-music1.mp3 v=15 confirmed playing');
+        console.log('✅ Theme-music1.mp3 v=16 confirmed playing');
         set({ backgroundMusic: theme });
       })
       .catch((error) => {

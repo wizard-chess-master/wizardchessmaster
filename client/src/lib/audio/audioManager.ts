@@ -316,7 +316,7 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=15 parameter added');
+    console.log('🎵 Cache busting with ?v=16 parameter added');
     
     // Dedicated cleanup function as specifically requested
     function cleanAudio() {
@@ -332,7 +332,7 @@ class WizardChessAudioManager {
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=15');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=16');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -342,8 +342,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting v=15
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=15');
+    // Create new Audio instance with updated cache busting v=16
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=16');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     
