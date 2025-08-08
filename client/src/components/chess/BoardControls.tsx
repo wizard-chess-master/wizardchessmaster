@@ -47,6 +47,11 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
               // Voice feedback for hint request
               wizardVoiceSystem.onGameEvent('hint_requested');
               
+              // Record hint request for emotion analysis
+              import('../../lib/emotion/emotionRecognition').then(({ emotionEngine }) => {
+                emotionEngine.recordPlayerAction('hint_requested');
+              });
+              
               import('../../lib/chess/hintSystem').then(({ hintSystem }) => {
                 const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
                 if (hint) {

@@ -11,6 +11,8 @@ import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
 import { wizardVoiceSystem } from "../audio/wizardVoiceSystem";
+import { emotionEngine } from "../emotion/emotionRecognition";
+import { startEmotionMonitoring } from "../emotion/emotionResponseSystem";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -85,6 +87,12 @@ export const useChess = create<ChessStore>()(
         wizardVoiceSystem.onGameEvent('game_start');
       }, 1000);
       
+      // Reset emotion tracking for new game
+      emotionEngine.resetBehaviorData();
+      
+      // Start emotion monitoring
+      startEmotionMonitoring();
+      
       // Verify board state after setting
       setTimeout(() => {
         const { board } = get();
@@ -134,6 +142,9 @@ export const useChess = create<ChessStore>()(
         console.log('✅ Selecting piece:', piece, 'at', position);
         const validMoves = getValidMovesForPosition(state, position);
         console.log('📋 Valid moves found:', validMoves.length, validMoves);
+        
+        // Record exploration behavior for emotion analysis
+        emotionEngine.recordPlayerAction('piece_clicked');
         
         // Debug current board state for castling
         if (piece.type === 'king') {
@@ -258,6 +269,20 @@ export const useChess = create<ChessStore>()(
 
       const newState = makeMove(state, move);
       set(newState);
+      
+      // Record move for emotion analysis
+      const moveTime = Date.now() - (get().gameStartTime || Date.now());
+      const moveQuality = Math.random() * 40 + 60; // Simulated quality 60-100
+      emotionEngine.recordPlayerAction('move_made', { moveTime: moveTime % 30000, quality: moveQuality });
+      
+      // Check if move was good or bad for emotion tracking
+      if (newState.isInCheck && newState.currentPlayer === 'black') {
+        emotionEngine.recordPlayerAction('good_move');
+      } else if (captured && captured.type === 'queen') {
+        emotionEngine.recordPlayerAction('error_made');
+      } else if (captured && ['rook', 'bishop', 'knight'].includes(captured.type)) {
+        emotionEngine.recordPlayerAction('good_move');
+      }
       
       // Play game event sounds for check/checkmate and update music
       if (!isMuted) {
@@ -459,6 +484,9 @@ export const useChess = create<ChessStore>()(
       
       // Voice feedback for undo
       wizardVoiceSystem.onGameEvent('move_undone');
+      
+      // Record undo usage for emotion analysis
+      emotionEngine.recordPlayerAction('undo_used');
     }
   }))
 );
