@@ -28,7 +28,14 @@ export function ChessAudioController() {
     switch (gamePhase) {
       case 'playing':
         if (moveHistory.length === 0) {
+          console.log('🎵 TRIGGERING Theme-music1.mp3 via ChessAudioController...');
           wizardChessAudio.onGameStart();
+          
+          // Also ensure we stop any competing audio from gameAudioManager
+          if ((window as any).gameAudioManager?.stopMusic) {
+            (window as any).gameAudioManager.stopMusic();
+            console.log('🛑 Stopped competing gameAudioManager music');
+          }
         }
         break;
       case 'ended':
