@@ -16,7 +16,7 @@ import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { AIDifficultyVisualization } from './AIDifficultyVisualization';
 import { AdminLogin } from './AdminLogin';
-import { MagicalSoundTestPanel } from '../audio/MagicalSoundTestPanel';
+
 import { isAdminFeatureEnabled, isAdminEnabled } from '../../lib/admin';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
@@ -25,10 +25,9 @@ interface MainMenuProps {
   onSettings: () => void;
   onAchievements: () => void;
   onCollection: () => void;
-  onAudioTest?: () => void;
 }
 
-export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest }: MainMenuProps) {
+export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuProps) {
   const { startGame, resetGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
@@ -36,7 +35,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
   const [adminRefresh, setAdminRefresh] = useState(0);
-  const [showSoundTestPanel, setShowSoundTestPanel] = useState(false);
+
 
   // Debug admin state on every render
   useEffect(() => {
@@ -273,32 +272,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
                     <Badge variant="outline">Pass & Play</Badge>
                   </div>
                 </Button>
-                
-                {/* Magical Sound Test Panel */}
-                <Button
-                  className="medieval-btn mode-button"
-                  variant="outline"
-                  onClick={() => setShowSoundTestPanel(true)}
-                >
-                  <div className="mode-content">
-                    <span>🎵 Test Magical Sounds</span>
-                    <Badge variant="outline">43 Fantasy Audio Effects</Badge>
-                  </div>
-                </Button>
 
-                {/* Immersive 3D Audio Test Panel */}
-                {onAudioTest && (
-                  <Button
-                    className="medieval-btn mode-button"
-                    variant="outline"
-                    onClick={onAudioTest}
-                  >
-                    <div className="mode-content">
-                      <span>🎭 Test 3D Spatial Audio</span>
-                      <Badge variant="outline">Web Audio API + 3D Chess Sounds</Badge>
-                    </div>
-                  </Button>
-                )}
               </div>
             </CardContent>
           </Card>
@@ -660,38 +634,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
         </DialogContent>
         </Dialog>
       )}
-      
-      {/* Magical Sound Test Panel Dialog */}
-      {showSoundTestPanel && (
-        <Dialog open={showSoundTestPanel} onOpenChange={setShowSoundTestPanel}>
-          <DialogContent className="max-w-6xl w-[95vw] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <Wand2 className="w-5 h-5" />
-                Magical Sound Test Panel
-              </DialogTitle>
-              <DialogClose />
-            </DialogHeader>
-            
-            {/* Navigation button */}
-            <div className="flex gap-2 mb-4 pb-4 border-b">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowSoundTestPanel(false)}
-                className="medieval-btn"
-              >
-                <Home className="w-4 h-4 mr-2" />
-                Back to Menu
-              </Button>
-            </div>
-            
-            <div className="pr-2">
-              <MagicalSoundTestPanel />
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+
     </div>
   );
 }
