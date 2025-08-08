@@ -672,7 +672,7 @@ export function ChessBoard() {
     
     // Trigger audio with spatial positioning
     if (isWizard) {
-      playWizardAbility('attack', x / canvasSize, y / canvasSize);
+      playWizardAbility('ranged_attack');
     } else {
       playGameEvent('capture');
     }
@@ -720,7 +720,7 @@ export function ChessBoard() {
         );
       }, 150);
       
-      playWizardAbility('teleport', spatialX, spatialY);
+      playWizardAbility('teleport');
       createWizardSparkles(fromCol * squareSize + squareSize * 0.5, fromRow * squareSize + squareSize * 0.5);
       setTimeout(() => {
         createWizardSparkles(toCol * squareSize + squareSize * 0.5, toRow * squareSize + squareSize * 0.5);
@@ -730,11 +730,11 @@ export function ChessBoard() {
       createAttackBurst(toCol * squareSize + squareSize * 0.5, toRow * squareSize + squareSize * 0.5, piece.color, piece.type === 'wizard');
       
     } else if (piece.type === 'wizard') {
-      playWizardAbility('move', spatialX, spatialY);
+      playWizardAbility('summon');
       createWizardSparkles(centerX, centerY);
       
     } else {
-      playPieceMovementSound(piece.type, spatialX, spatialY);
+      playPieceMovementSound(piece.type, false);
     }
   };
 
@@ -959,8 +959,8 @@ export function ChessBoard() {
     }
     setParticles(prev => [...prev, ...clickParticles]);
     
-    // Play UI sound with spatial audio
-    playUISound('click', x / canvasSize, y / canvasSize);
+    // Play UI sound
+    playUISound('click');
     
     // Call original click handler
     handleCanvasClick(event);

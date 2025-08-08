@@ -26,6 +26,8 @@ export interface ChessMove {
   promotion?: PieceType; // For pawn promotion
   isCastling?: boolean;
   rookMove?: { from: Position; to: Position }; // For castling, track rook movement
+  notation?: string; // Move notation (e.g., "e2e4", "Nf3")
+  move?: string; // Alternative move representation
 }
 
 export interface GameState {

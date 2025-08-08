@@ -46,7 +46,7 @@ interface AudioState {
   }) => Promise<void>;
   playPieceMovementSound: (pieceType: string, isCapture?: boolean) => Promise<void>;
   playWizardAbility: (abilityType: 'teleport' | 'ranged_attack' | 'summon') => Promise<void>;
-  playGameEvent: (eventType: 'check' | 'checkmate_win' | 'checkmate_lose' | 'castling' | 'promotion' | 'game_start') => Promise<void>;
+  playGameEvent: (eventType: 'check' | 'checkmate_win' | 'checkmate_lose' | 'castling' | 'promotion' | 'game_start' | 'capture') => Promise<void>;
   playUISound: (uiType: 'hover' | 'click' | 'menu_open' | 'menu_close' | 'success' | 'error' | 'notification') => Promise<void>;
   playAmbientMagic: (intensityLevel: 'low' | 'medium' | 'high') => Promise<void>;
   stopAmbientMagic: () => void;
@@ -438,12 +438,17 @@ export const useAudio = create<AudioState>((set, get) => ({
     }
   },
   
-  playGameEvent: async (eventType: 'check' | 'checkmate_win' | 'checkmate_lose' | 'castling' | 'promotion' | 'game_start') => {
+  playGameEvent: async (eventType: 'check' | 'checkmate_win' | 'checkmate_lose' | 'castling' | 'promotion' | 'game_start' | 'capture') => {
     const { isMuted } = get();
     if (isMuted) return;
     
     try {
-      await magicalSoundLibrary.playGameEvent(eventType);
+      // Handle 'capture' events by using piece movement sound for captures
+      if (eventType === 'capture') {
+        await magicalSoundLibrary.playPieceMovementSound('piece', true);
+      } else {
+        await magicalSoundLibrary.playGameEvent(eventType);
+      }
     } catch (error) {
       console.log(`🎭 Failed to play game event sound: ${eventType}`, error);
     }
