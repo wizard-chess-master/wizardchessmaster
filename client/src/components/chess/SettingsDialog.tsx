@@ -2,6 +2,7 @@ import React from 'react';
 import { useAudio } from '../../lib/stores/useAudio';
 import { VolumeControls } from '../audio/VolumeControls';
 import { useChess } from '../../lib/stores/useChess';
+import { playButtonClickSound } from '../../lib/audio/buttonSounds';
 import {
   Dialog,
   DialogContent,
@@ -19,7 +20,7 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ onClose }: SettingsDialogProps) {
-  const { isMuted, toggleMute, isAmbientEnabled, toggleAmbient, currentIntensity } = useAudio();
+  const { isMuted, toggleMute } = useAudio();
 
   return (
     <Dialog open onOpenChange={onClose}>
@@ -32,54 +33,25 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
           {/* New Game Audio Controls */}
           <VolumeControls />
           
-          {/* Legacy Audio Settings */}
+          {/* Game Information */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
-                {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                Legacy Audio
+                <Info className="w-5 h-5" />
+                Audio Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">Legacy Sound Effects</label>
-                  <p className="text-xs text-muted-foreground">
-                    Legacy audio system (use new controls above)
-                  </p>
-                </div>
-                <Switch
-                  checked={!isMuted}
-                  onCheckedChange={toggleMute}
-                />
+            <CardContent className="pt-0 space-y-3">
+              <div className="text-sm space-y-1">
+                <p><strong>Sound Effects:</strong> Move sounds, captures, wizard abilities</p>
+                <p><strong>Voice Narration:</strong> Game events and guidance</p>
+                <p><strong>Music:</strong> Background theme with dynamic intensity</p>
               </div>
               
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <label className="text-sm font-medium">Legacy Ambient Sounds</label>
-                  <p className="text-xs text-muted-foreground">
-                    Legacy dynamic background music
-                  </p>
-                </div>
-                <Switch
-                  checked={isAmbientEnabled}
-                  onCheckedChange={toggleAmbient}
-                />
+              <div className="text-xs text-muted-foreground bg-secondary/20 p-2 rounded">
+                <strong>Note:</strong> Audio files load from /assets/ directories. 
+                Place your MP3 files in the appropriate folders for full functionality.
               </div>
-              
-              {isAmbientEnabled && (
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium">Current Intensity</label>
-                    <p className="text-xs text-muted-foreground">
-                      Auto-adjusts based on game state
-                    </p>
-                  </div>
-                  <Badge variant="outline" className="capitalize">
-                    {currentIntensity}
-                  </Badge>
-                </div>
-              )}
             </CardContent>
           </Card>
 
@@ -124,6 +96,7 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
             variant="outline"
             className="flex-1"
             onClick={() => {
+              playButtonClickSound();
               onClose();
               const { resetGame } = useChess.getState();
               resetGame();
@@ -133,7 +106,10 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
           </Button>
           <Button 
             className="flex-1" 
-            onClick={onClose}
+            onClick={() => {
+              playButtonClickSound();
+              onClose();
+            }}
           >
             ✕ Close
           </Button>

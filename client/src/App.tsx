@@ -38,14 +38,16 @@ function App() {
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
-  // Initialize basic audio and monetization
+  // Initialize audio and monetization systems
   useEffect(() => {
-    // Initialize basic audio system
-    initializeAudio();
-    
-    // Initialize monetization systems only
     const initSystems = async () => {
       try {
+        // Initialize audio system first
+        console.log('🎵 Initializing audio system...');
+        await initializeAudio();
+        console.log('✅ Audio system initialized');
+        
+        // Initialize monetization systems
         console.log('💳 Initializing monetization systems...');
         await initializeAds();
         await initializePayments();

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useChess } from '../../lib/stores/useChess';
-import { gameAudioManager } from '../../lib/audio/gameAudioManager';
+import { playButtonClickSound } from '../../lib/audio/buttonSounds';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -265,7 +265,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   variant="outline"
-                  onClick={() => startGame('local')}
+                  onClick={() => {
+                    playButtonClickSound();
+                    startGame('local');
+                  }}
                 >
                   <div className="mode-content">
                     <span>👥 Local Multiplayer</span>
@@ -354,7 +357,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         <div className="menu-footer">
           <Button
             variant="outline"
-            onClick={onSettings}
+            onClick={() => {
+              playButtonClickSound();
+              onSettings();
+            }}
             className="medieval-btn"
           >
             <Settings className="w-4 h-4 mr-2" />
@@ -363,7 +369,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           
           <Button
             variant="outline"
-            onClick={onAchievements}
+            onClick={() => {
+              playButtonClickSound();
+              onAchievements();
+            }}
             className="medieval-btn"
           >
             <Trophy className="w-4 h-4 mr-2" />
@@ -372,7 +381,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           
           <Button
             variant="outline"
-            onClick={onCollection}
+            onClick={() => {
+              playButtonClickSound();
+              onCollection();
+            }}
             className="medieval-btn"
           >
             <Crown className="w-4 h-4 mr-2" />
