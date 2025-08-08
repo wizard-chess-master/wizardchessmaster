@@ -111,15 +111,14 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     console.log('🎵 FORCING Theme-music1.mp3 on Player vs AI - Easy click...');
                     
                     // Enhanced cleanup function
-                    function cleanAudio() {
-                      new AudioContext().close();
-                      let audios = document.querySelectorAll('audio');
-                      audios.forEach(a => { 
+                    function cleanAudio() { 
+                      new AudioContext().close(); 
+                      document.querySelectorAll('audio').forEach(a => { 
                         a.pause(); 
                         a.currentTime = 0; 
                         a.remove(); 
-                      });
-                      console.log('Audio cleanup count:', audios.length);
+                      }); 
+                      console.log('Audio cleanup count:', document.querySelectorAll('audio').length); 
                     }
                     
                     // Call cleanup first

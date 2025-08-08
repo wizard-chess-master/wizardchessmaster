@@ -16,7 +16,7 @@ export const isAdminEnabled = (): boolean => {
   const envAdminMode = import.meta.env.VITE_ADMIN_MODE === 'true';
   
   // Check for development environment
-  const isDevelopment = import.meta.env.DEV;
+  const isDevelopment = false;
   
   // Check session storage for admin authentication
   const adminSession = sessionStorage.getItem(ADMIN_SESSION_KEY);
