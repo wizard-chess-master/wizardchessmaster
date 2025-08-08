@@ -60,13 +60,43 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             variant="outline"
             size="sm"
             onClick={() => {
-              const { isMuted, toggleMute, playBackgroundMusic, backgroundMusic } = useAudio.getState();
-              console.log('🎵 Music button clicked:', { isMuted, hasBackgroundMusic: !!backgroundMusic });
+              const { isMuted, toggleMute } = useAudio.getState();
+              console.log('🎵 Music button clicked - Theme-music1.mp3 v=26 enforcement');
               
               if (isMuted) {
-                // Unmute and start background music
+                // Unmute and force Theme-music1.mp3
                 toggleMute();
-                setTimeout(() => playBackgroundMusic(), 100); // Small delay to ensure unmute is processed
+                
+                // Enhanced cleanup function
+                function cleanAudio() { 
+                  if (typeof AudioContext !== 'undefined') { 
+                    new AudioContext().close(); 
+                  } 
+                  document.querySelectorAll('audio').forEach(a => { 
+                    a.pause(); 
+                    a.currentTime = 0; 
+                    a.remove(); 
+                  }); 
+                  console.log('Audio cleanup count:', document.querySelectorAll('audio').length); 
+                }
+                
+                // Call cleanup first
+                cleanAudio();
+                
+                // Force theme playback with v=26 cache busting
+                const theme = new Audio('/assets/music/Theme-music1.mp3?v=26');
+                theme.loop = true;
+                theme.volume = 0.42;
+                console.log('Theme created from music button:', theme.src);
+                
+                theme.play()
+                  .then(() => {
+                    console.log('✅ Theme-music1.mp3 v=26 FORCED from music button');
+                    console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
+                  })
+                  .catch((error) => {
+                    console.error('❌ Failed to force theme music from button:', error);
+                  });
               } else {
                 // Mute all sounds
                 toggleMute();
