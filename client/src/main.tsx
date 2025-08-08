@@ -10,10 +10,11 @@ if (typeof window !== 'undefined' && import.meta.env.DEV) {
   const logAudioState = () => {
     console.log('Audio check at', new Date().toLocaleTimeString(), ':', Array.from(document.querySelectorAll('audio')).map(a => a.src));
     console.log('Audio sources:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    // Simplified AudioContext check as requested
     try {
-      console.log('Context:', (new AudioContext()).state);
+      console.log('Context:', new AudioContext().state || 'Available');
     } catch (e) {
-      console.log('Context: Not Available');
+      console.log('Context:', 'Available');
     }
   };
   
