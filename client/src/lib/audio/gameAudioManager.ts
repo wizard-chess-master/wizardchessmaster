@@ -283,7 +283,7 @@ class GameAudioManager {
       { key: 'sfx_checkmate', paths: ['/assets/sound-fx/checkmate.mp3', '/sounds/success.mp3'] },
       { key: 'sfx_victory', paths: ['/assets/sound-fx/victory.mp3', '/sounds/success.mp3'] },
       { key: 'sfx_button_click', paths: ['/assets/sound-fx/button_click.mp3', '/sounds/hit.mp3'] },
-      { key: 'sfx_level_start', paths: ['/assets/sound-fx/level_start.mp3', '/sounds/success.mp3'] }, // Removed background.mp3 reference
+      { key: 'sfx_level_start', paths: ['/assets/sound-fx/level_start.mp3', '/sounds/success.mp3'] }, // OLD MUSIC REMOVED
       { key: 'sfx_hint_reveal', paths: ['/assets/sound-fx/hint_reveal.mp3', '/sounds/success.mp3'] },
 
       // Voice Files

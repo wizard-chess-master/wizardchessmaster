@@ -79,11 +79,13 @@ export const useChess = create<ChessStore>()(
         (window as any).gameAudioManager = null;
       }
       
-      // Aggressive cleanup function
+      // Enhanced cleanup function
       function cleanAudio() {
-        new AudioContext().close();
+        const context = new AudioContext();
+        context.close();
         document.querySelectorAll('audio').forEach(a => { 
           a.pause(); 
+          a.currentTime = 0; 
           a.remove(); 
         });
         console.log('Audio cleanup:', document.querySelectorAll('audio').length);
@@ -92,15 +94,15 @@ export const useChess = create<ChessStore>()(
       // Call cleanup function first
       cleanAudio();
       
-      // Force theme playback with v=22 cache busting
-      const theme = new Audio('/assets/music/Theme-music1.mp3?v=22');
+      // Force theme playback with v=23 cache busting
+      const theme = new Audio('/assets/music/Theme-music1.mp3?v=23');
       theme.loop = true;
       theme.volume = 0.42;
       console.log('Theme created:', theme.src);
       
       theme.play()
         .then(() => {
-          console.log('✅ Theme-music1.mp3 v=22 FORCED playback started from game start');
+          console.log('✅ Theme-music1.mp3 v=23 FORCED playback started from game start');
           console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
         })
         .catch((error) => {
