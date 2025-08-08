@@ -83,7 +83,7 @@ export const useChess = create<ChessStore>()(
           document.querySelectorAll('audio').forEach(a => a.remove());
           console.log('Audio cleanup:', document.querySelectorAll('audio').length);
         } catch (error) {
-          console.log('Audio cleanup error (safe to ignore):', error.message);
+          console.log('Audio cleanup error (safe to ignore):', error instanceof Error ? error.message : String(error));
         }
       };
       
@@ -98,15 +98,15 @@ export const useChess = create<ChessStore>()(
       }
       
       // Create and play theme music as requested
-      const theme = new Audio('/assets/music/Theme-music1.mp3?v=18');
+      const theme = new Audio('/assets/music/Theme-music1.mp3?v=19');
       theme.loop = true;
       theme.volume = 0.42;
       console.log('Theme created:', theme.src);
       
       theme.play()
         .then(() => {
-          console.log('✅ Theme-music1.mp3 v=18 started successfully from game start');
-          console.log('Theme playing:', theme.src, theme.paused);
+          console.log('✅ Theme-music1.mp3 v=19 started successfully from game start');
+          console.log('Theme playing:', theme.src, theme.paused ? 'Paused' : 'Playing');
         })
         .catch((error) => {
           console.error('❌ Failed to play theme music from game start:', error);

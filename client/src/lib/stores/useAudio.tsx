@@ -96,42 +96,36 @@ export const useAudio = create<AudioState>((set, get) => ({
     
     // Dedicated cleanup function as specifically requested
     function cleanAudio() {
-      new AudioContext().close();
-      document.querySelectorAll('audio').forEach(a => a.remove());
-      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
+      try {
+        new AudioContext().close();
+        document.querySelectorAll('audio').forEach(a => a.remove());
+        console.log('Audio cleanup:', document.querySelectorAll('audio').length);
+      } catch (error) {
+        console.log('Audio cleanup error (safe to ignore):', error instanceof Error ? error.message : String(error));
+      }
     }
     
     // Call cleanup function before theme playback
     cleanAudio();
-    
-    // Exhaustive audio logging as requested
-    console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
-    console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
     
     if (isMuted) {
       console.log('🎵 Background music not started - audio is muted');
       return;
     }
 
-    // Create new Audio instance with v=18 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=18');
+    // Create new Audio instance with v=19 cache busting as requested
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=19');
     theme.loop = true;
     theme.volume = 0.42; // Set exact volume as requested
     
     // Log theme creation as specifically requested
     console.log('Theme created:', theme.src);
     
-    // Exhaustive logging as urgently requested
-    console.log('🎵 Playing music:', theme.src);
-    console.log('🎵 ONLY Theme-music1.mp3 should play - no old music references');
-    console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
-    console.log('Context:', typeof AudioContext !== 'undefined' ? (typeof AudioContext !== 'undefined' && window.AudioContext ? window.AudioContext.prototype.state || 'Available' : 'Available') : 'Not Available');
-    
     theme.play()
       .then(() => {
         console.log('✅ Background music started successfully');
-        console.log('✅ Theme-music1.mp3 v=18 confirmed playing');
-        console.log('Theme playing:', theme.src, theme.paused);
+        console.log('✅ Theme-music1.mp3 v=19 confirmed playing');
+        console.log('Theme playing:', theme.src, theme.paused ? 'Paused' : 'Playing');
         set({ backgroundMusic: theme });
       })
       .catch((error) => {

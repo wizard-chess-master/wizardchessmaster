@@ -10,7 +10,6 @@ export function ChessAudioController() {
     isInCheck,
     isCheckmate,
     winner,
-    lastMove,
     board
   } = useChess();
   const { isMuted } = useAudio();
@@ -31,6 +30,10 @@ export function ChessAudioController() {
           console.log('🎵 TRIGGERING Theme-music1.mp3 via ChessAudioController...');
           wizardChessAudio.onGameStart();
           
+          // Also directly call playBackgroundMusic to ensure theme plays
+          const { playBackgroundMusic } = useAudio.getState();
+          setTimeout(() => playBackgroundMusic(), 200); // Small delay to ensure game state is set
+          
           // Also ensure we stop any competing audio from gameAudioManager
           if ((window as any).gameAudioManager?.stopMusic) {
             (window as any).gameAudioManager.stopMusic();
@@ -48,7 +51,10 @@ export function ChessAudioController() {
 
   // Handle move events
   useEffect(() => {
-    if (!lastMove || isMuted || moveHistory.length === 0) return;
+    if (isMuted || moveHistory.length === 0) return;
+
+    const lastMove = moveHistory[moveHistory.length - 1];
+    if (!lastMove) return;
 
     // Check for capture
     if (lastMove.capturedPiece) {
@@ -73,7 +79,7 @@ export function ChessAudioController() {
     } else if (isInCheck) {
       wizardChessAudio.onCheck();
     }
-  }, [lastMove, isInCheck, isCheckmate, isMuted, moveHistory.length]);
+  }, [isInCheck, isCheckmate, isMuted, moveHistory.length]);
 
   return null; // This component only handles audio events
 }

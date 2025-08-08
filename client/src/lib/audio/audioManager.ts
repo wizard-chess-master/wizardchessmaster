@@ -316,7 +316,7 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=18 parameter added');
+    console.log('🎵 Cache busting with ?v=19 parameter added');
     
     // Dedicated cleanup function as specifically requested - fixed illegal invocation
     function cleanAudio() {
@@ -326,7 +326,7 @@ class WizardChessAudioManager {
         document.querySelectorAll('audio').forEach(a => a.remove());
         console.log('Audio cleanup:', document.querySelectorAll('audio').length);
       } catch (error) {
-        console.log('Audio cleanup error (safe to ignore):', error.message);
+        console.log('Audio cleanup error (safe to ignore):', error instanceof Error ? error.message : String(error));
       }
     }
     
@@ -337,7 +337,7 @@ class WizardChessAudioManager {
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=18');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=19');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -347,8 +347,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting v=18
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=18');
+    // Create new Audio instance with updated cache busting v=19
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=19');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     
