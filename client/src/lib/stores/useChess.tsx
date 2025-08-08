@@ -73,26 +73,35 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
-      // FORCE Theme-music1.mp3 playback as requested
+      // ELIMINATE old music and FORCE Theme-music1.mp3 playback
+      // Clear all music variables pre-init
+      if ((window as any).gameAudioManager) {
+        (window as any).gameAudioManager = null;
+      }
+      
+      // Aggressive cleanup function
       function cleanAudio() {
         new AudioContext().close();
-        document.querySelectorAll('audio').forEach(a => a.remove());
+        document.querySelectorAll('audio').forEach(a => { 
+          a.pause(); 
+          a.remove(); 
+        });
         console.log('Audio cleanup:', document.querySelectorAll('audio').length);
       }
       
       // Call cleanup function first
       cleanAudio();
       
-      // Force theme playback with v=21 cache busting
-      const theme = new Audio('/assets/music/Theme-music1.mp3?v=21');
+      // Force theme playback with v=22 cache busting
+      const theme = new Audio('/assets/music/Theme-music1.mp3?v=22');
       theme.loop = true;
       theme.volume = 0.42;
       console.log('Theme created:', theme.src);
       
       theme.play()
         .then(() => {
-          console.log('✅ Theme-music1.mp3 v=21 FORCED playback started from game start');
-          console.log('Theme playing forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
+          console.log('✅ Theme-music1.mp3 v=22 FORCED playback started from game start');
+          console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
         })
         .catch((error) => {
           console.error('❌ Failed to FORCE play theme music from game start:', error);

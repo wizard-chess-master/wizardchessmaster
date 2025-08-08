@@ -8,25 +8,34 @@ import './lib/debug-admin'; // Load admin debug utilities
 if (typeof window !== 'undefined') {
   // Theme music initialization function  
   const initializeThemeMusic = () => {
+    // Clear all music variables pre-init
+    if ((window as any).gameAudioManager) {
+      (window as any).gameAudioManager = null;
+    }
+    
+    // Aggressive cleanup function
     function cleanAudio() {
       new AudioContext().close();
-      document.querySelectorAll('audio').forEach(a => a.remove());
+      document.querySelectorAll('audio').forEach(a => { 
+        a.pause(); 
+        a.remove(); 
+      });
       console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
     // Call cleanup first
     cleanAudio();
     
-    // Force theme playback
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=21');
+    // ELIMINATE old music and force theme playback
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=22');
     theme.loop = true;
     theme.volume = 0.42;
     console.log('🎵 Main.tsx Theme created:', theme.src);
     
     theme.play()
       .then(() => {
-        console.log('✅ Main.tsx Theme-music1.mp3 v=21 FORCED started successfully');
-        console.log('Theme playing forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
+        console.log('✅ Main.tsx Theme-music1.mp3 v=22 FORCED started successfully');
+        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
       })
       .catch((error) => {
         console.error('❌ Main.tsx Failed to play theme music:', error);

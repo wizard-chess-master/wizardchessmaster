@@ -315,13 +315,21 @@ class WizardChessAudioManager {
   playThemeMusic(): void {
     if (this.muted) return;
     
-    console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 FORCE Cache busting with ?v=21 parameter added');
+    console.log('🎵 ELIMINATE old music - Starting direct Theme-music1.mp3 implementation...');
+    console.log('🎵 FORCE Cache busting with ?v=22 parameter added');
     
-    // FORCE cleanup function as specifically requested
+    // Clear all music variables pre-init
+    if ((window as any).gameAudioManager) {
+      (window as any).gameAudioManager = null;
+    }
+    
+    // Aggressive cleanup function
     function cleanAudio() {
       new AudioContext().close();
-      document.querySelectorAll('audio').forEach(a => a.remove());
+      document.querySelectorAll('audio').forEach(a => { 
+        a.pause(); 
+        a.remove(); 
+      });
       console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
@@ -332,7 +340,7 @@ class WizardChessAudioManager {
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: FORCE loading ONLY Theme-music1.mp3 with ?v=21');
+    console.log('🎼 ✅ VERIFICATION STEP 2: ELIMINATE old music and FORCE loading ONLY Theme-music1.mp3 with ?v=22');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -342,8 +350,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // FORCE new Audio instance with v=21 cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=21');
+    // ELIMINATE old music and FORCE new Audio instance with v=22 cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=22');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     
@@ -381,7 +389,7 @@ class WizardChessAudioManager {
     theme.play()
       .then(() => {
         console.log('🎼 ✅ Theme-music1.mp3 FORCED started playing successfully');
-        console.log('Theme playing forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
+        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
         console.log('🎼 ✅ CONFIRMED: Only Theme-music1.mp3 is now playing');
         console.log('🎼 ✅ Loop status:', theme.loop);
         console.log('🎼 ✅ Volume level (should be 0.42):', theme.volume);
