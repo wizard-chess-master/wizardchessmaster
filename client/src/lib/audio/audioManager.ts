@@ -316,13 +316,13 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=4 parameter added');
+    console.log('🎵 Cache busting with ?v=6 parameter added');
     
     // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=4');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=6');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -332,17 +332,20 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=4');
+    // Create new Audio instance with updated cache busting v=6
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=6');
     theme.loop = true;
-    theme.volume = this.volume * 0.6; // Music should be quieter than SFX
+    theme.volume = 0.42; // Exact volume as requested
     
     // Debug logging as requested - verify ONLY Theme-music1.mp3
     console.log('🎼 Current audio:', theme.src);
     console.log('🎼 Theme music source:', theme.src);
     console.log('🎼 Theme music loop enabled:', theme.loop);
-    console.log('🎼 Theme music volume:', theme.volume);
+    console.log('🎼 Theme music volume should be 0.42:', theme.volume);
     console.log('🎼 ✅ VERIFICATION: This is the ONLY audio that should play');
+    
+    // Log active audio sources as requested
+    console.log('Audio:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
     
     this.themeMusic = theme;
     
@@ -367,9 +370,13 @@ class WizardChessAudioManager {
         console.log('🎼 ✅ Theme-music1.mp3 started playing successfully');
         console.log('🎼 ✅ CONFIRMED: Only Theme-music1.mp3 is now playing');
         console.log('🎼 ✅ Loop status:', theme.loop);
-        console.log('🎼 ✅ Volume level:', theme.volume);
-        console.log('🎼 ✅ Current time:', theme.currentTime);
-        console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src);
+        console.log('🎼 ✅ Volume level (should be 0.42):', theme.volume);
+        console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src.split('/').pop());
+        
+        // Final verification of active audio sources
+        const activeAudio = Array.from(document.querySelectorAll('audio')).map(a => a.src);
+        console.log('🎼 ✅ Active audio sources:', activeAudio);
+        console.log('🎼 ✅ Active audio count:', activeAudio.length);
         console.log('🎼 ✅ NO OTHER MUSIC should be playing - verification complete');
         
         // Log ALL active audio sources as requested
