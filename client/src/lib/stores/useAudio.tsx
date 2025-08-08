@@ -125,8 +125,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       return;
     }
 
-    // Create new Audio instance with v=11 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=11');
+    // Create new Audio instance with v=12 cache busting as requested
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=12');
     theme.loop = true;
     theme.volume = 0.42; // Set exact volume as requested
     

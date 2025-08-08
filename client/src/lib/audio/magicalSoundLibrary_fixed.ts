@@ -133,7 +133,7 @@ const MAGICAL_SOUND_DATA: Record<MagicalSoundEffect, string> = {
   'success_chime': '/sounds/success.mp3',
   
   // AMBIENT SOUNDS (COMPLETELY REMOVED - ONLY Theme-music1.mp3 allowed)
-  // ALL OLD MUSIC REFERENCES PURGED - ONLY THEME-MUSIC1.MP3 V=11 PERMITTED
+  // ALL OLD MUSIC REFERENCES PURGED - ONLY THEME-MUSIC1.MP3 V=12 PERMITTED
   'crystal_hum': '/sounds/success.mp3', // No music - UI sound only
   'mystical_wind': '/sounds/success.mp3', // No music - UI sound only  
   'arcane_energy': '/sounds/success.mp3', // No music - UI sound only
