@@ -4,6 +4,8 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { VoiceToggle } from '../ui/VoiceToggle';
+import { wizardVoiceSystem } from '../../lib/audio/wizardVoiceSystem';
 
 interface BoardControlsProps {
   onSettings: () => void;
@@ -41,6 +43,9 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             onClick={() => {
               const { board, currentPlayer, moveHistory } = useChess.getState();
               console.log('🎯 Generating hint for current position...');
+              
+              // Voice feedback for hint request
+              wizardVoiceSystem.onGameEvent('hint_requested');
               
               import('../../lib/chess/hintSystem').then(({ hintSystem }) => {
                 const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
@@ -117,6 +122,8 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
               const lastMove = moveHistory[moveHistory.length - 1];
               if (lastMove && gameMode !== 'ai-vs-ai') {
                 console.log('🔄 Undoing last move...');
+                const { undoMove } = useChess.getState();
+                undoMove();
               }
             }}
             disabled={moveHistory.length === 0}
@@ -126,6 +133,11 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             <span className="text-sm">↶</span>
             <span className="text-xs leading-none">Undo</span>
           </Button>
+
+          {/* Voice Toggle Control */}
+          <div className="mt-2 flex justify-center">
+            <VoiceToggle />
+          </div>
           
         </div>
       </CardContent>

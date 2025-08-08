@@ -10,6 +10,7 @@ import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
+import { wizardVoiceSystem } from "../audio/wizardVoiceSystem";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -77,6 +78,12 @@ export const useChess = create<ChessStore>()(
         const { setDynamicMusic } = useAudio.getState();
         setDynamicMusic('playing');
       }, 500);
+      
+      // Initialize voice system and play greeting
+      wizardVoiceSystem.initialize();
+      setTimeout(() => {
+        wizardVoiceSystem.onGameEvent('game_start');
+      }, 1000);
       
       // Verify board state after setting
       setTimeout(() => {
@@ -228,8 +235,12 @@ export const useChess = create<ChessStore>()(
         // Wizard-specific sounds
         if (isWizardTeleport) {
           playWizardAbility('teleport').catch(e => console.log('🎭 Wizard teleport sound failed:', e));
+          // Voice feedback for wizard teleport
+          wizardVoiceSystem.onGameEvent('wizard_move', { moveType: 'teleport' });
         } else if (isWizardAttack) {
           playWizardAbility('ranged_attack').catch(e => console.log('🎭 Wizard attack sound failed:', e));
+          // Voice feedback for wizard attack
+          wizardVoiceSystem.onGameEvent('wizard_move', { moveType: 'attack', isCapture: true });
         }
         // Castling sound
         else if (isCastling) {
@@ -257,11 +268,17 @@ export const useChess = create<ChessStore>()(
             // Switch to victory music
             const { setDynamicMusic } = useAudio.getState();
             setDynamicMusic('victory');
+            // Voice feedback for victory
+            wizardVoiceSystem.onGameEvent('checkmate');
+            setTimeout(() => wizardVoiceSystem.onGameEvent('game_won'), 1500);
           } else {
             playGameEvent('checkmate_lose').catch(e => console.log('🎭 Checkmate defeat sound failed:', e));
             // Switch to defeat music
             const { setDynamicMusic } = useAudio.getState();
             setDynamicMusic('defeat');
+            // Voice feedback for defeat
+            wizardVoiceSystem.onGameEvent('checkmate');
+            setTimeout(() => wizardVoiceSystem.onGameEvent('game_lost'), 1500);
           }
         } else if (newState.isInCheck) {
           playGameEvent('check').catch(e => console.log('🎭 Check warning sound failed:', e));
@@ -270,6 +287,8 @@ export const useChess = create<ChessStore>()(
             const { setDynamicMusic } = useAudio.getState();
             setDynamicMusic('check');
           }, 200);
+          // Voice feedback for check
+          wizardVoiceSystem.onGameEvent('check');
         }
       }
 
@@ -437,6 +456,9 @@ export const useChess = create<ChessStore>()(
       }
 
       set(newState);
+      
+      // Voice feedback for undo
+      wizardVoiceSystem.onGameEvent('move_undone');
     }
   }))
 );
