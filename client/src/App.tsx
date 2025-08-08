@@ -19,7 +19,7 @@ import { RewardsScreen } from "./components/rewards/RewardsScreen";
 import { useGameSettings } from "./stores/gameSettings";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
-import { ambientManager } from "./lib/audio/ambientManager";
+
 import ChessAudioController from "./components/audio/ChessAudioController";
 
 import "@fontsource/inter";
@@ -29,7 +29,7 @@ import "./debug";
 
 function App() {
   const { gamePhase, ...gameState } = useChess();
-  const { setHitSound, setSuccessSound, initializeAudio } = useAudio();
+  const { initializeAudio } = useAudio();
   const { updateProgress } = useAchievements();
   const { showDiagnostics, setShowDiagnostics } = useDiagnostics();
   const [showSettings, setShowSettings] = useState(false);
@@ -38,59 +38,33 @@ function App() {
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
-  // Initialize audio and monetization
+  // Initialize basic audio and monetization
   useEffect(() => {
-    const hitAudio = new Audio("/sounds/hit.mp3");
-    const successAudio = new Audio("/sounds/success.mp3");
-    
-    setHitSound(hitAudio);
-    setSuccessSound(successAudio);
-    
-    // Ensure audio starts unmuted
+    // Initialize basic audio system
     initializeAudio();
     
-    // Initialize game audio manager
-    import('./lib/initialization/audioInitialization').then(({ initializeAudioSystem }) => {
-      initializeAudioSystem();
-    });
-    
-
-
-    // Initialize monetization and ambient sound systems
+    // Initialize monetization systems only
     const initSystems = async () => {
       try {
         console.log('💳 Initializing monetization systems...');
         await initializeAds();
         await initializePayments();
         console.log('✅ Monetization systems initialized');
-        
-        console.log('🎵 Initializing ambient sound system...');
-        await ambientManager.initializeAmbientSounds();
-        console.log('✅ Ambient sound system initialized');
-        
-        console.log('✨ Initializing Magical Sound Library...');
-        const { initializeMagicalSounds } = useAudio.getState();
-        await initializeMagicalSounds();
-        console.log('✅ Magical Sound Library initialized');
       } catch (error) {
         console.error('❌ Failed to initialize systems:', error);
       }
     };
     
     initSystems();
-  }, [setHitSound, setSuccessSound]);
+  }, [initializeAudio]);
 
-  // Monitor game state for ambient sound intensity changes and achievement tracking
+  // Monitor game state for achievement tracking only
   useEffect(() => {
     if (gamePhase === 'playing') {
-      ambientManager.analyzeGameIntensity({ gamePhase, ...gameState });
-      
       // Start achievement tracking when game begins
       if (gameState.moveHistory.length === 0) {
         gameEventTracker.startGame();
       }
-    } else if (gamePhase === 'menu') {
-      ambientManager.reset();
     } else if (gamePhase === 'ended' && gameState.winner) {
       // Track game completion for achievements
       gameEventTracker.trackGameEnd(

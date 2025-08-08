@@ -1,55 +1,9 @@
-/**
- * Chess Audio Controller Component
- * Integrates immersive 3D audio with chess game mechanics
- */
-
-import { useEffect } from 'react';
-import { immersiveAudio } from '@/lib/audio/immersiveAudioSystem';
-import { useChess } from '@/lib/stores/useChess';
-import { useAudio } from '@/lib/stores/useAudio';
-
-interface ChessPosition {
-  row: number;
-  col: number;
-}
+// Note: Complete audio system removed per user request
+// User will implement custom MP3-based audio system independently
 
 export function ChessAudioController() {
-  const { 
-    gamePhase,
-    isInCheck
-  } = useChess();
-  
-  const { isMuted } = useAudio();
-
-  // Initialize immersive audio system
-  useEffect(() => {
-    if (!isMuted) {
-      immersiveAudio.initialize().catch(console.warn);
-    }
-
-    return () => {
-      immersiveAudio.dispose();
-    };
-  }, [isMuted]);
-
-
-
-
-
-  // Handle special game events
-  useEffect(() => {
-    if (isMuted) return;
-
-    if (gamePhase === 'ended') {
-      immersiveAudio.playGameEvent('checkmate');
-    } else if (isInCheck) {
-      immersiveAudio.playGameEvent('check');
-    }
-  }, [gamePhase, isInCheck, isMuted]);
-
-
-
-  return null; // Audio controller doesn't render anything
+  // Audio controller placeholder - user will implement MP3 system
+  return null;
 }
 
 export default ChessAudioController;
