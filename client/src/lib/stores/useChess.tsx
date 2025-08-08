@@ -75,31 +75,33 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
-      // Set dynamic music based on game mode
-      setTimeout(() => {
-        const { setDynamicMusic } = useAudio.getState();
-        setDynamicMusic('playing');
-      }, 500);
+      // Dynamic music disabled - using theme music instead
+      // setTimeout(() => {
+      //   const { setDynamicMusic } = useAudio.getState();
+      //   setDynamicMusic('playing');
+      // }, 500);
       
-      // Initialize voice system and play greeting
-      wizardVoiceSystem.initialize();
-      setTimeout(() => {
-        wizardVoiceSystem.onGameEvent('game_start');
-      }, 1500); // Slightly longer delay to ensure initialization is complete
+      // Initialize voice system only once and play greeting
+      if (!wizardVoiceSystem.isInitialized) {
+        wizardVoiceSystem.initialize().then(() => {
+          setTimeout(() => {
+            wizardVoiceSystem.onGameEvent('game_start');
+          }, 1000);
+        });
+      }
 
-      // Initialize and play theme music immediately 
-      console.log('🎵 About to initialize theme music...');
-      const { initializeThemeMusic, stopAllSounds } = useAudio.getState();
-      
-      // Stop all conflicting sounds first
-      stopAllSounds();
-      
-      // Initialize theme music immediately
-      initializeThemeMusic().then(() => {
-        console.log('🎵 Theme music initialization completed');
-      }).catch(error => {
-        console.error('❌ Theme music initialization failed:', error);
-      });
+      // Initialize theme music only if not already initialized
+      const { initializeThemeMusic, themeMusic } = useAudio.getState();
+      if (!themeMusic) {
+        console.log('🎵 About to initialize theme music...');
+        initializeThemeMusic().then(() => {
+          console.log('🎵 Theme music initialization completed');
+        }).catch(error => {
+          console.error('❌ Theme music initialization failed:', error);
+        });
+      } else {
+        console.log('🎵 Theme music already exists, skipping initialization');
+      }
       
       // Reset emotion tracking for new game
       emotionEngine.resetBehaviorData();

@@ -492,6 +492,12 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   initializeThemeMusic: async () => {
+    const currentTheme = get().themeMusic;
+    if (currentTheme) {
+      console.log('🎵 Theme music already initialized, skipping');
+      return;
+    }
+    
     console.log('🎵 === THEME MUSIC INITIALIZATION START ===');
     try {
       console.log('🎵 Starting theme music initialization...');

@@ -32,7 +32,7 @@ class WizardVoiceSystem {
   private currentlyPlaying: WizardVoiceClip | null = null;
   private isEnabled = true;
   private volume = 0.8;
-  private isInitialized = false;
+  public isInitialized = false;
 
   private readonly voiceClips: VoiceClipConfig[] = [
     { 
@@ -132,7 +132,13 @@ class WizardVoiceSystem {
    * Initialize the voice system with all audio instances
    */
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {
+      console.log('🧙‍♂️ Voice system already initialized, skipping');
+      return;
+    }
+    
+    // Stop any existing audio first
+    this.stopAll();
 
     try {
       // Create audio instances for each voice clip
