@@ -110,10 +110,13 @@ export const useAudio = create<AudioState>((set, get) => ({
       console.log('⚠️ AudioContext not available or already closed');
     }
     
-    // Comprehensive DOM audio cleanup
-    document.querySelectorAll('audio').forEach(a => { 
+    // Aggressive DOM audio cleanup with removal as specifically requested
+    const audioElements = document.querySelectorAll('audio');
+    console.log('Audio cleanup:', audioElements.length);
+    audioElements.forEach(a => { 
       a.pause(); 
-      a.currentTime = 0; 
+      a.currentTime = 0;
+      a.remove(); // Force remove from DOM as requested
     });
     
     // Exhaustive audio logging as requested
@@ -125,8 +128,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       return;
     }
 
-    // Create new Audio instance with v=13 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=13');
+    // Create new Audio instance with v=14 cache busting as requested
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=14');
     theme.loop = true;
     theme.volume = 0.42; // Set exact volume as requested
     

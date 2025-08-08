@@ -245,10 +245,13 @@ class GameAudioManager {
       console.log('⚠️ Game start: AudioContext not available or already closed');
     }
     
-    // Comprehensive DOM audio cleanup as urgently requested
-    document.querySelectorAll('audio').forEach(a => { 
+    // Aggressive DOM audio cleanup with removal as specifically requested
+    const audioElements = document.querySelectorAll('audio');
+    console.log('Audio cleanup:', audioElements.length);
+    audioElements.forEach(a => { 
       a.pause(); 
-      a.currentTime = 0; 
+      a.currentTime = 0;
+      a.remove(); // Force remove from DOM as requested
     });
     
     // Exhaustive logging as urgently requested
