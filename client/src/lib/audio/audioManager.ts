@@ -15,7 +15,7 @@ export interface AudioConfig {
     hint_reveal: string;
   };
   music: {
-    theme_music: string;
+    theme_music?: string; // Optional since we use direct implementation
   };
   voiceFiles: {
     greeting: string;
