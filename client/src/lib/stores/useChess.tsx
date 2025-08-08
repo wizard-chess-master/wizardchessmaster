@@ -81,14 +81,15 @@ export const useChess = create<ChessStore>()(
       //   setDynamicMusic('playing');
       // }, 500);
       
-      // Initialize voice system only once and play greeting
-      if (!wizardVoiceSystem.isInitialized) {
-        wizardVoiceSystem.initialize().then(() => {
-          setTimeout(() => {
-            wizardVoiceSystem.onGameEvent('game_start');
-          }, 1000);
-        });
-      }
+      // Completely disable voice system for now to stop loops
+      // TODO: Re-enable once voice loop issue is resolved
+      // if (!wizardVoiceSystem.isInitialized) {
+      //   wizardVoiceSystem.initialize().then(() => {
+      //     setTimeout(() => {
+      //       wizardVoiceSystem.onGameEvent('game_start');
+      //     }, 1000);
+      //   });
+      // }
 
       // Initialize theme music only if not already initialized
       const { initializeThemeMusic, themeMusic } = useAudio.getState();

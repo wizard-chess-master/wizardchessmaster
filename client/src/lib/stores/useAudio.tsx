@@ -502,13 +502,24 @@ export const useAudio = create<AudioState>((set, get) => ({
     try {
       console.log('🎵 Starting theme music initialization...');
       
-      // Stop any existing background music first
-      const { backgroundMusic } = get();
+      // Stop ALL existing audio sources first
+      const { backgroundMusic, musicTracks } = get();
+      
+      // Stop old background music
       if (backgroundMusic) {
         backgroundMusic.pause();
         backgroundMusic.currentTime = 0;
         console.log('🎵 Stopped existing background music for theme music');
       }
+      
+      // Stop all music tracks (battle_theme, main_theme, etc.)
+      Object.entries(musicTracks).forEach(([trackName, track]) => {
+        if (track) {
+          track.pause();
+          track.currentTime = 0;
+          console.log(`🎵 Stopped music track: ${trackName}`);
+        }
+      });
 
       const theme = new Audio('/sounds/Theme-music1.mp3');
       theme.loop = true;
@@ -518,8 +529,12 @@ export const useAudio = create<AudioState>((set, get) => ({
       // Optimize for Replit performance
       theme.crossOrigin = 'anonymous';
       
-      // Handle loading events
+      // Handle loading events - only once
+      let hasPlayed = false;
       theme.addEventListener('canplaythrough', () => {
+        if (hasPlayed) return; // Prevent multiple plays
+        hasPlayed = true;
+        
         console.log('🎵 Theme music loaded and ready to play');
         
         // Auto-play theme music if enabled
@@ -530,7 +545,7 @@ export const useAudio = create<AudioState>((set, get) => ({
             console.log('❌ Theme music autoplay failed:', error);
           });
         }
-      });
+      }, { once: true }); // Ensure this only fires once
 
       theme.addEventListener('loadstart', () => {
         console.log('🎵 Theme music loading started...');
