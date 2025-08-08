@@ -316,35 +316,23 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=14 parameter added');
+    console.log('🎵 Cache busting with ?v=15 parameter added');
     
-    // URGENT: Force aggressive audio cleanup as requested
-    try {
-      if (typeof AudioContext !== 'undefined') {
-        new AudioContext().close().then(() => {
-          console.log('✅ AudioContext closed for cleanup');
-        }).catch(() => {
-          console.log('⚠️ AudioContext close failed or not needed');
-        });
-      }
-    } catch (e) {
-      console.log('⚠️ AudioContext not available for cleanup');
+    // Dedicated cleanup function as specifically requested
+    function cleanAudio() {
+      new AudioContext().close();
+      document.querySelectorAll('audio').forEach(a => a.remove());
+      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
-    // Aggressive DOM audio cleanup with removal as specifically requested
-    const audioElements = document.querySelectorAll('audio');
-    console.log('Audio cleanup:', audioElements.length);
-    audioElements.forEach(a => { 
-      a.pause(); 
-      a.currentTime = 0;
-      a.remove(); // Force remove from DOM as requested
-    });
+    // Call cleanup function before theme playback
+    cleanAudio();
     
     // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=14');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=15');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -354,8 +342,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting v=14
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=14');
+    // Create new Audio instance with updated cache busting v=15
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=15');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     

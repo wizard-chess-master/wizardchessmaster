@@ -94,30 +94,15 @@ export const useAudio = create<AudioState>((set, get) => ({
       backgroundMusic.currentTime = 0;
     }
     
-    // COMPREHENSIVE AUDIO CLEANUP as urgently requested
-    console.log('🛑 URGENT: Comprehensive DOM audio cleanup...');
-    
-    // Close any existing AudioContext
-    try {
-      if (typeof AudioContext !== 'undefined') {
-        new AudioContext().close().then(() => {
-          console.log('✅ AudioContext closed');
-        }).catch(() => {
-          console.log('⚠️ AudioContext close failed or not needed');
-        });
-      }
-    } catch (e) {
-      console.log('⚠️ AudioContext not available or already closed');
+    // Dedicated cleanup function as specifically requested
+    function cleanAudio() {
+      new AudioContext().close();
+      document.querySelectorAll('audio').forEach(a => a.remove());
+      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
-    // Aggressive DOM audio cleanup with removal as specifically requested
-    const audioElements = document.querySelectorAll('audio');
-    console.log('Audio cleanup:', audioElements.length);
-    audioElements.forEach(a => { 
-      a.pause(); 
-      a.currentTime = 0;
-      a.remove(); // Force remove from DOM as requested
-    });
+    // Call cleanup function before theme playback
+    cleanAudio();
     
     // Exhaustive audio logging as requested
     console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
@@ -128,8 +113,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       return;
     }
 
-    // Create new Audio instance with v=14 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=14');
+    // Create new Audio instance with v=15 cache busting as requested
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=15');
     theme.loop = true;
     theme.volume = 0.42; // Set exact volume as requested
     
@@ -145,7 +130,7 @@ export const useAudio = create<AudioState>((set, get) => ({
     theme.play()
       .then(() => {
         console.log('✅ Background music started successfully');
-        console.log('✅ Theme-music1.mp3 v=10 confirmed playing');
+        console.log('✅ Theme-music1.mp3 v=15 confirmed playing');
         set({ backgroundMusic: theme });
       })
       .catch((error) => {
