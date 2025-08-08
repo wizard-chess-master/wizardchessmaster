@@ -27,38 +27,9 @@ export class AmbientSoundManager {
    * Initialize ambient sounds using the background.mp3 with different settings
    */
   async initializeAmbientSounds(): Promise<void> {
-    try {
-      const { setAmbientSounds } = useAudio.getState();
-      
-      // Create different intensity variants using the same background.mp3
-      const ambientSounds = {
-        calm: await this.createAmbientSound('/sounds/background.mp3', {
-          volume: 0.1,
-          playbackRate: 0.8,
-          loop: true
-        }),
-        moderate: await this.createAmbientSound('/sounds/background.mp3', {
-          volume: 0.15,
-          playbackRate: 0.9,
-          loop: true
-        }),
-        tense: await this.createAmbientSound('/sounds/background.mp3', {
-          volume: 0.25,
-          playbackRate: 1.0,
-          loop: true
-        }),
-        critical: await this.createAmbientSound('/sounds/background.mp3', {
-          volume: 0.35,
-          playbackRate: 1.1,
-          loop: true
-        })
-      };
-
-      setAmbientSounds(ambientSounds);
-      console.log('🎵 Ambient sounds initialized successfully');
-    } catch (error) {
-      console.error('❌ Failed to initialize ambient sounds:', error);
-    }
+    // DISABLED: Conflicted with Theme-music1.mp3 - now using direct theme music implementation
+    console.log('🎵 Ambient sound system disabled - using Theme-music1.mp3 directly');
+    return;
   }
 
   private async createAmbientSound(src: string, options: {

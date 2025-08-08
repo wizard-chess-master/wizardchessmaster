@@ -33,6 +33,7 @@ class WizardChessAudioManager {
   private voiceFiles: Map<string, HTMLAudioElement> = new Map();
   private music: Map<string, HTMLAudioElement> = new Map();
   private currentMusic: HTMLAudioElement | null = null;
+  private themeMusic: HTMLAudioElement | null = null;
   private volume: number = 0.7;
   private muted: boolean = false;
   private initialized: boolean = false;
@@ -73,7 +74,7 @@ class WizardChessAudioManager {
       // Load sound effects
       await this.loadAudioGroup(this.config.soundEffects, this.soundEffects, 'Sound Effects');
       
-      // Load music
+      // Load music (legacy support - primary theme music now uses direct implementation)
       await this.loadAudioGroup(this.config.music, this.music, 'Music');
       
       // Load voice files
@@ -195,11 +196,19 @@ class WizardChessAudioManager {
   }
 
   stopMusic(): void {
+    // Stop old music system
     if (this.currentMusic) {
       this.currentMusic.pause();
       this.currentMusic.currentTime = 0;
       this.currentMusic = null;
-      console.log('🎼 Music stopped');
+    }
+    
+    // Stop theme music
+    if (this.themeMusic) {
+      this.themeMusic.pause();
+      this.themeMusic.currentTime = 0;
+      this.themeMusic = null;
+      console.log('🎼 Theme-music1.mp3 stopped');
     }
   }
 
@@ -219,6 +228,11 @@ class WizardChessAudioManager {
     this.voiceFiles.forEach(audio => audio.volume = this.volume);
     this.music.forEach(audio => audio.volume = this.volume * 0.6); // Music quieter
     
+    // Update theme music volume
+    if (this.themeMusic) {
+      this.themeMusic.volume = this.volume * 0.6;
+    }
+    
     console.log(`🔊 Volume set to: ${Math.round(this.volume * 100)}%`);
   }
 
@@ -232,6 +246,11 @@ class WizardChessAudioManager {
     if (muted) {
       this.stopMusic();
       this.stopAllVoices();
+    } else {
+      // Resume theme music if it was playing
+      if (this.themeMusic && this.themeMusic.paused) {
+        this.themeMusic.play().catch(console.error);
+      }
     }
     
     console.log(`🔊 Audio ${muted ? 'muted' : 'unmuted'}`);
@@ -287,8 +306,56 @@ class WizardChessAudioManager {
   }
 
   onGameStart(): void {
-    this.playMusic('theme_music');
+    this.playThemeMusic();
     this.playVoice('game_intro');
+  }
+
+  // Direct Theme Music Implementation as requested
+  playThemeMusic(): void {
+    if (this.muted) return;
+    
+    console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
+    console.log('🎵 Cache busting with ?v=1 parameter added');
+    
+    // Stop any existing theme music
+    if (this.themeMusic) {
+      this.themeMusic.pause();
+      this.themeMusic = null;
+    }
+    
+    // Create new Audio instance with cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=1');
+    theme.loop = true;
+    theme.volume = this.volume * 0.6; // Music should be quieter than SFX
+    
+    // Debug logging as requested
+    console.log('🎼 Theme music source:', theme.src);
+    console.log('🎼 Theme music loop enabled:', theme.loop);
+    console.log('🎼 Theme music volume:', theme.volume);
+    
+    this.themeMusic = theme;
+    
+    // Handle loading and play
+    theme.addEventListener('loadeddata', () => {
+      console.log('✅ Theme-music1.mp3 loaded successfully');
+    });
+    
+    theme.addEventListener('error', (error) => {
+      console.error('❌ Theme music failed to load:', error);
+    });
+    
+    theme.addEventListener('ended', () => {
+      console.log('🔄 Theme music ended, restarting loop');
+    });
+    
+    // Play the music
+    theme.play()
+      .then(() => {
+        console.log('🎼 Theme-music1.mp3 started playing successfully');
+      })
+      .catch(error => {
+        console.error('❌ Failed to play Theme-music1.mp3:', error);
+      });
   }
 
   onGameEnd(victory: boolean): void {
