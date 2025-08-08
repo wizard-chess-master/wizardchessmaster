@@ -21,9 +21,12 @@ import {
   Zap,
   Settings,
   HelpCircle,
-  Accessibility
+  Accessibility,
+  Home,
+  X
 } from 'lucide-react';
 import { accessibilityManager } from '../../lib/accessibility/accessibilityManager';
+import { useChess } from '../../lib/stores/useChess';
 
 interface AccessibilityControlsProps {
   className?: string;
@@ -56,6 +59,29 @@ export default function AccessibilityControls({ className }: AccessibilityContro
   const handleOneClickDisable = () => {
     accessibilityManager.disableAccessibilityMode();
     setSettings(accessibilityManager.getSettings());
+    
+    // Announce deactivation
+    accessibilityManager.announceGameState({
+      type: 'game',
+      message: 'Accessibility mode has been deactivated. Visual and audio assistance features are now turned off.',
+      priority: 'high'
+    });
+  };
+
+  const handleReturnToMenu = () => {
+    // Announce navigation first
+    accessibilityManager.announceGameState({
+      type: 'game', 
+      message: 'Returning to main menu. Chess game has been reset.',
+      priority: 'high'
+    });
+    
+    // Reset game and return to menu
+    setTimeout(() => {
+      const { resetGame } = useChess.getState();
+      resetGame();
+      window.location.reload(); // Forces complete return to main menu
+    }, 1000); // Give time for announcement
   };
 
   const announceHelp = () => {
@@ -120,10 +146,21 @@ export default function AccessibilityControls({ className }: AccessibilityContro
               onClick={handleOneClickDisable}
               disabled={!settings.enabled}
               variant="outline"
-              className="w-full"
+              className="w-full border-red-300 text-red-700 hover:bg-red-50"
             >
-              <Settings className="w-4 h-4 mr-2" />
-              Disable Accessibility Mode
+              <X className="w-4 h-4 mr-2" />
+              Turn Off Accessibility Mode
+            </Button>
+
+            <Separator className="my-2" />
+
+            <Button
+              onClick={handleReturnToMenu}
+              variant="outline"
+              className="w-full bg-blue-50 border-blue-300 text-blue-700 hover:bg-blue-100"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Return to Main Menu
             </Button>
           </div>
         </div>
