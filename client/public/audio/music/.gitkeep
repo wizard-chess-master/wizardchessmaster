@@ -1,0 +1,7 @@
+# Music Audio Directory
+# This directory will contain:
+# - theme/ (main theme, menu music)
+# - gameplay/ (background music during games)
+# - ambient/ (atmospheric background tracks)
+# - victory/ (win/success music)
+# - defeat/ (loss music)

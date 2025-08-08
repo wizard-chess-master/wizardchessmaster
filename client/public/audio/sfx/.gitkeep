@@ -1,0 +1,7 @@
+# Sound Effects Directory
+# This directory will contain:
+# - pieces/ (enhanced piece movement sounds)
+# - ui/ (button clicks, menu transitions)
+# - magic/ (spell effects, wizard actions)
+# - environment/ (ambient sounds, atmosphere)
+# - feedback/ (success, error, notification sounds)
