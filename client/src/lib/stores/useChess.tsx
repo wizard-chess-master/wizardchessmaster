@@ -87,10 +87,12 @@ export const useChess = create<ChessStore>()(
         wizardVoiceSystem.onGameEvent('game_start');
       }, 1500); // Slightly longer delay to ensure initialization is complete
 
-      // Initialize and play theme music
-      const { initializeThemeMusic } = useAudio.getState();
-      initializeThemeMusic();
-      console.log('🎵 Theme music system initialized on game start');
+      // Initialize and play theme music - delay to ensure audio context is ready
+      setTimeout(() => {
+        const { initializeThemeMusic } = useAudio.getState();
+        initializeThemeMusic();
+        console.log('🎵 Theme music system initialization triggered on game start');
+      }, 2000);
       
       // Reset emotion tracking for new game
       emotionEngine.resetBehaviorData();

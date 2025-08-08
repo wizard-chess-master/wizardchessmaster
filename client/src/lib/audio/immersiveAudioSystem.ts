@@ -39,6 +39,9 @@ class ImmersiveAudioSystem {
     gameEvent: '/sounds/success.mp3'
   };
 
+  // Flag to disable background music in favor of theme music
+  private disableBackgroundMusic = true;
+
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
@@ -72,8 +75,12 @@ class ImmersiveAudioSystem {
       // Preload audio buffers
       await this.preloadAudioBuffers();
 
-      // Start background music
-      await this.startBackgroundMusic();
+      // Start background music only if not disabled
+      if (!this.disableBackgroundMusic) {
+        await this.startBackgroundMusic();
+      } else {
+        console.log('🎵 Background music disabled - using theme music instead');
+      }
 
       this.isInitialized = true;
       console.log('✅ Immersive Audio System initialized');

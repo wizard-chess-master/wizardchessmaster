@@ -448,11 +448,22 @@ export const useAudio = create<AudioState>((set, get) => ({
   playThemeMusic: () => {
     const { themeMusic, isMuted, isThemeMusicEnabled } = get();
     
-    if (!themeMusic || isMuted || !isThemeMusicEnabled) return;
+    console.log('🎵 playThemeMusic called:', { themeMusic: !!themeMusic, isMuted, isThemeMusicEnabled });
+    
+    if (!themeMusic) {
+      console.log('🎵 No theme music loaded, initializing...');
+      get().initializeThemeMusic();
+      return;
+    }
+    
+    if (isMuted || !isThemeMusicEnabled) {
+      console.log('🎵 Theme music blocked:', { isMuted, isThemeMusicEnabled });
+      return;
+    }
     
     themeMusic.currentTime = 0;
     themeMusic.play().then(() => {
-      console.log('🎵 Theme music playing');
+      console.log('🎵 Theme music playing successfully');
     }).catch(error => {
       console.log('❌ Theme music play failed:', error);
     });
@@ -481,7 +492,17 @@ export const useAudio = create<AudioState>((set, get) => ({
 
   initializeThemeMusic: async () => {
     try {
-      const theme = new Audio('/assets/music/Theme-music1.mp3');
+      console.log('🎵 Starting theme music initialization...');
+      
+      // Stop any existing background music first
+      const { backgroundMusic } = get();
+      if (backgroundMusic) {
+        backgroundMusic.pause();
+        backgroundMusic.currentTime = 0;
+        console.log('🎵 Stopped existing background music for theme music');
+      }
+
+      const theme = new Audio('/sounds/Theme-music1.mp3');
       theme.loop = true;
       theme.volume = get().themeVolume;
       theme.preload = 'auto';
@@ -492,10 +513,32 @@ export const useAudio = create<AudioState>((set, get) => ({
       // Handle loading events
       theme.addEventListener('canplaythrough', () => {
         console.log('🎵 Theme music loaded and ready to play');
+        
+        // Auto-play theme music if enabled
+        if (get().isThemeMusicEnabled && !get().isMuted) {
+          theme.play().then(() => {
+            console.log('🎵 Theme music started playing successfully');
+          }).catch(error => {
+            console.log('❌ Theme music autoplay failed:', error);
+          });
+        }
+      });
+
+      theme.addEventListener('loadstart', () => {
+        console.log('🎵 Theme music loading started...');
       });
 
       theme.addEventListener('error', (error) => {
         console.warn('❌ Theme music failed to load:', error);
+        console.warn('❌ Attempting fallback path...');
+        // Try alternative paths
+        const fallbackTheme = new Audio('assets/music/Theme-music1.mp3');
+        fallbackTheme.loop = true;
+        fallbackTheme.volume = get().themeVolume;
+        set({ themeMusic: fallbackTheme });
+        if (get().isThemeMusicEnabled && !get().isMuted) {
+          fallbackTheme.play().catch(console.warn);
+        }
       });
 
       // Ensure seamless looping
@@ -507,14 +550,10 @@ export const useAudio = create<AudioState>((set, get) => ({
       });
 
       set({ themeMusic: theme });
-      console.log('🎵 Theme music initialized');
+      console.log('🎵 Theme music initialized, starting load process');
       
-      // Auto-play theme music if enabled
-      if (get().isThemeMusicEnabled && !get().isMuted) {
-        setTimeout(() => {
-          theme.play().catch(console.warn);
-        }, 1000);
-      }
+      // Force loading
+      theme.load();
       
     } catch (error) {
       console.error('❌ Failed to initialize theme music:', error);
