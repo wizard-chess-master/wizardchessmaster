@@ -4,6 +4,7 @@ import { GameState, ChessMove, Position, GameMode, AIDifficulty, PieceColor } fr
 import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess/gameEngine";
 import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
+import { gameAudioManager } from "../audio/gameAudioManager";
 import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
 import { useCampaign } from "./useCampaign";
@@ -71,6 +72,10 @@ export const useChess = create<ChessStore>()(
         winner: null,
         gameStartTime: Date.now()
       });
+      
+      // Start game audio
+      gameAudioManager.onGameStart();
+      gameAudioManager.onLevelStart();
       
       // Set dynamic music based on game mode
       setTimeout(() => {
@@ -220,57 +225,40 @@ export const useChess = create<ChessStore>()(
         rookMove
       };
 
-      // Play enhanced magical sounds based on move type
-      const { playPieceMovementSound, playWizardAbility, playGameEvent, isMuted } = useAudio.getState();
-      console.log('🎭 Playing magical sound for:', { piece: piece.type, captured: !!captured, isWizardAttack, isWizardTeleport, isCastling, promotion, isMuted });
+      // Play audio based on move type
+      console.log('🎵 Playing audio for:', { piece: piece.type, captured: !!captured, isWizardAttack, isWizardTeleport, isCastling, promotion });
       
-      if (!isMuted) {
-        // Wizard-specific sounds
-        if (isWizardTeleport) {
-          playWizardAbility('teleport').catch(e => console.log('🎭 Wizard teleport sound failed:', e));
-        } else if (isWizardAttack) {
-          playWizardAbility('ranged_attack').catch(e => console.log('🎭 Wizard attack sound failed:', e));
-        }
-        // Castling sound
-        else if (isCastling) {
-          playGameEvent('castling').catch(e => console.log('🎭 Castling sound failed:', e));
-        }
-        // Pawn promotion sound
-        else if (promotion) {
-          playGameEvent('promotion').catch(e => console.log('🎭 Promotion sound failed:', e));
-        }
-        // Regular piece movement (with capture detection)
-        else {
-          playPieceMovementSound(piece.type, !!captured).catch(e => console.log('🎭 Piece movement sound failed:', e));
-        }
+      // Wizard-specific sounds
+      if (isWizardTeleport) {
+        gameAudioManager.onWizardTeleport();
+      } else if (isWizardAttack) {
+        gameAudioManager.onWizardAttack();
+      }
+      // Castling or promotion sounds
+      else if (isCastling || promotion) {
+        gameAudioManager.onPieceMove(); // Use regular move sound for special moves
+      }
+      // Capture sound
+      else if (captured) {
+        gameAudioManager.onPieceCapture();
+      }
+      // Regular piece movement
+      else {
+        gameAudioManager.onPieceMove();
       }
 
       const newState = makeMove(state, move);
       set(newState);
       
-      // Play game event sounds for check/checkmate and update music
-      if (!isMuted) {
-        if (newState.isCheckmate) {
-          const playerWon = newState.winner === 'white';
-          if (playerWon) {
-            playGameEvent('checkmate_win').catch(e => console.log('🎭 Checkmate victory sound failed:', e));
-            // Switch to victory music
-            const { setDynamicMusic } = useAudio.getState();
-            setDynamicMusic('victory');
-          } else {
-            playGameEvent('checkmate_lose').catch(e => console.log('🎭 Checkmate defeat sound failed:', e));
-            // Switch to defeat music
-            const { setDynamicMusic } = useAudio.getState();
-            setDynamicMusic('defeat');
-          }
-        } else if (newState.isInCheck) {
-          playGameEvent('check').catch(e => console.log('🎭 Check warning sound failed:', e));
-          // Switch to tension music for check
-          setTimeout(() => {
-            const { setDynamicMusic } = useAudio.getState();
-            setDynamicMusic('check');
-          }, 200);
+      // Play game event sounds for check/checkmate
+      if (newState.isCheckmate) {
+        gameAudioManager.onCheckmate();
+        const playerWon = newState.winner === 'white';
+        if (playerWon) {
+          setTimeout(() => gameAudioManager.onVictory(), 500);
         }
+      } else if (newState.isInCheck) {
+        gameAudioManager.onCheck();
       }
 
       // Record PvP stats for local multiplayer games

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useChess } from '../../lib/stores/useChess';
+import { gameAudioManager } from '../../lib/audio/gameAudioManager';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -103,6 +104,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
+                    gameAudioManager.onButtonClick();
                     console.log('🎮 Starting new AI game - easy mode');
                     startGame('ai', 'easy');
                   }}
@@ -115,7 +117,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
                 
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => startGame('ai', 'medium')}
+                  onClick={() => {
+                    gameAudioManager.onButtonClick();
+                    startGame('ai', 'medium');
+                  }}
                 >
                   <div className="mode-content">
                     <span>🪄 Player vs AI - Medium</span>
@@ -125,7 +130,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
                 
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => startGame('ai', 'hard')}
+                  onClick={() => {
+                    gameAudioManager.onButtonClick();
+                    startGame('ai', 'hard');
+                  }}
                 >
                   <div className="mode-content">
                     <span>🏰 Player vs AI - Hard</span>
@@ -135,7 +143,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
                 
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => startGame('ai-vs-ai', 'hard')}
+                  onClick={() => {
+                    gameAudioManager.onButtonClick();
+                    startGame('ai-vs-ai', 'hard');
+                  }}
                 >
                   <div className="mode-content">
                     <span>🤖 AI vs AI Battle</span>

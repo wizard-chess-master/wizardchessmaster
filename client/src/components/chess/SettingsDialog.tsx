@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAudio } from '../../lib/stores/useAudio';
+import { VolumeControls } from '../audio/VolumeControls';
 import { useChess } from '../../lib/stores/useChess';
 import {
   Dialog,
@@ -28,47 +29,36 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
         </DialogHeader>
         
         <div className="space-y-4">
-          {/* Audio Settings */}
+          {/* New Game Audio Controls */}
+          <VolumeControls />
+          
+          {/* Legacy Audio Settings */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
                 {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                Audio Settings
+                Legacy Audio
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium">Sound Effects</label>
+                  <label className="text-sm font-medium">Legacy Sound Effects</label>
                   <p className="text-xs text-muted-foreground">
-                    Play sounds for moves and captures
+                    Legacy audio system (use new controls above)
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      const audio = new Audio('/sounds/hit.mp3');
-                      audio.volume = 0.5;
-                      audio.play().catch(e => console.log('Test sound failed:', e));
-                    }}
-                    className="text-xs"
-                  >
-                    Test
-                  </Button>
-                  <Switch
-                    checked={!isMuted}
-                    onCheckedChange={toggleMute}
-                  />
-                </div>
+                <Switch
+                  checked={!isMuted}
+                  onCheckedChange={toggleMute}
+                />
               </div>
               
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <label className="text-sm font-medium">Ambient Sounds</label>
+                  <label className="text-sm font-medium">Legacy Ambient Sounds</label>
                   <p className="text-xs text-muted-foreground">
-                    Dynamic background music
+                    Legacy dynamic background music
                   </p>
                 </div>
                 <Switch

@@ -67,6 +67,11 @@ function App() {
     // Ensure audio starts unmuted and start background music
     initializeAudio();
     
+    // Initialize game audio manager
+    import('./lib/initialization/audioInitialization').then(({ initializeAudioSystem }) => {
+      initializeAudioSystem();
+    });
+    
     // Start background music automatically with a small delay for browser autoplay policies
     setTimeout(() => {
       const { playBackgroundMusic } = useAudio.getState();
