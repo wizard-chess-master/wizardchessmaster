@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { playButtonClickSound } from '../../lib/audio/buttonSounds';
+import '../../lib/audio/globalAudioManager'; // Initialize global audio manager
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -103,7 +104,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    gameAudioManager.onButtonClick();
+                    (window as any).gameAudioManager?.onButtonClick();
                     console.log('🎮 Starting new AI game - easy mode');
                     startGame('ai', 'easy');
                   }}
@@ -117,7 +118,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    gameAudioManager.onButtonClick();
+                    (window as any).gameAudioManager?.onButtonClick();
                     startGame('ai', 'medium');
                   }}
                 >
@@ -130,7 +131,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    gameAudioManager.onButtonClick();
+                    (window as any).gameAudioManager?.onButtonClick();
                     startGame('ai', 'hard');
                   }}
                 >
@@ -143,7 +144,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    gameAudioManager.onButtonClick();
+                    (window as any).gameAudioManager?.onButtonClick();
                     startGame('ai-vs-ai', 'hard');
                   }}
                 >
@@ -266,7 +267,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   variant="outline"
                   onClick={() => {
-                    playButtonClickSound();
+                    (window as any).gameAudioManager?.onButtonClick();
                     startGame('local');
                   }}
                 >
@@ -358,7 +359,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           <Button
             variant="outline"
             onClick={() => {
-              playButtonClickSound();
+              (window as any).gameAudioManager?.onButtonClick();
               onSettings();
             }}
             className="medieval-btn"
@@ -370,7 +371,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           <Button
             variant="outline"
             onClick={() => {
-              playButtonClickSound();
+              (window as any).gameAudioManager?.onButtonClick();
               onAchievements();
             }}
             className="medieval-btn"
@@ -382,7 +383,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           <Button
             variant="outline"
             onClick={() => {
-              playButtonClickSound();
+              (window as any).gameAudioManager?.onButtonClick();
               onCollection();
             }}
             className="medieval-btn"

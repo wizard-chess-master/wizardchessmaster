@@ -4,7 +4,7 @@ import { GameState, ChessMove, Position, GameMode, AIDifficulty, PieceColor } fr
 import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess/gameEngine";
 import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
-import { gameAudioManager } from "../audio/gameAudioManager";
+// Audio managed by ChessAudioController component
 import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
 import { useCampaign } from "./useCampaign";
@@ -73,15 +73,9 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
-      // Start game audio
-      gameAudioManager.onGameStart();
-      gameAudioManager.onLevelStart();
+      // Audio managed by ChessAudioController component
       
-      // Set dynamic music based on game mode
-      setTimeout(() => {
-        const { setDynamicMusic } = useAudio.getState();
-        setDynamicMusic('playing');
-      }, 500);
+      // Audio managed by ChessAudioController component
       
       // Verify board state after setting
       setTimeout(() => {
@@ -228,38 +222,12 @@ export const useChess = create<ChessStore>()(
       // Play audio based on move type
       console.log('🎵 Playing audio for:', { piece: piece.type, captured: !!captured, isWizardAttack, isWizardTeleport, isCastling, promotion });
       
-      // Wizard-specific sounds
-      if (isWizardTeleport) {
-        gameAudioManager.onWizardTeleport();
-      } else if (isWizardAttack) {
-        gameAudioManager.onWizardAttack();
-      }
-      // Castling or promotion sounds
-      else if (isCastling || promotion) {
-        gameAudioManager.onPieceMove(); // Use regular move sound for special moves
-      }
-      // Capture sound
-      else if (captured) {
-        gameAudioManager.onPieceCapture();
-      }
-      // Regular piece movement
-      else {
-        gameAudioManager.onPieceMove();
-      }
+      // Audio managed by ChessAudioController component
 
       const newState = makeMove(state, move);
       set(newState);
       
-      // Play game event sounds for check/checkmate
-      if (newState.isCheckmate) {
-        gameAudioManager.onCheckmate();
-        const playerWon = newState.winner === 'white';
-        if (playerWon) {
-          setTimeout(() => gameAudioManager.onVictory(), 500);
-        }
-      } else if (newState.isInCheck) {
-        gameAudioManager.onCheck();
-      }
+      // Audio managed by ChessAudioController component
 
       // Record PvP stats for local multiplayer games
       if (state.gameMode === 'local' && newState.gamePhase === 'ended') {
@@ -329,21 +297,8 @@ export const useChess = create<ChessStore>()(
 
       const aiMove = getAIMove(state);
       if (aiMove) {
-        // Play enhanced magical sounds for AI vs AI moves
-        const { playPieceMovementSound, playWizardAbility, playGameEvent, isMuted } = useAudio.getState();
-        if (!isMuted && aiMove.piece) {
-          if (aiMove.isWizardTeleport) {
-            playWizardAbility('teleport').catch(e => console.log('🎭 AI vs AI wizard teleport sound failed:', e));
-          } else if (aiMove.isWizardAttack) {
-            playWizardAbility('ranged_attack').catch(e => console.log('🎭 AI vs AI wizard attack sound failed:', e));
-          } else if (aiMove.isCastling) {
-            playGameEvent('castling').catch(e => console.log('🎭 AI vs AI castling sound failed:', e));
-          } else if (aiMove.promotion) {
-            playGameEvent('promotion').catch(e => console.log('🎭 AI vs AI promotion sound failed:', e));
-          } else {
-            playPieceMovementSound(aiMove.piece.type, !!aiMove.captured).catch(e => console.log('🎭 AI vs AI piece movement sound failed:', e));
-          }
-        }
+        // Audio managed by ChessAudioController component
+        // Audio managed by ChessAudioController component
 
         // Skip repetition detection in AI vs AI mode to allow competitive evaluation
         const newState = makeMove(state, aiMove, true);
@@ -372,21 +327,7 @@ export const useChess = create<ChessStore>()(
 
       const aiMove = getAIMove(state);
       if (aiMove) {
-        // Play enhanced magical sounds for AI moves
-        const { playPieceMovementSound, playWizardAbility, playGameEvent, isMuted } = useAudio.getState();
-        if (!isMuted && aiMove.piece) {
-          if (aiMove.isWizardTeleport) {
-            playWizardAbility('teleport').catch(e => console.log('🎭 AI wizard teleport sound failed:', e));
-          } else if (aiMove.isWizardAttack) {
-            playWizardAbility('ranged_attack').catch(e => console.log('🎭 AI wizard attack sound failed:', e));
-          } else if (aiMove.isCastling) {
-            playGameEvent('castling').catch(e => console.log('🎭 AI castling sound failed:', e));
-          } else if (aiMove.promotion) {
-            playGameEvent('promotion').catch(e => console.log('🎭 AI promotion sound failed:', e));
-          } else {
-            playPieceMovementSound(aiMove.piece.type, !!aiMove.captured).catch(e => console.log('🎭 AI piece movement sound failed:', e));
-          }
-        }
+        // Audio managed by ChessAudioController component
 
         const newState = makeMove(state, aiMove);
         set(newState);
