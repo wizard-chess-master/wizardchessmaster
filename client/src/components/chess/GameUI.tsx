@@ -8,8 +8,6 @@ import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
 // import { GameHints } from './GameHints';
 import { AdBanner } from '../monetization/AdBanner';
-import { EmotionIndicator } from '../emotion/EmotionIndicator';
-import { ThemeMusicToggle } from '../audio/ThemeMusicToggle';
 // import { useAmbientSound } from '../../lib/stores/useAmbientSound';
 // import type { GameIntensity } from '../../lib/stores/useAmbientSound';
 
@@ -144,12 +142,6 @@ export function GameUI({ onSettings }: GameUIProps) {
               </div>
             </CardContent>
           </Card>
-
-          {/* Emotion Recognition Panel */}
-          <EmotionIndicator className="w-full" />
-
-          {/* Theme Music Control */}
-          <ThemeMusicToggle />
 
           {/* Keyboard Shortcuts - Collapsible */}
           <div className="md:col-span-3">

@@ -10,9 +10,6 @@ import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
-import { wizardVoiceSystem } from "../audio/wizardVoiceSystem";
-import { emotionEngine } from "../emotion/emotionRecognition";
-import { startEmotionMonitoring } from "../emotion/emotionResponseSystem";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -75,40 +72,11 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
-      // Dynamic music disabled - using theme music instead
-      // setTimeout(() => {
-      //   const { setDynamicMusic } = useAudio.getState();
-      //   setDynamicMusic('playing');
-      // }, 500);
-      
-      // Completely disable voice system for now to stop loops
-      // TODO: Re-enable once voice loop issue is resolved
-      // if (!wizardVoiceSystem.isInitialized) {
-      //   wizardVoiceSystem.initialize().then(() => {
-      //     setTimeout(() => {
-      //       wizardVoiceSystem.onGameEvent('game_start');
-      //     }, 1000);
-      //   });
-      // }
-
-      // Initialize theme music only if not already initialized
-      const { initializeThemeMusic, themeMusic } = useAudio.getState();
-      if (!themeMusic) {
-        console.log('🎵 About to initialize theme music...');
-        initializeThemeMusic().then(() => {
-          console.log('🎵 Theme music initialization completed');
-        }).catch(error => {
-          console.error('❌ Theme music initialization failed:', error);
-        });
-      } else {
-        console.log('🎵 Theme music already exists, skipping initialization');
-      }
-      
-      // Reset emotion tracking for new game
-      emotionEngine.resetBehaviorData();
-      
-      // Start emotion monitoring
-      startEmotionMonitoring();
+      // Set dynamic music based on game mode
+      setTimeout(() => {
+        const { setDynamicMusic } = useAudio.getState();
+        setDynamicMusic('playing');
+      }, 500);
       
       // Verify board state after setting
       setTimeout(() => {
@@ -159,9 +127,6 @@ export const useChess = create<ChessStore>()(
         console.log('✅ Selecting piece:', piece, 'at', position);
         const validMoves = getValidMovesForPosition(state, position);
         console.log('📋 Valid moves found:', validMoves.length, validMoves);
-        
-        // Record exploration behavior for emotion analysis
-        emotionEngine.recordPlayerAction('piece_clicked');
         
         // Debug current board state for castling
         if (piece.type === 'king') {
@@ -263,12 +228,8 @@ export const useChess = create<ChessStore>()(
         // Wizard-specific sounds
         if (isWizardTeleport) {
           playWizardAbility('teleport').catch(e => console.log('🎭 Wizard teleport sound failed:', e));
-          // Voice feedback for wizard teleport
-          wizardVoiceSystem.onGameEvent('wizard_move', { moveType: 'teleport' });
         } else if (isWizardAttack) {
           playWizardAbility('ranged_attack').catch(e => console.log('🎭 Wizard attack sound failed:', e));
-          // Voice feedback for wizard attack
-          wizardVoiceSystem.onGameEvent('wizard_move', { moveType: 'attack', isCapture: true });
         }
         // Castling sound
         else if (isCastling) {
@@ -287,20 +248,6 @@ export const useChess = create<ChessStore>()(
       const newState = makeMove(state, move);
       set(newState);
       
-      // Record move for emotion analysis
-      const moveTime = Date.now() - (get().gameStartTime || Date.now());
-      const moveQuality = Math.random() * 40 + 60; // Simulated quality 60-100
-      emotionEngine.recordPlayerAction('move_made', { moveTime: moveTime % 30000, quality: moveQuality });
-      
-      // Check if move was good or bad for emotion tracking
-      if (newState.isInCheck && newState.currentPlayer === 'black') {
-        emotionEngine.recordPlayerAction('good_move');
-      } else if (captured && captured.type === 'queen') {
-        emotionEngine.recordPlayerAction('error_made');
-      } else if (captured && ['rook', 'bishop', 'knight'].includes(captured.type)) {
-        emotionEngine.recordPlayerAction('good_move');
-      }
-      
       // Play game event sounds for check/checkmate and update music
       if (!isMuted) {
         if (newState.isCheckmate) {
@@ -310,17 +257,11 @@ export const useChess = create<ChessStore>()(
             // Switch to victory music
             const { setDynamicMusic } = useAudio.getState();
             setDynamicMusic('victory');
-            // Voice feedback for victory
-            wizardVoiceSystem.onGameEvent('checkmate');
-            setTimeout(() => wizardVoiceSystem.onGameEvent('game_won'), 1500);
           } else {
             playGameEvent('checkmate_lose').catch(e => console.log('🎭 Checkmate defeat sound failed:', e));
             // Switch to defeat music
             const { setDynamicMusic } = useAudio.getState();
             setDynamicMusic('defeat');
-            // Voice feedback for defeat
-            wizardVoiceSystem.onGameEvent('checkmate');
-            setTimeout(() => wizardVoiceSystem.onGameEvent('game_lost'), 1500);
           }
         } else if (newState.isInCheck) {
           playGameEvent('check').catch(e => console.log('🎭 Check warning sound failed:', e));
@@ -329,8 +270,6 @@ export const useChess = create<ChessStore>()(
             const { setDynamicMusic } = useAudio.getState();
             setDynamicMusic('check');
           }, 200);
-          // Voice feedback for check
-          wizardVoiceSystem.onGameEvent('check');
         }
       }
 
@@ -498,12 +437,6 @@ export const useChess = create<ChessStore>()(
       }
 
       set(newState);
-      
-      // Voice feedback for undo
-      wizardVoiceSystem.onGameEvent('move_undone');
-      
-      // Record undo usage for emotion analysis
-      emotionEngine.recordPlayerAction('undo_used');
     }
   }))
 );

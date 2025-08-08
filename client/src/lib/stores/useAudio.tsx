@@ -6,9 +6,6 @@ export type MusicTrack = 'main_theme' | 'battle_theme' | 'victory_theme' | 'tens
 
 interface AudioState {
   backgroundMusic: HTMLAudioElement | null;
-  themeMusic: HTMLAudioElement | null;
-  isThemeMusicEnabled: boolean;
-  themeVolume: number;
   musicTracks: Record<MusicTrack, HTMLAudioElement | null>;
   currentTrack: MusicTrack;
   isTransitioning: boolean;
@@ -22,7 +19,6 @@ interface AudioState {
   
   // Setter functions
   setBackgroundMusic: (music: HTMLAudioElement) => void;
-  setThemeMusic: (music: HTMLAudioElement) => void;
   setMusicTracks: (tracks: Record<MusicTrack, HTMLAudioElement | null>) => void;
   setHitSound: (sound: HTMLAudioElement) => void;
   setSuccessSound: (sound: HTMLAudioElement) => void;
@@ -31,7 +27,6 @@ interface AudioState {
   // Control functions
   toggleMute: () => void;
   toggleAmbient: () => void;
-  toggleThemeMusic: () => void;
   setGameIntensity: (intensity: GameIntensity) => void;
   playHit: () => void;
   playSuccess: () => void;
@@ -39,14 +34,9 @@ interface AudioState {
   stopAmbient: () => void;
   playBackgroundMusic: () => void;
   stopBackgroundMusic: () => void;
-  playThemeMusic: () => void;
-  stopThemeMusic: () => void;
-  setThemeVolume: (volume: number) => void;
   switchMusicTrack: (track: MusicTrack, crossfade?: boolean) => void;
   setDynamicMusic: (gameState: 'menu' | 'playing' | 'check' | 'victory' | 'defeat') => void;
   initializeAudio: () => void;
-  initializeThemeMusic: () => Promise<void>;
-  stopAllSounds: () => void;
   
   // Magical Sound Library functions
   playMagicalSound: (soundId: MagicalSoundEffect, options?: {
@@ -65,9 +55,6 @@ interface AudioState {
 
 export const useAudio = create<AudioState>((set, get) => ({
   backgroundMusic: null,
-  themeMusic: null,
-  isThemeMusicEnabled: true,
-  themeVolume: 0.5,
   musicTracks: {
     main_theme: null,
     battle_theme: null,
@@ -91,14 +78,13 @@ export const useAudio = create<AudioState>((set, get) => ({
   isAmbientEnabled: true,
   
   setBackgroundMusic: (music) => set({ backgroundMusic: music }),
-  setThemeMusic: (music) => set({ themeMusic: music }),
   setMusicTracks: (tracks) => set({ musicTracks: tracks }),
   setHitSound: (sound) => set({ hitSound: sound }),
   setSuccessSound: (sound) => set({ successSound: sound }),
   setAmbientSounds: (sounds) => set({ ambientSounds: sounds }),
   
   toggleMute: () => {
-    const { isMuted, ambientSounds, currentIntensity, backgroundMusic, themeMusic } = get();
+    const { isMuted, ambientSounds, currentIntensity, backgroundMusic } = get();
     const newMutedState = !isMuted;
     
     console.log(`🔊 Toggling mute: ${isMuted} → ${newMutedState}`);
@@ -117,12 +103,6 @@ export const useAudio = create<AudioState>((set, get) => ({
         backgroundMusic.pause();
         console.log('🎵 Background music paused (muted)');
       }
-      
-      // Stop theme music
-      if (themeMusic) {
-        themeMusic.pause();
-        console.log('🎵 Theme music paused (muted)');
-      }
     } else {
       // Resume sounds when unmuting
       const currentAmbient = ambientSounds[currentIntensity];
@@ -138,15 +118,6 @@ export const useAudio = create<AudioState>((set, get) => ({
           console.log('🎵 Background music resumed (unmuted)');
         }).catch(error => {
           console.log('❌ Background music play failed:', error);
-        });
-      }
-      
-      // Resume theme music
-      if (themeMusic && get().isThemeMusicEnabled) {
-        themeMusic.play().then(() => {
-          console.log('🎵 Theme music resumed (unmuted)');
-        }).catch(error => {
-          console.log('❌ Theme music play failed:', error);
         });
       }
     }
@@ -232,7 +203,7 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   stopAllSounds: () => {
-    const { ambientSounds, backgroundMusic, themeMusic } = get();
+    const { ambientSounds, backgroundMusic } = get();
     
     // Stop all ambient sounds
     Object.values(ambientSounds).forEach(sound => {
@@ -246,12 +217,6 @@ export const useAudio = create<AudioState>((set, get) => ({
     if (backgroundMusic) {
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
-    }
-    
-    // Stop theme music
-    if (themeMusic) {
-      themeMusic.pause();
-      themeMusic.currentTime = 0;
     }
     
     // Stop any looping HTML audio elements
@@ -421,168 +386,6 @@ export const useAudio = create<AudioState>((set, get) => ({
   initializeAudio: () => {
     console.log('🎵 Initializing audio system - setting to unmuted');
     set({ isMuted: false });
-  },
-
-  // ===== THEME MUSIC SYSTEM =====
-  toggleThemeMusic: () => {
-    const { isThemeMusicEnabled, isMuted, themeMusic } = get();
-    const newThemeState = !isThemeMusicEnabled;
-    
-    if (!newThemeState && themeMusic) {
-      // Stop theme music
-      themeMusic.pause();
-      themeMusic.currentTime = 0;
-      console.log('🎵 Theme music stopped');
-    } else if (newThemeState && !isMuted && themeMusic) {
-      // Start theme music
-      themeMusic.play().then(() => {
-        console.log('🎵 Theme music started');
-      }).catch(error => {
-        console.log('❌ Theme music play failed:', error);
-      });
-    }
-    
-    set({ isThemeMusicEnabled: newThemeState });
-    console.log(`🎵 Theme music ${newThemeState ? 'enabled' : 'disabled'}`);
-  },
-
-  playThemeMusic: () => {
-    const { themeMusic, isMuted, isThemeMusicEnabled } = get();
-    
-    console.log('🎵 playThemeMusic called:', { themeMusic: !!themeMusic, isMuted, isThemeMusicEnabled });
-    
-    if (!themeMusic) {
-      console.log('🎵 No theme music loaded, initializing...');
-      get().initializeThemeMusic();
-      return;
-    }
-    
-    if (isMuted || !isThemeMusicEnabled) {
-      console.log('🎵 Theme music blocked:', { isMuted, isThemeMusicEnabled });
-      return;
-    }
-    
-    themeMusic.currentTime = 0;
-    themeMusic.play().then(() => {
-      console.log('🎵 Theme music playing successfully');
-    }).catch(error => {
-      console.log('❌ Theme music play failed:', error);
-    });
-  },
-
-  stopThemeMusic: () => {
-    const { themeMusic } = get();
-    if (themeMusic) {
-      themeMusic.pause();
-      themeMusic.currentTime = 0;
-      console.log('🎵 Theme music stopped');
-    }
-  },
-
-  setThemeVolume: (volume: number) => {
-    const { themeMusic } = get();
-    const clampedVolume = Math.max(0, Math.min(1, volume));
-    
-    set({ themeVolume: clampedVolume });
-    
-    if (themeMusic) {
-      themeMusic.volume = clampedVolume;
-      console.log(`🎵 Theme volume set to: ${clampedVolume}`);
-    }
-  },
-
-  initializeThemeMusic: async () => {
-    const currentTheme = get().themeMusic;
-    if (currentTheme) {
-      console.log('🎵 Theme music already initialized, skipping');
-      return;
-    }
-    
-    console.log('🎵 === THEME MUSIC INITIALIZATION START ===');
-    try {
-      console.log('🎵 Starting theme music initialization...');
-      
-      // Stop ALL existing audio sources first
-      const { backgroundMusic, musicTracks } = get();
-      
-      // Stop old background music
-      if (backgroundMusic) {
-        backgroundMusic.pause();
-        backgroundMusic.currentTime = 0;
-        console.log('🎵 Stopped existing background music for theme music');
-      }
-      
-      // Stop all music tracks (battle_theme, main_theme, etc.)
-      Object.entries(musicTracks).forEach(([trackName, track]) => {
-        if (track) {
-          track.pause();
-          track.currentTime = 0;
-          console.log(`🎵 Stopped music track: ${trackName}`);
-        }
-      });
-
-      const theme = new Audio('/sounds/Theme-music1.mp3');
-      theme.loop = true;
-      theme.volume = get().themeVolume;
-      theme.preload = 'auto';
-
-      // Optimize for Replit performance
-      theme.crossOrigin = 'anonymous';
-      
-      // Handle loading events - only once
-      let hasPlayed = false;
-      theme.addEventListener('canplaythrough', () => {
-        if (hasPlayed) return; // Prevent multiple plays
-        hasPlayed = true;
-        
-        console.log('🎵 Theme music loaded and ready to play');
-        
-        // Auto-play theme music if enabled
-        if (get().isThemeMusicEnabled && !get().isMuted) {
-          theme.play().then(() => {
-            console.log('🎵 Theme music started playing successfully');
-          }).catch(error => {
-            console.log('❌ Theme music autoplay failed:', error);
-          });
-        }
-      }, { once: true }); // Ensure this only fires once
-
-      theme.addEventListener('loadstart', () => {
-        console.log('🎵 Theme music loading started...');
-      });
-
-      theme.addEventListener('error', (error) => {
-        console.warn('❌ Theme music failed to load:', error);
-        console.warn('❌ Attempting fallback path...');
-        // Try alternative paths
-        const fallbackTheme = new Audio('assets/music/Theme-music1.mp3');
-        fallbackTheme.loop = true;
-        fallbackTheme.volume = get().themeVolume;
-        set({ themeMusic: fallbackTheme });
-        if (get().isThemeMusicEnabled && !get().isMuted) {
-          fallbackTheme.play().catch(console.warn);
-        }
-      });
-
-      // Ensure seamless looping
-      theme.addEventListener('ended', () => {
-        if (get().isThemeMusicEnabled && !get().isMuted) {
-          theme.currentTime = 0;
-          theme.play().catch(console.warn);
-        }
-      });
-
-      set({ themeMusic: theme });
-      console.log('🎵 Theme music initialized, starting load process');
-      
-      // Force loading
-      theme.load();
-      
-      console.log('🎵 === THEME MUSIC INITIALIZATION END ===');
-      
-    } catch (error) {
-      console.error('❌ Failed to initialize theme music:', error);
-    }
   },
   
   // Magical Sound Library Implementation
