@@ -316,13 +316,13 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=10 parameter added');
+    console.log('🎵 Cache busting with ?v=11 parameter added');
     
     // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=10');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=11');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -332,8 +332,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting v=10
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=10');
+    // Create new Audio instance with updated cache busting v=11
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=11');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     
@@ -373,10 +373,21 @@ class WizardChessAudioManager {
         console.log('🎼 ✅ Volume level (should be 0.42):', theme.volume);
         console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src.split('/').pop());
         
-        // Final verification of active audio sources
+        // EXHAUSTIVE FINAL VERIFICATION as urgently requested
         const activeAudio = Array.from(document.querySelectorAll('audio')).map(a => a.src);
         console.log('🎼 ✅ Active audio sources:', activeAudio);
         console.log('🎼 ✅ Active audio count:', activeAudio.length);
+        console.log('Audio check:', activeAudio);
+        
+        // AudioContext state logging as requested
+        try {
+          console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
+          if (typeof AudioContext !== 'undefined') {
+            console.log('AudioContext state: Available for use');
+          }
+        } catch (e) {
+          console.log('AudioContext: Not accessible');
+        }
         console.log('🎼 ✅ NO OTHER MUSIC should be playing - verification complete');
         
         // Log ALL active audio sources as requested

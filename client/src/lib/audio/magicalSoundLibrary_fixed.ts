@@ -132,13 +132,14 @@ const MAGICAL_SOUND_DATA: Record<MagicalSoundEffect, string> = {
   'error_chime': '/sounds/hit.mp3',
   'success_chime': '/sounds/success.mp3',
   
-  // AMBIENT SOUNDS (DISABLED - using direct Theme-music1.mp3 instead)
-  'crystal_hum': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
-  'mystical_wind': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
-  'arcane_energy': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
-  'magical_sparkles': '/sounds/success.mp3',
-  'enchanted_whispers': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
-  'power_surge': '/sounds/hit.mp3'
+  // AMBIENT SOUNDS (COMPLETELY REMOVED - ONLY Theme-music1.mp3 allowed)
+  // ALL OLD MUSIC REFERENCES PURGED - ONLY THEME-MUSIC1.MP3 V=11 PERMITTED
+  'crystal_hum': '/sounds/success.mp3', // No music - UI sound only
+  'mystical_wind': '/sounds/success.mp3', // No music - UI sound only  
+  'arcane_energy': '/sounds/success.mp3', // No music - UI sound only
+  'magical_sparkles': '/sounds/success.mp3', // No music - UI sound only
+  'enchanted_whispers': '/sounds/success.mp3', // No music - UI sound only
+  'power_surge': '/sounds/hit.mp3' // No music - UI sound only
 };
 
 // Comprehensive magical sound library definitions

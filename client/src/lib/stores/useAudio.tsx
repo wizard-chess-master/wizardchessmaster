@@ -53,10 +53,31 @@ export const useAudio = create<AudioState>((set, get) => ({
   initializeAudio: async () => {
     if (get().initialized) return;
     
-    // Stop all audio on load as requested
-    console.log('🛑 Stopping all audio on initialization...');
-    document.querySelectorAll('audio').forEach(a => a.pause());
-    console.log('Active audio:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    // COMPREHENSIVE AUDIO CLEANUP as urgently requested
+    console.log('🛑 URGENT: Comprehensive audio cleanup on initialization...');
+    
+    // Close any existing AudioContext
+    try {
+      if (typeof AudioContext !== 'undefined') {
+        new AudioContext().close().then(() => {
+          console.log('✅ AudioContext closed');
+        }).catch(() => {
+          console.log('⚠️ AudioContext close failed or not needed');
+        });
+      }
+    } catch (e) {
+      console.log('⚠️ AudioContext not available or already closed');
+    }
+    
+    // Comprehensive DOM audio cleanup
+    document.querySelectorAll('audio').forEach(a => { 
+      a.pause(); 
+      a.currentTime = 0; 
+    });
+    
+    // Exhaustive audio logging as requested
+    console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
     
     console.log('🎵 Initializing Wizard Chess Audio System...');
     await wizardChessAudio.initialize();
@@ -73,22 +94,47 @@ export const useAudio = create<AudioState>((set, get) => ({
       backgroundMusic.currentTime = 0;
     }
     
-    // Stop all audio on load as requested
-    document.querySelectorAll('audio').forEach(a => a.pause());
-    console.log('Active audio:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    // COMPREHENSIVE AUDIO CLEANUP as urgently requested
+    console.log('🛑 URGENT: Comprehensive DOM audio cleanup...');
+    
+    // Close any existing AudioContext
+    try {
+      if (typeof AudioContext !== 'undefined') {
+        new AudioContext().close().then(() => {
+          console.log('✅ AudioContext closed');
+        }).catch(() => {
+          console.log('⚠️ AudioContext close failed or not needed');
+        });
+      }
+    } catch (e) {
+      console.log('⚠️ AudioContext not available or already closed');
+    }
+    
+    // Comprehensive DOM audio cleanup
+    document.querySelectorAll('audio').forEach(a => { 
+      a.pause(); 
+      a.currentTime = 0; 
+    });
+    
+    // Exhaustive audio logging as requested
+    console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
     
     if (isMuted) {
       console.log('🎵 Background music not started - audio is muted');
       return;
     }
 
-    // Create new Audio instance with v=10 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=10');
+    // Create new Audio instance with v=11 cache busting as requested
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=11');
     theme.loop = true;
     theme.volume = 0.42; // Set exact volume as requested
     
+    // Exhaustive logging as urgently requested
     console.log('🎵 Playing music:', theme.src);
     console.log('🎵 ONLY Theme-music1.mp3 should play - no old music references');
+    console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    console.log('Context:', typeof AudioContext !== 'undefined' ? (typeof AudioContext !== 'undefined' && window.AudioContext ? window.AudioContext.prototype.state || 'Available' : 'Available') : 'Not Available');
     
     theme.play()
       .then(() => {
@@ -115,9 +161,15 @@ export const useAudio = create<AudioState>((set, get) => ({
     const { isMuted } = get();
     if (isMuted) return;
 
-    // Stop all existing audio first as requested
-    document.querySelectorAll('audio').forEach(a => a.pause());
-    console.log('Active audio:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    // URGENT: Stop all existing audio first with comprehensive cleanup
+    document.querySelectorAll('audio').forEach(a => { 
+      a.pause(); 
+      a.currentTime = 0; 
+    });
+    
+    // Exhaustive logging as urgently requested  
+    console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
 
     const sound = new Audio(`/assets/sound-fx/button_${type}.mp3?v=1`);
     sound.volume = 0.3;

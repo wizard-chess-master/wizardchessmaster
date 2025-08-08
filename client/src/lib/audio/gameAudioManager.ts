@@ -26,7 +26,7 @@ export type VoiceClip =
   | 'tutorial_welcome';
 
 export type MusicTrack = 
-  | 'theme_music';
+  | never; // ALL MUSIC TRACKS REMOVED - ONLY Theme-music1.mp3 v=11 PERMITTED
 
 export interface AudioSettings {
   masterVolume: number;
