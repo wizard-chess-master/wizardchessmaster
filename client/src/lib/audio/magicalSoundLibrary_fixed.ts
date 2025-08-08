@@ -132,12 +132,12 @@ const MAGICAL_SOUND_DATA: Record<MagicalSoundEffect, string> = {
   'error_chime': '/sounds/hit.mp3',
   'success_chime': '/sounds/success.mp3',
   
-  // AMBIENT SOUNDS (using background.mp3 for atmosphere)
-  'crystal_hum': '/sounds/background.mp3',
-  'mystical_wind': '/sounds/background.mp3',
-  'arcane_energy': '/sounds/background.mp3',
+  // AMBIENT SOUNDS (DISABLED - using direct Theme-music1.mp3 instead)
+  'crystal_hum': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
+  'mystical_wind': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
+  'arcane_energy': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
   'magical_sparkles': '/sounds/success.mp3',
-  'enchanted_whispers': '/sounds/background.mp3',
+  'enchanted_whispers': '/sounds/success.mp3', // Changed from background.mp3 to avoid conflicts
   'power_surge': '/sounds/hit.mp3'
 };
 

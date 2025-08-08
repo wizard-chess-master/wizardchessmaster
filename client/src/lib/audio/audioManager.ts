@@ -315,16 +315,21 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=1 parameter added');
+    console.log('🎵 Cache busting with ?v=2 parameter added');
+    
+    // COMPLETE AUDIO CLEANUP - Stop ALL audio sources
+    this.stopAllAudio();
     
     // Stop any existing theme music
     if (this.themeMusic) {
       this.themeMusic.pause();
+      this.themeMusic.currentTime = 0;
       this.themeMusic = null;
+      console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=1');
+    // Create new Audio instance with updated cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=2');
     theme.loop = true;
     theme.volume = this.volume * 0.6; // Music should be quieter than SFX
     
@@ -338,6 +343,8 @@ class WizardChessAudioManager {
     // Handle loading and play
     theme.addEventListener('loadeddata', () => {
       console.log('✅ Theme-music1.mp3 loaded successfully');
+      console.log('🎼 ✅ File size:', theme.duration || 'Loading...');
+      console.log('🎼 ✅ Ready state:', theme.readyState);
     });
     
     theme.addEventListener('error', (error) => {
@@ -348,13 +355,17 @@ class WizardChessAudioManager {
       console.log('🔄 Theme music ended, restarting loop');
     });
     
-    // Play the music
+    // Play the music with comprehensive logging
     theme.play()
       .then(() => {
-        console.log('🎼 Theme-music1.mp3 started playing successfully');
+        console.log('🎼 ✅ Theme-music1.mp3 started playing successfully');
+        console.log('🎼 ✅ CONFIRMED: Only Theme-music1.mp3 is now playing');
+        console.log('🎼 ✅ Loop status:', theme.loop);
+        console.log('🎼 ✅ Volume level:', theme.volume);
+        console.log('🎼 ✅ Current time:', theme.currentTime);
       })
       .catch(error => {
-        console.error('❌ Failed to play Theme-music1.mp3:', error);
+        console.error('❌ FAILED to play Theme-music1.mp3:', error);
       });
   }
 
@@ -381,6 +392,58 @@ class WizardChessAudioManager {
 
   onLevelComplete(): void {
     this.playVoice('level_complete');
+  }
+
+  // COMPLETE AUDIO CLEANUP METHOD
+  stopAllAudio(): void {
+    console.log('🛑 Stopping ALL audio sources to prevent conflicts...');
+    
+    // Stop all sound effects
+    this.soundEffects.forEach((audio, key) => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+        console.log(`🛑 Stopped sound effect: ${key}`);
+      }
+    });
+    
+    // Stop all voice files
+    this.voiceFiles.forEach((audio, key) => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+        console.log(`🛑 Stopped voice file: ${key}`);
+      }
+    });
+    
+    // Stop all legacy music
+    this.music.forEach((audio, key) => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+        console.log(`🛑 Stopped legacy music: ${key}`);
+      }
+    });
+    
+    // Stop current legacy music
+    if (this.currentMusic) {
+      this.currentMusic.pause();
+      this.currentMusic.currentTime = 0;
+      this.currentMusic = null;
+      console.log('🛑 Stopped current legacy music');
+    }
+    
+    console.log('✅ All audio sources stopped - ready for Theme-music1.mp3');
+    
+    // Additional cleanup - stop any HTML audio elements that might be playing in background
+    const allAudios = document.querySelectorAll('audio');
+    allAudios.forEach((audio, index) => {
+      if (!audio.paused) {
+        audio.pause();
+        audio.currentTime = 0;
+        console.log(`🛑 Stopped stray audio element ${index}`);
+      }
+    });
   }
 
   dispose(): void {
