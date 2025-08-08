@@ -21,16 +21,19 @@ export const isAdminEnabled = (): boolean => {
   // Check session storage for admin authentication
   const adminSession = sessionStorage.getItem(ADMIN_SESSION_KEY);
   
-  // Log current status for testing
-  console.log('🔐 Admin Status Check:', {
-    envAdminMode,
-    isDevelopment,
-    hasSession: adminSession === 'authenticated',
-    envVars: {
-      VITE_ADMIN_MODE: import.meta.env.VITE_ADMIN_MODE,
-      DEV: import.meta.env.DEV
-    }
-  });
+  // Log current status for testing - reduced logging in production-like mode
+  const shouldLogAdmin = import.meta.env.DEV && !import.meta.env.VITE_DISABLE_ADMIN_LOGS;
+  if (shouldLogAdmin) {
+    console.log('🔐 Admin Status Check:', {
+      envAdminMode,
+      isDevelopment,
+      hasSession: adminSession === 'authenticated',
+      envVars: {
+        VITE_ADMIN_MODE: import.meta.env.VITE_ADMIN_MODE,
+        DEV: import.meta.env.DEV
+      }
+    });
+  }
   
   // Admin is enabled if:
   // 1. Explicitly enabled via environment variable, OR
@@ -85,14 +88,18 @@ export const isAdminFeatureEnabled = (feature: 'training' | 'debug' | 'stats' | 
   const envForced = import.meta.env.VITE_ADMIN_MODE === 'true';
   const finalShow = envForced || shouldShow;
   
-  console.log(`🔐 Feature "${feature}" check:`, {
-    adminEnabled,
-    hasSession,
-    shouldShow,
-    envForced,
-    finalShow,
-    isDev: import.meta.env.DEV
-  });
+  // Disable feature check logging to reduce debug loops as requested
+  const shouldLogFeatures = import.meta.env.DEV && !import.meta.env.VITE_DISABLE_ADMIN_LOGS;
+  if (shouldLogFeatures) {
+    console.log(`🔐 Feature "${feature}" check:`, {
+      adminEnabled,
+      hasSession,
+      shouldShow,
+      envForced,
+      finalShow,
+      isDev: import.meta.env.DEV
+    });
+  }
   
   if (!finalShow) return false;
   

@@ -84,14 +84,14 @@ export const useChess = create<ChessStore>()(
       cleanAudio();
       
       // Create and play theme music as requested
-      const theme = new Audio('/assets/music/Theme-music1.mp3?v=16');
+      const theme = new Audio('/assets/music/Theme-music1.mp3?v=17');
       theme.loop = true;
       theme.volume = 0.42;
       console.log('Theme created:', theme.src);
       
       theme.play()
         .then(() => {
-          console.log('✅ Theme-music1.mp3 v=16 started successfully from game start');
+          console.log('✅ Theme-music1.mp3 v=17 started successfully from game start');
         })
         .catch((error) => {
           console.error('❌ Failed to play theme music from game start:', error);
