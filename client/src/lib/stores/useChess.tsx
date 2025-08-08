@@ -85,7 +85,7 @@ export const useChess = create<ChessStore>()(
       wizardVoiceSystem.initialize();
       setTimeout(() => {
         wizardVoiceSystem.onGameEvent('game_start');
-      }, 1000);
+      }, 1500); // Slightly longer delay to ensure initialization is complete
       
       // Reset emotion tracking for new game
       emotionEngine.resetBehaviorData();

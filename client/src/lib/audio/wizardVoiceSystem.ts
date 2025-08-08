@@ -155,13 +155,6 @@ class WizardVoiceSystem {
 
       this.isInitialized = true;
       console.log('🎭 Wizard Voice System initialized with', this.voiceClips.length, 'voice clips');
-      
-      // Test with greeting
-      setTimeout(() => {
-        if (this.isEnabled) {
-          this.playVoice('greeting');
-        }
-      }, 1000);
 
     } catch (error) {
       console.error('🎭 Failed to initialize Wizard Voice System:', error);
