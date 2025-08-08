@@ -15,28 +15,30 @@ if (typeof window !== 'undefined') {
     
     // Enhanced cleanup function
     function cleanAudio() {
-      new AudioContext().close();
-      let audios = document.querySelectorAll('audio');
-      audios.forEach(a => { 
+      if (typeof AudioContext !== 'undefined') { 
+        new AudioContext().close(); 
+      } 
+      document.querySelectorAll('audio').forEach(a => { 
         a.pause(); 
         a.currentTime = 0; 
+        a.src = ''; 
         a.remove(); 
-      });
-      console.log('Audio cleanup count:', audios.length);
+      }); 
+      console.log('Audio reset count:', document.querySelectorAll('audio').length);
     }
     
     // Call cleanup first
     cleanAudio();
     
     // ELIMINATE old music and force theme playback
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=24');
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
     theme.loop = true;
     theme.volume = 0.42;
     console.log('🎵 Main.tsx Theme created:', theme.src);
     
     theme.play()
       .then(() => {
-        console.log('✅ Main.tsx Theme-music1.mp3 v=24 FORCED started successfully');
+        console.log('✅ Main.tsx Theme-music1.mp3 v=25 FORCED started successfully');
         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
       })
       .catch((error) => {

@@ -350,8 +350,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // ELIMINATE old music and FORCE new Audio instance with v=24 cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=24');
+    // ELIMINATE old music and FORCE new Audio instance with v=25 cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     

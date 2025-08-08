@@ -101,14 +101,16 @@ export const useAudio = create<AudioState>((set, get) => ({
     
     // Enhanced cleanup function  
     function cleanAudio() {
-      new AudioContext().close();
-      let audios = document.querySelectorAll('audio');
-      audios.forEach(a => { 
+      if (typeof AudioContext !== 'undefined') { 
+        new AudioContext().close(); 
+      } 
+      document.querySelectorAll('audio').forEach(a => { 
         a.pause(); 
         a.currentTime = 0; 
+        a.src = ''; 
         a.remove(); 
-      });
-      console.log('Audio cleanup count:', audios.length);
+      }); 
+      console.log('Audio reset count:', document.querySelectorAll('audio').length);
     }
     
     // Call cleanup function before theme playback
@@ -119,8 +121,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       return;
     }
 
-    // ELIMINATE old music and FORCE Theme-music1.mp3 with v=24 cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=24');
+    // ELIMINATE old music and FORCE Theme-music1.mp3 with v=25 cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
     theme.loop = true;
     theme.volume = 0.42;
     
@@ -129,7 +131,7 @@ export const useAudio = create<AudioState>((set, get) => ({
     theme.play()
       .then(() => {
         console.log('✅ Background music FORCED playback started successfully');
-        console.log('✅ Theme-music1.mp3 v=24 confirmed playing');
+        console.log('✅ Theme-music1.mp3 v=25 confirmed playing');
         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
         set({ backgroundMusic: theme });
       })

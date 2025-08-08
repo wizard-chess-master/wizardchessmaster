@@ -112,27 +112,30 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     
                     // Enhanced cleanup function
                     function cleanAudio() { 
-                      new AudioContext().close(); 
+                      if (typeof AudioContext !== 'undefined') { 
+                        new AudioContext().close(); 
+                      } 
                       document.querySelectorAll('audio').forEach(a => { 
                         a.pause(); 
                         a.currentTime = 0; 
+                        a.src = ''; 
                         a.remove(); 
                       }); 
-                      console.log('Audio cleanup count:', document.querySelectorAll('audio').length); 
+                      console.log('Audio reset count:', document.querySelectorAll('audio').length); 
                     }
                     
                     // Call cleanup first
                     cleanAudio();
                     
-                    // Force theme playback with v=24 cache busting
-                    const theme = new Audio('/assets/music/Theme-music1.mp3?v=24');
+                    // Force theme playback with v=25 cache busting
+                    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
                     theme.loop = true;
                     theme.volume = 0.42;
                     console.log('Theme created on Easy click:', theme.src);
                     
                     theme.play()
                       .then(() => {
-                        console.log('✅ Theme-music1.mp3 v=24 FORCED on Player vs AI - Easy click');
+                        console.log('✅ Theme-music1.mp3 v=25 FORCED on Player vs AI - Easy click');
                         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
                       })
                       .catch((error) => {
