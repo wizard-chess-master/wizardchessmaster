@@ -46,6 +46,7 @@ interface AudioState {
   setDynamicMusic: (gameState: 'menu' | 'playing' | 'check' | 'victory' | 'defeat') => void;
   initializeAudio: () => void;
   initializeThemeMusic: () => Promise<void>;
+  stopAllSounds: () => void;
   
   // Magical Sound Library functions
   playMagicalSound: (soundId: MagicalSoundEffect, options?: {
@@ -491,6 +492,7 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   initializeThemeMusic: async () => {
+    console.log('🎵 === THEME MUSIC INITIALIZATION START ===');
     try {
       console.log('🎵 Starting theme music initialization...');
       
@@ -554,6 +556,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       
       // Force loading
       theme.load();
+      
+      console.log('🎵 === THEME MUSIC INITIALIZATION END ===');
       
     } catch (error) {
       console.error('❌ Failed to initialize theme music:', error);
