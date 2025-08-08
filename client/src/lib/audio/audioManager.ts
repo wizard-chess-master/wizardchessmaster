@@ -188,7 +188,7 @@ class WizardChessAudioManager {
       audio.volume = this.volume * 0.6; // Music should be quieter than SFX
       this.currentMusic = audio;
       await audio.play();
-      console.log(`🎼 Playing music: ${musicKey}`);
+      console.log(`🎼 Playing music: ${musicKey} (${this.config.music[musicKey]})`);
     } catch (error) {
       console.warn(`⚠️ Failed to play music ${musicKey}:`, error);
     }
