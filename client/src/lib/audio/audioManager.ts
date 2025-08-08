@@ -316,18 +316,13 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=19 parameter added');
+    console.log('🎵 FORCE Cache busting with ?v=21 parameter added');
     
-    // Dedicated cleanup function as specifically requested - fixed illegal invocation
+    // FORCE cleanup function as specifically requested
     function cleanAudio() {
-      try {
-        const audioCtx = new AudioContext();
-        audioCtx.close();
-        document.querySelectorAll('audio').forEach(a => a.remove());
-        console.log('Audio cleanup:', document.querySelectorAll('audio').length);
-      } catch (error) {
-        console.log('Audio cleanup error (safe to ignore):', error instanceof Error ? error.message : String(error));
-      }
+      new AudioContext().close();
+      document.querySelectorAll('audio').forEach(a => a.remove());
+      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
     // Call cleanup function before theme playback
@@ -337,7 +332,7 @@ class WizardChessAudioManager {
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=19');
+    console.log('🎼 ✅ VERIFICATION STEP 2: FORCE loading ONLY Theme-music1.mp3 with ?v=21');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -347,8 +342,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting v=19
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=19');
+    // FORCE new Audio instance with v=21 cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=21');
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     
@@ -385,7 +380,8 @@ class WizardChessAudioManager {
     // Play the music with comprehensive logging
     theme.play()
       .then(() => {
-        console.log('🎼 ✅ Theme-music1.mp3 started playing successfully');
+        console.log('🎼 ✅ Theme-music1.mp3 FORCED started playing successfully');
+        console.log('Theme playing forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
         console.log('🎼 ✅ CONFIRMED: Only Theme-music1.mp3 is now playing');
         console.log('🎼 ✅ Loop status:', theme.loop);
         console.log('🎼 ✅ Volume level (should be 0.42):', theme.volume);

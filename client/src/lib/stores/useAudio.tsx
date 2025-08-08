@@ -96,13 +96,9 @@ export const useAudio = create<AudioState>((set, get) => ({
     
     // Dedicated cleanup function as specifically requested
     function cleanAudio() {
-      try {
-        new AudioContext().close();
-        document.querySelectorAll('audio').forEach(a => a.remove());
-        console.log('Audio cleanup:', document.querySelectorAll('audio').length);
-      } catch (error) {
-        console.log('Audio cleanup error (safe to ignore):', error instanceof Error ? error.message : String(error));
-      }
+      new AudioContext().close();
+      document.querySelectorAll('audio').forEach(a => a.remove());
+      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
     // Call cleanup function before theme playback
@@ -113,23 +109,23 @@ export const useAudio = create<AudioState>((set, get) => ({
       return;
     }
 
-    // Create new Audio instance with v=19 cache busting as requested
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=19');
+    // FORCE Theme-music1.mp3 with v=21 cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=21');
     theme.loop = true;
-    theme.volume = 0.42; // Set exact volume as requested
+    theme.volume = 0.42;
     
-    // Log theme creation as specifically requested
     console.log('Theme created:', theme.src);
     
     theme.play()
       .then(() => {
-        console.log('✅ Background music started successfully');
-        console.log('✅ Theme-music1.mp3 v=19 confirmed playing');
-        console.log('Theme playing:', theme.src, theme.paused ? 'Paused' : 'Playing');
+        console.log('✅ Background music FORCED playback started successfully');
+        console.log('✅ Theme-music1.mp3 v=21 confirmed playing');
+        console.log('Theme playing forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
         set({ backgroundMusic: theme });
       })
       .catch((error) => {
-        console.error('❌ Failed to play background music:', error);
+        console.error('❌ Failed to FORCE play background music:', error);
+        console.error('Check Chrome audio permissions if silent');
       });
   },
 
