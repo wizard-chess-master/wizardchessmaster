@@ -104,6 +104,12 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
+                    console.log('🎮 Player vs AI - Easy clicked - triggering game start audio check');
+                    console.log('Audio sources:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+                    
+                    // Dispatch game start event for main.tsx listener
+                    window.dispatchEvent(new Event('gamestart'));
+                    
                     (window as any).gameAudioManager?.onButtonClick();
                     console.log('🎮 Starting new AI game - easy mode');
                     startGame('ai', 'easy');

@@ -9,6 +9,7 @@ if (typeof window !== 'undefined') {
   // Comprehensive audio state logging as urgently requested
   const logAudioState = () => {
     console.log('Audio check at', new Date().toLocaleTimeString(), ':', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    console.log('Audio sources:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
     try {
       console.log('Context:', (new AudioContext()).state);
     } catch (e) {
@@ -20,14 +21,21 @@ if (typeof window !== 'undefined') {
   logAudioState();
   setInterval(logAudioState, 5000); // Log every 5 seconds for debugging
   
+  // Add game start event listener for specific logging
+  window.addEventListener('gamestart', () => {
+    console.log('🎮 GAME START TRIGGERED - Audio Sources Check:');
+    console.log('Audio sources:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    logAudioState();
+  });
+  
   // Debug: Make stores available on window for testing
   import('./lib/stores/useWizardAssistant').then(module => {
-    window.useWizardAssistant = module.useWizardAssistant;
+    (window as any).useWizardAssistant = module.useWizardAssistant;
     console.log('🧙‍♂️ Wizard Assistant store loaded for debugging');
   });
   
   import('./lib/stores/useChess').then(module => {
-    window.useChess = module.useChess;
+    (window as any).useChess = module.useChess;
     console.log('♟️ Chess store loaded for debugging');
   });
 }
