@@ -104,8 +104,40 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 Player vs AI - Easy clicked - triggering game start audio check');
-                    console.log('Audio sources:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+                    console.log('🎮 Player vs AI - Easy clicked - FORCING Theme-music1.mp3 playback at 1:00 PM EDT');
+                    console.log('Audio sources before cleanup:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+                    
+                    // FORCE Theme-music1.mp3 playback on 'Player vs AI - Easy' click
+                    console.log('🎵 FORCING Theme-music1.mp3 on Player vs AI - Easy click...');
+                    
+                    // Aggressive cleanup function
+                    function cleanAudio() {
+                      new AudioContext().close();
+                      document.querySelectorAll('audio').forEach(a => { 
+                        a.pause(); 
+                        a.remove(); 
+                      });
+                      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
+                    }
+                    
+                    // Call cleanup first
+                    cleanAudio();
+                    
+                    // Force theme playback with v=22 cache busting
+                    const theme = new Audio('/assets/music/Theme-music1.mp3?v=22');
+                    theme.loop = true;
+                    theme.volume = 0.42;
+                    console.log('Theme created on Easy click:', theme.src);
+                    
+                    theme.play()
+                      .then(() => {
+                        console.log('✅ Theme-music1.mp3 v=22 FORCED on Player vs AI - Easy click');
+                        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
+                      })
+                      .catch((error) => {
+                        console.error('❌ Failed to force theme music on Easy click:', error);
+                        console.error('Check Chrome autoplay permissions if silent');
+                      });
                     
                     // Dispatch game start event for main.tsx listener
                     window.dispatchEvent(new Event('gamestart'));
