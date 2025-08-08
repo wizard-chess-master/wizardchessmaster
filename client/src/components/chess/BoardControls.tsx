@@ -1,9 +1,10 @@
 import React from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Accessibility } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import AccessibilityToggle from '../accessibility/AccessibilityToggle';
 
 interface BoardControlsProps {
   onSettings: () => void;
@@ -126,6 +127,15 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             <span className="text-sm">↶</span>
             <span className="text-xs leading-none">Undo</span>
           </Button>
+
+          {/* Accessibility Toggle */}
+          <div className="w-full">
+            <AccessibilityToggle 
+              variant="outline" 
+              size="sm"
+              className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+            />
+          </div>
           
         </div>
       </CardContent>
