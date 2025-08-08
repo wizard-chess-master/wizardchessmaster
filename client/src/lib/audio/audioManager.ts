@@ -52,7 +52,8 @@ class WizardChessAudioManager {
       hint_reveal: '/assets/sound-fx/hint_reveal.mp3',
     },
     music: {
-      theme_music: '/assets/music/Theme-music1.mp3',
+      // DISABLED - Using direct Theme-music1.mp3 implementation instead
+      // theme_music: '/assets/music/Theme-music1.mp3',
     },
     voiceFiles: {
       greeting: '/assets/voice-files/greeting.mp3',
@@ -74,8 +75,8 @@ class WizardChessAudioManager {
       // Load sound effects
       await this.loadAudioGroup(this.config.soundEffects, this.soundEffects, 'Sound Effects');
       
-      // Load music (legacy support - primary theme music now uses direct implementation)
-      await this.loadAudioGroup(this.config.music, this.music, 'Music');
+      // Legacy music loading DISABLED - using direct Theme-music1.mp3 implementation
+      // await this.loadAudioGroup(this.config.music, this.music, 'Music');
       
       // Load voice files
       await this.loadAudioGroup(this.config.voiceFiles, this.voiceFiles, 'Voice Files');
@@ -315,13 +316,13 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=3 parameter added');
+    console.log('🎵 Cache busting with ?v=4 parameter added');
     
     // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=3');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=4');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -331,8 +332,8 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with incremented cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=3');
+    // Create new Audio instance with updated cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=4');
     theme.loop = true;
     theme.volume = this.volume * 0.6; // Music should be quieter than SFX
     
@@ -370,6 +371,12 @@ class WizardChessAudioManager {
         console.log('🎼 ✅ Current time:', theme.currentTime);
         console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src);
         console.log('🎼 ✅ NO OTHER MUSIC should be playing - verification complete');
+        
+        // Log ALL active audio sources as requested
+        const allAudios = Array.from(document.querySelectorAll('audio'));
+        console.log('Active audio sources:', allAudios.map(a => a.src));
+        console.log('Active audio count:', allAudios.length);
+        console.log('Theme music volume should be 0.42:', theme.volume);
       })
       .catch(error => {
         console.error('❌ FAILED to play Theme-music1.mp3:', error);
@@ -442,26 +449,35 @@ class WizardChessAudioManager {
     
     console.log('✅ All audio sources stopped - ready for Theme-music1.mp3');
     
-    // FORCEFUL AUDIO CLEANUP - Stop ALL possible audio sources
-    const allAudios = document.querySelectorAll('audio');
-    allAudios.forEach((audio, index) => {
-      if (!audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-        console.log(`🛑 Stopped stray audio element ${index}`);
-      }
+    // COMPREHENSIVE AUDIO CLEANUP - Stop ALL audio elements in DOM
+    this.stopAllDOMAudio();
+  }
+
+  // COMPREHENSIVE DOM AUDIO CLEANUP FUNCTION as requested
+  stopAllDOMAudio(): void {
+    console.log('🛑 COMPREHENSIVE AUDIO CLEANUP: Stopping all DOM audio elements...');
+    
+    // Stop ALL audio elements in the DOM
+    document.querySelectorAll('audio').forEach((audio, index) => {
+      audio.pause();
+      audio.currentTime = 0;
+      console.log(`🛑 Stopped audio element ${index}: ${audio.src}`);
     });
+    
+    // Log active audio sources BEFORE cleanup
+    const activeAudios = Array.from(document.querySelectorAll('audio'));
+    console.log('Active audio sources before cleanup:', activeAudios.map(a => a.src));
     
     // Try to close any existing AudioContext instances
     try {
       if (window.AudioContext || (window as any).webkitAudioContext) {
-        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-        // Note: We don't actually close AudioContext here as it would affect all audio
         console.log('🛑 AudioContext available for cleanup if needed');
       }
     } catch (error) {
       console.log('🛑 No AudioContext cleanup needed');
     }
+    
+    console.log('🛑 DOM audio cleanup completed');
   }
 
   dispose(): void {

@@ -263,8 +263,8 @@ class GameAudioManager {
       { key: 'voice_level_complete', paths: ['/assets/voice-files/level_complete.mp3'] },
       { key: 'voice_tutorial_welcome', paths: ['/assets/voice-files/tutorial_welcome.mp3'] },
 
-      // Music
-      { key: 'music_theme_music', paths: ['/assets/music/Theme-music1.mp3'] } // ONLY Theme-music1.mp3, removed background.mp3
+      // Music - DISABLED: Using direct Theme-music1.mp3 implementation instead
+      // { key: 'music_theme_music', paths: ['/assets/music/Theme-music1.mp3'] }
     ];
 
     const loadPromises = audioFiles.map(({ key, paths }) => 
