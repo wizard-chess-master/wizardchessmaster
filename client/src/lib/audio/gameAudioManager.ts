@@ -251,7 +251,7 @@ class GameAudioManager {
       { key: 'sfx_checkmate', paths: ['/assets/sound-fx/checkmate.mp3', '/sounds/success.mp3'] },
       { key: 'sfx_victory', paths: ['/assets/sound-fx/victory.mp3', '/sounds/success.mp3'] },
       { key: 'sfx_button_click', paths: ['/assets/sound-fx/button_click.mp3', '/sounds/hit.mp3'] },
-      { key: 'sfx_level_start', paths: ['/assets/sound-fx/level_start.mp3', '/sounds/background.mp3'] },
+      { key: 'sfx_level_start', paths: ['/assets/sound-fx/level_start.mp3', '/sounds/success.mp3'] }, // Removed background.mp3 reference
       { key: 'sfx_hint_reveal', paths: ['/assets/sound-fx/hint_reveal.mp3', '/sounds/success.mp3'] },
 
       // Voice Files
@@ -264,7 +264,7 @@ class GameAudioManager {
       { key: 'voice_tutorial_welcome', paths: ['/assets/voice-files/tutorial_welcome.mp3'] },
 
       // Music
-      { key: 'music_theme_music', paths: ['/assets/music/Theme-music1.mp3', '/sounds/background.mp3'] }
+      { key: 'music_theme_music', paths: ['/assets/music/Theme-music1.mp3'] } // ONLY Theme-music1.mp3, removed background.mp3
     ];
 
     const loadPromises = audioFiles.map(({ key, paths }) => 

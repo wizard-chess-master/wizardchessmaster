@@ -24,7 +24,7 @@ export class AmbientSoundManager {
   }
 
   /**
-   * Initialize ambient sounds using the background.mp3 with different settings
+   * Initialize ambient sounds (DISABLED - replaced by direct Theme-music1.mp3 implementation)
    */
   async initializeAmbientSounds(): Promise<void> {
     // DISABLED: Conflicted with Theme-music1.mp3 - now using direct theme music implementation

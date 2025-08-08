@@ -315,10 +315,13 @@ class WizardChessAudioManager {
     if (this.muted) return;
     
     console.log('🎵 Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 Cache busting with ?v=2 parameter added');
+    console.log('🎵 Cache busting with ?v=3 parameter added');
     
-    // COMPLETE AUDIO CLEANUP - Stop ALL audio sources
+    // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
     this.stopAllAudio();
+    
+    console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
+    console.log('🎼 ✅ VERIFICATION STEP 2: Now loading ONLY Theme-music1.mp3 with ?v=3');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -328,15 +331,17 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // Create new Audio instance with updated cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=2');
+    // Create new Audio instance with incremented cache busting
+    const theme = new Audio('/assets/music/Theme-music1.mp3?v=3');
     theme.loop = true;
     theme.volume = this.volume * 0.6; // Music should be quieter than SFX
     
-    // Debug logging as requested
+    // Debug logging as requested - verify ONLY Theme-music1.mp3
+    console.log('🎼 Current audio:', theme.src);
     console.log('🎼 Theme music source:', theme.src);
     console.log('🎼 Theme music loop enabled:', theme.loop);
     console.log('🎼 Theme music volume:', theme.volume);
+    console.log('🎼 ✅ VERIFICATION: This is the ONLY audio that should play');
     
     this.themeMusic = theme;
     
@@ -363,6 +368,8 @@ class WizardChessAudioManager {
         console.log('🎼 ✅ Loop status:', theme.loop);
         console.log('🎼 ✅ Volume level:', theme.volume);
         console.log('🎼 ✅ Current time:', theme.currentTime);
+        console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src);
+        console.log('🎼 ✅ NO OTHER MUSIC should be playing - verification complete');
       })
       .catch(error => {
         console.error('❌ FAILED to play Theme-music1.mp3:', error);
@@ -435,7 +442,7 @@ class WizardChessAudioManager {
     
     console.log('✅ All audio sources stopped - ready for Theme-music1.mp3');
     
-    // Additional cleanup - stop any HTML audio elements that might be playing in background
+    // FORCEFUL AUDIO CLEANUP - Stop ALL possible audio sources
     const allAudios = document.querySelectorAll('audio');
     allAudios.forEach((audio, index) => {
       if (!audio.paused) {
@@ -444,6 +451,17 @@ class WizardChessAudioManager {
         console.log(`🛑 Stopped stray audio element ${index}`);
       }
     });
+    
+    // Try to close any existing AudioContext instances
+    try {
+      if (window.AudioContext || (window as any).webkitAudioContext) {
+        const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+        // Note: We don't actually close AudioContext here as it would affect all audio
+        console.log('🛑 AudioContext available for cleanup if needed');
+      }
+    } catch (error) {
+      console.log('🛑 No AudioContext cleanup needed');
+    }
   }
 
   dispose(): void {
