@@ -104,47 +104,67 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 Player vs AI - Easy clicked - FORCING Theme-music1.mp3 playback at 1:00 PM EDT');
-                    console.log('Audio sources before cleanup:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+                    console.log('🎮 Player vs AI - Easy clicked - STOPPING ALL AUDIO FIRST');
                     
-                    // FORCE Theme-music1.mp3 playback on 'Player vs AI - Easy' click
-                    console.log('🎵 FORCING Theme-music1.mp3 on Player vs AI - Easy click...');
-                    
-                    // Enhanced cleanup function
-                    function cleanAudio() { 
-                      if (typeof AudioContext !== 'undefined') { 
-                        new AudioContext().close(); 
-                      } 
-                      document.querySelectorAll('audio').forEach(a => { 
-                        a.pause(); 
-                        a.currentTime = 0; 
-                        a.src = ''; 
-                        a.remove(); 
-                      }); 
-                      console.log('Audio reset count:', document.querySelectorAll('audio').length); 
+                    // AGGRESSIVE audio cleanup - stop EVERYTHING
+                    function stopAllAudio() {
+                      console.log('🛑 STOPPING ALL AUDIO - Before cleanup:', document.querySelectorAll('audio').length);
+                      
+                      // Stop any global audio references
+                      if ((window as any).currentTheme) {
+                        (window as any).currentTheme.pause();
+                        (window as any).currentTheme.currentTime = 0;
+                        (window as any).currentTheme.src = '';
+                        (window as any).currentTheme = null;
+                        console.log('🛑 Stopped global theme reference');
+                      }
+                      
+                      // Close all AudioContexts
+                      if (typeof AudioContext !== 'undefined') {
+                        try {
+                          new AudioContext().close();
+                          console.log('🛑 AudioContext closed');
+                        } catch (e) {
+                          console.log('AudioContext close failed:', e);
+                        }
+                      }
+                      
+                      // Stop all audio elements
+                      const audios = document.querySelectorAll('audio');
+                      audios.forEach((a, index) => {
+                        console.log(`🛑 Stopping audio ${index}:`, a.src);
+                        a.pause();
+                        a.currentTime = 0;
+                        a.src = '';
+                        a.load(); // Reset the audio element
+                        a.remove();
+                      });
+                      
+                      console.log('🛑 Audio cleanup complete. Remaining:', document.querySelectorAll('audio').length);
                     }
                     
-                    // Call cleanup first
-                    cleanAudio();
+                    // Stop everything first
+                    stopAllAudio();
                     
-                    // Force theme playback with v=25 cache busting
-                    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
-                    theme.loop = true;
-                    theme.volume = 0.42;
-                    console.log('Theme created on Easy click:', theme.src);
-                    
-                    theme.play()
-                      .then(() => {
-                        console.log('✅ Theme-music1.mp3 v=25 FORCED on Player vs AI - Easy click');
-                        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-                      })
-                      .catch((error) => {
-                        console.error('❌ Failed to force theme music on Easy click:', error);
-                        console.error('Check Chrome autoplay permissions if silent');
-                      });
-                    
-                    // Dispatch game start event for main.tsx listener
-                    window.dispatchEvent(new Event('gamestart'));
+                    // Wait a bit, then start new theme
+                    setTimeout(() => {
+                      console.log('🎵 Starting fresh Theme-music1.mp3 v=25');
+                      const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
+                      theme.loop = true;
+                      theme.volume = 0.42;
+                      
+                      // Store global reference to control it
+                      (window as any).currentTheme = theme;
+                      
+                      theme.play()
+                        .then(() => {
+                          console.log('✅ FRESH Theme-music1.mp3 v=25 started');
+                          console.log('Theme status:', theme.src, theme.paused ? 'Paused' : 'Playing');
+                        })
+                        .catch((error) => {
+                          console.error('❌ Failed to start fresh theme:', error);
+                        });
+                    }, 200);
                     
                     (window as any).gameAudioManager?.onButtonClick();
                     console.log('🎮 Starting new AI game - easy mode');

@@ -8,43 +8,26 @@ import './lib/debug-admin'; // Load admin debug utilities
 if (typeof window !== 'undefined') {
   // Theme music initialization function  
   const initializeThemeMusic = () => {
-    // Clear all music variables pre-init
-    if ((window as any).gameAudioManager) {
-      (window as any).gameAudioManager = null;
-    }
+    // Don't auto-start music in main.tsx - let user control it
+    console.log('🎵 Main.tsx: Skipping auto-start - user will control theme music');
     
-    // Enhanced cleanup function
-    function cleanAudio() {
-      if (typeof AudioContext !== 'undefined') { 
-        new AudioContext().close(); 
-      } 
-      document.querySelectorAll('audio').forEach(a => { 
-        a.pause(); 
-        a.currentTime = 0; 
-        a.src = ''; 
-        a.remove(); 
-      }); 
-      console.log('Audio reset count:', document.querySelectorAll('audio').length);
-    }
-    
-    // Call cleanup first
-    cleanAudio();
-    
-    // ELIMINATE old music and force theme playback
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
-    theme.loop = true;
-    theme.volume = 0.42;
-    console.log('🎵 Main.tsx Theme created:', theme.src);
-    
-    theme.play()
-      .then(() => {
-        console.log('✅ Main.tsx Theme-music1.mp3 v=25 FORCED started successfully');
-        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-      })
-      .catch((error) => {
-        console.error('❌ Main.tsx Failed to play theme music:', error);
-        console.error('Check Chrome audio permissions if silent - autoplay policy');
+    // Store cleanup function globally
+    (window as any).stopAllAudio = function() {
+      console.log('🛑 Global stopAllAudio called');
+      if ((window as any).currentTheme) {
+        (window as any).currentTheme.pause();
+        (window as any).currentTheme.currentTime = 0;
+        (window as any).currentTheme.src = '';
+        (window as any).currentTheme = null;
+      }
+      document.querySelectorAll('audio').forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+        a.src = '';
+        a.remove();
       });
+      console.log('🛑 All audio stopped');
+    };
   };
   
   // Initialize theme music on page load
