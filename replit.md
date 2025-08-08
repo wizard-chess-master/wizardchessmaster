@@ -71,7 +71,6 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
 - **Immersive 3D Audio System**: Web Audio API-powered spatial audio with HRTF panning, piece-specific movement sounds, wizard teleport/attack effects, dynamic music intensity, medieval background music, convolution reverb for magical ambiance, and low-latency responsive audio optimized for Replit hosting.
 - **Enhanced Audio Architecture**: Comprehensive audio system prepared for immersive content including voice management (narrator, coach, assistant), dynamic music system (theme, gameplay, victory/defeat tracks), enhanced SFX manager with MP3 support, and immersive audio coordinator for orchestrated audio experiences.
-- **One-Click Accessibility Mode**: Complete vision-impaired player support with screen reader compatibility, audio announcements, keyboard navigation, high contrast mode, large text, voice guidance, reduced motion, and comprehensive chess board accessibility features.
 - **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading, event management, and system status monitoring.
 
 ## External Dependencies

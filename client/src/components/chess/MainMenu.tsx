@@ -25,10 +25,9 @@ interface MainMenuProps {
   onAchievements: () => void;
   onCollection: () => void;
   onAudioTest?: () => void;
-  onAccessibility?: () => void;
 }
 
-export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest, onAccessibility }: MainMenuProps) {
+export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest }: MainMenuProps) {
   const { startGame, resetGame } = useChess();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
@@ -275,20 +274,6 @@ export function MainMenu({ onSettings, onAchievements, onCollection, onAudioTest
                     <Badge variant="outline">43 Fantasy Audio Effects</Badge>
                   </div>
                 </Button>
-
-                {/* Accessibility Features */}
-                {onAccessibility && (
-                  <Button
-                    className="medieval-btn mode-button"
-                    variant="outline"
-                    onClick={onAccessibility}
-                  >
-                    <div className="mode-content">
-                      <span>♿ Accessibility Features</span>
-                      <Badge variant="outline">Vision-Impaired Support</Badge>
-                    </div>
-                  </Button>
-                )}
 
                 {/* Immersive 3D Audio Test Panel */}
                 {onAudioTest && (

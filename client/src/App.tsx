@@ -22,8 +22,6 @@ import { initializePayments } from "./lib/monetization/paymentManager";
 import { ambientManager } from "./lib/audio/ambientManager";
 import ChessAudioController from "./components/audio/ChessAudioController";
 import ImmersiveAudioTestPanel from "./components/audio/ImmersiveAudioTestPanel";
-import AccessibilityToggle from "./components/accessibility/AccessibilityToggle";
-import AccessibilityControls from "./components/accessibility/AccessibilityControls";
 import "@fontsource/inter";
 import "./styles/chess.css";
 import "./styles/animations.css";
@@ -38,7 +36,6 @@ function App() {
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
   const [showAudioTest, setShowAudioTest] = useState(false);
-  const [showAccessibility, setShowAccessibility] = useState(false);
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
   // Initialize audio, monetization, and keyboard shortcuts
@@ -170,7 +167,6 @@ function App() {
             onAchievements={() => setShowAchievements(true)}
             onCollection={() => setShowCollection(true)}
             onAudioTest={() => setShowAudioTest(true)}
-            onAccessibility={() => setShowAccessibility(true)}
           />
         )}
         
@@ -245,20 +241,6 @@ function App() {
                 ✕ Close Audio Test
               </button>
               <ImmersiveAudioTestPanel />
-            </div>
-          </div>
-        )}
-
-        {showAccessibility && (
-          <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-            <div className="relative w-full h-full max-w-4xl max-h-[90vh] overflow-auto">
-              <button
-                onClick={() => setShowAccessibility(false)}
-                className="absolute top-4 right-4 z-10 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium accessible-button"
-              >
-                ✕ Close Accessibility
-              </button>
-              <AccessibilityControls className="mt-12" />
             </div>
           </div>
         )}
