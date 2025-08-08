@@ -2,14 +2,8 @@ import { create } from "zustand";
 import { magicalSoundLibrary, type MagicalSoundEffect } from '../audio/magicalSoundLibrary';
 
 export type GameIntensity = 'calm' | 'moderate' | 'tense' | 'critical';
-export type MusicTrack = 'main_theme' | 'battle_theme' | 'victory_theme' | 'tension_theme' | 'wizard_theme';
 
 interface AudioState {
-  backgroundMusic: HTMLAudioElement | null;
-  musicTracks: Record<MusicTrack, HTMLAudioElement | null>;
-  currentTrack: MusicTrack;
-  isTransitioning: boolean;
-  musicVolume: number;
   hitSound: HTMLAudioElement | null;
   successSound: HTMLAudioElement | null;
   ambientSounds: Record<GameIntensity, HTMLAudioElement | null>;
@@ -18,8 +12,6 @@ interface AudioState {
   isAmbientEnabled: boolean;
   
   // Setter functions
-  setBackgroundMusic: (music: HTMLAudioElement) => void;
-  setMusicTracks: (tracks: Record<MusicTrack, HTMLAudioElement | null>) => void;
   setHitSound: (sound: HTMLAudioElement) => void;
   setSuccessSound: (sound: HTMLAudioElement) => void;
   setAmbientSounds: (sounds: Record<GameIntensity, HTMLAudioElement | null>) => void;
@@ -32,10 +24,6 @@ interface AudioState {
   playSuccess: () => void;
   playAmbient: (intensity?: GameIntensity) => void;
   stopAmbient: () => void;
-  playBackgroundMusic: () => void;
-  stopBackgroundMusic: () => void;
-  switchMusicTrack: (track: MusicTrack, crossfade?: boolean) => void;
-  setDynamicMusic: (gameState: 'menu' | 'playing' | 'check' | 'victory' | 'defeat') => void;
   initializeAudio: () => void;
   
   // Magical Sound Library functions
@@ -54,17 +42,6 @@ interface AudioState {
 }
 
 export const useAudio = create<AudioState>((set, get) => ({
-  backgroundMusic: null,
-  musicTracks: {
-    main_theme: null,
-    battle_theme: null,
-    victory_theme: null,
-    tension_theme: null,
-    wizard_theme: null
-  },
-  currentTrack: 'main_theme',
-  isTransitioning: false,
-  musicVolume: 0.3,
   hitSound: null,
   successSound: null,
   ambientSounds: {
@@ -77,14 +54,12 @@ export const useAudio = create<AudioState>((set, get) => ({
   isMuted: false, // Start unmuted by default
   isAmbientEnabled: true,
   
-  setBackgroundMusic: (music) => set({ backgroundMusic: music }),
-  setMusicTracks: (tracks) => set({ musicTracks: tracks }),
   setHitSound: (sound) => set({ hitSound: sound }),
   setSuccessSound: (sound) => set({ successSound: sound }),
   setAmbientSounds: (sounds) => set({ ambientSounds: sounds }),
   
   toggleMute: () => {
-    const { isMuted, ambientSounds, currentIntensity, backgroundMusic } = get();
+    const { isMuted, ambientSounds, currentIntensity } = get();
     const newMutedState = !isMuted;
     
     console.log(`🔊 Toggling mute: ${isMuted} → ${newMutedState}`);
@@ -97,27 +72,12 @@ export const useAudio = create<AudioState>((set, get) => ({
           sound.currentTime = 0;
         }
       });
-      
-      // Stop background music
-      if (backgroundMusic) {
-        backgroundMusic.pause();
-        console.log('🎵 Background music paused (muted)');
-      }
     } else {
       // Resume sounds when unmuting
       const currentAmbient = ambientSounds[currentIntensity];
       if (currentAmbient && get().isAmbientEnabled) {
         currentAmbient.play().catch(error => {
           console.log("Ambient sound play prevented:", error);
-        });
-      }
-      
-      // Resume background music
-      if (backgroundMusic) {
-        backgroundMusic.play().then(() => {
-          console.log('🎵 Background music resumed (unmuted)');
-        }).catch(error => {
-          console.log('❌ Background music play failed:', error);
         });
       }
     }
@@ -203,7 +163,7 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   stopAllSounds: () => {
-    const { ambientSounds, backgroundMusic } = get();
+    const { ambientSounds } = get();
     
     // Stop all ambient sounds
     Object.values(ambientSounds).forEach(sound => {
@@ -212,12 +172,6 @@ export const useAudio = create<AudioState>((set, get) => ({
         sound.currentTime = 0;
       }
     });
-    
-    // Stop background music
-    if (backgroundMusic) {
-      backgroundMusic.pause();
-      backgroundMusic.currentTime = 0;
-    }
     
     // Stop any looping HTML audio elements
     const allAudioElements = document.querySelectorAll('audio');
@@ -229,119 +183,9 @@ export const useAudio = create<AudioState>((set, get) => ({
     console.log('🔇 All audio stopped');
   },
 
-  playBackgroundMusic: () => {
-    const { currentTrack } = get();
-    get().switchMusicTrack(currentTrack, false);
-  },
 
-  stopBackgroundMusic: () => {
-    const { musicTracks } = get();
-    
-    Object.values(musicTracks).forEach(track => {
-      if (track) {
-        track.pause();
-        track.currentTime = 0;
-      }
-    });
-    console.log('🎵 All background music stopped');
-  },
 
-  switchMusicTrack: (track: MusicTrack, crossfade: boolean = true) => {
-    const { musicTracks, currentTrack, isMuted, musicVolume, isTransitioning } = get();
-    
-    if (isMuted || isTransitioning || currentTrack === track) {
-      return;
-    }
-    
-    const newTrack = musicTracks[track];
-    const oldTrack = musicTracks[currentTrack];
-    
-    if (!newTrack) {
-      console.log(`❌ Track not available: ${track}`);
-      return;
-    }
-    
-    console.log(`🎵 Switching from ${currentTrack} to ${track} (crossfade: ${crossfade})`);
-    
-    set({ isTransitioning: true, currentTrack: track });
-    
-    if (crossfade && oldTrack && !oldTrack.paused) {
-      // Crossfade between tracks
-      newTrack.volume = 0;
-      newTrack.loop = true;
-      newTrack.currentTime = 0;
-      newTrack.play().catch(console.log);
-      
-      // Fade out old track and fade in new track
-      const fadeSteps = 20;
-      const fadeInterval = 100; // ms
-      let step = 0;
-      
-      const fadeTimer = setInterval(() => {
-        step++;
-        const progress = step / fadeSteps;
-        
-        if (oldTrack) {
-          oldTrack.volume = musicVolume * (1 - progress);
-        }
-        newTrack.volume = musicVolume * progress;
-        
-        if (step >= fadeSteps) {
-          clearInterval(fadeTimer);
-          if (oldTrack) {
-            oldTrack.pause();
-            oldTrack.currentTime = 0;
-          }
-          set({ isTransitioning: false });
-          console.log(`🎵 Crossfade complete to ${track}`);
-        }
-      }, fadeInterval);
-    } else {
-      // Instant switch
-      if (oldTrack) {
-        oldTrack.pause();
-        oldTrack.currentTime = 0;
-      }
-      
-      newTrack.loop = true;
-      newTrack.volume = musicVolume;
-      newTrack.currentTime = 0;
-      newTrack.play().then(() => {
-        console.log(`🎵 Switched to ${track}`);
-        set({ isTransitioning: false });
-      }).catch(error => {
-        console.log(`❌ Failed to play ${track}:`, error);
-        set({ isTransitioning: false });
-      });
-    }
-  },
 
-  setDynamicMusic: (gameState: 'menu' | 'playing' | 'check' | 'victory' | 'defeat') => {
-    let targetTrack: MusicTrack;
-    
-    switch (gameState) {
-      case 'menu':
-        targetTrack = 'main_theme';
-        break;
-      case 'playing':
-        targetTrack = Math.random() > 0.5 ? 'battle_theme' : 'wizard_theme';
-        break;
-      case 'check':
-        targetTrack = 'tension_theme';
-        break;
-      case 'victory':
-        targetTrack = 'victory_theme';
-        break;
-      case 'defeat':
-        targetTrack = 'tension_theme';
-        break;
-      default:
-        targetTrack = 'main_theme';
-    }
-    
-    console.log(`🎵 Setting dynamic music for ${gameState} state: ${targetTrack}`);
-    get().switchMusicTrack(targetTrack, true);
-  },
   
   playHit: () => {
     const { hitSound, isMuted } = get();

@@ -53,12 +53,12 @@ Preferred communication style: Simple, everyday language.
 - **Layout Optimization**: Streamlined component design, reduced blank space, single-column layouts, and consistent width constraints for improved responsiveness.
 - **Comprehensive Leaderboard System**: Tracks campaign progress and PvP ratings with visual rankings, advanced statistics, and real-time updates.
 
-### Enhanced Audio Architecture (Ready for Implementation)
+### Enhanced Audio Architecture (SFX-Focused Implementation)
 - **Voice System**: Structured for narrator (story/introductions), coach (gameplay tips), and assistant (UI guidance) with priority queuing and context-aware playback
-- **Dynamic Music System**: Theme music, gameplay tracks with intensity scaling, victory/defeat music, crossfading transitions, and volume management
-- **Enhanced SFX Manager**: High-quality MP3 sound effects organized by category (pieces, UI, magic, environment, feedback) with Web Audio API and spatial audio support
-- **Audio Coordinator**: Orchestrates all audio systems based on game context, handles game events with coordinated audio responses, and manages comprehensive audio settings
-- **File Structure**: Organized audio directories prepared for `/audio/voices/`, `/audio/music/`, and `/audio/sfx/` with categorized subdirectories
+- **Music System**: Completely removed per user request - user will implement custom MP3 file-based music system independently
+- **Enhanced SFX Manager**: High-quality MP3 sound effects organized by category (pieces, UI, magic, environment, feedback) with HTML5 Audio API support
+- **Audio Coordinator**: Orchestrates sound effects and voice systems based on game context, handles game events with coordinated audio responses, and manages audio settings
+- **File Structure**: Organized audio directories for `/audio/voices/` and `/audio/sfx/` with categorized subdirectories (music system removed)
 
 ### Technical Implementations
 - **Castling System**: Implemented with king moving 3 squares and proper validation.
@@ -67,10 +67,10 @@ Preferred communication style: Simple, everyday language.
 - **Comprehensive Monetization System**: Stripe integration with $2.99 one-time IAP and $4.99/month subscription, featuring plan selector UI and premium feature management.
 - **Complete Ad Integration**: Post-game interstitial ads, in-play banner rotation, rewarded video ads for hints/undos, and premium user ad-free experience.
 - **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Debug tools, Reset AI Training, View AI Learning Stats).
-- **Dynamic Music System**: Multi-track background music with crossfading, adaptive music based on game state (calm, tension, victory, defeat), and varied playback rates for musical diversity.
+- **Dynamic Music System**: Completely removed per user request - user will implement custom MP3-based music system.
 - **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
 - **Immersive 3D Audio System**: Web Audio API-powered spatial audio with HRTF panning, piece-specific movement sounds, wizard teleport/attack effects, dynamic music intensity, medieval background music, convolution reverb for magical ambiance, and low-latency responsive audio optimized for Replit hosting.
-- **Enhanced Audio Architecture**: Comprehensive audio system prepared for immersive content including voice management (narrator, coach, assistant), dynamic music system (theme, gameplay, victory/defeat tracks), enhanced SFX manager with MP3 support, and immersive audio coordinator for orchestrated audio experiences.
+- **Enhanced Audio Architecture**: Sound effects and voice system prepared for immersive content including voice management (narrator, coach, assistant), enhanced SFX manager with MP3 support, and audio coordinator for orchestrated sound experiences. Music system completely removed per user request.
 - **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading, event management, and system status monitoring.
 
 ## External Dependencies

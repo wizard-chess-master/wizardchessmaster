@@ -19,19 +19,16 @@ export interface AudioEffectConfig {
 
 class ImmersiveAudioSystem {
   private audioContext: AudioContext | null = null;
-  private backgroundMusic: HTMLAudioElement | null = null;
   private spatialSources: Map<string, AudioBufferSourceNode> = new Map();
   private audioBuffers: Map<string, AudioBuffer> = new Map();
   private masterGain: GainNode | null = null;
-  private musicGain: GainNode | null = null;
   private effectsGain: GainNode | null = null;
   private reverbNode: ConvolverNode | null = null;
   private isInitialized = false;
   private isMuted = false;
 
-  // Audio file paths
+  // Audio file paths  
   private readonly audioPaths = {
-    backgroundMusic: '/sounds/background.mp3',
     pieceMove: '/sounds/success.mp3',
     pieceCapture: '/sounds/hit.mp3',
     wizardTeleport: '/sounds/hit.mp3',
@@ -53,17 +50,14 @@ class ImmersiveAudioSystem {
 
       // Create master gain nodes
       this.masterGain = this.audioContext.createGain();
-      this.musicGain = this.audioContext.createGain();
       this.effectsGain = this.audioContext.createGain();
 
       // Connect gain nodes
       this.masterGain.connect(this.audioContext.destination);
-      this.musicGain.connect(this.masterGain);
       this.effectsGain.connect(this.masterGain);
 
       // Set initial volumes
       this.masterGain.gain.value = 0.7;
-      this.musicGain.gain.value = 0.3;
       this.effectsGain.gain.value = 0.8;
 
       // Create reverb effect
@@ -72,8 +66,7 @@ class ImmersiveAudioSystem {
       // Preload audio buffers
       await this.preloadAudioBuffers();
 
-      // Start background music
-      await this.startBackgroundMusic();
+
 
       this.isInitialized = true;
       console.log('✅ Immersive Audio System initialized');
@@ -124,45 +117,7 @@ class ImmersiveAudioSystem {
     console.log(`🎵 Preloaded ${this.audioBuffers.size} audio buffers`);
   }
 
-  private async startBackgroundMusic(): Promise<void> {
-    if (!this.musicGain) return;
 
-    try {
-      this.backgroundMusic = new Audio(this.audioPaths.backgroundMusic);
-      this.backgroundMusic.loop = true;
-      this.backgroundMusic.volume = 0;
-      
-      // Create media source for spatial processing
-      const mediaSource = this.audioContext!.createMediaElementSource(this.backgroundMusic);
-      mediaSource.connect(this.musicGain);
-      
-      // Fade in background music
-      await this.backgroundMusic.play();
-      this.fadeVolume(this.backgroundMusic, 0.4, 2000);
-      
-      console.log('🎼 Background music started');
-    } catch (error) {
-      console.warn('⚠️ Background music failed to start:', error);
-    }
-  }
-
-  private fadeVolume(audio: HTMLAudioElement, targetVolume: number, duration: number): void {
-    const startVolume = audio.volume;
-    const volumeDelta = targetVolume - startVolume;
-    const steps = 20;
-    const stepTime = duration / steps;
-    let currentStep = 0;
-
-    const fadeInterval = setInterval(() => {
-      currentStep++;
-      const progress = currentStep / steps;
-      audio.volume = startVolume + (volumeDelta * progress);
-
-      if (currentStep >= steps) {
-        clearInterval(fadeInterval);
-      }
-    }, stepTime);
-  }
 
   // Play 3D positioned audio effect
   playSpatialized3D(soundKey: string, position: SpatialPosition, config?: Partial<AudioEffectConfig>): void {
@@ -352,11 +307,7 @@ class ImmersiveAudioSystem {
     }
   }
 
-  setMusicVolume(volume: number): void {
-    if (this.musicGain) {
-      this.musicGain.gain.value = Math.max(0, Math.min(1, volume));
-    }
-  }
+
 
   setEffectsVolume(volume: number): void {
     if (this.effectsGain) {
@@ -370,49 +321,10 @@ class ImmersiveAudioSystem {
     if (this.masterGain) {
       this.masterGain.gain.value = this.isMuted ? 0 : 0.7;
     }
-    
-    if (this.backgroundMusic) {
-      this.backgroundMusic.volume = this.isMuted ? 0 : 0.4;
-    }
   }
 
   // Dynamic music intensity based on game state
-  setMusicIntensity(intensity: 'calm' | 'tension' | 'battle' | 'victory' | 'defeat'): void {
-    if (!this.backgroundMusic || !this.musicGain) return;
 
-    let targetVolume = 0.4;
-    let playbackRate = 1.0;
-
-    switch (intensity) {
-      case 'calm':
-        targetVolume = 0.3;
-        playbackRate = 0.9;
-        break;
-      case 'tension':
-        targetVolume = 0.5;
-        playbackRate = 1.1;
-        break;
-      case 'battle':
-        targetVolume = 0.6;
-        playbackRate = 1.2;
-        break;
-      case 'victory':
-        targetVolume = 0.7;
-        playbackRate = 1.0;
-        break;
-      case 'defeat':
-        targetVolume = 0.2;
-        playbackRate = 0.8;
-        break;
-    }
-
-    // Smooth transitions
-    this.fadeVolume(this.backgroundMusic, targetVolume, 1000);
-    
-    if ((this.backgroundMusic as any).preservesPitch !== undefined) {
-      (this.backgroundMusic as any).playbackRate = playbackRate;
-    }
-  }
 
   dispose(): void {
     // Clean up resources
@@ -425,10 +337,7 @@ class ImmersiveAudioSystem {
     });
     this.spatialSources.clear();
 
-    if (this.backgroundMusic) {
-      this.backgroundMusic.pause();
-      this.backgroundMusic = null;
-    }
+
 
     if (this.audioContext && this.audioContext.state !== 'closed') {
       this.audioContext.close();

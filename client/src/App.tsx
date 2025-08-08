@@ -29,7 +29,7 @@ import "./debug";
 
 function App() {
   const { gamePhase, ...gameState } = useChess();
-  const { setHitSound, setSuccessSound, setBackgroundMusic, setMusicTracks, initializeAudio } = useAudio();
+  const { setHitSound, setSuccessSound, initializeAudio } = useAudio();
   const { updateProgress } = useAchievements();
   const { showDiagnostics, setShowDiagnostics } = useDiagnostics();
   const [showSettings, setShowSettings] = useState(false);
@@ -38,33 +38,15 @@ function App() {
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
-  // Initialize audio, monetization, and keyboard shortcuts
+  // Initialize audio and monetization
   useEffect(() => {
     const hitAudio = new Audio("/sounds/hit.mp3");
     const successAudio = new Audio("/sounds/success.mp3");
-    const backgroundMusic = new Audio("/sounds/background.mp3");
     
     setHitSound(hitAudio);
     setSuccessSound(successAudio);
-    setBackgroundMusic(backgroundMusic);
     
-    // Initialize multiple music tracks for dynamic music experience
-    const tracks = {
-      main_theme: new Audio("/sounds/background.mp3"),
-      battle_theme: new Audio("/sounds/background.mp3"), // Will use variations or same track
-      victory_theme: new Audio("/sounds/background.mp3"),
-      tension_theme: new Audio("/sounds/background.mp3"),
-      wizard_theme: new Audio("/sounds/background.mp3")
-    };
-    
-    // Set different playback rates for variety
-    tracks.battle_theme.playbackRate = 1.1; // Slightly faster for battle
-    tracks.tension_theme.playbackRate = 0.9; // Slower for tension
-    tracks.wizard_theme.playbackRate = 1.05; // Slightly faster for wizard theme
-    
-    setMusicTracks(tracks);
-    
-    // Ensure audio starts unmuted and start background music
+    // Ensure audio starts unmuted
     initializeAudio();
     
     // Initialize game audio manager
@@ -72,11 +54,7 @@ function App() {
       initializeAudioSystem();
     });
     
-    // Start background music automatically with a small delay for browser autoplay policies
-    setTimeout(() => {
-      const { playBackgroundMusic } = useAudio.getState();
-      playBackgroundMusic();
-    }, 1000);
+
 
     // Initialize monetization and ambient sound systems
     const initSystems = async () => {
@@ -100,7 +78,7 @@ function App() {
     };
     
     initSystems();
-  }, [setHitSound, setSuccessSound, setBackgroundMusic, setMusicTracks]);
+  }, [setHitSound, setSuccessSound]);
 
   // Monitor game state for ambient sound intensity changes and achievement tracking
   useEffect(() => {
