@@ -61,7 +61,7 @@ export function AchievementNotification({ achievement, onClose, onViewAll }: Ach
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -50, scale: 0.9 }}
           transition={{ type: "spring", duration: 0.6, bounce: 0.4 }}
-          className="fixed top-4 right-4 z-50 w-96 max-w-[90vw]"
+          className="fixed top-4 left-4 right-4 z-50 w-full max-w-md mx-auto sm:left-auto sm:right-4 sm:w-96"
         >
           <Card className={`medieval-panel achievement-notification ${getRarityColor(achievement.rarity)} border-2 shadow-2xl`}>
             <CardContent className="p-4">
