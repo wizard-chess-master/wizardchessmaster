@@ -104,13 +104,12 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 Player vs AI - Easy clicked - Theme-music1.mp3 v=26');
+                    console.log('🎮 Player vs AI - Easy clicked - Theme-music2.mp3 v=25');
                     
-                    // Enhanced cleanup function
+                    // Cleanup function as specified
                     function cleanAudio() { 
-                      if (typeof AudioContext !== 'undefined') { 
-                        new AudioContext().close(); 
-                      } 
+                      const context = new AudioContext(); 
+                      context.close(); 
                       document.querySelectorAll('audio').forEach(a => { 
                         a.pause(); 
                         a.currentTime = 0; 
@@ -119,18 +118,17 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                       console.log('Audio cleanup count:', document.querySelectorAll('audio').length); 
                     }
                     
-                    // Call cleanup first
+                    // Execute cleanup before theme.play()
                     cleanAudio();
                     
-                    // Force theme playback with v=26 cache busting
-                    const theme = new Audio('/assets/music/Theme-music1.mp3?v=26');
+                    // Set Theme-music2.mp3 with v=25 cache busting
+                    const theme = new Audio('/assets/music/Theme-music2.mp3?v=25');
                     theme.loop = true;
                     theme.volume = 0.42;
-                    console.log('Theme created:', theme.src);
                     
                     theme.play()
                       .then(() => {
-                        console.log('✅ Theme-music1.mp3 v=26 FORCED on Player vs AI - Easy click');
+                        console.log('✅ Theme-music2.mp3 v=25 FORCED on Player vs AI - Easy click');
                         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
                       })
                       .catch((error) => {
