@@ -218,41 +218,79 @@ class StripePaymentManager implements PaymentManager {
       border: 2px solid #8b6914;
     `;
 
-    dialog.innerHTML = `
-      <div style="text-align: center;">
-        <h2 style="color: #ffd700; margin-bottom: 20px; font-size: 24px;">🏆 Choose Your Adventure</h2>
-        <div style="display: flex; gap: 20px; margin: 20px 0;">
-          ${PAYMENT_PLANS.map(plan => `
-            <div style="
-              flex: 1;
-              background: rgba(255, 255, 255, 0.1);
-              border: 2px solid #8b6914;
-              border-radius: 10px;
-              padding: 20px;
-              cursor: pointer;
-              transition: transform 0.3s;
-            " onclick="window.selectPlan('${plan.id}')">
-              <h3 style="color: #ffd700; margin-bottom: 10px;">${plan.name}</h3>
-              <div style="font-size: 28px; font-weight: bold; margin: 15px 0;">
-                $${plan.price}${plan.interval ? '/' + plan.interval : ''}
-              </div>
-              <ul style="list-style: none; padding: 0; text-align: left; font-size: 14px;">
-                ${plan.features.map(feature => `<li style="margin: 5px 0;">✓ ${feature}</li>`).join('')}
-              </ul>
-            </div>
-          `).join('')}
-        </div>
-        <button onclick="window.closePlanSelector()" style="
-          background: #666;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 5px;
-          cursor: pointer;
-          margin-top: 20px;
-        ">Cancel</button>
-      </div>
+    // Create safe DOM structure without innerHTML
+    const container = document.createElement('div');
+    container.style.textAlign = 'center';
+
+    // Create title
+    const title = document.createElement('h2');
+    title.style.cssText = 'color: #ffd700; margin-bottom: 20px; font-size: 24px;';
+    title.textContent = '🏆 Choose Your Adventure';
+    container.appendChild(title);
+
+    // Create plans container
+    const plansContainer = document.createElement('div');
+    plansContainer.style.cssText = 'display: flex; gap: 20px; margin: 20px 0;';
+
+    // Create plan cards
+    PAYMENT_PLANS.forEach(plan => {
+      const planCard = document.createElement('div');
+      planCard.style.cssText = `
+        flex: 1;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid #8b6914;
+        border-radius: 10px;
+        padding: 20px;
+        cursor: pointer;
+        transition: transform 0.3s;
+      `;
+      planCard.addEventListener('click', () => (window as any).selectPlan(plan.id));
+
+      // Plan name
+      const planName = document.createElement('h3');
+      planName.style.cssText = 'color: #ffd700; margin-bottom: 10px;';
+      planName.textContent = plan.name;
+      planCard.appendChild(planName);
+
+      // Plan price
+      const planPrice = document.createElement('div');
+      planPrice.style.cssText = 'font-size: 28px; font-weight: bold; margin: 15px 0;';
+      planPrice.textContent = `$${plan.price}${plan.interval ? '/' + plan.interval : ''}`;
+      planCard.appendChild(planPrice);
+
+      // Plan features
+      const featuresList = document.createElement('ul');
+      featuresList.style.cssText = 'list-style: none; padding: 0; text-align: left; font-size: 14px;';
+      
+      plan.features.forEach(feature => {
+        const featureItem = document.createElement('li');
+        featureItem.style.cssText = 'margin: 5px 0;';
+        featureItem.textContent = `✓ ${feature}`;
+        featuresList.appendChild(featureItem);
+      });
+      
+      planCard.appendChild(featuresList);
+      plansContainer.appendChild(planCard);
+    });
+
+    container.appendChild(plansContainer);
+
+    // Create cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.style.cssText = `
+      background: #666;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
     `;
+    cancelButton.textContent = 'Cancel';
+    cancelButton.addEventListener('click', () => (window as any).closePlanSelector());
+    container.appendChild(cancelButton);
+
+    dialog.appendChild(container);
 
     overlay.appendChild(dialog);
     document.body.appendChild(overlay);
