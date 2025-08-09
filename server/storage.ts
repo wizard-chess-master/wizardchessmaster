@@ -164,6 +164,93 @@ export class MemStorage implements IStorage {
       return newSaveData;
     }
   }
+
+  async updatePlayerStats(userId: number, stats: {
+    gamesWon?: number;
+    gamesPlayed?: number;
+    totalGameTime?: number;
+    highestLevel?: number;
+  }): Promise<void> {
+    const existing = this.playerStats.get(userId) || {
+      gamesWon: 0,
+      gamesPlayed: 0,
+      totalGameTime: 0,
+      highestLevel: 0
+    };
+
+    this.playerStats.set(userId, {
+      ...existing,
+      gamesWon: stats.gamesWon !== undefined ? existing.gamesWon + stats.gamesWon : existing.gamesWon,
+      gamesPlayed: stats.gamesPlayed !== undefined ? existing.gamesPlayed + stats.gamesPlayed : existing.gamesPlayed,
+      totalGameTime: stats.totalGameTime !== undefined ? existing.totalGameTime + stats.totalGameTime : existing.totalGameTime,
+      highestLevel: stats.highestLevel !== undefined ? Math.max(existing.highestLevel, stats.highestLevel) : existing.highestLevel
+    });
+  }
+
+  async getCampaignLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
+    const entries: LeaderboardEntry[] = [];
+
+    for (const [userId, user] of this.users) {
+      const stats = this.playerStats.get(userId);
+      if (stats && stats.highestLevel > 0) {
+        const score = (stats.highestLevel * 1000) + (stats.gamesWon * 100) - (stats.gamesPlayed * 10);
+        entries.push({
+          id: userId,
+          playerName: user.username,
+          displayName: user.displayName,
+          score: Math.max(0, score),
+          gamesWon: stats.gamesWon,
+          gamesPlayed: stats.gamesPlayed,
+          averageGameTime: stats.gamesPlayed > 0 ? stats.totalGameTime / stats.gamesPlayed : 0,
+          highestLevel: stats.highestLevel,
+          isPremium: user.isPremium || false,
+          lastPlayed: user.lastSeen || new Date()
+        });
+      }
+    }
+
+    return entries
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  async getPvPLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
+    const entries: LeaderboardEntry[] = [];
+
+    for (const [userId, user] of this.users) {
+      const stats = this.playerStats.get(userId);
+      if (stats && stats.gamesPlayed > 0) {
+        const winRate = stats.gamesWon / stats.gamesPlayed;
+        const score = (stats.gamesWon * 100) + (winRate * 1000) - (stats.averageGameTime || 0);
+        entries.push({
+          id: userId,
+          playerName: user.username,
+          displayName: user.displayName,
+          score: Math.max(0, score),
+          gamesWon: stats.gamesWon,
+          gamesPlayed: stats.gamesPlayed,
+          averageGameTime: stats.gamesPlayed > 0 ? stats.totalGameTime / stats.gamesPlayed : 0,
+          isPremium: user.isPremium || false,
+          lastPlayed: user.lastSeen || new Date()
+        });
+      }
+    }
+
+    return entries
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  async getPlayerRank(userId: number, type: 'campaign' | 'pvp'): Promise<number | null> {
+    const leaderboard = type === 'campaign' 
+      ? await this.getCampaignLeaderboard(1000)
+      : await this.getPvPLeaderboard(1000);
+    
+    const entry = leaderboard.find(e => e.id === userId);
+    return entry ? entry.rank || null : null;
+  }
 }
 
 // Database-powered storage for production
@@ -250,6 +337,126 @@ export class DatabaseStorage implements IStorage {
         .returning();
       return result[0];
     }
+  }
+
+  async updatePlayerStats(userId: number, stats: {
+    gamesWon?: number;
+    gamesPlayed?: number;
+    totalGameTime?: number;
+    highestLevel?: number;
+  }): Promise<void> {
+    // For now, store stats in user save data as a JSON field
+    // In production, you'd create a separate player_stats table
+    const saveData = await this.getUserSaveData(userId);
+    const existingStats = saveData?.gameProgress?.playerStats || {
+      gamesWon: 0,
+      gamesPlayed: 0,
+      totalGameTime: 0,
+      highestLevel: 0
+    };
+
+    const updatedStats = {
+      gamesWon: stats.gamesWon !== undefined ? existingStats.gamesWon + stats.gamesWon : existingStats.gamesWon,
+      gamesPlayed: stats.gamesPlayed !== undefined ? existingStats.gamesPlayed + stats.gamesPlayed : existingStats.gamesPlayed,
+      totalGameTime: stats.totalGameTime !== undefined ? existingStats.totalGameTime + stats.totalGameTime : existingStats.totalGameTime,
+      highestLevel: stats.highestLevel !== undefined ? Math.max(existingStats.highestLevel, stats.highestLevel) : existingStats.highestLevel
+    };
+
+    await this.createOrUpdateSaveData(userId, {
+      gameProgress: {
+        ...saveData?.gameProgress || {},
+        playerStats: updatedStats
+      }
+    });
+  }
+
+  async getCampaignLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
+    // Get all users with their save data
+    const allUsers = await this.db.select({
+      id: users.id,
+      username: users.username,
+      displayName: users.displayName,
+      isPremium: users.isPremium,
+      lastSeen: users.lastSeen,
+      gameProgress: userSaveData.gameProgress
+    })
+    .from(users)
+    .leftJoin(userSaveData, eq(users.id, userSaveData.userId));
+
+    const entries: LeaderboardEntry[] = [];
+
+    for (const user of allUsers) {
+      const stats = user.gameProgress?.playerStats;
+      if (stats && stats.highestLevel > 0) {
+        const score = (stats.highestLevel * 1000) + (stats.gamesWon * 100) - (stats.gamesPlayed * 10);
+        entries.push({
+          id: user.id,
+          playerName: user.username,
+          displayName: user.displayName,
+          score: Math.max(0, score),
+          gamesWon: stats.gamesWon,
+          gamesPlayed: stats.gamesPlayed,
+          averageGameTime: stats.gamesPlayed > 0 ? stats.totalGameTime / stats.gamesPlayed : 0,
+          highestLevel: stats.highestLevel,
+          isPremium: user.isPremium || false,
+          lastPlayed: user.lastSeen || new Date()
+        });
+      }
+    }
+
+    return entries
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  async getPvPLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
+    // Get all users with their save data
+    const allUsers = await this.db.select({
+      id: users.id,
+      username: users.username,
+      displayName: users.displayName,
+      isPremium: users.isPremium,
+      lastSeen: users.lastSeen,
+      gameProgress: userSaveData.gameProgress
+    })
+    .from(users)
+    .leftJoin(userSaveData, eq(users.id, userSaveData.userId));
+
+    const entries: LeaderboardEntry[] = [];
+
+    for (const user of allUsers) {
+      const stats = user.gameProgress?.playerStats;
+      if (stats && stats.gamesPlayed > 0) {
+        const winRate = stats.gamesWon / stats.gamesPlayed;
+        const score = (stats.gamesWon * 100) + (winRate * 1000) - (stats.averageGameTime || 0);
+        entries.push({
+          id: user.id,
+          playerName: user.username,
+          displayName: user.displayName,
+          score: Math.max(0, score),
+          gamesWon: stats.gamesWon,
+          gamesPlayed: stats.gamesPlayed,
+          averageGameTime: stats.gamesPlayed > 0 ? stats.totalGameTime / stats.gamesPlayed : 0,
+          isPremium: user.isPremium || false,
+          lastPlayed: user.lastSeen || new Date()
+        });
+      }
+    }
+
+    return entries
+      .sort((a, b) => b.score - a.score)
+      .slice(0, limit)
+      .map((entry, index) => ({ ...entry, rank: index + 1 }));
+  }
+
+  async getPlayerRank(userId: number, type: 'campaign' | 'pvp'): Promise<number | null> {
+    const leaderboard = type === 'campaign' 
+      ? await this.getCampaignLeaderboard(1000)
+      : await this.getPvPLeaderboard(1000);
+    
+    const entry = leaderboard.find(e => e.id === userId);
+    return entry ? entry.rank || null : null;
   }
 }
 

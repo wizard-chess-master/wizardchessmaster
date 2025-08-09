@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+import { useAuth } from './useAuth';
 
 export interface PlayerStats {
   playerId: string;
@@ -59,6 +60,9 @@ interface LeaderboardStore {
   resetStats: () => void;
   loadLeaderboardData: () => void;
   saveLeaderboardData: () => void;
+  // New methods for authenticated leaderboard integration
+  syncWithServer: () => Promise<void>;
+  fetchOnlineLeaderboards: () => Promise<void>;
 }
 
 const STORAGE_KEY = 'wizard-chess-leaderboard';
@@ -313,6 +317,59 @@ export const useLeaderboard = create<LeaderboardStore>()(
         localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
       } catch (error) {
         console.error('Failed to save leaderboard data:', error);
+      }
+    },
+
+    // New authenticated methods
+    syncWithServer: async (): Promise<void> => {
+      try {
+        const state = get();
+        if (!state.campaignStats && !state.pvpStats) return;
+
+        // Send current stats to server for authenticated users
+        const response = await fetch('/api/leaderboards/stats', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            gamesWon: (state.campaignStats?.totalCampaignWins || 0) + (state.pvpStats?.totalWins || 0),
+            gamesPlayed: (state.campaignStats?.totalCampaignGames || 0) + (state.pvpStats?.totalGames || 0),
+            totalGameTime: ((state.campaignStats?.averageGameTime || 0) * (state.campaignStats?.totalCampaignGames || 0)) + 
+                          ((state.pvpStats?.averageGameLength || 0) * (state.pvpStats?.totalGames || 0)),
+            highestLevel: state.campaignStats?.highestLevelReached || 0
+          })
+        });
+
+        if (response.ok) {
+          console.log('Player stats synced with server successfully');
+        }
+      } catch (error) {
+        console.error('Failed to sync with server:', error);
+      }
+    },
+
+    fetchOnlineLeaderboards: async (): Promise<void> => {
+      try {
+        const response = await fetch('/api/leaderboards', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            // Update leaderboards with server data, but keep current player stats
+            set({
+              campaignLeaderboard: data.campaign || [],
+              pvpLeaderboard: data.pvp || []
+            });
+            console.log('Online leaderboards fetched successfully');
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch online leaderboards:', error);
       }
     }
   }))
