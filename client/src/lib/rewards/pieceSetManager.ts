@@ -131,6 +131,9 @@ export const BOARD_THEMES: BoardTheme[] = [
 export function useRewards() {
   const { unlockedAchievements, currentLevel } = useAchievements();
   
+  // Ensure unlockedAchievements is always an array
+  const safeUnlockedAchievements = Array.isArray(unlockedAchievements) ? unlockedAchievements : [];
+  
   const isPieceSetUnlocked = (setId: string): boolean => {
     const pieceSet = PIECE_SETS.find(set => set.id === setId);
     if (!pieceSet) return false;
@@ -140,7 +143,7 @@ export function useRewards() {
     }
     
     if (pieceSet.unlockType === 'achievement') {
-      return unlockedAchievements.includes(pieceSet.unlockRequirement as string);
+      return safeUnlockedAchievements.includes(pieceSet.unlockRequirement as string);
     }
     
     // For purchase type, we'll implement this later
@@ -156,7 +159,7 @@ export function useRewards() {
     }
     
     if (boardTheme.unlockType === 'achievement') {
-      return unlockedAchievements.includes(boardTheme.unlockRequirement as string);
+      return safeUnlockedAchievements.includes(boardTheme.unlockRequirement as string);
     }
     
     // For purchase type, we'll implement this later
