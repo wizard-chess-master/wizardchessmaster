@@ -162,7 +162,10 @@ export function PersonalizedHintModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-2xl max-w-[95vw] max-h-[90vh] overflow-y-auto medieval-panel bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-400 shadow-2xl">
+      <DialogContent 
+        className="sm:max-w-2xl max-w-[95vw] max-h-[90vh] overflow-y-auto bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-400 shadow-2xl"
+        aria-describedby="hint-description"
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 medieval-text">
             <Brain className="w-5 h-5 text-purple-600" />
@@ -200,7 +203,8 @@ export function PersonalizedHintModal({
                     )}
                   </div>
                   <motion.p 
-                    className="text-lg medieval-text leading-relaxed"
+                    id="hint-description"
+                    className="text-lg text-gray-800 leading-relaxed"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     key={currentHint}
