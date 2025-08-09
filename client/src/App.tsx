@@ -200,9 +200,6 @@ function App() {
 
 
         <AchievementNotificationQueue onViewAll={() => setShowAchievements(true)} />
-        
-        {/* Floating Mentor Notifications */}
-        <MentorNotification />
       </div>
     </div>
   );
