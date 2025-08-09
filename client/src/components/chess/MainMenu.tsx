@@ -151,15 +151,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     theme.loop = true;
                     theme.volume = 0.42;
                     
-                    // Add error handling for file not found
+                    // Simplified error handling for main menu
                     theme.addEventListener('error', (e) => {
-                      console.error('❌ Theme-music2.mp3 failed to load, trying fallback:', e);
-                      // Fallback to Theme-music1.mp3 if Theme-music2.mp3 doesn't exist
-                      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
-                      fallback.loop = true;
-                      fallback.volume = 0.42;
-                      (window as any).currentTheme = fallback; // Store fallback reference too
-                      fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
+                      console.error('❌ Theme-music2.mp3 failed to load from main menu:', e);
+                      console.log('🚫 No automatic fallback - user can use toggle to try again');
                     });
                     
                     theme.play()
@@ -169,13 +164,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
                       })
                       .catch((error) => {
-                        console.error('❌ Failed to force theme music:', error);
-                        // Try fallback immediately if play() fails
-                        const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
-                        fallback.loop = true;
-                        fallback.volume = 0.42;
-                        (window as any).currentTheme = fallback; // Store fallback reference too
-                        fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
+                        console.error('❌ Failed to force theme music from main menu:', error);
+                        console.log('🚫 No automatic fallback - user can use toggle button to start music');
                       });
                     
                     (window as any).gameAudioManager?.onButtonClick();

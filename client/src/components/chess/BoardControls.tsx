@@ -115,14 +115,10 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                   
                   console.log('🎵 Theme-music2.mp3 from toggle button:', theme.src);
                   
-                  // Add error event listener for file loading issues
+                  // Simplified error handling - no automatic fallback to old music
                   theme.addEventListener('error', (e) => {
-                    console.error('❌ Theme-music2.mp3 failed to load from toggle, trying fallback:', e);
-                    const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
-                    fallback.loop = true;
-                    fallback.volume = 0.42;
-                    (window as any).currentTheme = fallback;
-                    fallback.play().catch(err => console.error('❌ Fallback also failed:', err));
+                    console.error('❌ Theme-music2.mp3 failed to load from toggle:', e);
+                    console.log('🚫 No fallback - keeping audio muted instead of playing old music');
                   });
                   
                   try {
@@ -130,17 +126,8 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                     (window as any).currentTheme = theme; // Store reference after successful play
                     console.log('✅ Theme-music2.mp3 playing from toggle button');
                   } catch (error) {
-                    console.log('❌ Theme-music2.mp3 play failed, trying fallback...');
-                    try {
-                      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
-                      fallback.loop = true;
-                      fallback.volume = 0.42;
-                      (window as any).currentTheme = fallback;
-                      await fallback.play();
-                      console.log('✅ Fallback Theme-music1.mp3 playing from toggle');
-                    } catch (fallbackError) {
-                      console.error('❌ Both themes failed from toggle:', fallbackError);
-                    }
+                    console.error('❌ Theme-music2.mp3 play failed from toggle:', error);
+                    console.log('🚫 Keeping audio muted instead of falling back to old music');
                   }
                 }, 100); // Small delay after cleanup
               } else {
