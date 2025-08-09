@@ -67,7 +67,7 @@ Preferred communication style: Simple, everyday language.
 - **Optimized AI Training System**: Limited to 500 games maximum with batch processing, efficient minimax with alpha-beta pruning, and neural network learning optimized for performance.
 - **Enhanced Campaign Mode**: 12 progressive levels with story content, board variants (classic, forest, castle, mountain, desert, volcanic, ice, cosmic), premium level locks, and comprehensive rewards system.
 - **Streamlined Monetization System**: Single $5/month subscription with A/B price testing ($4.99-$6.99), advanced freemium limitations (1 hint/game, undos premium-only), strategic upgrade prompts, limited-time offers ($3.99 first month), and comprehensive Stripe integration.
-- **Complete Ad Integration**: Post-game interstitial ads, in-play banner rotation, rewarded video ads for hints/undos, and premium user ad-free experience.
+- **Ad Integration Removed**: Post-game promotional content removed for cleaner user experience.
 - **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Reset AI Training, View AI Learning Stats). Debug buttons removed for cleaner interface.
 - **Complete Audio System Removal**: All music and sound effects completely removed per user request - user will implement custom MP3-based audio system independently.
 - **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
