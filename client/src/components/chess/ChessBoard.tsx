@@ -1159,38 +1159,57 @@ export function ChessBoard() {
     
     const actualWidth = window.innerWidth;
     const actualHeight = window.innerHeight;
-    const padding = 32;
-    const headerHeight = 80;
-    const controlsHeight = 80;
+    
+    // More aggressive padding reduction for mobile devices
+    const padding = actualWidth <= 480 ? 16 : 24; // Smaller padding for phones
+    const headerHeight = actualWidth <= 480 ? 60 : 80;
+    const controlsHeight = actualWidth <= 480 ? 60 : 80;
     
     let availableWidth = actualWidth - padding;
     let availableHeight = actualHeight - headerHeight - controlsHeight - padding;
     
-    // Calculate optimal size based on actual viewport
+    // Calculate optimal size based on actual viewport with more mobile-friendly constraints
     const isPortrait = actualWidth < actualHeight;
     
-    console.log('📐 Mobile sizing calculation:', {
+    console.log('📐 Mobile sizing calculation (REAL DEVICE):', {
       actualWidth,
       actualHeight,
       availableWidth,
       availableHeight,
       isPortrait,
-      shouldUseMobileSize
+      shouldUseMobileSize,
+      padding,
+      headerHeight,
+      controlsHeight
     });
     
+    let calculatedSize;
+    
     if (isPortrait) {
-      // Portrait: use most of width but ensure it fits in available height
-      const maxWidth = Math.min(availableWidth, availableHeight * 0.8);
-      const size = Math.max(280, Math.min(maxWidth, 450));
-      console.log('📱 Portrait mobile size:', size);
-      return size;
+      // Portrait: prioritize width with more aggressive constraints
+      const maxByWidth = availableWidth;
+      const maxByHeight = availableHeight * 0.75; // Use 75% of available height
+      calculatedSize = Math.min(maxByWidth, maxByHeight);
+      console.log('📱 Portrait calculation:', { maxByWidth, maxByHeight, calculatedSize });
     } else {
-      // Landscape: use available height more efficiently
-      const maxSize = Math.min(availableWidth * 0.6, availableHeight);
-      const size = Math.max(280, Math.min(maxSize, 400));
-      console.log('📱 Landscape mobile size:', size);
-      return size;
+      // Landscape: prioritize height with better constraints  
+      const maxByWidth = availableWidth * 0.65; // Use 65% of width in landscape
+      const maxByHeight = availableHeight * 0.85; // Use 85% of height
+      calculatedSize = Math.min(maxByWidth, maxByHeight);
+      console.log('📱 Landscape calculation:', { maxByWidth, maxByHeight, calculatedSize });
     }
+    
+    // Ensure minimum size but cap maximum for mobile
+    const finalSize = Math.max(240, Math.min(calculatedSize, actualWidth <= 480 ? 360 : 420));
+    
+    console.log('📱 Final mobile size:', {
+      calculatedSize,
+      finalSize,
+      deviceWidth: actualWidth,
+      reductionFromDesktop: `${Math.round((1 - finalSize/canvasSize) * 100)}%`
+    });
+    
+    return finalSize;
   }, [isMobileDevice, deviceInfo, canvasSize]);
   
   // Force mobile sizing for narrow screens regardless of device detection
@@ -1238,8 +1257,9 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          maxWidth: '100%',
-          maxHeight: isMobileDevice ? '100vh' : 'none'
+          maxWidth: isMobileDevice ? '95vw' : '100%', // Ensure it fits on mobile screens
+          maxHeight: isMobileDevice ? '80vh' : 'none', // Prevent overflow on mobile
+          margin: isMobileDevice ? '0 auto' : 'initial' // Center on mobile
         }}
       >
         <div className="board-coordinates">
