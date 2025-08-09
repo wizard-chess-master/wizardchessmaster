@@ -71,7 +71,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   }, []);
 
   return (
-    <div className="main-menu">
+    <div className="main-menu flex flex-col items-center justify-center min-h-screen">
       {/* Top Menu Ad Banner */}
       <AdBanner 
         id="menu-banner" 
@@ -79,7 +79,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         style={{ maxWidth: '600px', width: '100%' }}
       />
 
-      <div className="menu-container">
+      <div className="menu-container max-w-4xl mx-auto">
         <div className="title-section">
           <div className="title-with-wands">
             <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands left-wands" />

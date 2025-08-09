@@ -4,7 +4,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
-import { HintModal } from './HintModal';
+
 
 interface BoardControlsProps {
   onSettings: () => void;
@@ -14,13 +14,6 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
   const { moveHistory, resetGame, gameMode, undoMove } = useChess();
   const { isMuted } = useAudio();
   
-  // Hint modal state
-  const [showHintModal, setShowHintModal] = useState(false);
-  const [hintData, setHintData] = useState<{
-    description: string;
-    reasoning: string;
-  } | null>(null);
-
   return (
     <Card className="medieval-panel h-fit">
       <CardHeader className="pb-1 text-center">
@@ -43,74 +36,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             <span className="text-xs leading-none">Menu</span>
           </Button>
           
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              const { board, currentPlayer, moveHistory } = useChess.getState();
-              console.log('🎯 Generating hint for current position...');
-              
-              import('../../lib/chess/hintSystem').then(({ hintSystem }) => {
-                const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
-                if (hint) {
-                  console.log('💡 Hint generated:', hint);
-                  
-                  // Enhanced thematic hint display - completely transform technical language
-                  let enhancedDescription = hint.description;
-                  
-                  // Handle wizard teleport moves
-                  if (enhancedDescription.includes('wizard teleport')) {
-                    enhancedDescription = enhancedDescription
-                      .replace(/Move wizard from (\w+) to (\w+) \(wizard teleport\)/i, 
-                        '✨ Unleash mystical teleportation! Transport your wizard from $1 to $2 through magical portals');
-                  }
-                  // Handle wizard attacks
-                  else if (enhancedDescription.includes('wizard ranged attack')) {
-                    enhancedDescription = enhancedDescription
-                      .replace(/Move wizard from (\w+) to (\w+) \(wizard ranged attack\)/i, 
-                        '⚡ Cast devastating spell! Your wizard at $1 launches a magical attack on $2');
-                  }
-                  // Handle regular moves with captures
-                  else if (enhancedDescription.includes('captures')) {
-                    enhancedDescription = enhancedDescription
-                      .replace(/Move (\w+) from (\w+) to (\w+) \(captures (\w+)\)/i, 
-                        '⚔️ Battle charge! Send your $1 from $2 to $3 and destroy the enemy $4!')
-                      .replace(/Move (\w+) from (\w+) to (\w+).*captures (\w+)/i, 
-                        '⚔️ Battle charge! Send your $1 from $2 to $3 and destroy the enemy $4!');
-                  }
-                  // Handle regular moves
-                  else {
-                    enhancedDescription = enhancedDescription
-                      .replace(/Move (\w+) from (\w+) to (\w+)/i, 
-                        '🎯 Strategic maneuver! Advance your $1 from $2 to the powerful position at $3');
-                  }
-                  
-                  // Transform reasoning to be more engaging
-                  let enhancedReasoning = hint.reasoning
-                    .replace(/Improves piece defense/gi, '🛡️ Fortifies your battlefield defenses')
-                    .replace(/Uses wizard mobility advantage/gi, '✨ Exploits magical teleportation mastery')
-                    .replace(/Creates threat to enemy pieces/gi, '🔥 Strikes fear into enemy ranks')
-                    .replace(/Controls important central squares/gi, '⭐ Claims dominance over the battlefield center')
-                    .replace(/Develops piece to better position/gi, '📈 Activates dormant forces for future conquest')
-                    .replace(/Strong tactical move/gi, '🧠 Demonstrates masterful battlefield strategy');
-                  
-                  // Show custom hint modal instead of browser alert
-                  setHintData({
-                    description: enhancedDescription,
-                    reasoning: enhancedReasoning
-                  });
-                  setShowHintModal(true);
-                  console.log('💡 Hint displayed to user in custom modal');
-                }
-              });
-            }}
-            className="medieval-btn-mini w-full h-9 flex flex-col items-center justify-center p-1"
-            title="Get Hint"
-          >
-            <span className="text-sm">💡</span>
-            <span className="text-xs leading-none">Hint</span>
-          </Button>
-          
+
           <Button
             variant="outline"
             size="sm"
@@ -254,16 +180,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
           
         </div>
       </CardContent>
-      
-      {/* Custom Hint Modal */}
-      {showHintModal && hintData && (
-        <HintModal
-          isOpen={showHintModal}
-          onClose={() => setShowHintModal(false)}
-          hintDescription={hintData.description}
-          hintReasoning={hintData.reasoning}
-        />
-      )}
+
     </Card>
   );
 }
