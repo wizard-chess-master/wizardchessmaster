@@ -358,10 +358,21 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // ELIMINATE old music and FORCE new Audio instance with dynamic cache busting
+    // ELIMINATE old music and FORCE new Audio instance with dynamic cache busting and fallback
     const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
+    
+    // Add error handling for file not found
+    theme.addEventListener('error', (e) => {
+      console.error('❌ Theme-music2.mp3 failed to load, trying fallback:', e);
+      // Fallback to Theme-music1.mp3 if Theme-music2.mp3 doesn't exist
+      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
+      fallback.loop = true;
+      fallback.volume = 0.42;
+      this.themeMusic = fallback;
+      fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
+    });
     
     // Log theme creation as specifically requested
     console.log('Theme created:', theme.src);
@@ -386,7 +397,13 @@ class WizardChessAudioManager {
     });
     
     theme.addEventListener('error', (error) => {
-      console.error('❌ Theme music failed to load:', error);
+      console.error('❌ Theme music failed to load, trying fallback:', error);
+      // Try fallback to Theme-music1.mp3
+      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
+      fallback.loop = true;
+      fallback.volume = 0.42;
+      this.themeMusic = fallback;
+      fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
     });
     
     theme.addEventListener('ended', () => {

@@ -127,10 +127,20 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     // Execute cleanup before theme.play()
                     await cleanAudio();
                     
-                    // Set Theme-music2.mp3 with dynamic cache busting
+                    // Set Theme-music2.mp3 with dynamic cache busting and fallback
                     const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
                     theme.loop = true;
                     theme.volume = 0.42;
+                    
+                    // Add error handling for file not found
+                    theme.addEventListener('error', (e) => {
+                      console.error('❌ Theme-music2.mp3 failed to load, trying fallback:', e);
+                      // Fallback to Theme-music1.mp3 if Theme-music2.mp3 doesn't exist
+                      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
+                      fallback.loop = true;
+                      fallback.volume = 0.42;
+                      fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
+                    });
                     
                     theme.play()
                       .then(() => {
@@ -139,6 +149,11 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                       })
                       .catch((error) => {
                         console.error('❌ Failed to force theme music:', error);
+                        // Try fallback immediately if play() fails
+                        const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
+                        fallback.loop = true;
+                        fallback.volume = 0.42;
+                        fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
                       });
                     
                     (window as any).gameAudioManager?.onButtonClick();
