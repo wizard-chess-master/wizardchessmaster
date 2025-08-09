@@ -1117,17 +1117,20 @@ export function ChessBoard() {
   };
 
   // Calculate mobile-responsive sizing and styling
-  const isMobileDevice = deviceInfo.isMobile;
+  const isMobileDevice = finalIsMobile;
   const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
   
+  // Force mobile mode for testing if screen is small
+  const forceMobileMode = deviceInfo.screenWidth <= 768;
+  const finalIsMobile = deviceInfo.isMobile || forceMobileMode;
+  
   // Debug device detection
-  console.log('🔍 Device Detection Debug:', {
-    isMobile: deviceInfo.isMobile,
-    screenWidth: deviceInfo.screenWidth,
-    orientation: deviceInfo.orientation,
-    userAgent: deviceInfo.userAgent,
-    isTouch: deviceInfo.isTouch,
-    currentCanvasSize: canvasSize
+  console.log('🔍 ChessBoard Device Detection Debug:', {
+    deviceInfo,
+    forceMobileMode,
+    finalIsMobile,
+    currentCanvasSize: canvasSize,
+    windowDimensions: { width: window.innerWidth, height: window.innerHeight }
   });
   
   // Mobile-specific board size calculation

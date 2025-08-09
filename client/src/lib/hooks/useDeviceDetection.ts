@@ -49,9 +49,23 @@ export function useDeviceDetection(): DeviceInfo {
     const isMobileUA = mobileRegex.test(userAgent);
     const isTabletUA = tabletRegex.test(userAgent);
     
-    let isMobile = isMobileUA || (isMobileScreen && isTouch);
-    let isTablet = isTabletUA || (isTabletScreen && isTouch && !isMobileUA);
+    // Enhanced mobile detection - prioritize screen size for simulated mobile views
+    let isMobile = isMobileUA || isMobileScreen;
+    let isTablet = isTabletUA || (isTabletScreen && !isMobile);
     let isDesktop = !isMobile && !isTablet;
+    
+    // Debug logging for device detection
+    console.log('🔍 Device Detection:', {
+      userAgent,
+      screenWidth,
+      screenHeight,
+      isMobileUA,
+      isTabletUA,
+      isMobileScreen,
+      isTabletScreen,
+      isTouch,
+      finalResult: { isMobile, isTablet, isDesktop }
+    });
     
     // Handle edge cases
     if (userAgent.includes('iPad') || (userAgent.includes('Mac') && isTouch)) {
