@@ -1,6 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import paymentRoutes from "./routes/payments";
+import webhookRoutes from "./routes/webhooks";
 // MULTIPLAYER DISABLED: import { MultiplayerManager } from "./multiplayer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -9,6 +11,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // use storage to perform CRUD operations on the storage interface
   // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+
+  // Register payment and webhook routes
+  app.use('/api/payments', paymentRoutes);
+  app.use('/api/webhooks', webhookRoutes);
 
   const httpServer = createServer(app);
   

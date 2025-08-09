@@ -67,13 +67,29 @@ const PAYMENT_PLANS: PaymentPlan[] = [
 class StripePaymentManager implements PaymentManager {
   private stripe: Stripe | null = null;
   private isInitialized = false;
-  private publishableKey = 'pk_test_demo'; // Replace with real Stripe publishable key
+  private publishableKey = '';
   private userPlan: PaymentPlan | null = null;
 
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
     try {
+      // Get Stripe configuration from server
+      const configResponse = await fetch('/api/payments/config');
+      const config = await configResponse.json();
+      
+      if (!config.configured) {
+        console.log('⚠️ Stripe not fully configured - some keys may be missing');
+      }
+      
+      this.publishableKey = config.publishableKey || '';
+      
+      if (!this.publishableKey) {
+        console.warn('⚠️ Stripe publishable key not configured - payment features disabled');
+        this.isInitialized = true; // Mark as initialized but without Stripe
+        return;
+      }
+
       this.stripe = await loadStripe(this.publishableKey);
       this.isInitialized = true;
       this.loadUserPlan();
@@ -116,14 +132,31 @@ class StripePaymentManager implements PaymentManager {
     try {
       console.log('💳 Creating upgrade session for plan:', plan.name);
       
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create one-time payment session for upgrades
+      const response = await fetch('/api/payments/create-payment-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: plan.price,
+          currency: plan.currency.toLowerCase()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Payment session creation failed: ${response.statusText}`);
+      }
+
+      const { sessionId, url } = await response.json();
       
-      // For demo, grant upgrade
-      this.userPlan = plan;
-      this.saveUserPlan();
-      this.handleUpgradeSuccess();
-      return 'demo-session-id';
+      if (url) {
+        // Redirect to Stripe Checkout
+        window.location.href = url;
+        return sessionId;
+      }
+
+      return sessionId;
     } catch (error) {
       console.error('❌ Payment session creation failed:', error);
       return null;
@@ -145,14 +178,30 @@ class StripePaymentManager implements PaymentManager {
     try {
       console.log('💳 Creating subscription session for plan:', plan.name);
       
-      // Simulate subscription processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create subscription checkout session
+      const response = await fetch('/api/payments/create-checkout-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          planId: planId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Subscription session creation failed: ${response.statusText}`);
+      }
+
+      const { sessionId, url } = await response.json();
       
-      // For demo, grant subscription
-      this.userPlan = plan;
-      this.saveUserPlan();
-      this.handleSubscriptionSuccess();
-      return 'demo-subscription-id';
+      if (url) {
+        // Redirect to Stripe Checkout
+        window.location.href = url;
+        return sessionId;
+      }
+
+      return sessionId;
     } catch (error) {
       console.error('❌ Subscription session creation failed:', error);
       return null;
@@ -168,6 +217,41 @@ class StripePaymentManager implements PaymentManager {
     
     // Show success message
     this.showSuccessMessage();
+  }
+
+  async verifyPaymentSuccess(sessionId: string): Promise<boolean> {
+    try {
+      const response = await fetch(`/api/payments/verify-session/${sessionId}`);
+      if (!response.ok) {
+        throw new Error(`Session verification failed: ${response.statusText}`);
+      }
+
+      const { status, metadata } = await response.json();
+      
+      if (status === 'paid') {
+        // Find the plan from metadata
+        const planId = metadata?.planId;
+        if (planId) {
+          const plan = PAYMENT_PLANS.find(p => p.id === planId);
+          if (plan) {
+            this.userPlan = plan;
+            this.saveUserPlan();
+            
+            if (plan.type === 'subscription') {
+              this.handleSubscriptionSuccess();
+            } else {
+              this.handleUpgradeSuccess();
+            }
+            return true;
+          }
+        }
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('❌ Payment verification failed:', error);
+      return false;
+    }
   }
 
   handleSubscriptionSuccess(): void {
