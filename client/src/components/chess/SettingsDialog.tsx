@@ -24,9 +24,9 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
 
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto max-w-md">
+      <DialogContent className="max-h-[85vh] overflow-y-auto max-w-md bg-white text-gray-900">
         <DialogHeader>
-          <DialogTitle>Game Settings</DialogTitle>
+          <DialogTitle className="text-xl font-bold text-gray-900">Game Settings</DialogTitle>
         </DialogHeader>
         
         <div className="space-y-4">
@@ -34,15 +34,15 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
           <VolumeControls />
           
           {/* Game Information */}
-          <Card>
+          <Card className="border border-gray-200">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Info className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
+                <Info className="w-5 h-5 text-blue-600" />
                 Audio Information
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0 space-y-3">
-              <div className="text-sm space-y-1">
+              <div className="text-sm space-y-2 text-gray-800">
                 <p><strong>Sound Effects:</strong> Move sounds, captures, wizard abilities</p>
                 <p><strong>Voice Narration:</strong> Game events and guidance</p>
                 <p><strong>Music:</strong> Background theme with dynamic intensity</p>
@@ -56,17 +56,17 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
           </Card>
 
           {/* Quick Info */}
-          <Card>
+          <Card className="border border-gray-200">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Info className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
+                <Info className="w-5 h-5 text-blue-600" />
                 Game Info
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-0 space-y-3">
               <div className="text-sm">
-                <p className="font-medium">Fantasy Chess v1.0</p>
-                <p className="text-xs text-gray-600">10x10 board with Wizard pieces</p>
+                <p className="font-medium text-gray-900">Fantasy Chess v1.0</p>
+                <p className="text-xs text-gray-700">10x10 board with Wizard pieces</p>
               </div>
               
               <div className="grid grid-cols-2 gap-3 text-xs">

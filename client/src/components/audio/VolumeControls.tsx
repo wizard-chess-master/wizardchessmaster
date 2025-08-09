@@ -30,7 +30,7 @@ export function VolumeControls() {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <label className="text-sm font-medium">Master Volume</label>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-gray-600">
               Controls all game audio
             </p>
           </div>
@@ -45,7 +45,7 @@ export function VolumeControls() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-medium">Volume Level</label>
-                <span className="text-sm text-muted-foreground">{Math.round(volume * 100)}%</span>
+                <span className="text-sm text-gray-700 font-medium">{Math.round(volume * 100)}%</span>
               </div>
               <Slider
                 value={[volume]}
