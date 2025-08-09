@@ -433,12 +433,55 @@ export const useCampaign = create<CampaignState>()(
         // Update player rating
         get().updatePlayerRating(won, level.aiStrength);
 
-        // Unlock next level if current level is completed
+        // Check if level was just completed for the first time and process rewards
         const currentLevel = updatedLevels.find(l => l.id === levelId);
+        const wasJustCompleted = currentLevel?.completed && !level.completed;
+        
+        if (wasJustCompleted && level.rewards) {
+          console.log(`🎉 Level ${levelId} completed! Processing rewards:`, level.rewards);
+          
+          // Award experience points
+          if (level.rewards.experiencePoints) {
+            console.log(`✨ Awarded ${level.rewards.experiencePoints} XP for completing ${level.name}!`);
+          }
+          
+          // Unlock board variants
+          if (level.rewards.unlocksBoardVariant) {
+            console.log(`🏰 Unlocked new board variant: ${level.rewards.unlocksBoardVariant}!`);
+          }
+          
+          // Trigger achievement system
+          try {
+            import('../achievements/gameEventTracker').then(({ gameEventTracker }) => {
+              // Unlock achievement for campaign level completion
+              const achievementId = `campaign_${levelId}_completed`;
+              gameEventTracker.unlockSpecialAchievement(achievementId);
+            });
+          } catch (error) {
+            console.log('Achievement system not available:', error);
+          }
+
+          // Trigger reward celebration UI
+          setTimeout(() => {
+            const celebrationEvent = new CustomEvent('campaignRewardEarned', {
+              detail: {
+                levelName: level.name,
+                experiencePoints: level.rewards?.experiencePoints,
+                unlocksBoardVariant: level.rewards?.unlocksBoardVariant,
+                unlocksStory: level.rewards?.unlocksStory,
+                levelId
+              }
+            });
+            window.dispatchEvent(celebrationEvent);
+          }, 1000); // Delay to let game finish processing
+        }
+
+        // Unlock next level if current level is completed
         if (currentLevel?.completed) {
           const currentIndex = updatedLevels.findIndex(l => l.id === levelId);
           if (currentIndex < updatedLevels.length - 1) {
             updatedLevels[currentIndex + 1].unlocked = true;
+            console.log(`🔓 Unlocked next level: ${updatedLevels[currentIndex + 1].name}`);
           }
         }
 

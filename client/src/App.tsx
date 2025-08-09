@@ -21,6 +21,7 @@ import { RewardsScreen } from "./components/rewards/RewardsScreen";
 import { useGameSettings } from "./stores/gameSettings";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
+import { useCampaignRewardCelebration } from "./components/campaign/CampaignRewardCelebration";
 
 import ChessAudioController from "./components/audio/ChessAudioController";
 
@@ -39,6 +40,9 @@ function App() {
   const [showCollection, setShowCollection] = useState(false);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
+
+  // Campaign reward celebration
+  const { showCelebration, CelebrationComponent } = useCampaignRewardCelebration();
 
   // Initialize audio and monetization systems
   useEffect(() => {
@@ -78,6 +82,17 @@ function App() {
       );
     }
   }, [gamePhase, gameState.board, gameState.moveHistory, gameState.isInCheck, gameState.isCheckmate, gameState.winner, gameState.gameMode]);
+
+  // Campaign reward event listener
+  useEffect(() => {
+    const handleCampaignReward = (event: CustomEvent) => {
+      console.log('🎉 Campaign reward event received:', event.detail);
+      showCelebration(event.detail);
+    };
+
+    window.addEventListener('campaignRewardEarned', handleCampaignReward as EventListener);
+    return () => window.removeEventListener('campaignRewardEarned', handleCampaignReward as EventListener);
+  }, [showCelebration]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -199,6 +214,9 @@ function App() {
 
 
         <AchievementNotificationQueue onViewAll={() => setShowAchievements(true)} />
+        
+        {/* Campaign Reward Celebration */}
+        <CelebrationComponent />
       </div>
     </div>
   );
