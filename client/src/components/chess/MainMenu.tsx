@@ -158,11 +158,13 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                       const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
                       fallback.loop = true;
                       fallback.volume = 0.42;
+                      (window as any).currentTheme = fallback; // Store fallback reference too
                       fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
                     });
                     
                     theme.play()
                       .then(() => {
+                        (window as any).currentTheme = theme; // Store global reference for toggle control
                         console.log('✅ Theme-music2.mp3 dynamic cache FORCED on Player vs AI - Easy click');
                         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
                       })
@@ -172,6 +174,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                         const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
                         fallback.loop = true;
                         fallback.volume = 0.42;
+                        (window as any).currentTheme = fallback; // Store fallback reference too
                         fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
                       });
                     

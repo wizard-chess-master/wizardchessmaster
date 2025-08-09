@@ -68,7 +68,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 toggleMute();
                 
                 // AGGRESSIVE cleanup function - same as MainMenu
-                async function cleanAudio() { 
+                const cleanAudio = async () => { 
                   try {
                     const context = new AudioContext(); 
                     await context.close(); 
@@ -133,15 +133,29 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                   }
                 }
               } else {
-                // Mute - stop all audio
-                toggleMute();
+                // Mute - stop all audio FIRST, then toggle mute
+                console.log('🛑 Stopping music before mute');
                 
                 // Stop current theme
                 if ((window as any).currentTheme) {
                   (window as any).currentTheme.pause();
                   (window as any).currentTheme.currentTime = 0;
+                  (window as any).currentTheme.src = '';
+                  (window as any).currentTheme = null;
                   console.log('🛑 Theme music stopped by toggle');
                 }
+                
+                // Stop ALL audio elements 
+                document.querySelectorAll('audio').forEach(a => { 
+                  a.pause(); 
+                  a.currentTime = 0; 
+                  a.src = '';
+                  a.remove(); 
+                }); 
+                
+                // Then toggle mute state
+                toggleMute();
+                console.log('🛑 All audio stopped, mute state toggled');
               }
             }}
             className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
