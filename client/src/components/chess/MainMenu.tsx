@@ -254,42 +254,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   </MassTrainingDialog>
                 )}
 
-                {isAdminFeatureEnabled('debug') && (
-                  <Button
-                    className="medieval-btn mode-button"
-                    variant="outline"
-                    onClick={() => {
-                      console.log('🧪 Running functionality verification...');
-                      try {
-                        runDebugVerification();
-                        // Show results dialog after verification completes
-                        setTimeout(() => {
-                          setDebugResults({
-                            completed: true,
-                            message: 'Debug verification completed successfully!',
-                            details: 'All core systems tested and verified. Check console for detailed results.',
-                            nextStep: 'System ready for mass AI training. Click "Mass AI Training" to begin 10000-game session.'
-                          });
-                          setShowDebugDialog(true);
-                        }, 2000); // Give verification time to complete
-                      } catch (error) {
-                        console.error('❌ Debug verification failed:', error);
-                        setDebugResults({
-                          completed: false,
-                          message: 'Debug verification encountered issues',
-                          details: `Error: ${error}`,
-                          nextStep: 'Check console for details and try again.'
-                        });
-                        setShowDebugDialog(true);
-                      }
-                    }}
-                  >
-                    <div className="mode-content">
-                      <span>🧪 Debug & Verify System</span>
-                      <Badge variant="secondary">Test All</Badge>
-                    </div>
-                  </Button>
-                )}
+
                 
                 {isAdminFeatureEnabled('reset') && (
                   <Button
@@ -635,10 +600,9 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     onClick={() => {
                       const stats = aiLearning.getLearningStats();
                       setLearningStats(stats);
-                      console.log('Debug - Raw stats:', stats);
                     }}
                   >
-                    Debug: Reload Stats
+                    Reload Stats
                   </Button>
                 </div>
               </div>
@@ -648,71 +612,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         </Dialog>
       )}
 
-      {/* Debug Verification Results Dialog - Admin Only */}
-      {isAdminFeatureEnabled('debug') && (
-        <Dialog open={showDebugDialog} onOpenChange={setShowDebugDialog}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <BarChart3 className="w-5 h-5" />
-              Debug Verification Results
-            </DialogTitle>
-          </DialogHeader>
-          
-          {/* Navigation button at top */}
-          <div className="flex gap-2 mb-4 pb-4 border-b">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDebugDialog(false)}
-              className="medieval-btn"
-            >
-              <Home className="w-4 h-4 mr-2" />
-              Back to Menu
-            </Button>
-          </div>
-          
-          {debugResults && (
-            <div className="space-y-4 p-4">
-              <div className={`text-lg font-semibold ${debugResults.completed ? 'text-green-600' : 'text-orange-600'}`}>
-                {debugResults.completed ? '✅ Verification Complete' : '⚠️ Verification Issues'}
-              </div>
-              
-              <div className="p-4 bg-slate-100 rounded">
-                <p className="font-medium mb-2">{debugResults.message}</p>
-                <p className="text-sm text-gray-600">{debugResults.details}</p>
-              </div>
-              
-              <div className="p-4 bg-blue-50 border border-blue-200 rounded">
-                <p className="font-medium text-blue-800 mb-1">Next Steps:</p>
-                <p className="text-sm text-blue-700">{debugResults.nextStep}</p>
-              </div>
-              
-              <div className="flex gap-2 pt-2">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowDebugDialog(false)}
-                  className="flex-1"
-                >
-                  Close
-                </Button>
-                {debugResults.completed && (
-                  <Button 
-                    onClick={() => {
-                      setShowDebugDialog(false);
-                      console.log('🚀 Ready for mass training - use Mass AI Training button');
-                    }}
-                    className="flex-1"
-                  >
-                    Continue
-                  </Button>
-                )}
-              </div>
-            </div>
-          )}
-        </DialogContent>
-        </Dialog>
-      )}
+
 
     </div>
   );

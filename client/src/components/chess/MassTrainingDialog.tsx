@@ -328,31 +328,7 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
                 </Button>
               )}
               
-              <Button 
-                onClick={handleTestGame}
-                variant="secondary" 
-                className="medieval-btn mode-button"
-                disabled={isTraining}
-                size="default"
-              >
-                <div className="mode-content">
-                  <span>⚡ Test 1 Game</span>
-                  <Badge variant="secondary">Quick Test</Badge>
-                </div>
-              </Button>
-              
-              <Button 
-                onClick={handleReset}
-                variant="outline" 
-                className="medieval-btn mode-button"
-                disabled={isTraining}
-                size="default"
-              >
-                <div className="mode-content">
-                  <span>🔄 Reset Data</span>
-                  <Badge variant="destructive">Clear</Badge>
-                </div>
-              </Button>
+
               
               <Button 
                 onClick={() => {

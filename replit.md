@@ -68,7 +68,7 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced Campaign Mode**: 12 progressive levels with story content, board variants (classic, forest, castle, mountain, desert, volcanic, ice, cosmic), premium level locks, and comprehensive rewards system.
 - **Comprehensive Monetization System**: Stripe integration with $2.99 one-time IAP and $4.99/month subscription, featuring plan selector UI and premium feature management.
 - **Complete Ad Integration**: Post-game interstitial ads, in-play banner rotation, rewarded video ads for hints/undos, and premium user ad-free experience.
-- **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Debug tools, Reset AI Training, View AI Learning Stats).
+- **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Reset AI Training, View AI Learning Stats). Debug buttons removed for cleaner interface.
 - **Complete Audio System Removal**: All music and sound effects completely removed per user request - user will implement custom MP3-based audio system independently.
 - **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
 - **Immersive 3D Audio System**: Web Audio API-powered spatial audio with HRTF panning, piece-specific movement sounds, wizard teleport/attack effects, dynamic music intensity, medieval background music, convolution reverb for magical ambiance, and low-latency responsive audio optimized for Replit hosting.

@@ -419,14 +419,6 @@ function VisualizationSettings() {
         </div>
 
         <Separator />
-
-        <Button
-          variant="destructive"
-          onClick={resetProgression}
-          className="w-full"
-        >
-          Reset All Progression Data
-        </Button>
       </CardContent>
     </Card>
   );

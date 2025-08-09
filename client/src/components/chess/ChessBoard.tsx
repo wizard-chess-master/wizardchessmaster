@@ -734,7 +734,7 @@ export function ChessBoard() {
       createWizardSparkles(centerX, centerY);
       
     } else {
-      playPieceMovementSound(piece.type, false);
+      playPieceMovementSound(piece.type);
     }
   };
 
