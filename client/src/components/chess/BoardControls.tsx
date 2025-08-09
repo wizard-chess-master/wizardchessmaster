@@ -233,22 +233,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             <span className="text-xs leading-none">Settings</span>
           </Button>
           
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              import('../../lib/stores/useDiagnostics').then(({ useDiagnostics }) => {
-                const { setShowDiagnostics } = useDiagnostics.getState();
-                setShowDiagnostics(true);
-              });
-            }}
-            className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
-            title="UI Diagnostics"
-          >
-            <span className="text-sm">🔍</span>
-            <span className="text-xs leading-none">Debug</span>
-          </Button>
-          
+
           <Button
             variant="outline"
             size="sm"
