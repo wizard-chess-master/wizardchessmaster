@@ -27,18 +27,9 @@ export function ChessAudioController() {
     switch (gamePhase) {
       case 'playing':
         if (moveHistory.length === 0) {
-          console.log('🎵 TRIGGERING Theme-music1.mp3 via ChessAudioController...');
-          wizardChessAudio.onGameStart();
-          
-          // Also directly call playBackgroundMusic to ensure theme plays
-          const { playBackgroundMusic } = useAudio.getState();
-          setTimeout(() => playBackgroundMusic(), 200); // Small delay to ensure game state is set
-          
-          // Also ensure we stop any competing audio from gameAudioManager
-          if ((window as any).gameAudioManager?.stopMusic) {
-            (window as any).gameAudioManager.stopMusic();
-            console.log('🛑 Stopped competing gameAudioManager music');
-          }
+          console.log('🎵 Game start - Theme-music1.mp3 handled by user controls only');
+          // REMOVED DOUBLE AUDIO TRIGGER - let user control theme music via buttons
+          // No automatic music on game start to prevent conflicts
         }
         break;
       case 'ended':

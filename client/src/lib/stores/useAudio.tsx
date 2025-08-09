@@ -86,59 +86,78 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   playBackgroundMusic: () => {
-    const { isMuted, backgroundMusic } = get();
+    const { isMuted } = get();
     
-    // Stop any existing background music first and comprehensive cleanup
-    if (backgroundMusic) {
-      backgroundMusic.pause();
-      backgroundMusic.currentTime = 0;
-    }
-    
-    // Clear all music variables pre-init
-    if ((window as any).gameAudioManager) {
+    // Master audio cleanup function
+    function masterAudioCleanup() {
+      console.log('🛑 MASTER AUDIO CLEANUP - Stopping ALL audio systems...');
+      
+      // 1. Stop WizardChessAudioManager
+      if (wizardChessAudio?.stopAllAudio) {
+        wizardChessAudio.stopAllAudio();
+      }
+      
+      // 2. Stop GameAudioManager
+      if ((window as any).gameAudioManager?.stopAll) {
+        (window as any).gameAudioManager.stopAll();
+      }
+      
+      // 3. Close ImmersiveAudioSystem
+      if ((window as any).immersiveAudio?.dispose) {
+        (window as any).immersiveAudio.dispose();
+      }
+      
+      // 4. Close ALL AudioContexts
+      if (typeof AudioContext !== 'undefined') {
+        try {
+          const context = new AudioContext();
+          context.close();
+        } catch (e) {}
+      }
+      
+      // 5. Remove ALL DOM audio elements
+      document.querySelectorAll('audio').forEach(a => {
+        a.pause();
+        a.currentTime = 0;
+        a.src = '';
+        a.remove();
+      });
+      
+      // 6. Clear global references
+      (window as any).currentTheme = null;
+      (window as any).backgroundMusic = null;
       (window as any).gameAudioManager = null;
+      
+      console.log('🛑 Master cleanup complete');
     }
-    
-    // Enhanced cleanup function  
-    function cleanAudio() {
-      if (typeof AudioContext !== 'undefined') { 
-        new AudioContext().close(); 
-      } 
-      document.querySelectorAll('audio').forEach(a => { 
-        a.pause(); 
-        a.currentTime = 0; 
-        a.src = ''; 
-        a.remove(); 
-      }); 
-      console.log('Audio reset count:', document.querySelectorAll('audio').length);
-    }
-    
-    // Call cleanup function before theme playback
-    cleanAudio();
     
     if (isMuted) {
       console.log('🎵 Background music not started - audio is muted');
       return;
     }
-
-    // ELIMINATE old music and FORCE Theme-music1.mp3 with v=25 cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
-    theme.loop = true;
-    theme.volume = 0.42;
     
-    console.log('Theme created:', theme.src);
+    // Execute master cleanup
+    masterAudioCleanup();
     
-    theme.play()
-      .then(() => {
-        console.log('✅ Background music FORCED playback started successfully');
-        console.log('✅ Theme-music1.mp3 v=25 confirmed playing');
-        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-        set({ backgroundMusic: theme });
-      })
-      .catch((error) => {
-        console.error('❌ Failed to FORCE play background music:', error);
-        console.error('Check Chrome audio permissions if silent');
-      });
+    // Wait for cleanup to complete, then start fresh Theme-music1.mp3
+    setTimeout(() => {
+      const theme = new Audio('/assets/music/Theme-music1.mp3?v=26');
+      theme.loop = true;
+      theme.volume = 0.42;
+      (window as any).currentTheme = theme; // Store global reference
+      
+      console.log('🎵 Starting fresh Theme-music1.mp3 v=26 after master cleanup');
+      
+      theme.play()
+        .then(() => {
+          console.log('✅ Theme-music1.mp3 v=26 MASTER CLEANUP success');
+          console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
+          set({ backgroundMusic: theme });
+        })
+        .catch((error) => {
+          console.error('❌ Failed to play theme music after cleanup:', error);
+        });
+    }, 300); // Wait 300ms for cleanup completion
   },
 
   stopBackgroundMusic: () => {

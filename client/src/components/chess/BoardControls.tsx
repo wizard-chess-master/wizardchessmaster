@@ -67,10 +67,12 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 // Unmute and force Theme-music1.mp3
                 toggleMute();
                 
-                // Enhanced cleanup function
-                function cleanAudio() { 
+                // Enhanced cleanup function (arrow function to fix strict mode)
+                const cleanAudio = () => { 
                   if (typeof AudioContext !== 'undefined') { 
-                    new AudioContext().close(); 
+                    try {
+                      new AudioContext().close(); 
+                    } catch(e) {}
                   } 
                   document.querySelectorAll('audio').forEach(a => { 
                     a.pause(); 
@@ -78,7 +80,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                     a.remove(); 
                   }); 
                   console.log('Audio cleanup count:', document.querySelectorAll('audio').length); 
-                }
+                };
                 
                 // Call cleanup first
                 cleanAudio();
