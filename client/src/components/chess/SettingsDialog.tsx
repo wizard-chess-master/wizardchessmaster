@@ -48,7 +48,7 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
                 <p><strong>Music:</strong> Background theme with dynamic intensity</p>
               </div>
               
-              <div className="text-xs text-muted-foreground bg-secondary/20 p-2 rounded">
+              <div className="text-xs text-foreground bg-amber-50 border border-amber-200 p-2 rounded">
                 <strong>Note:</strong> Audio files load from /assets/ directories. 
                 Place your MP3 files in the appropriate folders for full functionality.
               </div>
@@ -66,25 +66,25 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
             <CardContent className="pt-0 space-y-3">
               <div className="text-sm">
                 <p className="font-medium">Fantasy Chess v1.0</p>
-                <p className="text-xs text-muted-foreground">10x10 board with Wizard pieces</p>
+                <p className="text-xs text-gray-600">10x10 board with Wizard pieces</p>
               </div>
               
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div className="flex justify-between">
-                  <span>Escape</span>
-                  <span className="text-muted-foreground">Deselect</span>
+                  <span className="font-medium">Escape</span>
+                  <span className="text-gray-600">Deselect</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Ctrl+Z</span>
-                  <span className="text-muted-foreground">Undo</span>
+                  <span className="font-medium">Ctrl+Z</span>
+                  <span className="text-gray-600">Undo</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Ctrl+M</span>
-                  <span className="text-muted-foreground">Mute</span>
+                  <span className="font-medium">Ctrl+M</span>
+                  <span className="text-gray-600">Mute</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Ctrl+H</span>
-                  <span className="text-muted-foreground">Menu</span>
+                  <span className="font-medium">Ctrl+H</span>
+                  <span className="text-gray-600">Menu</span>
                 </div>
               </div>
             </CardContent>
