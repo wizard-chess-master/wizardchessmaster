@@ -6,9 +6,11 @@ interface HintModalProps {
   onClose: () => void;
   hintDescription: string;
   hintReasoning: string;
+  onHintAction?: (action: 'followed' | 'ignored' | 'dismissed' | 'requested_more') => void;
+  hintId?: string;
 }
 
-export function HintModal({ isOpen, onClose, hintDescription, hintReasoning }: HintModalProps) {
+export function HintModal({ isOpen, onClose, hintDescription, hintReasoning, onHintAction, hintId }: HintModalProps) {
   if (!isOpen) return null;
 
   // Force close on escape key
@@ -70,8 +72,31 @@ export function HintModal({ isOpen, onClose, hintDescription, hintReasoning }: H
         
         {/* Footer */}
         <div className="p-6 bg-amber-50 rounded-b-md border-t border-amber-300">
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            <button
+              onClick={() => {
+                onHintAction?.('followed');
+                onClose();
+              }}
+              className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg"
+            >
+              ✓ I'll try this
+            </button>
+            <button
+              onClick={() => {
+                onHintAction?.('requested_more');
+                onClose();
+              }}
+              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg"
+            >
+              💡 More hints
+            </button>
+          </div>
           <button
-            onClick={onClose}
+            onClick={() => {
+              onHintAction?.('dismissed');
+              onClose();
+            }}
             className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg text-lg"
           >
             ✨ Got it, let's battle!

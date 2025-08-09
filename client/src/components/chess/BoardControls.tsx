@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Settings, Lightbulb } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { usePersonalizedHints } from '../../lib/stores/usePersonalizedHints';
 import { HintModal } from './HintModal';
 import { getAIMove } from '../../lib/chess/aiPlayer';
 
@@ -15,11 +16,20 @@ interface BoardControlsProps {
 export function BoardControls({ onSettings }: BoardControlsProps) {
   const { moveHistory, resetGame, gameMode, undoMove, hintsEnabled, board, currentPlayer, aiDifficulty } = useChess();
   const { isMuted } = useAudio();
+  const { 
+    recordHintInteraction, 
+    getPersonalizedHintStyle, 
+    selectOptimalHintVariation,
+    enablePersonalization 
+  } = usePersonalizedHints();
+  
   const [showHintModal, setShowHintModal] = useState(false);
   const [currentHint, setCurrentHint] = useState({ description: '', reasoning: '' });
   const [lastHintMove, setLastHintMove] = useState<string>('');
   const [lastHintTime, setLastHintTime] = useState(0);
   const [recentHints, setRecentHints] = useState<string[]>([]);
+  const [currentHintId, setCurrentHintId] = useState<string>('');
+  const hintStartTimeRef = useRef<number>(0);
 
   const handleGetHint = async () => {
     try {
@@ -133,21 +143,51 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
           `${moveDescription} demonstrates perfect timing`
         ];
 
-        // Select hint style based on AI difficulty
+        // Get personalized hint style (uses learning algorithm if enabled)
+        const effectiveHintStyle = enablePersonalization 
+          ? getPersonalizedHintStyle(aiDifficulty, 'opening') // Game phase detection can be enhanced
+          : aiDifficulty;
+        
+        // Select hint variations based on effective style
         let hintVariations;
-        if (aiDifficulty === 'easy') {
+        if (effectiveHintStyle === 'easy') {
           hintVariations = beginnerHints;
-        } else if (aiDifficulty === 'medium') {
+        } else if (effectiveHintStyle === 'medium') {
           hintVariations = intermediateHints;
         } else {
           hintVariations = advancedHints;
         }
         
-        const randomHint = hintVariations[Math.floor(Math.random() * hintVariations.length)];
+        // Detect current game phase
+        const detectGamePhase = (moveCount: number): 'opening' | 'middle' | 'endgame' => {
+          if (moveCount < 20) return 'opening';
+          if (moveCount < 40) return 'middle';
+          return 'endgame';
+        };
+        
+        const currentGamePhase = detectGamePhase(moveHistory.length);
+        
+        // Use personalized selection if learning is enabled
+        const gameContext = {
+          difficulty: effectiveHintStyle,
+          phase: currentGamePhase,
+          position: boardHash
+        };
+        
+        const selectedHint = enablePersonalization
+          ? selectOptimalHintVariation(hintVariations, moveDescription, gameContext)
+          : hintVariations[Math.floor(Math.random() * hintVariations.length)];
+        
+        // Generate unique hint ID for tracking
+        const hintId = `hint-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        setCurrentHintId(hintId);
+        hintStartTimeRef.current = Date.now();
         
         setCurrentHint({
-          description: randomHint,
-          reasoning: "This move was analyzed as a strong tactical choice for the current position."
+          description: selectedHint,
+          reasoning: enablePersonalization 
+            ? "This personalized recommendation is based on your playing style and preferences."
+            : "This move was analyzed as a strong tactical choice for the current position."
         });
         
         // Update tracking state
@@ -155,6 +195,13 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
         setLastHintTime(now);
         setRecentHints(prev => [...prev.slice(-2), moveDescription]); // Keep last 3 hints
         setShowHintModal(true);
+        
+        console.log('🧠 Hint generated:', {
+          id: hintId,
+          type: effectiveHintStyle,
+          phase: currentGamePhase,
+          personalized: enablePersonalization
+        });
       }
     } catch (error) {
       console.error('Error getting hint:', error);
@@ -353,9 +400,63 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
     {showHintModal && (
       <HintModal
         isOpen={showHintModal}
-        onClose={() => setShowHintModal(false)}
+        onClose={() => {
+          // Record interaction if user just closes without action
+          if (currentHintId && enablePersonalization) {
+            const timeSpent = Date.now() - hintStartTimeRef.current;
+            const detectGamePhase = (moveCount: number): 'opening' | 'middle' | 'endgame' => {
+              if (moveCount < 20) return 'opening';
+              if (moveCount < 40) return 'middle';
+              return 'endgame';
+            };
+            
+            recordHintInteraction({
+              id: currentHintId,
+              hintText: currentHint.description,
+              hintType: aiDifficulty === 'easy' ? 'beginner' : aiDifficulty === 'medium' ? 'intermediate' : 'advanced',
+              moveDescription: currentHint.description.split(' ').slice(-6).join(' '),
+              aiDifficulty,
+              timestamp: Date.now(),
+              userAction: 'ignored',
+              gamePhase: detectGamePhase(moveHistory.length),
+              positionHash: lastHintMove,
+              timeSpentViewing: timeSpent
+            });
+          }
+          setShowHintModal(false);
+        }}
         hintDescription={currentHint.description}
         hintReasoning={currentHint.reasoning}
+        hintId={currentHintId}
+        onHintAction={(action) => {
+          if (currentHintId && enablePersonalization) {
+            const timeSpent = Date.now() - hintStartTimeRef.current;
+            const detectGamePhase = (moveCount: number): 'opening' | 'middle' | 'endgame' => {
+              if (moveCount < 20) return 'opening';
+              if (moveCount < 40) return 'middle';
+              return 'endgame';
+            };
+            
+            recordHintInteraction({
+              id: currentHintId,
+              hintText: currentHint.description,
+              hintType: aiDifficulty === 'easy' ? 'beginner' : aiDifficulty === 'medium' ? 'intermediate' : 'advanced',
+              moveDescription: currentHint.description.split(' ').slice(-6).join(' '),
+              aiDifficulty,
+              timestamp: Date.now(),
+              userAction: action,
+              gamePhase: detectGamePhase(moveHistory.length),
+              positionHash: lastHintMove,
+              timeSpentViewing: timeSpent
+            });
+            
+            console.log('🧠 Recorded hint interaction:', {
+              action,
+              timeSpent,
+              hintType: aiDifficulty === 'easy' ? 'beginner' : aiDifficulty === 'medium' ? 'intermediate' : 'advanced'
+            });
+          }
+        }}
       />
     )}
     </>
