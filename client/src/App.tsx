@@ -150,26 +150,26 @@ function App() {
                 </div>
                 
                 {/* Controls Panel - Right Side */}
-                <div className="controls-section flex-shrink-0">
+                <div className="controls-section flex-shrink-0 flex flex-col gap-4">
                   <BoardControls onSettings={() => setShowSettings(true)} />
+                  
+                  {/* Merlin Messages Window - Below Controls */}
+                  {gamePhase === 'playing' && (
+                    <div className="merlin-messages-panel w-80 max-h-48 bg-purple-900/90 border-2 border-purple-400 rounded-lg shadow-2xl backdrop-blur-sm">
+                      <div className="bg-purple-800 text-purple-100 px-3 py-2 rounded-t-md border-b border-purple-400">
+                        <h3 className="text-sm font-bold text-center">🧙‍♂️ Merlin the Wise</h3>
+                      </div>
+                      <div className="p-3 max-h-32 overflow-y-auto">
+                        <MentorNotification />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
               </div>
             </div>
             
             <AdaptiveDifficultyWizardAssistant />
-            
-            {/* Merlin Messages Window - Bottom Right (Game Area Only) */}
-            {gamePhase === 'playing' && (
-              <div className="merlin-messages-panel fixed bottom-4 right-4 w-80 max-h-48 bg-purple-900/90 border-2 border-purple-400 rounded-lg shadow-2xl backdrop-blur-sm z-10">
-                <div className="bg-purple-800 text-purple-100 px-3 py-2 rounded-t-md border-b border-purple-400">
-                  <h3 className="text-sm font-bold text-center">🧙‍♂️ Merlin the Wise</h3>
-                </div>
-                <div className="p-3 max-h-32 overflow-y-auto">
-                  <MentorNotification />
-                </div>
-              </div>
-            )}
             
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
