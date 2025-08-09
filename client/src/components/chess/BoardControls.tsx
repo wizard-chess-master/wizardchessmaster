@@ -47,9 +47,22 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 if (hint) {
                   console.log('💡 Hint generated:', hint);
                   
-                  // Display hint to user with better formatting
-                  const hintMessage = `${hint.description}\n\nStrategy: ${hint.reasoning}`;
-                  alert(`💡 Wizard Chess Hint\n\n${hintMessage}`);
+                  // Enhanced thematic hint display
+                  const enhancedDescription = hint.description
+                    .replace(/Move wizard from (\w+) to (\w+) \(wizard teleport\)/i, 
+                      '✨ Teleport your wizard from $1 to $2 using mystical powers')
+                    .replace(/Move (\w+) from (\w+) to (\w+)/i, 
+                      '🎯 Command your $1 to advance from $2 to $3')
+                    .replace(/captures? (\w+)/i, 'and vanquish the enemy $1');
+                  
+                  const enhancedReasoning = hint.reasoning
+                    .replace(/Improves piece defense/i, '🛡️ Strengthens your defensive formation')
+                    .replace(/Uses wizard mobility advantage/i, '✨ Harnesses mystical teleportation magic')
+                    .replace(/Creates threat to enemy pieces/i, '🔥 Puts enemy forces under pressure')
+                    .replace(/Controls important central squares/i, '⭐ Dominates the strategic battlefield center');
+                  
+                  const hintMessage = `${enhancedDescription}\n\n🧠 Strategic Value:\n${enhancedReasoning}`;
+                  alert(`🧙‍♂️ Wizard Chess Battle Hint\n\n${hintMessage}`);
                   console.log('💡 Hint displayed to user:', hintMessage);
                 }
               });
