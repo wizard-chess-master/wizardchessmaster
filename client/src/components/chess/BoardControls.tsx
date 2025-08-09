@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Settings } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { HintModal } from './HintModal';
 
 interface BoardControlsProps {
   onSettings: () => void;
@@ -12,6 +13,13 @@ interface BoardControlsProps {
 export function BoardControls({ onSettings }: BoardControlsProps) {
   const { moveHistory, resetGame, gameMode } = useChess();
   const { isMuted } = useAudio();
+  
+  // Hint modal state
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [hintData, setHintData] = useState<{
+    description: string;
+    reasoning: string;
+  } | null>(null);
 
   return (
     <Card className="medieval-panel h-fit">
@@ -86,9 +94,13 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                     .replace(/Develops piece to better position/gi, '📈 Activates dormant forces for future conquest')
                     .replace(/Strong tactical move/gi, '🧠 Demonstrates masterful battlefield strategy');
                   
-                  const hintMessage = `${enhancedDescription}\n\n🧠 Strategic Value:\n${enhancedReasoning}`;
-                  alert(`🧙‍♂️ Wizard Chess Battle Hint\n\n${hintMessage}`);
-                  console.log('💡 Hint displayed to user:', hintMessage);
+                  // Show custom hint modal instead of browser alert
+                  setHintData({
+                    description: enhancedDescription,
+                    reasoning: enhancedReasoning
+                  });
+                  setShowHintModal(true);
+                  console.log('💡 Hint displayed to user in custom modal');
                 }
               });
             }}
@@ -256,6 +268,16 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
           
         </div>
       </CardContent>
+      
+      {/* Custom Hint Modal */}
+      {showHintModal && hintData && (
+        <HintModal
+          isOpen={showHintModal}
+          onClose={() => setShowHintModal(false)}
+          hintDescription={hintData.description}
+          hintReasoning={hintData.reasoning}
+        />
+      )}
     </Card>
   );
 }
