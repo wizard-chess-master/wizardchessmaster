@@ -142,16 +142,16 @@ function App() {
                 style={{ maxWidth: '600px', width: '100%' }}
               />
               
-              {/* Game Content - Simple Centered Layout */}
-              <div className="game-content flex flex-col items-center space-y-6">
+              {/* Game Content - Side by Side Layout */}
+              <div className="game-content flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8">
                 
-                {/* Chess Board - Main Focus */}
-                <div className="board-section">
+                {/* Chess Board - Left Side */}
+                <div className="board-section flex-shrink-0">
                   <ChessBoard />
                 </div>
                 
-                {/* Controls Row */}
-                <div className="controls-row flex flex-wrap gap-6 justify-center">
+                {/* Controls Panel - Right Side */}
+                <div className="controls-section flex-shrink-0">
                   <BoardControls onSettings={() => setShowSettings(true)} />
                 </div>
                 
