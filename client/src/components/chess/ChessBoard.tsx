@@ -1143,30 +1143,59 @@ export function ChessBoard() {
     console.log('📱 MOBILE MODE ACTIVE - Desktop mobile view detected');
   }
   
-  // Mobile-specific board size calculation
+  // Force immediate mobile sizing for screens <= 768px
+  React.useEffect(() => {
+    if (window.innerWidth <= 768) {
+      console.log('🎯 FORCING MOBILE MODE - Screen width:', window.innerWidth);
+    }
+  }, []);
+  
+  // Mobile-specific board size calculation with forced mobile detection
   const mobileBoardSize = React.useMemo(() => {
-    if (!isMobileDevice) return canvasSize;
+    // Force mobile sizing for narrow screens
+    const shouldUseMobileSize = isMobileDevice || window.innerWidth <= 768;
     
-    const { screenWidth, screenHeight, orientation } = deviceInfo;
+    if (!shouldUseMobileSize) return canvasSize;
+    
+    const actualWidth = window.innerWidth;
+    const actualHeight = window.innerHeight;
     const padding = 32;
     const headerHeight = 80;
     const controlsHeight = 80;
     
-    let availableWidth = screenWidth - padding;
-    let availableHeight = screenHeight - headerHeight - controlsHeight - padding;
+    let availableWidth = actualWidth - padding;
+    let availableHeight = actualHeight - headerHeight - controlsHeight - padding;
     
-    if (orientation === 'portrait') {
+    // Calculate optimal size based on actual viewport
+    const isPortrait = actualWidth < actualHeight;
+    
+    console.log('📐 Mobile sizing calculation:', {
+      actualWidth,
+      actualHeight,
+      availableWidth,
+      availableHeight,
+      isPortrait,
+      shouldUseMobileSize
+    });
+    
+    if (isPortrait) {
       // Portrait: use most of width but ensure it fits in available height
       const maxWidth = Math.min(availableWidth, availableHeight * 0.8);
-      return Math.max(280, Math.min(maxWidth, 450));
+      const size = Math.max(280, Math.min(maxWidth, 450));
+      console.log('📱 Portrait mobile size:', size);
+      return size;
     } else {
       // Landscape: use available height more efficiently
       const maxSize = Math.min(availableWidth * 0.6, availableHeight);
-      return Math.max(280, Math.min(maxSize, 400));
+      const size = Math.max(280, Math.min(maxSize, 400));
+      console.log('📱 Landscape mobile size:', size);
+      return size;
     }
   }, [isMobileDevice, deviceInfo, canvasSize]);
   
-  const effectiveBoardSize = isMobileDevice ? mobileBoardSize : canvasSize;
+  // Force mobile sizing for narrow screens regardless of device detection
+  const shouldUseMobileSize = isMobileDevice || window.innerWidth <= 768;
+  const effectiveBoardSize = shouldUseMobileSize ? mobileBoardSize : canvasSize;
   const effectiveSquareSize = effectiveBoardSize / 10;
   
   console.log('📐 Final board sizing:', {
