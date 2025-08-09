@@ -46,6 +46,11 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 const hint = hintSystem.generateHint(board, currentPlayer, moveHistory);
                 if (hint) {
                   console.log('💡 Hint generated:', hint);
+                  
+                  // Display hint to user with better formatting
+                  const hintMessage = `${hint.description}\n\nStrategy: ${hint.reasoning}`;
+                  alert(`💡 Wizard Chess Hint\n\n${hintMessage}`);
+                  console.log('💡 Hint displayed to user:', hintMessage);
                 }
               });
             }}
