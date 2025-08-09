@@ -33,6 +33,28 @@ export function SettingsDialog({ onClose }: SettingsDialogProps) {
           {/* New Game Audio Controls */}
           <VolumeControls />
           
+          {/* Game Settings */}
+          <Card className="border border-gray-200">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
+                <Info className="w-5 h-5 text-blue-600" />
+                Game Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-900">Hints</span>
+                  <span className="text-xs text-gray-600">Enable hint suggestions during gameplay</span>
+                </div>
+                <Switch 
+                  checked={useChess.getState().hintsEnabled}
+                  onCheckedChange={() => useChess.getState().toggleHints()}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          
           {/* Game Information */}
           <Card className="border border-gray-200">
             <CardHeader className="pb-3">

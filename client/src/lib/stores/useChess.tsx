@@ -16,6 +16,9 @@ interface ChessStore extends GameState {
   // Campaign tracking
   gameStartTime: number;
   
+  // Settings
+  hintsEnabled: boolean;
+  
   // Actions
   startGame: (mode: GameMode, aiDifficulty?: AIDifficulty) => void;
   selectSquare: (position: Position | null) => void;
@@ -24,6 +27,7 @@ interface ChessStore extends GameState {
   makeAIVsAIMove: () => void;
   resetGame: () => void;
   undoMove: () => void;
+  toggleHints: () => void;
 }
 
 const initialState: GameState = {
@@ -45,6 +49,7 @@ export const useChess = create<ChessStore>()(
   subscribeWithSelector((set, get) => ({
     ...initialState,
     gameStartTime: Date.now(),
+    hintsEnabled: true,
 
     startGame: (mode: GameMode, aiDifficulty: AIDifficulty = 'medium') => {
       const newBoard = createInitialBoard();
@@ -439,6 +444,10 @@ export const useChess = create<ChessStore>()(
       }
 
       set(newState);
+    },
+
+    toggleHints: () => {
+      set(state => ({ hintsEnabled: !state.hintsEnabled }));
     }
   }))
 );

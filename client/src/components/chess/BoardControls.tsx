@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Settings } from 'lucide-react';
+import { Settings, Lightbulb } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { HintModal } from './HintModal';
+import { getAIMove } from '../../lib/chess/aiPlayer';
 
 
 interface BoardControlsProps {
@@ -11,10 +13,38 @@ interface BoardControlsProps {
 }
 
 export function BoardControls({ onSettings }: BoardControlsProps) {
-  const { moveHistory, resetGame, gameMode, undoMove } = useChess();
+  const { moveHistory, resetGame, gameMode, undoMove, hintsEnabled, board, currentPlayer, aiDifficulty } = useChess();
   const { isMuted } = useAudio();
+  const [showHintModal, setShowHintModal] = useState(false);
+  const [currentHint, setCurrentHint] = useState({ description: '', reasoning: '' });
+
+  const handleGetHint = async () => {
+    try {
+      // Get AI suggestion for current position
+      const gameState = { board, currentPlayer, gamePhase: 'playing' as const };
+      const aiMove = await getAIMove(gameState, aiDifficulty);
+      if (aiMove) {
+        const fromNotation = `${String.fromCharCode(97 + aiMove.from.col)}${10 - aiMove.from.row}`;
+        const toNotation = `${String.fromCharCode(97 + aiMove.to.col)}${10 - aiMove.to.row}`;
+        
+        setCurrentHint({
+          description: `Consider moving your ${aiMove.piece?.type || 'piece'} from ${fromNotation} to ${toNotation}`,
+          reasoning: "This move was suggested by the AI as a strong tactical choice for the current position."
+        });
+        setShowHintModal(true);
+      }
+    } catch (error) {
+      console.error('Error getting hint:', error);
+      setCurrentHint({
+        description: "Unable to generate hint at this time",
+        reasoning: "The AI system encountered an error while analyzing the position."
+      });
+      setShowHintModal(true);
+    }
+  };
   
   return (
+  <>
     <Card className="medieval-panel h-fit">
       <CardHeader className="pb-1 text-center">
         <CardTitle className="medieval-text text-xs">🎮 Controls</CardTitle>
@@ -36,6 +66,19 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             <span className="text-xs leading-none">Menu</span>
           </Button>
           
+          {/* Hint Button - Only show when hints are enabled */}
+          {hintsEnabled && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGetHint}
+              className="medieval-btn-mini w-full h-9 flex flex-col items-center justify-center p-1"
+              title="Get AI Hint"
+            >
+              <span className="text-sm">💡</span>
+              <span className="text-xs leading-none">Hint</span>
+            </Button>
+          )}
 
           <Button
             variant="outline"
@@ -182,5 +225,16 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
       </CardContent>
 
     </Card>
+    
+    {/* Hint Modal */}
+    {showHintModal && (
+      <HintModal
+        isOpen={showHintModal}
+        onClose={() => setShowHintModal(false)}
+        hintDescription={currentHint.description}
+        hintReasoning={currentHint.reasoning}
+      />
+    )}
+    </>
   );
 }

@@ -9,7 +9,7 @@ import { GameUI } from "./components/chess/GameUI";
 import { BoardControls } from "./components/chess/BoardControls";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
-import { AdaptiveDifficultyWizardAssistant } from "./components/chess/AdaptiveDifficultyWizardAssistant";
+
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
 import { MentorIntegration } from "./components/mentor/MentorIntegration";
@@ -168,8 +168,6 @@ function App() {
                 
               </div>
             </div>
-            
-            <AdaptiveDifficultyWizardAssistant />
             
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
