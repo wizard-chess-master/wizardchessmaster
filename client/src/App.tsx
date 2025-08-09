@@ -132,62 +132,45 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black">
-            
-            {/* Compact Header with Ad */}
-            <div className="header-section py-2">
+          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
+            <div className="max-w-6xl mx-auto">
+              
+              {/* Top Ad Banner */}
               <AdBanner 
                 id="game-banner-top" 
-                className="w-full max-w-lg mx-auto"
-                style={{ maxWidth: '400px', width: '100%' }}
+                className="mb-4 w-full max-w-lg mx-auto"
+                style={{ maxWidth: '500px', width: '100%' }}
               />
-            </div>
-
-            {/* Main Game Grid Layout */}
-            <div className="main-game-area flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto">
               
-              {/* Left Panel - Game Info (Hidden on Mobile) */}
-              <div className="hidden lg:block lg:col-span-3">
-                <div className="space-y-4">
+              {/* Main Game Content */}
+              <div className="flex flex-col lg:flex-row gap-4 items-start justify-center">
+                
+                {/* Left Side - Game Info & Controls */}
+                <div className="w-full lg:w-80 space-y-4 order-2 lg:order-1">
                   <GameUI onSettings={() => setShowSettings(true)} />
-                  
-                  {/* Compact Mentor Panel */}
-                  <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
-                    <h3 className="text-sm font-bold text-purple-800 mb-2 text-center">
+                  <BoardControls onSettings={() => setShowSettings(true)} />
+                </div>
+                
+                {/* Center - Chess Board */}
+                <div className="flex-1 flex justify-center order-1 lg:order-2">
+                  <ChessBoard />
+                </div>
+                
+                {/* Right Side - Mentor Panel */}
+                <div className="w-full lg:w-80 order-3">
+                  <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4">
+                    <h3 className="text-lg font-bold text-purple-800 mb-3 text-center">
                       🧙‍♂️ Merlin the Wise
                     </h3>
                     <MentorIntegration />
                   </div>
                 </div>
-              </div>
-              
-              {/* Center - Chess Board */}
-              <div className="col-span-1 lg:col-span-6 flex flex-col items-center justify-center">
-                <ChessBoard />
-              </div>
-              
-              {/* Right Panel - Controls */}
-              <div className="col-span-1 lg:col-span-3 flex flex-col justify-center">
-                <BoardControls onSettings={() => setShowSettings(true)} />
-              </div>
-              
-              {/* Mobile-Only Bottom Sections */}
-              <div className="lg:hidden col-span-1 space-y-4">
-                <GameUI onSettings={() => setShowSettings(true)} />
                 
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
-                  <h3 className="text-sm font-bold text-purple-800 mb-2 text-center">
-                    🧙‍♂️ Merlin the Wise
-                  </h3>
-                  <MentorIntegration />
-                </div>
               </div>
-              
             </div>
             
-            {/* Adaptive Difficulty Wizard Assistant - Floating overlay */}
+            {/* Floating Elements */}
             <AdaptiveDifficultyWizardAssistant />
-            
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
         )}

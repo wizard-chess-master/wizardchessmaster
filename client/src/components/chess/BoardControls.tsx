@@ -22,7 +22,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
   } | null>(null);
 
   return (
-    <Card className="medieval-panel h-fit max-w-xs">
+    <Card className="medieval-panel h-fit">
       <CardHeader className="pb-1 text-center">
         <CardTitle className="medieval-text text-xs">🎮 Controls</CardTitle>
       </CardHeader>
