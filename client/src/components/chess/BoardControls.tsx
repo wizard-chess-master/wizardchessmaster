@@ -106,32 +106,43 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 
                 await cleanAudio();
                 
-                // Start Theme-music2.mp3 with dynamic cache busting
-                const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
-                theme.loop = true;
-                theme.volume = 0.42;
-                (window as any).currentTheme = theme; // Store reference
-                
-                console.log('🎵 Theme-music2.mp3 from toggle button:', theme.src);
-                
-                try {
-                  await theme.play();
-                  console.log('✅ Theme-music2.mp3 playing from toggle button');
+                // Wait a moment after cleanup before creating new audio
+                setTimeout(async () => {
+                  // Start Theme-music2.mp3 with dynamic cache busting (same approach as MainMenu)
+                  const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
+                  theme.loop = true;
+                  theme.volume = 0.42;
                   
-                  // Try fallback if needed
-                } catch (error) {
-                  console.log('❌ Theme-music2.mp3 failed, trying fallback...');
-                  try {
+                  console.log('🎵 Theme-music2.mp3 from toggle button:', theme.src);
+                  
+                  // Add error event listener for file loading issues
+                  theme.addEventListener('error', (e) => {
+                    console.error('❌ Theme-music2.mp3 failed to load from toggle, trying fallback:', e);
                     const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
                     fallback.loop = true;
                     fallback.volume = 0.42;
                     (window as any).currentTheme = fallback;
-                    await fallback.play();
-                    console.log('✅ Fallback Theme-music1.mp3 playing');
-                  } catch (fallbackError) {
-                    console.error('❌ Both themes failed:', fallbackError);
+                    fallback.play().catch(err => console.error('❌ Fallback also failed:', err));
+                  });
+                  
+                  try {
+                    await theme.play();
+                    (window as any).currentTheme = theme; // Store reference after successful play
+                    console.log('✅ Theme-music2.mp3 playing from toggle button');
+                  } catch (error) {
+                    console.log('❌ Theme-music2.mp3 play failed, trying fallback...');
+                    try {
+                      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
+                      fallback.loop = true;
+                      fallback.volume = 0.42;
+                      (window as any).currentTheme = fallback;
+                      await fallback.play();
+                      console.log('✅ Fallback Theme-music1.mp3 playing from toggle');
+                    } catch (fallbackError) {
+                      console.error('❌ Both themes failed from toggle:', fallbackError);
+                    }
                   }
-                }
+                }, 100); // Small delay after cleanup
               } else {
                 // Mute - stop all audio FIRST, then toggle mute
                 console.log('🛑 Stopping music before mute');
