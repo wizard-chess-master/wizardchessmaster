@@ -63,14 +63,85 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
           return;
         }
 
-        // Vary the hint text to avoid repetition
-        const hintVariations = [
+        // Vary the hint text based on AI difficulty and move type
+        const beginnerHints = [
           `Consider moving your ${moveDescription}`,
           `Try moving your ${moveDescription}`,
           `A good move would be ${moveDescription}`,
           `You might want to move your ${moveDescription}`,
-          `The AI suggests ${moveDescription}`
+          `The AI suggests ${moveDescription}`,
+          `How about moving your ${moveDescription}?`,
+          `Think about ${moveDescription}`,
+          `A solid choice: ${moveDescription}`,
+          `Consider this move: ${moveDescription}`,
+          `Try this: ${moveDescription}`,
+          `Look at ${moveDescription}`,
+          `What about ${moveDescription}?`,
+          `Here's an idea: ${moveDescription}`,
+          `This could work: ${moveDescription}`,
+          `Maybe try ${moveDescription}`,
+          `Consider ${moveDescription}`,
+          `Take a look at ${moveDescription}`,
+          `How about ${moveDescription}?`,
+          `This might help: ${moveDescription}`,
+          `Try this move: ${moveDescription}`
         ];
+
+        const intermediateHints = [
+          `Analyze ${moveDescription} - it develops well`,
+          `${moveDescription} improves your position`,
+          `Strategic option: ${moveDescription}`,
+          `${moveDescription} creates good pressure`,
+          `Consider the tactical ${moveDescription}`,
+          `${moveDescription} enhances piece coordination`,
+          `Evaluate ${moveDescription} for tempo`,
+          `${moveDescription} controls key squares`,
+          `${moveDescription} builds initiative`,
+          `Promising continuation: ${moveDescription}`,
+          `${moveDescription} improves piece activity`,
+          `Strong candidate: ${moveDescription}`,
+          `${moveDescription} maintains balance`,
+          `Tactical opportunity: ${moveDescription}`,
+          `${moveDescription} centralizes nicely`,
+          `Consider ${moveDescription} for development`,
+          `${moveDescription} creates threats`,
+          `Solid choice: ${moveDescription}`,
+          `${moveDescription} improves king safety`,
+          `Positional move: ${moveDescription}`
+        ];
+
+        const advancedHints = [
+          `${moveDescription} - excellent positional concept`,
+          `Masterful ${moveDescription} exploits weaknesses`,
+          `${moveDescription} demonstrates deep understanding`,
+          `Brilliant ${moveDescription} controls the position`,
+          `${moveDescription} - a grandmaster-level choice`,
+          `${moveDescription} maximizes piece potential`,
+          `${moveDescription} creates long-term advantages`,
+          `${moveDescription} shows strategic vision`,
+          `${moveDescription} - textbook execution`,
+          `${moveDescription} dominates the position`,
+          `${moveDescription} - precise calculation required`,
+          `${moveDescription} demonstrates tactical mastery`,
+          `${moveDescription} controls critical diagonals`,
+          `${moveDescription} creates unstoppable threats`,
+          `${moveDescription} - championship-level play`,
+          `${moveDescription} optimizes piece harmony`,
+          `${moveDescription} establishes positional supremacy`,
+          `${moveDescription} - a stroke of genius`,
+          `${moveDescription} secures the advantage`,
+          `${moveDescription} demonstrates perfect timing`
+        ];
+
+        // Select hint style based on AI difficulty
+        let hintVariations;
+        if (aiDifficulty === 'easy') {
+          hintVariations = beginnerHints;
+        } else if (aiDifficulty === 'medium') {
+          hintVariations = intermediateHints;
+        } else {
+          hintVariations = advancedHints;
+        }
         
         const randomHint = hintVariations[Math.floor(Math.random() * hintVariations.length)];
         

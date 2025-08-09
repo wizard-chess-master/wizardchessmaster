@@ -75,7 +75,7 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced Audio Architecture**: Sound effects and voice system prepared for immersive content including voice management (narrator, coach, assistant), enhanced SFX manager with MP3 support, and audio coordinator for orchestrated sound experiences. Music system completely removed per user request.
 - **Improved Settings Dialog**: Enhanced text visibility and contrast throughout settings interface with white background, dark text, proper borders, and organized sections for volume controls, audio information, and keyboard shortcuts.
 - **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading, event management, and system status monitoring.
-- **Custom Hint Modal System**: Replaced technical browser alerts with immersive medieval-themed modal featuring amber gradients, wizard styling, and fantasy language. Eliminates technical domain references for complete immersion.
+- **Advanced Hint Modal System**: Replaced technical browser alerts with immersive medieval-themed modal featuring amber gradients, wizard styling, and fantasy language. Enhanced with 60 total hint variations (20 per difficulty level) - beginner hints for easy mode, tactical hints for medium, and grandmaster-level hints for hard difficulty. Includes anti-repetition logic with 3-second cooldown and position tracking.
 - **Floating Mentor Notifications**: Enhanced AI mentor system with floating notifications featuring real-time feedback display, text-to-speech voice synthesis, auto-hide functionality, and prominent visual positioning to eliminate need for scrolling to see feedback.
 
 ## External Dependencies
