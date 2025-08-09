@@ -14,46 +14,73 @@ export function MentorNotification() {
   useEffect(() => {
     if (currentFeedback.length > 0) {
       const latestFeedback = currentFeedback[currentFeedback.length - 1];
-      setVisibleFeedback(latestFeedback);
       
-      // Auto-hide after 8 seconds
-      const timer = setTimeout(() => {
-        setVisibleFeedback(null);
-      }, 8000);
+      // Only show if it's a new feedback (not already visible)
+      if (!visibleFeedback || latestFeedback.id !== visibleFeedback.id) {
+        setVisibleFeedback(latestFeedback);
+        
+        // Auto-hide after 8 seconds
+        const timer = setTimeout(() => {
+          setVisibleFeedback(null);
+        }, 8000);
 
-      // Play voice narration if enabled
-      if (isVoiceEnabled) {
-        setTimeout(() => {
-          speakFeedback(latestFeedback.message);
-        }, 500); // Small delay to avoid overlapping with game sounds
+        // Play voice narration if enabled
+        if (isVoiceEnabled) {
+          setTimeout(() => {
+            speakFeedback(latestFeedback.message);
+          }, 800); // Delay to avoid overlapping with game sounds
+        }
+
+        return () => clearTimeout(timer);
       }
-
-      return () => clearTimeout(timer);
     }
-  }, [currentFeedback, isVoiceEnabled]);
+  }, [currentFeedback, isVoiceEnabled, visibleFeedback]);
 
   const speakFeedback = (message: string) => {
     try {
-      // Use Web Speech API for text-to-speech
+      // Cancel any ongoing speech to prevent overlapping
       if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(message);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.1;
-        utterance.volume = 0.7;
+        speechSynthesis.cancel();
         
-        // Try to use a more wizard-like voice
-        const voices = speechSynthesis.getVoices();
-        const preferredVoice = voices.find(voice => 
-          voice.name.includes('Daniel') || 
-          voice.name.includes('Alex') || 
-          voice.name.includes('Fred') ||
-          voice.lang.includes('en-GB')
-        );
-        if (preferredVoice) {
-          utterance.voice = preferredVoice;
-        }
-        
-        speechSynthesis.speak(utterance);
+        // Small delay to ensure cancel completes
+        setTimeout(() => {
+          const utterance = new SpeechSynthesisUtterance(message);
+          
+          // Improved voice settings for more natural sound
+          utterance.rate = 0.85;
+          utterance.pitch = 1.0;
+          utterance.volume = 0.6;
+          
+          // Wait for voices to load and select the best one
+          const setVoiceAndSpeak = () => {
+            const voices = speechSynthesis.getVoices();
+            
+            // Prefer male, English voices for wizard mentor
+            const preferredVoice = voices.find(voice => 
+              (voice.name.includes('Male') && voice.lang.startsWith('en')) ||
+              (voice.name.includes('David') && voice.lang.startsWith('en')) ||
+              (voice.name.includes('Daniel') && voice.lang.startsWith('en')) ||
+              (voice.name.includes('Alex') && voice.lang.startsWith('en')) ||
+              (voice.lang.includes('en-GB') && !voice.name.includes('Female'))
+            ) || voices.find(voice => 
+              voice.lang.startsWith('en') && !voice.name.includes('Female')
+            );
+            
+            if (preferredVoice) {
+              utterance.voice = preferredVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+          };
+          
+          // Check if voices are loaded
+          if (speechSynthesis.getVoices().length > 0) {
+            setVoiceAndSpeak();
+          } else {
+            // Wait for voices to load
+            speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
+          }
+        }, 100);
       }
     } catch (error) {
       console.log('Voice synthesis not available:', error);
@@ -108,7 +135,13 @@ export function MentorNotification() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setIsVoiceEnabled(!isVoiceEnabled)}
+                onClick={() => {
+                  // Cancel any ongoing speech when toggling
+                  if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel();
+                  }
+                  setIsVoiceEnabled(!isVoiceEnabled);
+                }}
                 className="h-6 w-6 p-0"
                 title={isVoiceEnabled ? "Disable voice" : "Enable voice"}
               >
