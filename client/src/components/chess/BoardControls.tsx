@@ -11,7 +11,7 @@ interface BoardControlsProps {
 }
 
 export function BoardControls({ onSettings }: BoardControlsProps) {
-  const { moveHistory, resetGame, gameMode } = useChess();
+  const { moveHistory, resetGame, gameMode, undoMove } = useChess();
   const { isMuted } = useAudio();
   
   // Hint modal state
@@ -256,6 +256,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
               const lastMove = moveHistory[moveHistory.length - 1];
               if (lastMove && gameMode !== 'ai-vs-ai') {
                 console.log('🔄 Undoing last move...');
+                undoMove();
               }
             }}
             disabled={moveHistory.length === 0}
