@@ -291,14 +291,16 @@ export const useChess = create<ChessStore>()(
         try {
           import('./useDynamicAIMentor').then(({ useDynamicAIMentor }) => {
             const mentorState = useDynamicAIMentor.getState();
+            console.log('🧙‍♂️ Checking mentor state:', { isActive: mentorState.isActive });
             if (mentorState.isActive) {
+              console.log('🧙‍♂️ Triggering mentor analysis for move:', move);
               mentorState.analyzeCurrentMove(newState, move);
             }
           });
         } catch (error) {
-          console.log('Mentor system not available:', error);
+          console.log('🧙‍♂️ Mentor system not available:', error);
         }
-      }, 0);
+      }, 100); // Small delay to ensure state is updated
 
       // Record PvP stats for local multiplayer games
       if (state.gameMode === 'local' && newState.gamePhase === 'ended') {

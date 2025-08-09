@@ -169,7 +169,7 @@ const COACHING_STRATEGIES: CoachingStrategy[] = [
 export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
   subscribeWithSelector((set, get) => ({
     // Initial state
-    isActive: false,
+    isActive: true, // Start active by default
     currentFeedback: [],
     analytics: {
       currentGameScore: 50,
@@ -243,7 +243,12 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
     // Real-time move analysis
     analyzeCurrentMove: (gameState: GameState, move: ChessMove) => {
       const state = get();
-      if (!state.isActive) return;
+      if (!state.isActive) {
+        console.log('🧙‍♂️ Mentor not active, skipping analysis');
+        return;
+      }
+
+      console.log('🧙‍♂️ Analyzing move:', move, 'Game state:', gameState);
 
       // Calculate move quality based on various factors
       let moveQuality = 50; // Base score
@@ -253,6 +258,10 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       if (move.isWizardTeleport) moveQuality += 10;
       if (move.isWizardAttack) moveQuality += 20;
       if (move.isCastling) moveQuality += 12;
+      
+      // Add randomness for more dynamic feedback
+      moveQuality += Math.random() * 20 - 10;
+      moveQuality = Math.max(0, Math.min(100, moveQuality));
       
       // Game phase assessment
       const phase = get().assessGamePhase(gameState);
@@ -267,7 +276,8 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       console.log('🧙‍♂️ Move analyzed:', { 
         moveQuality, 
         phase, 
-        feedbackType: feedback.type 
+        feedbackType: feedback.type,
+        message: feedback.message 
       });
     },
 
