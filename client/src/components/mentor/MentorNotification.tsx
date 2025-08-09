@@ -24,11 +24,11 @@ export function MentorNotification() {
           setVisibleFeedback(null);
         }, 8000);
 
-        // Play voice narration if enabled
+        // Play voice narration if enabled with longer delay for stability
         if (isVoiceEnabled) {
           setTimeout(() => {
             speakFeedback(latestFeedback.message);
-          }, 800); // Delay to avoid overlapping with game sounds
+          }, 1200); // Longer delay to ensure clean audio and avoid game sound overlap
         }
 
         return () => clearTimeout(timer);
@@ -38,52 +38,83 @@ export function MentorNotification() {
 
   const speakFeedback = (message: string) => {
     try {
-      // Cancel any ongoing speech to prevent overlapping
       if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech to prevent overlapping
         speechSynthesis.cancel();
         
-        // Small delay to ensure cancel completes
+        // Longer delay to ensure clean start
         setTimeout(() => {
           const utterance = new SpeechSynthesisUtterance(message);
           
-          // Improved voice settings for more natural sound
-          utterance.rate = 0.85;
-          utterance.pitch = 1.0;
-          utterance.volume = 0.6;
+          // Optimized settings for smoother, more natural speech
+          utterance.rate = 0.75;     // Slower for clarity
+          utterance.pitch = 0.95;    // Slightly lower for more natural sound
+          utterance.volume = 0.8;    // Clearer volume
           
-          // Wait for voices to load and select the best one
+          // Enhanced voice selection for natural sound
           const setVoiceAndSpeak = () => {
             const voices = speechSynthesis.getVoices();
             
-            // Prefer male, English voices for wizard mentor
-            const preferredVoice = voices.find(voice => 
-              (voice.name.includes('Male') && voice.lang.startsWith('en')) ||
-              (voice.name.includes('David') && voice.lang.startsWith('en')) ||
-              (voice.name.includes('Daniel') && voice.lang.startsWith('en')) ||
-              (voice.name.includes('Alex') && voice.lang.startsWith('en')) ||
-              (voice.lang.includes('en-GB') && !voice.name.includes('Female'))
-            ) || voices.find(voice => 
-              voice.lang.startsWith('en') && !voice.name.includes('Female')
-            );
+            // Priority order for natural-sounding voices
+            const preferredVoice = 
+              // First priority: High-quality English voices
+              voices.find(voice => 
+                voice.lang === 'en-US' && 
+                (voice.name.includes('Enhanced') || voice.name.includes('Premium'))
+              ) ||
+              // Second priority: Standard quality male voices
+              voices.find(voice => 
+                voice.lang.startsWith('en') && 
+                (voice.name.includes('Male') || voice.name.includes('David') || voice.name.includes('Daniel'))
+              ) ||
+              // Third priority: Any English voice that's not explicitly female
+              voices.find(voice => 
+                voice.lang.startsWith('en') && 
+                !voice.name.toLowerCase().includes('female') &&
+                !voice.name.toLowerCase().includes('woman')
+              ) ||
+              // Fallback: First available English voice
+              voices.find(voice => voice.lang.startsWith('en'));
             
             if (preferredVoice) {
               utterance.voice = preferredVoice;
+              console.log('🎵 Using voice:', preferredVoice.name);
             }
             
-            speechSynthesis.speak(utterance);
+            // Add error handling to prevent stuttering
+            utterance.onerror = (event) => {
+              console.log('Speech error:', event);
+            };
+            
+            utterance.onend = () => {
+              console.log('Speech completed');
+            };
+            
+            // Speak with additional checks
+            if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+              speechSynthesis.speak(utterance);
+            }
           };
           
-          // Check if voices are loaded
+          // Ensure voices are loaded before speaking
           if (speechSynthesis.getVoices().length > 0) {
             setVoiceAndSpeak();
           } else {
-            // Wait for voices to load
-            speechSynthesis.onvoiceschanged = setVoiceAndSpeak;
+            // Wait for voices to load with timeout
+            let voiceTimeout = setTimeout(() => {
+              console.log('Voice loading timeout, using default');
+              setVoiceAndSpeak();
+            }, 1000);
+            
+            speechSynthesis.onvoiceschanged = () => {
+              clearTimeout(voiceTimeout);
+              setVoiceAndSpeak();
+            };
           }
-        }, 100);
+        }, 200); // Longer delay for stability
       }
     } catch (error) {
-      console.log('Voice synthesis not available:', error);
+      console.log('Voice synthesis error:', error);
     }
   };
 
