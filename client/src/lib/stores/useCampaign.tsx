@@ -382,11 +382,13 @@ export const useCampaign = create<CampaignState>()(
             const totalGames = newWins + newLosses;
             const winRate = totalGames > 0 ? newWins / totalGames : 0;
             
-            // Calculate stars based on performance
+            // Calculate stars based on performance (5-star system)
             let stars = 0;
-            if (winRate >= 0.9) stars = 3;
-            else if (winRate >= 0.75) stars = 2;
-            else if (winRate >= 0.6) stars = 1;
+            if (winRate >= 0.95) stars = 5;        // 95%+ = 5 stars (nearly perfect)
+            else if (winRate >= 0.85) stars = 4;   // 85%+ = 4 stars (excellent)
+            else if (winRate >= 0.75) stars = 3;   // 75%+ = 3 stars (good)
+            else if (winRate >= 0.65) stars = 2;   // 65%+ = 2 stars (decent)
+            else if (winRate >= 0.5) stars = 1;    // 50%+ = 1 star (basic completion)
 
             const completed = winRate >= l.requiredWinRate && totalGames >= 3;
             
