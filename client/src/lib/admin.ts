@@ -21,19 +21,7 @@ export const isAdminEnabled = (): boolean => {
   // Check session storage for admin authentication
   const adminSession = sessionStorage.getItem(ADMIN_SESSION_KEY);
   
-  // Log current status for testing - reduced logging in production-like mode
-  const shouldLogAdmin = import.meta.env.DEV && !import.meta.env.VITE_DISABLE_ADMIN_LOGS;
-  if (shouldLogAdmin) {
-    console.log('🔐 Admin Status Check:', {
-      envAdminMode,
-      isDevelopment,
-      hasSession: adminSession === 'authenticated',
-      envVars: {
-        VITE_ADMIN_MODE: import.meta.env.VITE_ADMIN_MODE,
-        DEV: import.meta.env.DEV
-      }
-    });
-  }
+  // ADMIN DEBUG LOGS DISABLED - no console output
   
   // Admin is enabled if:
   // 1. Explicitly enabled via environment variable, OR
@@ -48,19 +36,15 @@ export const isAdminEnabled = (): boolean => {
 export const authenticateAdmin = (key: string): boolean => {
   const adminKey = import.meta.env.VITE_ADMIN_KEY || 'wizard-admin-2025';
   
-  console.log('🔐 Authentication attempt:', {
-    providedKey: key.substring(0, 3) + '***',
-    expectedKey: adminKey.substring(0, 3) + '***',
-    matches: key === adminKey
-  });
+  // ADMIN DEBUG LOGS DISABLED
   
   if (key === adminKey) {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
-    console.log('✅ Admin authentication successful');
+    // ADMIN DEBUG LOGS DISABLED
     return true;
   }
   
-  console.log('❌ Admin authentication failed');
+  // ADMIN DEBUG LOGS DISABLED
   return false;
 };
 
@@ -68,9 +52,9 @@ export const authenticateAdmin = (key: string): boolean => {
  * Log out admin session
  */
 export const logoutAdmin = (): void => {
-  console.log('🔐 logoutAdmin: Removing session key from storage');
+  // ADMIN DEBUG LOGS DISABLED
   sessionStorage.removeItem(ADMIN_SESSION_KEY);
-  console.log('🔐 logoutAdmin: Session cleared successfully');
+  // ADMIN DEBUG LOGS DISABLED
 };
 
 /**
@@ -88,18 +72,7 @@ export const isAdminFeatureEnabled = (feature: 'training' | 'debug' | 'stats' | 
   const envForced = import.meta.env.VITE_ADMIN_MODE === 'true';
   const finalShow = envForced || shouldShow;
   
-  // Disable feature check logging to reduce debug loops as requested
-  const shouldLogFeatures = import.meta.env.DEV && !import.meta.env.VITE_DISABLE_ADMIN_LOGS;
-  if (shouldLogFeatures) {
-    console.log(`🔐 Feature "${feature}" check:`, {
-      adminEnabled,
-      hasSession,
-      shouldShow,
-      envForced,
-      finalShow,
-      isDev: import.meta.env.DEV
-    });
-  }
+  // ADMIN DEBUG LOGS DISABLED - no feature check logging
   
   if (!finalShow) return false;
   

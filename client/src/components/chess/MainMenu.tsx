@@ -104,7 +104,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 Player vs AI - Easy clicked - Theme-music2.mp3 v=25');
+                    console.log('🎮 Player vs AI - Easy clicked - Theme-music1.mp3 v=25');
                     
                     // Cleanup function as specified
                     function cleanAudio() { 
@@ -121,14 +121,14 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     // Execute cleanup before theme.play()
                     cleanAudio();
                     
-                    // Set Theme-music2.mp3 with v=25 cache busting
-                    const theme = new Audio('/assets/music/Theme-music2.mp3?v=25');
+                    // Set Theme-music1.mp3 with v=25 cache busting
+                    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
                     theme.loop = true;
                     theme.volume = 0.42;
                     
                     theme.play()
                       .then(() => {
-                        console.log('✅ Theme-music2.mp3 v=25 FORCED on Player vs AI - Easy click');
+                        console.log('✅ Theme-music1.mp3 v=25 FORCED on Player vs AI - Easy click');
                         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
                       })
                       .catch((error) => {
