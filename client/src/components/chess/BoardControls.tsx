@@ -163,7 +163,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
               {isMuted ? '🔇' : '🎵'}
             </span>
             <span className="text-xs leading-none">
-              {isMuted ? 'Sound' : 'Music'}
+              {isMuted ? 'Muted' : 'Music'}
             </span>
           </Button>
           
