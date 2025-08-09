@@ -306,41 +306,49 @@ class WizardChessAudioManager {
     this.playSoundEffect('hint_reveal');
   }
 
-  onGameStart(): void {
-    this.playThemeMusic();
+  async onGameStart(): Promise<void> {
+    await this.playThemeMusic();
     this.playVoice('game_intro');
   }
 
   // Direct Theme Music Implementation as requested
-  playThemeMusic(): void {
+  async playThemeMusic(): Promise<void> {
     if (this.muted) return;
     
-    console.log('🎵 ELIMINATE old music - Starting direct Theme-music1.mp3 implementation...');
-    console.log('🎵 FORCE Cache busting with ?v=22 parameter added');
+    console.log('🎵 ELIMINATE old music - Starting direct Theme-music2.mp3 implementation...');
+    console.log('🎵 FORCE Dynamic cache busting with Date.now() parameter added');
     
     // Clear all music variables pre-init
     if ((window as any).gameAudioManager) {
       (window as any).gameAudioManager = null;
     }
     
-    // Aggressive cleanup function
-    function cleanAudio() {
-      new AudioContext().close();
+    // Enhanced cleanup function with AudioContext.close()
+    async function cleanAudio() {
+      try {
+        const context = new AudioContext();
+        await context.close();
+        console.log('✅ AudioContext closed');
+      } catch (e) {
+        console.log('AudioContext already closed or unavailable');
+      }
+      
       document.querySelectorAll('audio').forEach(a => { 
         a.pause(); 
+        a.currentTime = 0;
         a.remove(); 
       });
       console.log('Audio cleanup:', document.querySelectorAll('audio').length);
     }
     
     // Call cleanup function before theme playback
-    cleanAudio();
+    await cleanAudio();
     
     // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
     this.stopAllAudio();
     
     console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: ELIMINATE old music and FORCE loading ONLY Theme-music1.mp3 with ?v=22');
+    console.log('🎼 ✅ VERIFICATION STEP 2: ELIMINATE old music and FORCE loading ONLY Theme-music2.mp3 with dynamic cache busting');
     
     // Stop any existing theme music
     if (this.themeMusic) {
@@ -350,15 +358,15 @@ class WizardChessAudioManager {
       console.log('🛑 Previous theme music stopped and cleared');
     }
     
-    // ELIMINATE old music and FORCE new Audio instance with v=25 cache busting
-    const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
+    // ELIMINATE old music and FORCE new Audio instance with dynamic cache busting
+    const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
     theme.loop = true;
     theme.volume = 0.42; // Exact volume as requested
     
     // Log theme creation as specifically requested
     console.log('Theme created:', theme.src);
     
-    // Debug logging as requested - verify ONLY Theme-music1.mp3
+    // Debug logging as requested - verify ONLY Theme-music2.mp3
     console.log('🎼 Current audio:', theme.src);
     console.log('🎼 Theme music source:', theme.src);
     console.log('🎼 Theme music loop enabled:', theme.loop);
@@ -372,7 +380,7 @@ class WizardChessAudioManager {
     
     // Handle loading and play
     theme.addEventListener('loadeddata', () => {
-      console.log('✅ Theme-music1.mp3 loaded successfully');
+      console.log('✅ Theme-music2.mp3 loaded successfully');
       console.log('🎼 ✅ File size:', theme.duration || 'Loading...');
       console.log('🎼 ✅ Ready state:', theme.readyState);
     });
@@ -388,9 +396,9 @@ class WizardChessAudioManager {
     // Play the music with comprehensive logging
     theme.play()
       .then(() => {
-        console.log('🎼 ✅ Theme-music1.mp3 FORCED started playing successfully');
+        console.log('🎼 ✅ Theme-music2.mp3 FORCED started playing successfully');
         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-        console.log('🎼 ✅ CONFIRMED: Only Theme-music1.mp3 is now playing');
+        console.log('🎼 ✅ CONFIRMED: Only Theme-music2.mp3 is now playing');
         console.log('🎼 ✅ Loop status:', theme.loop);
         console.log('🎼 ✅ Volume level (should be 0.42):', theme.volume);
         console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src.split('/').pop());

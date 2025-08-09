@@ -103,13 +103,19 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               <div className="game-mode-buttons">
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => {
-                    console.log('🎮 Player vs AI - Easy clicked - Theme-music2.mp3 v=25');
+                  onClick={async () => {
+                    console.log('🎮 Player vs AI - Easy clicked - Theme-music2.mp3 dynamic cache busting');
                     
-                    // Cleanup function as specified
-                    function cleanAudio() { 
-                      const context = new AudioContext(); 
-                      context.close(); 
+                    // Enhanced cleanup function with AudioContext.close()
+                    async function cleanAudio() { 
+                      try {
+                        const context = new AudioContext(); 
+                        await context.close(); 
+                        console.log('✅ AudioContext closed');
+                      } catch (e) {
+                        console.log('AudioContext already closed or unavailable');
+                      }
+                      
                       document.querySelectorAll('audio').forEach(a => { 
                         a.pause(); 
                         a.currentTime = 0; 
@@ -119,16 +125,16 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     }
                     
                     // Execute cleanup before theme.play()
-                    cleanAudio();
+                    await cleanAudio();
                     
-                    // Set Theme-music2.mp3 with v=25 cache busting
-                    const theme = new Audio('/assets/music/Theme-music2.mp3?v=25');
+                    // Set Theme-music2.mp3 with dynamic cache busting
+                    const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
                     theme.loop = true;
                     theme.volume = 0.42;
                     
                     theme.play()
                       .then(() => {
-                        console.log('✅ Theme-music2.mp3 v=25 FORCED on Player vs AI - Easy click');
+                        console.log('✅ Theme-music2.mp3 dynamic cache FORCED on Player vs AI - Easy click');
                         console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
                       })
                       .catch((error) => {
