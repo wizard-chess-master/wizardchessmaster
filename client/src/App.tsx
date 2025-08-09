@@ -161,16 +161,6 @@ function App() {
                 </div>
                 
               </div>
-              
-              {/* Mentor Panel - Bottom Section */}
-              <div className="mentor-section w-full max-w-4xl mx-auto mt-6">
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4">
-                  <h2 className="text-lg font-bold text-purple-800 mb-3 text-center">
-                    🧙‍♂️ Merlin the Wise
-                  </h2>
-                  <MentorIntegration />
-                </div>
-              </div>
             </div>
             
             <AdaptiveDifficultyWizardAssistant />
