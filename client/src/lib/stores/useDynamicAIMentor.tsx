@@ -268,6 +268,7 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       
       // Generate contextual feedback
       const feedback = get().generateContextualFeedback(gameState, moveQuality);
+      console.log('🧙‍♂️ Generated feedback:', feedback);
       get().addFeedback(feedback);
       
       // Update analytics
@@ -442,9 +443,12 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
 
     // Feedback management
     addFeedback: (feedback: MentorFeedback) => {
-      set(state => ({
-        currentFeedback: [...state.currentFeedback, feedback].slice(-10) // Keep last 10 messages
-      }));
+      console.log('🧙‍♂️ Adding feedback to store:', feedback);
+      set(state => {
+        const newFeedback = [...state.currentFeedback, feedback].slice(-10);
+        console.log('🧙‍♂️ Total feedback messages:', newFeedback.length);
+        return { currentFeedback: newFeedback };
+      });
     },
 
     clearOldFeedback: () => {

@@ -25,11 +25,11 @@ export function GameOverDialog() {
     resetGame
   } = useChess();
   
-  const { playSuccess } = useAudio();
+  const { playGameEvent } = useAudio();
 
   React.useEffect(() => {
     if (winner) {
-      playSuccess();
+      playGameEvent('victory');
       
       // Show interstitial ad after game completion
       const adManager = getAdManager();
@@ -37,7 +37,7 @@ export function GameOverDialog() {
         adManager.showInterstitialAd();
       }, 2000); // 2 second delay after game ends
     }
-  }, [winner, playSuccess]);
+  }, [winner, playGameEvent]);
 
   const getGameResult = () => {
     if (isCheckmate && winner) {

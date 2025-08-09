@@ -148,7 +148,7 @@ export function DynamicMentorPanel() {
       </CardHeader>
 
       <CardContent>
-        <Tabs defaultValue="analytics" className="w-full">
+        <Tabs defaultValue="feedback" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="feedback">Feedback</TabsTrigger>
@@ -316,6 +316,9 @@ export function DynamicMentorPanel() {
                   {currentFeedback.length === 0 ? (
                     <div className="text-center text-gray-500 text-sm">
                       Make a move to receive personalized feedback!
+                      <div className="text-xs mt-2 opacity-60">
+                        Debug: {currentFeedback.length} feedback messages stored
+                      </div>
                     </div>
                   ) : (
                     currentFeedback.map((feedback) => (
