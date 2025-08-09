@@ -47,19 +47,44 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 if (hint) {
                   console.log('💡 Hint generated:', hint);
                   
-                  // Enhanced thematic hint display
-                  const enhancedDescription = hint.description
-                    .replace(/Move wizard from (\w+) to (\w+) \(wizard teleport\)/i, 
-                      '✨ Teleport your wizard from $1 to $2 using mystical powers')
-                    .replace(/Move (\w+) from (\w+) to (\w+)/i, 
-                      '🎯 Command your $1 to advance from $2 to $3')
-                    .replace(/captures? (\w+)/i, 'and vanquish the enemy $1');
+                  // Enhanced thematic hint display - completely transform technical language
+                  let enhancedDescription = hint.description;
                   
-                  const enhancedReasoning = hint.reasoning
-                    .replace(/Improves piece defense/i, '🛡️ Strengthens your defensive formation')
-                    .replace(/Uses wizard mobility advantage/i, '✨ Harnesses mystical teleportation magic')
-                    .replace(/Creates threat to enemy pieces/i, '🔥 Puts enemy forces under pressure')
-                    .replace(/Controls important central squares/i, '⭐ Dominates the strategic battlefield center');
+                  // Handle wizard teleport moves
+                  if (enhancedDescription.includes('wizard teleport')) {
+                    enhancedDescription = enhancedDescription
+                      .replace(/Move wizard from (\w+) to (\w+) \(wizard teleport\)/i, 
+                        '✨ Unleash mystical teleportation! Transport your wizard from $1 to $2 through magical portals');
+                  }
+                  // Handle wizard attacks
+                  else if (enhancedDescription.includes('wizard ranged attack')) {
+                    enhancedDescription = enhancedDescription
+                      .replace(/Move wizard from (\w+) to (\w+) \(wizard ranged attack\)/i, 
+                        '⚡ Cast devastating spell! Your wizard at $1 launches a magical attack on $2');
+                  }
+                  // Handle regular moves with captures
+                  else if (enhancedDescription.includes('captures')) {
+                    enhancedDescription = enhancedDescription
+                      .replace(/Move (\w+) from (\w+) to (\w+) \(captures (\w+)\)/i, 
+                        '⚔️ Battle charge! Send your $1 from $2 to $3 and destroy the enemy $4!')
+                      .replace(/Move (\w+) from (\w+) to (\w+).*captures (\w+)/i, 
+                        '⚔️ Battle charge! Send your $1 from $2 to $3 and destroy the enemy $4!');
+                  }
+                  // Handle regular moves
+                  else {
+                    enhancedDescription = enhancedDescription
+                      .replace(/Move (\w+) from (\w+) to (\w+)/i, 
+                        '🎯 Strategic maneuver! Advance your $1 from $2 to the powerful position at $3');
+                  }
+                  
+                  // Transform reasoning to be more engaging
+                  let enhancedReasoning = hint.reasoning
+                    .replace(/Improves piece defense/gi, '🛡️ Fortifies your battlefield defenses')
+                    .replace(/Uses wizard mobility advantage/gi, '✨ Exploits magical teleportation mastery')
+                    .replace(/Creates threat to enemy pieces/gi, '🔥 Strikes fear into enemy ranks')
+                    .replace(/Controls important central squares/gi, '⭐ Claims dominance over the battlefield center')
+                    .replace(/Develops piece to better position/gi, '📈 Activates dormant forces for future conquest')
+                    .replace(/Strong tactical move/gi, '🧠 Demonstrates masterful battlefield strategy');
                   
                   const hintMessage = `${enhancedDescription}\n\n🧠 Strategic Value:\n${enhancedReasoning}`;
                   alert(`🧙‍♂️ Wizard Chess Battle Hint\n\n${hintMessage}`);
