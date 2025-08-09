@@ -29,38 +29,36 @@ export interface PaymentManager {
   getUserPlan(): PaymentPlan | null;
 }
 
-// Payment plan definitions
+// A/B Testing price variants for optimization
+const PRICE_VARIANTS = [4.99, 5.00, 5.99, 6.99];
+const getCurrentPrice = (): number => {
+  // Simple A/B testing based on user ID hash or random selection
+  const savedPrice = localStorage.getItem('wizard-chess-price-variant');
+  if (savedPrice) return parseFloat(savedPrice);
+  
+  const randomPrice = PRICE_VARIANTS[Math.floor(Math.random() * PRICE_VARIANTS.length)];
+  localStorage.setItem('wizard-chess-price-variant', randomPrice.toString());
+  return randomPrice;
+};
+
+// Streamlined single subscription plan
 const PAYMENT_PLANS: PaymentPlan[] = [
   {
-    id: 'premium-one-time',
-    name: 'Premium Unlock',
-    price: 2.99,
-    currency: 'USD',
-    type: 'one-time',
-    features: [
-      'Remove all advertisements',
-      'Unlock campaign mode',
-      'Unlimited custom games',
-      'AI hint system',
-      'Unlimited undo moves',
-      'Premium board themes'
-    ],
-    stripePriceId: 'price_premium_one_time'
-  },
-  {
     id: 'premium-monthly',
-    name: 'Premium Monthly',
-    price: 5.00,
+    name: 'Wizard Chess Premium',
+    price: getCurrentPrice(),
     currency: 'USD',
     type: 'subscription',
     interval: 'month',
     features: [
-      'All Premium Unlock features',
-      'Monthly new board themes',
-      'Advanced AI training modes',
-      'Cloud save synchronization',
-      'Priority customer support',
-      'Beta access to new features'
+      '🚫 Remove all advertisements',
+      '🏆 Unlock full campaign mode',
+      '♾️ Unlimited hints & undos',
+      '🎨 Exclusive board themes & pieces',
+      '🤖 Advanced AI training modes',
+      '☁️ Cloud save synchronization',
+      '🎯 Priority customer support',
+      '🧪 Beta access to new features'
     ],
     stripePriceId: 'price_premium_monthly'
   }
@@ -233,7 +231,7 @@ class StripePaymentManager implements PaymentManager {
               padding: 20px;
               cursor: pointer;
               transition: transform 0.3s;
-            " onclick="window.selectPlan('${plan.id}')">
+            " onclick="(window as any).selectPlan('${plan.id}')">
               <h3 style="color: #ffd700; margin-bottom: 10px;">${plan.name}</h3>
               <div style="font-size: 28px; font-weight: bold; margin: 15px 0;">
                 $${plan.price}${plan.interval ? '/' + plan.interval : ''}
@@ -244,7 +242,7 @@ class StripePaymentManager implements PaymentManager {
             </div>
           `).join('')}
         </div>
-        <button onclick="window.closePlanSelector()" style="
+        <button onclick="(window as any).closePlanSelector()" style="
           background: #666;
           color: white;
           border: none;

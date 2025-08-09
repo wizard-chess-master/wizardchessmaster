@@ -22,6 +22,7 @@ import { isAdminFeatureEnabled, isAdminEnabled } from '../../lib/admin';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 import { getPaymentManager } from '../../lib/monetization/paymentManager';
+import { MonetizationTester } from '../monetization/MonetizationTester';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -459,8 +460,15 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0"
           >
             <Crown className="w-4 h-4 mr-2" />
-            Remove Ads - $5/month
+            Upgrade to Premium
           </Button>
+
+          {/* Monetization Testing - Admin Only */}
+          {isAdminFeatureEnabled('debug') && (
+            <div className="mt-4 p-4 border border-dashed border-purple-300 rounded-lg">
+              <MonetizationTester />
+            </div>
+          )}
 
           <AdminLogin 
             onAuthChange={(isAuthenticated) => {

@@ -7,7 +7,7 @@ Key features include:
 - AI opponents with adjustable difficulty, including an advanced minimax AI and a neural network learning system.
 - Optimized AI training system limited to 500 games with batch processing and efficient alpha-beta pruning.
 - Enhanced campaign mode with story unlocks, board variants, and premium progression system.
-- Comprehensive monetization with $2.99 one-time IAP and $4.99/month subscription plans.
+- Streamlined single-tier monetization with $5/month subscription, A/B price testing, and advanced freemium conversion optimization.
 - Complete ad integration featuring post-game interstitials, in-play banners, and rewarded videos for hints/undos.
 - Comprehensive leaderboards for campaign and PvP modes.
 - A fully immersive medieval fantasy visual overhaul, including custom assets, UI, and animations.
@@ -66,7 +66,7 @@ Preferred communication style: Simple, everyday language.
 - **Castling System**: Implemented with king moving 3 squares and proper validation.
 - **Optimized AI Training System**: Limited to 500 games maximum with batch processing, efficient minimax with alpha-beta pruning, and neural network learning optimized for performance.
 - **Enhanced Campaign Mode**: 12 progressive levels with story content, board variants (classic, forest, castle, mountain, desert, volcanic, ice, cosmic), premium level locks, and comprehensive rewards system.
-- **Comprehensive Monetization System**: Stripe integration with $2.99 one-time IAP and $4.99/month subscription, featuring plan selector UI and premium feature management.
+- **Streamlined Monetization System**: Single $5/month subscription with A/B price testing ($4.99-$6.99), advanced freemium limitations (1 hint/game, undos premium-only), strategic upgrade prompts, limited-time offers ($3.99 first month), and comprehensive Stripe integration.
 - **Complete Ad Integration**: Post-game interstitial ads, in-play banner rotation, rewarded video ads for hints/undos, and premium user ad-free experience.
 - **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Reset AI Training, View AI Learning Stats). Debug buttons removed for cleaner interface.
 - **Complete Audio System Removal**: All music and sound effects completely removed per user request - user will implement custom MP3-based audio system independently.
@@ -106,6 +106,11 @@ Preferred communication style: Simple, everyday language.
 - **TanStack Query**: Server state management and caching.
 - **Zod**: Runtime type validation.
 
-### Monetization
-- **Google AdSense**: Integration for banner, interstitial, and rewarded video ads.
-- **Stripe**: Payment integration for ad-free upgrades.
+### Advanced Monetization Architecture
+- **Streamlined Subscription Model**: Single $5/month tier with comprehensive premium features
+- **A/B Price Testing**: Dynamic pricing variants ($4.99-$6.99) with localStorage persistence
+- **Advanced Freemium Limitations**: Reduced free hints (1/game), undos premium-only, strategic upgrade prompts
+- **Conversion Optimization**: Strategic promo modals, limited-time offers, countdown timers
+- **Google AdSense**: Banner ads, interstitial post-game, rewarded videos for hints
+- **Stripe Integration**: Secure payment processing with plan selector UI
+- **Admin Testing Tools**: Free/premium toggle, pricing cycling, promo testing for optimization

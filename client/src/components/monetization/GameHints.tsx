@@ -40,8 +40,8 @@ export const GameHints: React.FC<GameHintsProps> = ({
       return;
     }
 
-    // Free hints: 2 per game
-    if (hintCount < 2) {
+    // Free hints: 1 per game (reduced to encourage subscription)
+    if (hintCount < 1) {
       onHint();
       setHintCount(prev => prev + 1);
       return;
@@ -64,19 +64,10 @@ export const GameHints: React.FC<GameHintsProps> = ({
       return;
     }
 
-    // Free undos: 1 per game
-    if (undoCount < 1) {
-      onUndo();
-      setUndoCount(prev => prev + 1);
-      return;
-    }
-
-    // Show rewarded ad for additional undos
-    const watched = await adManager.showRewardedAd();
-    if (watched) {
-      onUndo();
-      setUndoCount(prev => prev + 1);
-    }
+    // Free undos: 0 per game (premium feature only)
+    // Show upgrade prompt immediately for free users
+    setShowUpgradeDialog(true);
+    return;
   };
 
   const showUpgrade = () => {
@@ -85,14 +76,13 @@ export const GameHints: React.FC<GameHintsProps> = ({
 
   const getHintButtonText = () => {
     if (adManager.isAdFree()) return 'Hint';
-    if (hintCount < 2) return `Hint (${2 - hintCount} free)`;
+    if (hintCount < 1) return `Hint (${1 - hintCount} free)`;
     return 'Hint (Watch Ad)';
   };
 
   const getUndoButtonText = () => {
     if (adManager.isAdFree()) return 'Undo';
-    if (undoCount < 1) return `Undo (${1 - undoCount} free)`;
-    return 'Undo (Watch Ad)';
+    return 'Undo (Premium Only)';
   };
 
   return (
@@ -131,8 +121,8 @@ export const GameHints: React.FC<GameHintsProps> = ({
         >
           <Crown className="w-4 h-4 mr-1" />
           Remove Ads
-          <Badge variant="secondary" className="ml-1 bg-white text-yellow-600">
-            $2.99
+          <Badge variant="secondary" className="ml-1 bg-white text-purple-600">
+            ${paymentManager.getUserPlan()?.price || '5.00'}/mo
           </Badge>
         </Button>
       )}
@@ -154,17 +144,19 @@ export const GameHints: React.FC<GameHintsProps> = ({
             </DialogTitle>
           </DialogHeader>
           <div className="text-center space-y-4">
-            <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg">
-              <h3 className="font-semibold text-lg mb-2">🧙‍♂️ Wizard Chess Premium</h3>
-              <ul className="text-sm space-y-1">
-                <li>✨ Remove all advertisements</li>
-                <li>🎯 Unlimited hints & undos</li>
-                <li>🏆 Exclusive wizard themes</li>
-                <li>⚡ Priority game loading</li>
+            <div className="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
+              <h3 className="font-semibold text-lg mb-2 text-purple-800">🧙‍♂️ Wizard Chess Premium</h3>
+              <ul className="text-sm space-y-1 text-purple-700">
+                <li>🚫 Remove all advertisements</li>
+                <li>♾️ Unlimited hints & undos</li>
+                <li>🏆 Full campaign mode access</li>
+                <li>🎨 Exclusive themes & pieces</li>
+                <li>☁️ Cloud save & sync</li>
+                <li>🎯 Priority support</li>
               </ul>
             </div>
-            <div className="text-2xl font-bold text-yellow-600">$2.99</div>
-            <p className="text-sm text-gray-600">One-time purchase, lifetime access</p>
+            <div className="text-2xl font-bold text-purple-600">${paymentManager.getUserPlan()?.price || '5.00'}/month</div>
+            <p className="text-sm text-gray-600">Cancel anytime • First month $3.99</p>
             <div className="flex gap-2 justify-center">
               <Button
                 onClick={() => {
