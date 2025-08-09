@@ -371,3 +371,51 @@
     background: rgba(45, 23, 8, 0.95);
   }
 }
+
+/* Enhanced Mobile Chess Board Styles */
+.mobile-chess-board {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-chess-canvas {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  touch-action: manipulation;
+}
+
+.mobile-coord-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #d4af37;
+}
+
+.portrait-board .coord-row,
+.portrait-board .row-labels {
+  display: none;
+}
+
+.landscape-board .mobile-coord-label {
+  font-size: 8px;
+}
+
+.mobile-board-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+}
+
+/* Touch-specific enhancements */
+@media (hover: none) and (pointer: coarse) {
+  .mobile-chess-canvas {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+}

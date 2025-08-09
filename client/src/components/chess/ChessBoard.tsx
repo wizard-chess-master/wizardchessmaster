@@ -1,13 +1,18 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
+import { useDeviceDetection } from '../../lib/hooks/useDeviceDetection';
+import { useDeviceStore } from '../../lib/stores/useDeviceStore';
 import { ChessPiece } from './ChessPiece';
 import { Position } from '../../lib/chess/types';
 import { AIThinkingIndicator } from '../ui/AIThinkingIndicator';
+import { cn } from '../../lib/utils';
 
 export function ChessBoard() {
   const { board, selectedPosition, validMoves, selectSquare, moveHistory, isInCheck, aiThinking, aiDifficulty } = useChess();
   const { playPieceMovementSound, playGameEvent, playUISound, playWizardAbility } = useAudio();
+  const deviceInfo = useDeviceDetection();
+  const { settings } = useDeviceStore();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
   // Enhanced animation state management
@@ -174,18 +179,18 @@ export function ChessBoard() {
       // Base size is 800x800 for desktop (reduced from 880 for better performance)
       let maxSize = 800;
       
-      // Scale down for smaller screens, ensuring full visibility
+      // Enhanced mobile-responsive sizing with device detection
       if (viewportWidth < 480) {
-        // Small mobile: use 90% of viewport width, max 400px
-        maxSize = Math.min(viewportWidth * 0.90, 400);
+        // Small mobile: prioritize fitting on screen
+        maxSize = Math.min(viewportWidth * 0.95, Math.min(viewportHeight * 0.6, 350));
       } else if (viewportWidth < 768) {
-        // Mobile: use 85% of viewport width, max 600px
-        maxSize = Math.min(viewportWidth * 0.85, 600);
+        // Mobile: balance between size and usability  
+        maxSize = Math.min(viewportWidth * 0.90, Math.min(viewportHeight * 0.7, 500));
       } else if (viewportWidth < 1024) {
-        // Tablet: use 80% of viewport width, max 700px
-        maxSize = Math.min(viewportWidth * 0.80, 700);
+        // Tablet: more generous sizing
+        maxSize = Math.min(viewportWidth * 0.80, Math.min(viewportHeight * 0.8, 650));
       } else if (viewportWidth < 1200) {
-        // Small desktop: use 70% of viewport width, max 800px
+        // Small desktop: standard sizing
         maxSize = Math.min(viewportWidth * 0.70, 800);
       }
       
@@ -1107,45 +1112,120 @@ export function ChessBoard() {
     handleCanvasClick(event);
   };
 
+  // Calculate mobile-responsive sizing and styling
+  const isMobileDevice = deviceInfo.isMobile;
+  const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
+  
+  // Mobile-specific board size calculation
+  const mobileBoardSize = React.useMemo(() => {
+    if (!isMobileDevice) return canvasSize;
+    
+    const { screenWidth, screenHeight, orientation } = deviceInfo;
+    const padding = 32;
+    const headerHeight = 80;
+    const controlsHeight = 80;
+    
+    let availableWidth = screenWidth - padding;
+    let availableHeight = screenHeight - headerHeight - controlsHeight - padding;
+    
+    if (orientation === 'portrait') {
+      // Portrait: use most of width but ensure it fits in available height
+      const maxWidth = Math.min(availableWidth, availableHeight * 0.8);
+      return Math.max(280, Math.min(maxWidth, 450));
+    } else {
+      // Landscape: use available height more efficiently
+      const maxSize = Math.min(availableWidth * 0.6, availableHeight);
+      return Math.max(280, Math.min(maxSize, 400));
+    }
+  }, [isMobileDevice, deviceInfo, canvasSize]);
+  
+  const effectiveBoardSize = isMobileDevice ? mobileBoardSize : canvasSize;
+  const effectiveSquareSize = effectiveBoardSize / 10;
+
   return (
-    <div className="board-container">
+    <div className={cn(
+      "board-container",
+      "flex flex-col items-center justify-center",
+      isMobileDevice && "mobile-board-container",
+      isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
+      isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
+    )}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
         <AIThinkingIndicator difficulty={aiDifficulty} />
       )}
       
-      <div className="chess-board">
+      <div 
+        className={cn(
+          "chess-board",
+          "relative",
+          isMobileDevice && "mobile-chess-board"
+        )}
+        style={isMobileDevice ? {
+          width: `${effectiveBoardSize}px`,
+          height: `${effectiveBoardSize}px`,
+          maxWidth: '100%',
+          maxHeight: '100%'
+        } : undefined}
+      >
         <div className="board-coordinates">
-          {/* Column labels */}
-          <div className="coord-row">
-            <div className="coord-corner" style={{ width: Math.max(30, squareSize * 0.4) + 'px', height: Math.max(30, squareSize * 0.4) + 'px' }}></div>
-            {Array.from({ length: 10 }, (_, i) => (
-              <div key={i} className="coord-label" style={{ width: squareSize }}>
-                {String.fromCharCode(65 + i)}
-              </div>
-            ))}
-          </div>
-          
-          {/* Canvas board with row labels */}
-          <div className="canvas-container">
-            <div className="row-labels">
+          {/* Column labels - hide on mobile portrait if setting is disabled */}
+          {!shouldHideCoordinates && (
+            <div className="coord-row">
+              <div 
+                className="coord-corner" 
+                style={{ 
+                  width: Math.max(20, effectiveSquareSize * 0.3) + 'px', 
+                  height: Math.max(20, effectiveSquareSize * 0.3) + 'px' 
+                }}
+              ></div>
               {Array.from({ length: 10 }, (_, i) => (
-                <div key={i} className="coord-label row-label" style={{ height: squareSize }}>
-                  {10 - i}
+                <div 
+                  key={i} 
+                  className={cn("coord-label", isMobileDevice && "mobile-coord-label")} 
+                  style={{ width: effectiveSquareSize }}
+                >
+                  {String.fromCharCode(65 + i)}
                 </div>
               ))}
             </div>
+          )}
+          
+          {/* Canvas board with row labels */}
+          <div className="canvas-container flex">
+            {!shouldHideCoordinates && (
+              <div className="row-labels flex flex-col">
+                {Array.from({ length: 10 }, (_, i) => (
+                  <div 
+                    key={i} 
+                    className={cn("coord-label row-label", isMobileDevice && "mobile-coord-label")} 
+                    style={{ height: effectiveSquareSize }}
+                  >
+                    {10 - i}
+                  </div>
+                ))}
+              </div>
+            )}
+            
             <canvas
               id="chess-canvas"
               ref={canvasRef}
-              width={canvasSize}
-              height={canvasSize}
+              width={canvasSize} // Keep internal resolution high
+              height={canvasSize} // Keep internal resolution high
               onClick={handleCanvasClickWithEffects}
-              className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
+              className={cn(
+                "chess-canvas",
+                isAnimating && "glow-selected",
+                isMobileDevice && "mobile-chess-canvas",
+                isMobileDevice && "touch-manipulation"
+              )}
               style={{ 
                 cursor: 'pointer',
-                width: canvasSize + 'px',
-                height: canvasSize + 'px'
+                width: effectiveBoardSize + 'px',  // Scale display size
+                height: effectiveBoardSize + 'px', // Scale display size
+                border: isMobileDevice ? '3px solid #b58863' : undefined,
+                borderRadius: isMobileDevice ? '8px' : undefined,
+                boxShadow: isMobileDevice ? '0 4px 12px rgba(0,0,0,0.3)' : undefined
               }}
             />
           </div>
