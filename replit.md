@@ -91,6 +91,7 @@ Preferred communication style: Simple, everyday language.
 - **Cloud Save & Backup System**: Premium members get cloud save functionality for cross-device progress synchronization, while all registered users can create local backups. Features automatic save detection, manual sync controls, and seamless data restoration with page reload integration.
 - **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated directly into the main menu interface with premium status indicators and logout functionality.
 - **Upgraded Leaderboard System**: Complete migration from manual name entry to authenticated player data with PostgreSQL database integration, comprehensive API routes (/api/leaderboards), player statistics tracking, campaign and PvP rankings, and server synchronization for registered users while maintaining backward compatibility with existing local data.
+- **Mobile-Friendly Responsive Design**: Comprehensive device detection system with built-in capabilities to recognize device types (mobile, tablet, desktop) and serve optimized experiences. Features include mobile-specific chess board sizing, touch-optimized controls, orientation-aware layouts, device-specific settings management, performance optimizations for mobile devices, and responsive CSS with safe area support for modern mobile browsers.
 
 ## External Dependencies
 

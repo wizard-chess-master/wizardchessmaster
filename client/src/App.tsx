@@ -10,6 +10,8 @@ import { BoardControls } from "./components/chess/BoardControls";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AuthProvider } from "./components/auth/AuthProvider";
+import { ResponsiveLayout } from "./components/layout/ResponsiveLayout";
+import { MobileGameLayout } from "./components/mobile/MobileGameLayout";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -133,8 +135,9 @@ function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <div className="App">
+    <ResponsiveLayout>
+      <AuthProvider>
+        <div className="App">
         <div className="game-container">
         {/* Immersive Audio Controller - manages 3D spatial audio for chess game */}
         <ChessAudioController />
@@ -148,46 +151,58 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
-            <div className="max-w-7xl mx-auto">
-              
-              {/* Top Ad Banner */}
-              <AdBanner 
-                id="game-banner-top" 
-                className="mb-4 w-full max-w-2xl mx-auto"
-                style={{ maxWidth: '600px', width: '100%' }}
-              />
-              
-              {/* Game Content - Side by Side Layout */}
-              <div className="game-content flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8">
+          <MobileGameLayout
+            onSettings={() => setShowSettings(true)}
+            onAchievements={() => setShowAchievements(true)}
+            onMenu={() => {
+              const { resetGame } = useChess.getState();
+              resetGame();
+            }}
+          >
+            <div className="desktop-game-layout hidden md:block min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
+              <div className="max-w-7xl mx-auto">
                 
-                {/* Chess Board - Left Side */}
-                <div className="board-section flex-shrink-0">
-                  <ChessBoard />
-                </div>
+                {/* Top Ad Banner */}
+                <AdBanner 
+                  id="game-banner-top" 
+                  className="mb-4 w-full max-w-2xl mx-auto"
+                  style={{ maxWidth: '600px', width: '100%' }}
+                />
                 
-                {/* Controls Panel - Right Side */}
-                <div className="controls-section flex-shrink-0 flex flex-col gap-4">
-                  <BoardControls onSettings={() => setShowSettings(true)} />
+                {/* Game Content - Side by Side Layout */}
+                <div className="game-content flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8">
                   
-                  {/* Merlin Messages Window - Below Controls */}
-                  {gamePhase === 'playing' && (
-                    <div className="merlin-messages-panel w-56 h-72 bg-purple-900/90 border-2 border-purple-400 rounded-lg shadow-2xl backdrop-blur-sm">
-                      <div className="bg-purple-800 text-purple-100 px-3 py-2 rounded-t-md border-b border-purple-400">
-                        <h3 className="text-sm font-bold text-center">🧙‍♂️ Merlin the Wise</h3>
+                  {/* Chess Board - Left Side */}
+                  <div className="board-section flex-shrink-0">
+                    <ChessBoard />
+                  </div>
+                  
+                  {/* Controls Panel - Right Side */}
+                  <div className="controls-section flex-shrink-0 flex flex-col gap-4">
+                    <BoardControls onSettings={() => setShowSettings(true)} />
+                    
+                    {/* Merlin Messages Window - Below Controls */}
+                    {gamePhase === 'playing' && (
+                      <div className="merlin-messages-panel w-56 h-72 bg-purple-900/90 border-2 border-purple-400 rounded-lg shadow-2xl backdrop-blur-sm">
+                        <div className="bg-purple-800 text-purple-100 px-3 py-2 rounded-t-md border-b border-purple-400">
+                          <h3 className="text-sm font-bold text-center">🧙‍♂️ Merlin the Wise</h3>
+                        </div>
+                        <div className="p-3 h-60 overflow-y-auto">
+                          <MentorNotification />
+                        </div>
                       </div>
-                      <div className="p-3 h-60 overflow-y-auto">
-                        <MentorNotification />
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  
                 </div>
-                
               </div>
+              
+              {gamePhase === 'ended' && <GameOverDialog />}
             </div>
             
+            {/* Mobile game layout is handled by MobileGameLayout wrapper */}
             {gamePhase === 'ended' && <GameOverDialog />}
-          </div>
+          </MobileGameLayout>
         )}
 
         <SettingsDialog 
@@ -221,7 +236,8 @@ function App() {
         <CelebrationComponent />
         </div>
       </div>
-    </AuthProvider>
+      </AuthProvider>
+    </ResponsiveLayout>
   );
 }
 
