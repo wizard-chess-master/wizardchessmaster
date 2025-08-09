@@ -28,10 +28,13 @@ export const MonetizationTester: React.FC = () => {
         active: true
       }));
       console.log('🎉 Premium status activated for testing');
+      alert('✅ Switched to PREMIUM mode for testing!');
     } else {
       // Simulate free user
       localStorage.removeItem('wizard-chess-user-plan');
+      adManager.setAdFreeStatus(false);
       console.log('📱 Free user status activated for testing');
+      alert('✅ Switched to FREE mode for testing!');
     }
   };
 
@@ -74,12 +77,15 @@ export const MonetizationTester: React.FC = () => {
               <span>Premium Status</span>
             </div>
             <div className="flex items-center gap-2">
-              <Switch
-                checked={isPremium}
-                onCheckedChange={togglePremiumStatus}
-              />
-              <Badge variant={isPremium ? "default" : "secondary"}>
+              <Button
+                size="sm"
+                variant={isPremium ? "default" : "outline"}
+                onClick={() => togglePremiumStatus(!isPremium)}
+              >
                 {isPremium ? "Premium" : "Free"}
+              </Button>
+              <Badge variant={isPremium ? "default" : "secondary"}>
+                {isPremium ? "Active" : "Inactive"}
               </Badge>
             </div>
           </div>
@@ -148,13 +154,24 @@ export const MonetizationTester: React.FC = () => {
           </div>
 
           {/* Quick Actions */}
-          <div className="pt-2 border-t">
+          <div className="pt-2 border-t space-y-2">
             <Button 
               onClick={() => paymentManager.showPlanSelector()}
               className="w-full"
               variant="default"
             >
               Show Plan Selector
+            </Button>
+            <Button 
+              onClick={() => {
+                localStorage.clear();
+                window.location.reload();
+              }}
+              className="w-full"
+              variant="destructive"
+              size="sm"
+            >
+              Reset All & Reload
             </Button>
           </div>
         </CardContent>
