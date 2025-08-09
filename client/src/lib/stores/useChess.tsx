@@ -96,21 +96,9 @@ export const useChess = create<ChessStore>()(
       // Call cleanup function first
       cleanAudio();
       
-      // Force theme playback with v=25 cache busting
-      const theme = new Audio('/assets/music/Theme-music1.mp3?v=25');
-      theme.loop = true;
-      theme.volume = 0.42;
-      console.log('Theme created:', theme.src);
-      
-      theme.play()
-        .then(() => {
-          console.log('✅ Theme-music1.mp3 v=25 FORCED playback started from game start');
-          console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-        })
-        .catch((error) => {
-          console.error('❌ Failed to FORCE play theme music from game start:', error);
-          console.error('Check Chrome audio permissions if silent');
-        });
+      // DISABLED - Theme music now controlled by MainMenu button only
+      console.log('🚫 DISABLED - Theme music now controlled by MainMenu button only');
+      // No audio creation here to prevent conflicts
       
       // Verify board state after setting
       setTimeout(() => {

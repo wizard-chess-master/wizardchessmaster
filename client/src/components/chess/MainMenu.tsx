@@ -106,7 +106,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   onClick={async () => {
                     console.log('🎮 Player vs AI - Easy clicked - Theme-music2.mp3 dynamic cache busting');
                     
-                    // Enhanced cleanup function with AudioContext.close()
+                    // AGGRESSIVE cleanup function - stops ALL audio before starting new
                     async function cleanAudio() { 
                       try {
                         const context = new AudioContext(); 
@@ -116,12 +116,31 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                         console.log('AudioContext already closed or unavailable');
                       }
                       
+                      // Stop ALL audio elements
                       document.querySelectorAll('audio').forEach(a => { 
                         a.pause(); 
                         a.currentTime = 0; 
+                        a.src = ''; // Clear source
                         a.remove(); 
                       }); 
-                      console.log('Audio cleanup count:', document.querySelectorAll('audio').length); 
+                      
+                      // Stop any global audio manager music
+                      if ((window as any).gameAudioManager?.themeMusic) {
+                        (window as any).gameAudioManager.themeMusic.pause();
+                        (window as any).gameAudioManager.themeMusic.currentTime = 0;
+                        (window as any).gameAudioManager.themeMusic.src = '';
+                        (window as any).gameAudioManager.themeMusic = null;
+                      }
+                      
+                      // Stop any global theme music
+                      if ((window as any).currentTheme) {
+                        (window as any).currentTheme.pause();
+                        (window as any).currentTheme.currentTime = 0;
+                        (window as any).currentTheme.src = '';
+                        (window as any).currentTheme = null;
+                      }
+                      
+                      console.log('🛑 AGGRESSIVE audio cleanup completed - all sources stopped'); 
                     }
                     
                     // Execute cleanup before theme.play()

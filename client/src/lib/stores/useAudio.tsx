@@ -139,25 +139,9 @@ export const useAudio = create<AudioState>((set, get) => ({
     // Execute master cleanup
     masterAudioCleanup();
     
-    // Wait for cleanup to complete, then start fresh Theme-music1.mp3
-    setTimeout(() => {
-      const theme = new Audio('/assets/music/Theme-music1.mp3?v=26');
-      theme.loop = true;
-      theme.volume = 0.42;
-      (window as any).currentTheme = theme; // Store global reference
-      
-      console.log('🎵 Starting fresh Theme-music1.mp3 v=26 after master cleanup');
-      
-      theme.play()
-        .then(() => {
-          console.log('✅ Theme-music1.mp3 v=26 MASTER CLEANUP success');
-          console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-          set({ backgroundMusic: theme });
-        })
-        .catch((error) => {
-          console.error('❌ Failed to play theme music after cleanup:', error);
-        });
-    }, 300); // Wait 300ms for cleanup completion
+    // DISABLED - Theme music now controlled by MainMenu button only
+    console.log('🚫 useAudio playBackgroundMusic disabled - music controlled by MainMenu');
+    // No automatic music playback to prevent conflicts
   },
 
   stopBackgroundMusic: () => {
