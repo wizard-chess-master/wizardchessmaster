@@ -183,15 +183,19 @@ export function ChessBoard() {
       if (viewportWidth < 480) {
         // Small mobile: prioritize fitting on screen
         maxSize = Math.min(viewportWidth * 0.95, Math.min(viewportHeight * 0.6, 350));
+        console.log('📱 Small mobile sizing:', maxSize);
       } else if (viewportWidth < 768) {
         // Mobile: balance between size and usability  
         maxSize = Math.min(viewportWidth * 0.90, Math.min(viewportHeight * 0.7, 500));
+        console.log('📱 Mobile sizing:', maxSize);
       } else if (viewportWidth < 1024) {
         // Tablet: more generous sizing
         maxSize = Math.min(viewportWidth * 0.80, Math.min(viewportHeight * 0.8, 650));
+        console.log('📱 Tablet sizing:', maxSize);
       } else if (viewportWidth < 1200) {
         // Small desktop: standard sizing
         maxSize = Math.min(viewportWidth * 0.70, 800);
+        console.log('🖥️ Small desktop sizing:', maxSize);
       }
       
       // Ensure minimum size for playability
@@ -1116,6 +1120,16 @@ export function ChessBoard() {
   const isMobileDevice = deviceInfo.isMobile;
   const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
   
+  // Debug device detection
+  console.log('🔍 Device Detection Debug:', {
+    isMobile: deviceInfo.isMobile,
+    screenWidth: deviceInfo.screenWidth,
+    orientation: deviceInfo.orientation,
+    userAgent: deviceInfo.userAgent,
+    isTouch: deviceInfo.isTouch,
+    currentCanvasSize: canvasSize
+  });
+  
   // Mobile-specific board size calculation
   const mobileBoardSize = React.useMemo(() => {
     if (!isMobileDevice) return canvasSize;
@@ -1141,6 +1155,14 @@ export function ChessBoard() {
   
   const effectiveBoardSize = isMobileDevice ? mobileBoardSize : canvasSize;
   const effectiveSquareSize = effectiveBoardSize / 10;
+  
+  console.log('📐 Final board sizing:', {
+    isMobileDevice,
+    canvasSize,
+    mobileBoardSize,
+    effectiveBoardSize,
+    effectiveSquareSize
+  });
 
   return (
     <div className={cn(
