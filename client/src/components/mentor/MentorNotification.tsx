@@ -10,7 +10,7 @@ export function MentorNotification() {
   const [visibleFeedback, setVisibleFeedback] = useState<MentorFeedback | null>(null);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
 
-  // Show latest feedback as notification
+  // Show latest feedback in persistent panel
   useEffect(() => {
     if (currentFeedback.length > 0) {
       const latestFeedback = currentFeedback[currentFeedback.length - 1];
@@ -18,11 +18,6 @@ export function MentorNotification() {
       // Only show if it's a new feedback (not already visible)
       if (!visibleFeedback || latestFeedback.id !== visibleFeedback.id) {
         setVisibleFeedback(latestFeedback);
-        
-        // Auto-hide after 8 seconds
-        const timer = setTimeout(() => {
-          setVisibleFeedback(null);
-        }, 8000);
 
         // Play voice narration if enabled with longer delay for stability
         if (isVoiceEnabled) {
@@ -30,8 +25,6 @@ export function MentorNotification() {
             speakFeedback(latestFeedback.message);
           }, 1200); // Longer delay to ensure clean audio and avoid game sound overlap
         }
-
-        return () => clearTimeout(timer);
       }
     }
   }, [currentFeedback, isVoiceEnabled, visibleFeedback]);
@@ -139,68 +132,65 @@ export function MentorNotification() {
     }
   };
 
-  if (!visibleFeedback) return null;
+  if (!visibleFeedback) {
+    return (
+      <div className="text-purple-200 text-sm text-center py-4">
+        <p>No messages yet. Start playing to receive guidance!</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="fixed bottom-4 right-4 lg:bottom-20 lg:right-4 z-40 max-w-sm animate-in slide-in-from-right duration-500">
-      <Card className={`border-2 shadow-lg ${getPriorityColor(visibleFeedback.priority)}`}>
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            <div className="text-2xl">{getFeedbackIcon(visibleFeedback.type)}</div>
-            
-            <div className="flex-1">
-              <div className="font-medium text-sm mb-1">
-                Merlin the Wise
-              </div>
-              <div className="text-sm leading-relaxed">
-                {visibleFeedback.message}
-              </div>
-              {visibleFeedback.context?.learningPoint && (
-                <div className="text-xs mt-2 opacity-75">
-                  💡 {visibleFeedback.context.learningPoint}
-                </div>
-              )}
-            </div>
-
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  // Cancel any ongoing speech when toggling
-                  if ('speechSynthesis' in window) {
-                    speechSynthesis.cancel();
-                  }
-                  setIsVoiceEnabled(!isVoiceEnabled);
-                }}
-                className="h-6 w-6 p-0"
-                title={isVoiceEnabled ? "Disable voice" : "Enable voice"}
-              >
-                {isVoiceEnabled ? 
-                  <Volume2 className="h-3 w-3" /> : 
-                  <VolumeX className="h-3 w-3" />
-                }
-              </Button>
-              
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  // Cancel any ongoing speech when closing
-                  if ('speechSynthesis' in window) {
-                    speechSynthesis.cancel();
-                  }
-                  setVisibleFeedback(null);
-                }}
-                className="h-6 w-6 p-0 hover:bg-gray-200"
-                title="Close notification"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+    <div className="space-y-2">
+      <div className="bg-purple-800/50 border border-purple-400 rounded-md p-3">
+        <div className="flex items-start gap-2 mb-2">
+          <div className="text-lg">{getFeedbackIcon(visibleFeedback.type)}</div>
+          <div className="text-xs text-purple-300 capitalize">{visibleFeedback.type}</div>
+        </div>
+        <p className="text-sm text-purple-100 leading-relaxed">
+          {visibleFeedback.message}
+        </p>
+        {visibleFeedback.context?.learningPoint && (
+          <div className="text-xs mt-2 text-purple-200 opacity-75">
+            💡 {visibleFeedback.context.learningPoint}
           </div>
-        </CardContent>
-      </Card>
+        )}
+        <div className="text-xs text-purple-300 mt-2">
+          {new Date(visibleFeedback.timestamp).toLocaleTimeString()}
+        </div>
+      </div>
+      
+      <div className="flex justify-center gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            if ('speechSynthesis' in window) {
+              speechSynthesis.cancel();
+            }
+            setIsVoiceEnabled(!isVoiceEnabled);
+          }}
+          className="h-6 px-2 text-purple-300 hover:text-purple-100 hover:bg-purple-700/50"
+          title={isVoiceEnabled ? "Disable voice" : "Enable voice"}
+        >
+          {isVoiceEnabled ? <Volume2 size={12} /> : <VolumeX size={12} />}
+          <span className="ml-1 text-xs">{isVoiceEnabled ? "Voice On" : "Voice Off"}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            if ('speechSynthesis' in window) {
+              speechSynthesis.cancel();
+            }
+            setVisibleFeedback(null);
+          }}
+          className="h-6 px-2 text-purple-300 hover:text-purple-100 hover:bg-purple-700/50"
+        >
+          <X size={12} />
+          <span className="ml-1 text-xs">Clear</span>
+        </Button>
+      </div>
     </div>
   );
 }
