@@ -231,7 +231,7 @@ class StripePaymentManager implements PaymentManager {
               padding: 20px;
               cursor: pointer;
               transition: transform 0.3s;
-            " onclick="(window as any).selectPlan('${plan.id}')">
+            " onclick="window.selectPlan('${plan.id}')">
               <h3 style="color: #ffd700; margin-bottom: 10px;">${plan.name}</h3>
               <div style="font-size: 28px; font-weight: bold; margin: 15px 0;">
                 $${plan.price}${plan.interval ? '/' + plan.interval : ''}
@@ -242,7 +242,7 @@ class StripePaymentManager implements PaymentManager {
             </div>
           `).join('')}
         </div>
-        <button onclick="(window as any).closePlanSelector()" style="
+        <button onclick="window.closePlanSelector()" style="
           background: #666;
           color: white;
           border: none;
