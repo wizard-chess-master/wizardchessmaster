@@ -142,7 +142,7 @@ export function MentorNotification() {
   if (!visibleFeedback) return null;
 
   return (
-    <div className="fixed top-20 right-4 z-40 max-w-sm animate-in slide-in-from-right duration-500">
+    <div className="fixed top-32 right-4 z-40 max-w-sm animate-in slide-in-from-right duration-500">
       <Card className={`border-2 shadow-lg ${getPriorityColor(visibleFeedback.priority)}`}>
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
