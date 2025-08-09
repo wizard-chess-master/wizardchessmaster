@@ -43,6 +43,26 @@ export function DynamicMentorPanel() {
 
   const [autoScroll, setAutoScroll] = useState(true);
 
+  // Debug effect to log feedback changes
+  useEffect(() => {
+    console.log('🧙‍♂️ DynamicMentorPanel feedback updated:', currentFeedback);
+  }, [currentFeedback]);
+
+  // Test function to add sample feedback
+  const addTestFeedback = () => {
+    const { addFeedback } = useDynamicAIMentor.getState();
+    addFeedback({
+      id: `test-${Date.now()}`,
+      type: 'encouragement',
+      message: 'This is a test feedback message!',
+      priority: 'medium',
+      timestamp: Date.now(),
+      context: {
+        learningPoint: 'Testing feedback system'
+      }
+    });
+  };
+
   // Auto-scroll feedback to latest
   useEffect(() => {
     if (autoScroll && currentFeedback.length > 0) {
@@ -319,6 +339,9 @@ export function DynamicMentorPanel() {
                       <div className="text-xs mt-2 opacity-60">
                         Debug: {currentFeedback.length} feedback messages stored
                       </div>
+                      <div className="text-xs mt-1 opacity-60">
+                        Active: {isActive ? 'Yes' : 'No'}
+                      </div>
                     </div>
                   ) : (
                     currentFeedback.map((feedback) => (
@@ -355,14 +378,24 @@ export function DynamicMentorPanel() {
                     />
                     Auto-scroll to latest
                   </label>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={clearOldFeedback}
-                    className="text-xs"
-                  >
-                    Clear Old Messages
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={addTestFeedback}
+                      className="text-xs"
+                    >
+                      Test Feedback
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={clearOldFeedback}
+                      className="text-xs"
+                    >
+                      Clear Old Messages
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

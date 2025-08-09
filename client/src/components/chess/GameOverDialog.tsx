@@ -31,11 +31,11 @@ export function GameOverDialog() {
     if (winner) {
       playGameEvent('victory');
       
-      // Show interstitial ad after game completion
-      const adManager = getAdManager();
-      setTimeout(() => {
-        adManager.showInterstitialAd();
-      }, 2000); // 2 second delay after game ends
+      // Show interstitial ad after game completion (disabled for now)
+      // const adManager = getAdManager();
+      // setTimeout(() => {
+      //   adManager.showInterstitialAd();
+      // }, 2000); // 2 second delay after game ends
     }
   }, [winner, playGameEvent]);
 
