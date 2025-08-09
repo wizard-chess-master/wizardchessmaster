@@ -1,0 +1,15 @@
+# Replit deployment configuration for Wizard Chess Duel
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["npm", "start"]
+ignorePorts = false
+deploymentTarget = "autoscale"
+
+[deployment.env]
+NODE_ENV = "production"
+
+[[ports]]
+localPort = 5000
+externalPort = 80

@@ -38,10 +38,12 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
-    // Set NODE_ENV if not already set
+    // Set NODE_ENV to production for deployment if not already set
     if (!process.env.NODE_ENV) {
       process.env.NODE_ENV = 'production';
     }
+
+    console.log(`Starting server in ${process.env.NODE_ENV} mode`);
 
     const server = await registerRoutes(app);
 
@@ -71,9 +73,18 @@ app.use((req, res, next) => {
       host: "0.0.0.0",
       reusePort: true,
     }, () => {
-      log(`serving on port ${port}`);
+      log(`server started successfully on port ${port} with host 0.0.0.0`);
+      log(`environment: ${process.env.NODE_ENV}`);
+      log(`serving static files from dist in production mode`);
     }).on('error', (err) => {
       console.error('Server failed to start:', err);
+      console.error('Error details:', {
+        message: err.message,
+        code: (err as any).code,
+        port,
+        host: "0.0.0.0",
+        nodeEnv: process.env.NODE_ENV
+      });
       process.exit(1);
     });
   } catch (error) {
