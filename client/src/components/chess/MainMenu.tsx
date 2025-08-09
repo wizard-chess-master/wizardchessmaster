@@ -109,71 +109,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               <div className="game-mode-buttons">
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={async () => {
-                    console.log('🎮 Player vs AI - Easy clicked - Theme-music2.mp3 dynamic cache busting');
-                    
-                    // AGGRESSIVE cleanup function - stops ALL audio before starting new
-                    async function cleanAudio() { 
-                      try {
-                        const context = new AudioContext(); 
-                        await context.close(); 
-                        console.log('✅ AudioContext closed');
-                      } catch (e) {
-                        console.log('AudioContext already closed or unavailable');
-                      }
-                      
-                      // Stop ALL audio elements
-                      document.querySelectorAll('audio').forEach(a => { 
-                        a.pause(); 
-                        a.currentTime = 0; 
-                        a.src = ''; // Clear source
-                        a.remove(); 
-                      }); 
-                      
-                      // Stop any global audio manager music
-                      if ((window as any).gameAudioManager?.themeMusic) {
-                        (window as any).gameAudioManager.themeMusic.pause();
-                        (window as any).gameAudioManager.themeMusic.currentTime = 0;
-                        (window as any).gameAudioManager.themeMusic.src = '';
-                        (window as any).gameAudioManager.themeMusic = null;
-                      }
-                      
-                      // Stop any global theme music
-                      if ((window as any).currentTheme) {
-                        (window as any).currentTheme.pause();
-                        (window as any).currentTheme.currentTime = 0;
-                        (window as any).currentTheme.src = '';
-                        (window as any).currentTheme = null;
-                      }
-                      
-                      console.log('🛑 AGGRESSIVE audio cleanup completed - all sources stopped'); 
-                    }
-                    
-                    // Execute cleanup before theme.play()
-                    await cleanAudio();
-                    
-                    // Set Theme-music2.mp3 with dynamic cache busting and fallback
-                    const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
-                    theme.loop = true;
-                    theme.volume = 0.42;
-                    
-                    // Simplified error handling for main menu
-                    theme.addEventListener('error', (e) => {
-                      console.error('❌ Theme-music2.mp3 failed to load from main menu:', e);
-                      console.log('🚫 No automatic fallback - user can use toggle to try again');
-                    });
-                    
-                    theme.play()
-                      .then(() => {
-                        (window as any).currentTheme = theme; // Store global reference for toggle control
-                        console.log('✅ Theme-music2.mp3 dynamic cache FORCED on Player vs AI - Easy click');
-                        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-                      })
-                      .catch((error) => {
-                        console.error('❌ Failed to force theme music from main menu:', error);
-                        console.log('🚫 No automatic fallback - user can use toggle button to start music');
-                      });
-                    
+                  onClick={() => {
+                    console.log('🎮 Player vs AI - Easy clicked');
                     (window as any).gameAudioManager?.onButtonClick();
                     console.log('🎮 Starting new AI game - easy mode');
                     startGame('ai', 'easy');

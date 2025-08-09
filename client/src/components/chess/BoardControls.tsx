@@ -257,101 +257,16 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
           <Button
             variant="outline"
             size="sm"
-            onClick={async () => {
+            onClick={() => {
               const { isMuted, toggleMute } = useAudio.getState();
-              console.log('🎵 Music toggle clicked - Theme-music2.mp3 control');
+              console.log('🎵 Music toggle clicked');
               
               if (isMuted) {
-                // Unmute and start Theme-music2.mp3
-                toggleMute();
-                
-                // AGGRESSIVE cleanup function - same as MainMenu
-                const cleanAudio = async () => { 
-                  try {
-                    const context = new AudioContext(); 
-                    await context.close(); 
-                    console.log('✅ AudioContext closed');
-                  } catch (e) {
-                    console.log('AudioContext already closed or unavailable');
-                  }
-                  
-                  // Stop ALL audio elements
-                  document.querySelectorAll('audio').forEach(a => { 
-                    a.pause(); 
-                    a.currentTime = 0; 
-                    a.src = ''; // Clear source
-                    a.remove(); 
-                  }); 
-                  
-                  // Stop any global audio manager music
-                  if ((window as any).gameAudioManager?.themeMusic) {
-                    (window as any).gameAudioManager.themeMusic.pause();
-                    (window as any).gameAudioManager.themeMusic.currentTime = 0;
-                    (window as any).gameAudioManager.themeMusic.src = '';
-                    (window as any).gameAudioManager.themeMusic = null;
-                  }
-                  
-                  // Stop any global theme music
-                  if ((window as any).currentTheme) {
-                    (window as any).currentTheme.pause();
-                    (window as any).currentTheme.currentTime = 0;
-                    (window as any).currentTheme.src = '';
-                    (window as any).currentTheme = null;
-                  }
-                  
-                  console.log('🛑 Toggle button audio cleanup completed'); 
-                }
-                
-                await cleanAudio();
-                
-                // Wait a moment after cleanup before creating new audio
-                setTimeout(async () => {
-                  // Start Theme-music2.mp3 with dynamic cache busting (same approach as MainMenu)
-                  const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
-                  theme.loop = true;
-                  theme.volume = 0.42;
-                  
-                  console.log('🎵 Theme-music2.mp3 from toggle button:', theme.src);
-                  
-                  // Simplified error handling - no automatic fallback to old music
-                  theme.addEventListener('error', (e) => {
-                    console.error('❌ Theme-music2.mp3 failed to load from toggle:', e);
-                    console.log('🚫 No fallback - keeping audio muted instead of playing old music');
-                  });
-                  
-                  try {
-                    await theme.play();
-                    (window as any).currentTheme = theme; // Store reference after successful play
-                    console.log('✅ Theme-music2.mp3 playing from toggle button');
-                  } catch (error) {
-                    console.error('❌ Theme-music2.mp3 play failed from toggle:', error);
-                    console.log('🚫 Keeping audio muted instead of falling back to old music');
-                  }
-                }, 100); // Small delay after cleanup
+                console.log('🔊 Unmuting audio');
+                toggleMute(); // This will automatically start background music
               } else {
-                // Mute - stop all audio FIRST, then toggle mute
-                console.log('🛑 Stopping music before mute');
-                
-                // Stop current theme
-                if ((window as any).currentTheme) {
-                  (window as any).currentTheme.pause();
-                  (window as any).currentTheme.currentTime = 0;
-                  (window as any).currentTheme.src = '';
-                  (window as any).currentTheme = null;
-                  console.log('🛑 Theme music stopped by toggle');
-                }
-                
-                // Stop ALL audio elements 
-                document.querySelectorAll('audio').forEach(a => { 
-                  a.pause(); 
-                  a.currentTime = 0; 
-                  a.src = '';
-                  a.remove(); 
-                }); 
-                
-                // Then toggle mute state
-                toggleMute();
-                console.log('🛑 All audio stopped, mute state toggled');
+                console.log('🔇 Muting audio');
+                toggleMute(); // This will automatically stop background music
               }
             }}
             className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
@@ -409,7 +324,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
           setCurrentHint({ description: '', reasoning: '' });
           setCurrentHintId('');
         }}
-        difficulty={aiDifficulty}
+        difficulty={aiDifficulty === 'advanced' ? 'hard' : aiDifficulty as 'easy' | 'medium' | 'hard'}
         gamePhase={moveHistory.length < 20 ? 'opening' : moveHistory.length < 40 ? 'middle' : 'endgame'}
         position={JSON.stringify(board)}
       />
