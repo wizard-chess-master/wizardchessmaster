@@ -7,11 +7,13 @@ import { Settings, TestTube, Crown, DollarSign } from 'lucide-react';
 import { getPaymentManager } from '../../lib/monetization/paymentManager';
 import { getAdManager } from '../../lib/monetization/adManager';
 import { FreemiumPromo } from './FreemiumPromo';
+import { PremiumComparisonModal } from './PremiumComparisonModal';
 
 export const MonetizationTester: React.FC = () => {
   const [isPremium, setIsPremium] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
   const [promoType, setPromoType] = useState<'game_start' | 'hint_limit' | 'undo_attempt' | 'campaign_locked'>('hint_limit');
+  const [showComparison, setShowComparison] = useState(false);
   const paymentManager = getPaymentManager();
   const adManager = getAdManager();
 
@@ -156,9 +158,16 @@ export const MonetizationTester: React.FC = () => {
           {/* Quick Actions */}
           <div className="pt-2 border-t space-y-2">
             <Button 
-              onClick={() => paymentManager.showPlanSelector()}
+              onClick={() => setShowComparison(true)}
               className="w-full"
               variant="default"
+            >
+              Show Free vs Premium
+            </Button>
+            <Button 
+              onClick={() => paymentManager.showPlanSelector()}
+              className="w-full"
+              variant="outline"
             >
               Show Plan Selector
             </Button>
@@ -184,6 +193,12 @@ export const MonetizationTester: React.FC = () => {
           onClose={() => setShowPromo(false)}
         />
       )}
+
+      {/* Premium Comparison Modal */}
+      <PremiumComparisonModal 
+        open={showComparison}
+        onClose={() => setShowComparison(false)}
+      />
     </>
   );
 };

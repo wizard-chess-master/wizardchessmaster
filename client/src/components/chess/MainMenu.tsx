@@ -23,6 +23,7 @@ import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTe
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 import { getPaymentManager } from '../../lib/monetization/paymentManager';
 import { MonetizationTester } from '../monetization/MonetizationTester';
+import { PremiumComparisonModal, usePremiumComparison } from '../monetization/PremiumComparisonModal';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -38,6 +39,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
   const [adminRefresh, setAdminRefresh] = useState(0);
+  const { showComparison, openComparison, closeComparison } = usePremiumComparison();
 
 
   // Debug admin state on every render
@@ -445,23 +447,36 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </Button>
           </AIDifficultyVisualization>
           
-          <Button
-            variant="default"
-            onClick={() => {
-              (window as any).gameAudioManager?.onButtonClick();
-              console.log('💳 Remove Ads button clicked');
-              const paymentManager = getPaymentManager();
-              if (paymentManager.isUserPremium()) {
-                alert('🎉 You already have Premium! All ads are removed and premium features are unlocked.');
-              } else {
-                paymentManager.showPlanSelector();
-              }
-            }}
-            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0"
-          >
-            <Crown className="w-4 h-4 mr-2" />
-            Upgrade to Premium
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="default"
+              onClick={() => {
+                (window as any).gameAudioManager?.onButtonClick();
+                console.log('💳 Remove Ads button clicked');
+                const paymentManager = getPaymentManager();
+                if (paymentManager.isUserPremium()) {
+                  alert('🎉 You already have Premium! All ads are removed and premium features are unlocked.');
+                } else {
+                  paymentManager.showPlanSelector();
+                }
+              }}
+              className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0 flex-1"
+            >
+              <Crown className="w-4 h-4 mr-2" />
+              Upgrade to Premium
+            </Button>
+            
+            <Button
+              variant="outline"
+              onClick={() => {
+                (window as any).gameAudioManager?.onButtonClick();
+                openComparison();
+              }}
+              className="border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+            >
+              Compare
+            </Button>
+          </div>
 
           {/* Monetization Testing - Admin Only */}
           {isAdminFeatureEnabled('debug') && (
@@ -665,8 +680,11 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         </Dialog>
       )}
 
-
-
+      {/* Premium Comparison Modal */}
+      <PremiumComparisonModal 
+        open={showComparison}
+        onClose={closeComparison}
+      />
     </div>
   );
 }
