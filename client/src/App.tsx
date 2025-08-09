@@ -173,9 +173,10 @@ function App() {
           </div>
         )}
 
-        {showSettings && (
-          <SettingsDialog onClose={() => setShowSettings(false)} />
-        )}
+        <SettingsDialog 
+          isOpen={showSettings} 
+          onClose={() => setShowSettings(false)} 
+        />
 
         {showAchievements && (
           <AchievementPanel onClose={() => setShowAchievements(false)} />

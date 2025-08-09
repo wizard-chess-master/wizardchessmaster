@@ -1,170 +1,208 @@
 import React, { useState } from 'react';
-import { useAudio } from '../../lib/stores/useAudio';
-import { VolumeControls } from '../audio/VolumeControls';
-import { useChess } from '../../lib/stores/useChess';
-import { playButtonClickSound } from '../../lib/audio/buttonSounds';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Badge } from '../ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
+import { Slider } from '../ui/slider';
 import { Switch } from '../ui/switch';
-import { Volume2, VolumeX, Info, Brain, Settings as SettingsIcon } from 'lucide-react';
-import { PersonalizationSettings } from '../PersonalizationSettings';
+import { Badge } from '../ui/badge';
+import { 
+  Volume2, 
+  VolumeX, 
+  Settings, 
+  Brain, 
+  Gamepad2, 
+  Info,
+  X 
+} from 'lucide-react';
+import { useAudio } from '../../lib/stores/useAudio';
+import { HintLearningSettings } from '../hints/HintLearningSettings';
 
 interface SettingsDialogProps {
+  isOpen: boolean;
   onClose: () => void;
 }
 
-export function SettingsDialog({ onClose }: SettingsDialogProps) {
+export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
   const { isMuted, toggleMute } = useAudio();
-  const [activeTab, setActiveTab] = useState<'game' | 'personalization'>('game');
+  const [volume, setVolume] = useState(50);
 
   return (
-    <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-2xl bg-white text-gray-900">
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto medieval-panel">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-gray-900">Game Settings</DialogTitle>
-        </DialogHeader>
-        
-        {/* Tab Navigation */}
-        <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg mb-4">
-          <Button
-            variant={activeTab === 'game' ? 'default' : 'ghost'}
-            onClick={() => setActiveTab('game')}
-            className="flex-1 text-sm"
-          >
-            <SettingsIcon size={16} className="mr-2" />
+          <DialogTitle className="flex items-center gap-2 medieval-text">
+            <Settings className="w-5 h-5" />
             Game Settings
-          </Button>
-          <Button
-            variant={activeTab === 'personalization' ? 'default' : 'ghost'}
-            onClick={() => setActiveTab('personalization')}
-            className="flex-1 text-sm"
-          >
-            <Brain size={16} className="mr-2" />
-            AI Learning
-          </Button>
-        </div>
-        
-        <div className="space-y-4">
-          {activeTab === 'game' && (
-            <>
-              {/* Game Audio Controls */}
-              <VolumeControls />
-              
-              {/* Game Settings */}
-              <Card className="border border-gray-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
-                    <Info className="w-5 h-5 text-blue-600" />
-                    Game Settings
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-3">
+          </DialogTitle>
+          <DialogClose />
+        </DialogHeader>
+
+        <Tabs defaultValue="audio" className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="audio" className="flex items-center gap-2">
+              <Volume2 className="w-4 h-4" />
+              Audio
+            </TabsTrigger>
+            <TabsTrigger value="hints" className="flex items-center gap-2">
+              <Brain className="w-4 h-4" />
+              Hint Learning
+            </TabsTrigger>
+            <TabsTrigger value="gameplay" className="flex items-center gap-2">
+              <Gamepad2 className="w-4 h-4" />
+              Gameplay
+            </TabsTrigger>
+            <TabsTrigger value="info" className="flex items-center gap-2">
+              <Info className="w-4 h-4" />
+              About
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Audio Settings */}
+          <TabsContent value="audio" className="space-y-6">
+            <Card className="border-amber-200 bg-gradient-to-br from-amber-50 to-yellow-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Volume2 className="w-5 h-5 text-amber-600" />
+                  Audio Controls
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Master Volume */}
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-gray-900">Hints</span>
-                      <span className="text-xs text-gray-600">Enable hint suggestions during gameplay</span>
-                    </div>
-                    <Switch 
-                      checked={useChess.getState().hintsEnabled}
-                      onCheckedChange={() => useChess.getState().toggleHints()}
-                    />
+                    <span className="font-medium">Master Volume</span>
+                    <Badge variant="outline">{volume}%</Badge>
                   </div>
-                </CardContent>
-              </Card>
+                  <Slider
+                    value={[volume]}
+                    onValueChange={(value) => setVolume(value[0])}
+                    max={100}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
 
-              {/* Game Information */}
-              <Card className="border border-gray-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
-                    <Info className="w-5 h-5 text-blue-600" />
-                    Audio Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-3">
-                  <div className="text-sm space-y-2 text-gray-800">
-                    <p><strong>Sound Effects:</strong> Move sounds, captures, wizard abilities</p>
-                    <p><strong>Voice Narration:</strong> Game events and guidance</p>
-                    <p><strong>Music:</strong> Background theme with dynamic intensity</p>
+                {/* Mute Toggle */}
+                <div className="flex items-center justify-between p-4 bg-white rounded-lg border">
+                  <div className="space-y-1">
+                    <div className="font-medium flex items-center gap-2">
+                      {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                      Audio Enabled
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Enable or disable all game audio including music and sound effects
+                    </p>
                   </div>
-                  
-                  <div className="text-xs text-foreground bg-amber-50 border border-amber-200 p-2 rounded">
-                    <strong>Note:</strong> Audio files load from /assets/ directories. 
-                    Place your MP3 files in the appropriate folders for full functionality.
-                  </div>
-                </CardContent>
-              </Card>
+                  <Switch
+                    checked={!isMuted}
+                    onCheckedChange={toggleMute}
+                  />
+                </div>
 
-              {/* Quick Info */}
-              <Card className="border border-gray-200">
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
-                    <Info className="w-5 h-5 text-blue-600" />
-                    Game Info
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0 space-y-3">
-                  <div className="text-sm">
-                    <p className="font-medium text-gray-900">Fantasy Chess v1.0</p>
-                    <p className="text-xs text-gray-700">10x10 board with Wizard pieces</p>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="flex justify-between">
-                      <span className="font-medium">Escape</span>
-                      <span className="text-gray-600">Deselect</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Ctrl+Z</span>
-                      <span className="text-gray-600">Undo</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Ctrl+M</span>
-                      <span className="text-gray-600">Mute</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium">Ctrl+H</span>
-                      <span className="text-gray-600">Menu</span>
+                {/* Audio Information */}
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="text-sm text-blue-800">
+                      <strong>Audio Features:</strong>
+                      <ul className="mt-2 space-y-1 list-disc list-inside">
+                        <li>Medieval theme music with dynamic volume control</li>
+                        <li>Sound effects for moves, captures, and wizard abilities</li>
+                        <li>Voice narration for game events and hints</li>
+                        <li>Button click feedback for enhanced user experience</li>
+                      </ul>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </>
-          )}
-          
-          {activeTab === 'personalization' && (
-            <PersonalizationSettings />
-          )}
-        </div>
-        
-        {/* Action Buttons */}
-        <div className="flex gap-2 pt-4">
-          <Button 
-            variant="outline"
-            className="flex-1"
-            onClick={() => {
-              playButtonClickSound();
-              onClose();
-              const { resetGame } = useChess.getState();
-              resetGame();
-            }}
-          >
-            🏠 Main Menu
-          </Button>
-          <Button 
-            className="flex-1" 
-            onClick={() => {
-              playButtonClickSound();
-              onClose();
-            }}
-          >
-            ✕ Close
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Hint Learning Settings */}
+          <TabsContent value="hints" className="space-y-6">
+            <HintLearningSettings />
+          </TabsContent>
+
+          {/* Gameplay Settings */}
+          <TabsContent value="gameplay" className="space-y-6">
+            <Card className="border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Gamepad2 className="w-5 h-5 text-green-600" />
+                  Gameplay Options
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-white rounded-lg border">
+                  <h4 className="font-medium mb-2">Game Rules</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• 10x10 board with traditional chess pieces plus wizards</li>
+                    <li>• Wizards can teleport within 2 squares or attack at range</li>
+                    <li>• All standard chess rules apply with wizard variations</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-white rounded-lg border">
+                  <h4 className="font-medium mb-2">Keyboard Shortcuts</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div><kbd className="px-1 py-0.5 bg-gray-100 rounded">H</kbd> Get Hint</div>
+                    <div><kbd className="px-1 py-0.5 bg-gray-100 rounded">U</kbd> Undo Move</div>
+                    <div><kbd className="px-1 py-0.5 bg-gray-100 rounded">R</kbd> Reset Game</div>
+                    <div><kbd className="px-1 py-0.5 bg-gray-100 rounded">M</kbd> Toggle Music</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* About/Info */}
+          <TabsContent value="info" className="space-y-6">
+            <Card className="border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Info className="w-5 h-5 text-purple-600" />
+                  About Wizard Chess Duel
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-4 bg-white rounded-lg border">
+                  <h4 className="font-medium mb-2">Game Features</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Advanced AI with multiple difficulty levels</li>
+                    <li>• Personalized hint learning system</li>
+                    <li>• Campaign mode with progressive challenges</li>
+                    <li>• Achievement system with celebrations</li>
+                    <li>• Immersive medieval fantasy theme</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-white rounded-lg border">
+                  <h4 className="font-medium mb-2">Personalized Learning</h4>
+                  <p className="text-sm text-muted-foreground">
+                    The AI mentor "Merlin the Wise" learns from your playing style and 
+                    adapts hints to match your preferences. The more you play, the better 
+                    the hints become!
+                  </p>
+                </div>
+
+                <div className="p-4 bg-white rounded-lg border">
+                  <h4 className="font-medium mb-2">Version Information</h4>
+                  <div className="text-sm text-muted-foreground">
+                    <p><strong>Version:</strong> 2.0.0</p>
+                    <p><strong>Features:</strong> Personalized Hint Learning, Achievement Celebrations</p>
+                    <p><strong>AI Engine:</strong> Minimax with Neural Network Learning</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <div className="flex justify-end pt-4 border-t">
+          <Button onClick={onClose} className="medieval-btn">
+            <X className="w-4 h-4 mr-2" />
+            Close Settings
           </Button>
         </div>
       </DialogContent>

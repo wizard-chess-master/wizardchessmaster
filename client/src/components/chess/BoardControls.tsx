@@ -5,7 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
 import { usePersonalizedHints } from '../../lib/stores/usePersonalizedHints';
-import { HintModal } from './HintModal';
+import { hintLearning } from '../../lib/hints/hintLearning';
+import { PersonalizedHintModal } from '../hints/PersonalizedHintModal';
 import { getAIMove } from '../../lib/chess/aiPlayer';
 
 
@@ -72,6 +73,9 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
         if (recentHints.includes(moveDescription)) {
           return;
         }
+
+        // Create a simple hint for the personalized system to use  
+        const hintText = `Consider ${moveDescription}`;
 
         // Vary the hint text based on AI difficulty and move type
         const beginnerHints = [
@@ -396,67 +400,18 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
 
     </Card>
     
-    {/* Hint Modal */}
+    {/* Personalized Hint Modal */}
     {showHintModal && (
-      <HintModal
+      <PersonalizedHintModal
         isOpen={showHintModal}
         onClose={() => {
-          // Record interaction if user just closes without action
-          if (currentHintId && enablePersonalization) {
-            const timeSpent = Date.now() - hintStartTimeRef.current;
-            const detectGamePhase = (moveCount: number): 'opening' | 'middle' | 'endgame' => {
-              if (moveCount < 20) return 'opening';
-              if (moveCount < 40) return 'middle';
-              return 'endgame';
-            };
-            
-            recordHintInteraction({
-              id: currentHintId,
-              hintText: currentHint.description,
-              hintType: aiDifficulty === 'easy' ? 'beginner' : aiDifficulty === 'medium' ? 'intermediate' : 'advanced',
-              moveDescription: currentHint.description.split(' ').slice(-6).join(' '),
-              aiDifficulty,
-              timestamp: Date.now(),
-              userAction: 'ignored',
-              gamePhase: detectGamePhase(moveHistory.length),
-              positionHash: lastHintMove,
-              timeSpentViewing: timeSpent
-            });
-          }
           setShowHintModal(false);
+          setCurrentHint({ description: '', reasoning: '' });
+          setCurrentHintId('');
         }}
-        hintDescription={currentHint.description}
-        hintReasoning={currentHint.reasoning}
-        hintId={currentHintId}
-        onHintAction={(action) => {
-          if (currentHintId && enablePersonalization) {
-            const timeSpent = Date.now() - hintStartTimeRef.current;
-            const detectGamePhase = (moveCount: number): 'opening' | 'middle' | 'endgame' => {
-              if (moveCount < 20) return 'opening';
-              if (moveCount < 40) return 'middle';
-              return 'endgame';
-            };
-            
-            recordHintInteraction({
-              id: currentHintId,
-              hintText: currentHint.description,
-              hintType: aiDifficulty === 'easy' ? 'beginner' : aiDifficulty === 'medium' ? 'intermediate' : 'advanced',
-              moveDescription: currentHint.description.split(' ').slice(-6).join(' '),
-              aiDifficulty,
-              timestamp: Date.now(),
-              userAction: action,
-              gamePhase: detectGamePhase(moveHistory.length),
-              positionHash: lastHintMove,
-              timeSpentViewing: timeSpent
-            });
-            
-            console.log('🧠 Recorded hint interaction:', {
-              action,
-              timeSpent,
-              hintType: aiDifficulty === 'easy' ? 'beginner' : aiDifficulty === 'medium' ? 'intermediate' : 'advanced'
-            });
-          }
-        }}
+        difficulty={aiDifficulty}
+        gamePhase={moveHistory.length < 20 ? 'opening' : moveHistory.length < 40 ? 'middle' : 'endgame'}
+        position={JSON.stringify(board)}
       />
     )}
     </>
