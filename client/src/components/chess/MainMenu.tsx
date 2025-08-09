@@ -443,6 +443,24 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </Button>
           </AIDifficultyVisualization>
           
+          <Button
+            variant="default"
+            onClick={() => {
+              (window as any).gameAudioManager?.onButtonClick();
+              console.log('💳 Remove Ads button clicked');
+              const paymentManager = require('../../lib/monetization/paymentManager').getPaymentManager();
+              if (paymentManager.isUserPremium()) {
+                alert('🎉 You already have Premium! All ads are removed and premium features are unlocked.');
+              } else {
+                paymentManager.showPlanSelector();
+              }
+            }}
+            className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0"
+          >
+            <Crown className="w-4 h-4 mr-2" />
+            Remove Ads - $5/month
+          </Button>
+
           <AdminLogin 
             onAuthChange={(isAuthenticated) => {
               console.log('🔐 MainMenu: AdminLogin onAuthChange called with:', isAuthenticated);

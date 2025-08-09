@@ -50,7 +50,7 @@ const PAYMENT_PLANS: PaymentPlan[] = [
   {
     id: 'premium-monthly',
     name: 'Premium Monthly',
-    price: 4.99,
+    price: 5.00,
     currency: 'USD',
     type: 'subscription',
     interval: 'month',
@@ -260,7 +260,7 @@ class StripePaymentManager implements PaymentManager {
     document.body.appendChild(overlay);
 
     // Add global handlers
-    window.selectPlan = async (planId: string) => {
+    (window as any).selectPlan = async (planId: string) => {
       const plan = PAYMENT_PLANS.find(p => p.id === planId);
       if (plan) {
         if (plan.type === 'one-time') {
@@ -272,12 +272,31 @@ class StripePaymentManager implements PaymentManager {
       }
     };
 
-    window.closePlanSelector = () => {
+    (window as any).closePlanSelector = () => {
       const overlay = document.getElementById('plan-selector-overlay');
       if (overlay) {
         document.body.removeChild(overlay);
       }
     };
+  }
+
+  selectPlan = async (planId: string) => {
+    const plan = PAYMENT_PLANS.find(p => p.id === planId);
+    if (plan) {
+      if (plan.type === 'one-time') {
+        await this.createUpgradeSession(planId);
+      } else {
+        await this.createSubscriptionSession(planId);
+      }
+      this.closePlanSelector();
+    }
+  };
+
+  closePlanSelector(): void {
+    const overlay = document.getElementById('plan-selector-overlay');
+    if (overlay) {
+      document.body.removeChild(overlay);
+    }
   }
 
   showUpgradeDialog(): void {
