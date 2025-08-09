@@ -13,7 +13,7 @@ import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
-import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
+// MULTIPLAYER DISABLED: import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { AIDifficultyVisualization } from './AIDifficultyVisualization';
 import { AdminLogin } from './AdminLogin';
@@ -195,6 +195,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   </Button>
                 </CampaignDialog>
 
+                {/* MULTIPLAYER TEMPORARILY DISABLED - Will be re-enabled later
                 <OnlineMultiplayerDialog>
                   <Button className="medieval-btn mode-button">
                     <div className="mode-content">
@@ -203,6 +204,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     </div>
                   </Button>
                 </OnlineMultiplayerDialog>
+                */}
 
 {/* Admin-only features */}
                 {isAdminFeatureEnabled('training') && (

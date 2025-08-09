@@ -1,6 +1,6 @@
 # Overview
 
-**Wizard Chess Duel** is a full-stack TypeScript application featuring a 10x10 chess variant with magical wizards. It offers local multiplayer and AI opponent modes, all within a comprehensive medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with advanced AI capabilities and a robust monetization framework.
+**Wizard Chess Duel** is a full-stack TypeScript application featuring a 10x10 chess variant with magical wizards. It offers AI opponent modes within a comprehensive medieval fantasy theme. Online multiplayer has been temporarily disabled due to functionality issues and will be re-enabled later. The project aims to provide an engaging and visually immersive chess experience with advanced AI capabilities and a robust monetization framework.
 
 Key features include:
 - A unique 10x10 board with custom wizard pieces.
