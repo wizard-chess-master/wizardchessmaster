@@ -161,9 +161,14 @@ function App() {
                 <GameUI onSettings={() => setShowSettings(true)} />
               </div>
               
-              {/* Dynamic AI Mentor Panel */}
-              <div className="mentor-section w-full max-w-6xl mt-6">
-                <MentorIntegration />
+              {/* Dynamic AI Mentor Panel - Prominent Display */}
+              <div className="mentor-section w-full max-w-6xl mx-auto mt-8 mb-8">
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4">
+                  <h2 className="text-lg font-bold text-purple-800 mb-4 text-center">
+                    🧙‍♂️ AI Mentor System
+                  </h2>
+                  <MentorIntegration />
+                </div>
               </div>
             </div>
             
