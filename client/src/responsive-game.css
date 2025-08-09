@@ -1,0 +1,113 @@
+/* Enhanced responsive chess game layout */
+
+.responsive-board .board-coordinates {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.responsive-board .coord-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.responsive-board .canvas-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.responsive-board .row-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.responsive-board .coord-label {
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #92400e;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.responsive-board .row-label {
+  writing-mode: horizontal-tb;
+}
+
+.chess-canvas {
+  border: 4px solid #d97706;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  background: #fef3c7;
+  image-rendering: pixelated;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chess-canvas {
+    border-width: 3px;
+  }
+  
+  .responsive-board .coord-label {
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chess-canvas {
+    border-width: 2px;
+  }
+  
+  .responsive-board .coord-label {
+    font-size: 8px;
+  }
+}
+
+/* Game layout improvements */
+.main-game-area {
+  min-height: calc(100vh - 120px);
+}
+
+.board-controls {
+  min-height: fit-content;
+}
+
+/* Button size optimization */
+.medieval-btn-mini {
+  min-height: 2.25rem;
+  font-size: 0.75rem;
+}
+
+/* Card spacing optimization */
+.medieval-panel {
+  padding: 0.75rem;
+}
+
+.side-menu-buttons .button + .button {
+  margin-top: 0.25rem;
+}
+
+/* Compact mentor panel */
+.mentor-panel-compact {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Hint modal responsive sizing */
+.hint-modal-content {
+  max-width: 90vw;
+  max-height: 80vh;
+}
+
+@media (min-width: 1024px) {
+  .hint-modal-content {
+    max-width: 600px;
+  }
+}

@@ -22,12 +22,12 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
   } | null>(null);
 
   return (
-    <Card className="medieval-panel h-fit">
-      <CardHeader className="pb-2 text-center">
+    <Card className="medieval-panel h-fit max-w-xs">
+      <CardHeader className="pb-1 text-center">
         <CardTitle className="medieval-text text-xs">🎮 Controls</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
-        <div className="side-menu-buttons flex flex-col gap-2">
+        <div className="side-menu-buttons flex flex-col gap-1">
           
           <Button
             variant="outline"
@@ -36,7 +36,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
               resetGame();
               window.location.reload();
             }}
-            className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+            className="medieval-btn-mini w-full h-9 flex flex-col items-center justify-center p-1"
             title="Main Menu"
           >
             <span className="text-sm">🏠</span>
@@ -104,7 +104,7 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
                 }
               });
             }}
-            className="medieval-btn-mini w-full h-12 flex flex-col items-center justify-center p-1"
+            className="medieval-btn-mini w-full h-9 flex flex-col items-center justify-center p-1"
             title="Get Hint"
           >
             <span className="text-sm">💡</span>

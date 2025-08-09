@@ -132,45 +132,57 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-2">
-            <div className="max-w-7xl mx-auto">
-              
-              {/* Top Ad Banner */}
+          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black">
+            
+            {/* Compact Header with Ad */}
+            <div className="header-section py-2">
               <AdBanner 
                 id="game-banner-top" 
-                className="mb-4 w-full max-w-2xl mx-auto"
-                style={{ maxWidth: '600px', width: '100%' }}
+                className="w-full max-w-lg mx-auto"
+                style={{ maxWidth: '400px', width: '100%' }}
               />
+            </div>
+
+            {/* Main Game Grid Layout */}
+            <div className="main-game-area flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 max-w-7xl mx-auto">
               
-              {/* Optimized Game Layout - Centered with minimal spacing */}
-              <div className="game-content flex flex-col items-center space-y-4">
-                
-                {/* Chess Board - Main Focus */}
-                <div className="board-section">
-                  <ChessBoard />
-                </div>
-                
-                {/* Compact Controls Row */}
-                <div className="controls-row flex flex-wrap gap-4 justify-center">
-                  <BoardControls onSettings={() => setShowSettings(true)} />
-                </div>
-                
-                {/* Game Status - Condensed */}
-                <div className="game-status w-full max-w-4xl">
+              {/* Left Panel - Game Info (Hidden on Mobile) */}
+              <div className="hidden lg:block lg:col-span-3">
+                <div className="space-y-4">
                   <GameUI onSettings={() => setShowSettings(true)} />
+                  
+                  {/* Compact Mentor Panel */}
+                  <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+                    <h3 className="text-sm font-bold text-purple-800 mb-2 text-center">
+                      🧙‍♂️ Merlin the Wise
+                    </h3>
+                    <MentorIntegration />
+                  </div>
                 </div>
-                
               </div>
               
-              {/* Dynamic AI Mentor Panel - Compact Side Layout */}
-              <div className="mentor-section w-full max-w-6xl mx-auto mt-4 mb-6">
+              {/* Center - Chess Board */}
+              <div className="col-span-1 lg:col-span-6 flex flex-col items-center justify-center">
+                <ChessBoard />
+              </div>
+              
+              {/* Right Panel - Controls */}
+              <div className="col-span-1 lg:col-span-3 flex flex-col justify-center">
+                <BoardControls onSettings={() => setShowSettings(true)} />
+              </div>
+              
+              {/* Mobile-Only Bottom Sections */}
+              <div className="lg:hidden col-span-1 space-y-4">
+                <GameUI onSettings={() => setShowSettings(true)} />
+                
                 <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
-                  <h2 className="text-md font-bold text-purple-800 mb-2 text-center">
+                  <h3 className="text-sm font-bold text-purple-800 mb-2 text-center">
                     🧙‍♂️ Merlin the Wise
-                  </h2>
+                  </h3>
                   <MentorIntegration />
                 </div>
               </div>
+              
             </div>
             
             {/* Adaptive Difficulty Wizard Assistant - Floating overlay */}

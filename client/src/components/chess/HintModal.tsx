@@ -35,7 +35,7 @@ export function HintModal({ isOpen, onClose, hintDescription, hintReasoning }: H
         }
       }}
     >
-      <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-4 border-amber-600 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-4 border-amber-600 rounded-lg shadow-2xl max-w-lg lg:max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-4 rounded-t-md flex items-center justify-between">
           <div className="flex items-center gap-2">

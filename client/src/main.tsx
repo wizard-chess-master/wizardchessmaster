@@ -2,6 +2,7 @@ import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import './styles/medieval-theme.css';
+import './responsive-game.css';
 // DEBUG DISABLED: import './lib/debug-admin'; // Load admin debug utilities
 
 // FORCE Theme-music2.mp3 implementation in main initialization

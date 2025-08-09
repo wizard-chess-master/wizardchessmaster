@@ -1107,8 +1107,8 @@ export function ChessBoard() {
   };
 
   return (
-    <div className="board-container">
-      <div className="chess-board">
+    <div className="board-container max-w-fit mx-auto">
+      <div className="chess-board responsive-board">
         <div className="board-coordinates">
           {/* Column labels */}
           <div className="coord-row">
@@ -1138,8 +1138,10 @@ export function ChessBoard() {
               className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
               style={{ 
                 cursor: 'pointer',
-                width: canvasSize + 'px',
-                height: canvasSize + 'px'
+                width: '100%',
+                maxWidth: '480px',
+                height: 'auto',
+                aspectRatio: '1'
               }}
             />
           </div>
