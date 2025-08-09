@@ -443,10 +443,8 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
 
     // Feedback management
     addFeedback: (feedback: MentorFeedback) => {
-      console.log('🧙‍♂️ Adding feedback to store:', feedback);
       set(state => {
         const newFeedback = [...state.currentFeedback, feedback].slice(-10);
-        console.log('🧙‍♂️ Total feedback messages:', newFeedback.length);
         return { currentFeedback: newFeedback };
       });
     },
