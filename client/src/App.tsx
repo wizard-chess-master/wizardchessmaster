@@ -9,6 +9,7 @@ import { GameUI } from "./components/chess/GameUI";
 import { BoardControls } from "./components/chess/BoardControls";
 import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
+import { AuthProvider } from "./components/auth/AuthProvider";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -132,8 +133,9 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <div className="game-container">
+    <AuthProvider>
+      <div className="App">
+        <div className="game-container">
         {/* Immersive Audio Controller - manages 3D spatial audio for chess game */}
         <ChessAudioController />
         
@@ -217,8 +219,9 @@ function App() {
         
         {/* Campaign Reward Celebration */}
         <CelebrationComponent />
+        </div>
       </div>
-    </div>
+    </AuthProvider>
   );
 }
 

@@ -4,6 +4,7 @@
 
 import { Router, Request, Response } from "express";
 import Stripe from "stripe";
+import { storage } from "../storage";
 
 const router = Router();
 
@@ -76,24 +77,28 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   console.log('💳 Checkout session completed:', session.id);
   
   try {
-    const { metadata } = session;
-    const userId = metadata?.userId || 'anonymous';
+    const { metadata, customer: customerId } = session;
+    const userId = metadata?.userId;
     const planId = metadata?.planId;
     
-    // Here you would typically:
-    // 1. Update user's subscription status in your database
-    // 2. Send confirmation email
-    // 3. Grant premium access
+    if (userId && customerId) {
+      // Update user's premium status in database
+      await storage.updateUserPremiumStatus(
+        parseInt(userId),
+        true,
+        session.subscription as string,
+        'active'
+      );
+      
+      console.log(`✅ User ${userId} upgraded to premium - subscription: ${session.subscription}`);
+    }
     
-    console.log(`✅ User ${userId} successfully subscribed to plan: ${planId}`);
-    
-    // For now, log the successful purchase
-    // In a real app, you'd save this to your database
     const purchaseRecord = {
       userId,
       sessionId: session.id,
       planId,
-      customerId: session.customer,
+      customerId,
+      subscriptionId: session.subscription,
       status: 'completed',
       timestamp: new Date().toISOString()
     };
@@ -114,11 +119,19 @@ async function handleSubscriptionCreated(subscription: Stripe.Subscription) {
   try {
     const customerId = subscription.customer as string;
     const status = subscription.status;
+    const metadata = subscription.metadata;
+    const userId = metadata?.userId;
     
-    // Update user's subscription status
-    console.log(`✅ Customer ${customerId} subscription status: ${status}`);
-    
-    // Here you would update your database with the new subscription
+    if (userId && status === 'active') {
+      await storage.updateUserPremiumStatus(
+        parseInt(userId),
+        true,
+        subscription.id,
+        status
+      );
+      
+      console.log(`✅ User ${userId} subscription activated: ${subscription.id}`);
+    }
     
   } catch (error) {
     console.error('❌ Error handling subscription creation:', error);
@@ -134,13 +147,26 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   try {
     const customerId = subscription.customer as string;
     const status = subscription.status;
+    const metadata = subscription.metadata;
+    const userId = metadata?.userId;
     
     console.log(`📝 Customer ${customerId} subscription updated to: ${status}`);
     
-    // Handle subscription status changes
-    if (status === 'canceled' || status === 'unpaid') {
-      console.log('⚠️ Subscription requires attention:', status);
-      // Revoke premium access if needed
+    if (userId) {
+      const isPremium = status === 'active' || status === 'trialing';
+      
+      await storage.updateUserPremiumStatus(
+        parseInt(userId),
+        isPremium,
+        subscription.id,
+        status
+      );
+      
+      if (status === 'canceled' || status === 'unpaid' || status === 'past_due') {
+        console.log(`⚠️ User ${userId} premium access revoked - status: ${status}`);
+      } else if (isPremium) {
+        console.log(`✅ User ${userId} premium access maintained - status: ${status}`);
+      }
     }
     
   } catch (error) {
@@ -156,11 +182,19 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
   
   try {
     const customerId = subscription.customer as string;
+    const metadata = subscription.metadata;
+    const userId = metadata?.userId;
     
-    console.log(`🚫 Customer ${customerId} subscription canceled`);
-    
-    // Revoke premium access
-    // Update database to reflect canceled subscription
+    if (userId) {
+      await storage.updateUserPremiumStatus(
+        parseInt(userId),
+        false,
+        subscription.id,
+        'canceled'
+      );
+      
+      console.log(`🔒 User ${userId} premium access revoked - subscription canceled`);
+    }
     
   } catch (error) {
     console.error('❌ Error handling subscription deletion:', error);

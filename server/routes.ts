@@ -3,6 +3,8 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import paymentRoutes from "./routes/payments";
 import webhookRoutes from "./routes/webhooks";
+import authRoutes from "./routes/auth";
+import saveDataRoutes from "./routes/savedata";
 // MULTIPLAYER DISABLED: import { MultiplayerManager } from "./multiplayer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -11,6 +13,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // use storage to perform CRUD operations on the storage interface
   // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+
+  // Register authentication routes
+  app.use('/api/auth', authRoutes);
+  
+  // Register cloud save routes  
+  app.use('/api/savedata', saveDataRoutes);
 
   // Register payment and webhook routes
   app.use('/api/payments', paymentRoutes);

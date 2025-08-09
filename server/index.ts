@@ -1,8 +1,21 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
 const app = express();
+
+// Configure session middleware for authentication
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'wizard-chess-session-secret-2025',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+  }
+}));
 
 // Special middleware for Stripe webhooks - must handle raw body
 app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));

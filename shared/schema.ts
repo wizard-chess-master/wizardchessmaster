@@ -5,10 +5,27 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
   password: text("password").notNull(),
   displayName: text("display_name").notNull(),
+  isPremium: boolean("is_premium").notNull().default(false),
+  subscriptionId: text("subscription_id"),
+  subscriptionStatus: text("subscription_status"), // active, canceled, past_due
+  subscriptionEndsAt: timestamp("subscription_ends_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastSeen: timestamp("last_seen").defaultNow().notNull(),
+});
+
+// User game progress and save data
+export const userSaveData = pgTable("user_save_data", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull().unique(),
+  campaignProgress: jsonb("campaign_progress").notNull(), // levels, stars, unlocks
+  achievements: jsonb("achievements").notNull(), // completed achievements
+  playerStats: jsonb("player_stats").notNull(), // statistics
+  gameSettings: jsonb("game_settings").notNull(), // audio, preferences
+  lastSyncedAt: timestamp("last_synced_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Online leaderboard entries
@@ -78,8 +95,20 @@ export const matchmakingQueue = pgTable("matchmaking_queue", {
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
+  email: true,
   password: true,
   displayName: true,
+});
+
+export const loginSchema = z.object({
+  username: z.string().min(1),
+  password: z.string().min(1),
+});
+
+export const insertUserSaveDataSchema = createInsertSchema(userSaveData).omit({
+  id: true,
+  createdAt: true,
+  lastSyncedAt: true,
 });
 
 export const insertCampaignLeaderboardSchema = createInsertSchema(campaignLeaderboard);
@@ -88,7 +117,10 @@ export const insertOnlineGameSchema = createInsertSchema(onlineGames);
 export const insertMatchmakingSchema = createInsertSchema(matchmakingQueue);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
+export type LoginData = z.infer<typeof loginSchema>;
 export type User = typeof users.$inferSelect;
+export type UserSaveData = typeof userSaveData.$inferSelect;
+export type InsertUserSaveData = z.infer<typeof insertUserSaveDataSchema>;
 export type CampaignLeaderboardEntry = typeof campaignLeaderboard.$inferSelect;
 export type PvpLeaderboardEntry = typeof pvpLeaderboard.$inferSelect;
 export type OnlineGame = typeof onlineGames.$inferSelect;

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useChess } from '../../lib/stores/useChess';
+import { useAuth } from '../../lib/stores/useAuth';
 import { playButtonClickSound } from '../../lib/audio/buttonSounds';
 import '../../lib/audio/globalAudioManager'; // Initialize global audio manager
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../ui/dialog';
-import { Settings, Sword, Users, Zap, Brain, BarChart3, X, Home, Trophy, Award, Crown } from 'lucide-react';
+import { Settings, Sword, Users, Zap, Brain, BarChart3, X, Home, Trophy, Award, Crown, User, Cloud, LogOut, LogIn } from 'lucide-react';
 import { Wand2 } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
 import { aiLearning } from '../../lib/chess/aiLearning';
@@ -15,6 +16,9 @@ import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
 // MULTIPLAYER DISABLED: import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
+import { LoginDialog } from '../auth/LoginDialog';
+import { CloudSaveDialog } from '../auth/CloudSaveDialog';
+import cloudSaveManager from '../../lib/saves/cloudSaveManager';
 
 import { AdminLogin } from './AdminLogin';
 
@@ -34,6 +38,7 @@ interface MainMenuProps {
 
 export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuProps) {
   const { startGame, resetGame } = useChess();
+  const { user, isLoggedIn, isPremium, logout } = useAuth();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
@@ -277,6 +282,52 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         </div>
 
         <div className="menu-footer">
+          {/* Authentication Section */}
+          <div className="flex gap-2 mb-3">
+            {isLoggedIn ? (
+              <>
+                <div className="flex items-center gap-2 px-3 py-2 bg-green-100 rounded-lg border border-green-300">
+                  <User className="w-4 h-4 text-green-700" />
+                  <span className="text-sm text-green-700">
+                    Welcome, {user?.displayName}
+                    {isPremium() && <Crown className="w-3 h-3 inline ml-1 text-amber-600" />}
+                  </span>
+                </div>
+                
+                <CloudSaveDialog>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                  >
+                    <Cloud className="w-4 h-4 mr-1" />
+                    Save Data
+                  </Button>
+                </CloudSaveDialog>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="border-gray-300 text-gray-600 hover:bg-gray-50"
+                >
+                  <LogOut className="w-4 h-4 mr-1" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <LoginDialog>
+                <Button
+                  variant="outline"
+                  className="border-amber-300 text-amber-600 hover:bg-amber-50 flex-1"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login / Register
+                </Button>
+              </LoginDialog>
+            )}
+          </div>
+
           <Button
             variant="outline"
             onClick={() => {
