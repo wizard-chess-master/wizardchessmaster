@@ -90,6 +90,7 @@ Preferred communication style: Simple, everyday language.
 - **Comprehensive User Authentication System**: Complete authentication implementation with bcrypt password hashing, express-session management, user registration/login/logout flows, and secure session-based authentication. Features include user profile management, premium status tracking, and subscription synchronization via Stripe webhooks.
 - **Cloud Save & Backup System**: Premium members get cloud save functionality for cross-device progress synchronization, while all registered users can create local backups. Features automatic save detection, manual sync controls, and seamless data restoration with page reload integration.
 - **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated directly into the main menu interface with premium status indicators and logout functionality.
+- **Upgraded Leaderboard System**: Complete migration from manual name entry to authenticated player data with PostgreSQL database integration, comprehensive API routes (/api/leaderboards), player statistics tracking, campaign and PvP rankings, and server synchronization for registered users while maintaining backward compatibility with existing local data.
 
 ## External Dependencies
 
