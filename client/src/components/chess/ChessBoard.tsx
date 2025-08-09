@@ -1138,8 +1138,8 @@ export function ChessBoard() {
               className={`chess-canvas ${isAnimating ? 'glow-selected' : ''}`}
               style={{ 
                 cursor: 'pointer',
-                width: '480px',
-                height: '480px'
+                width: canvasSize + 'px',
+                height: canvasSize + 'px'
               }}
             />
           </div>

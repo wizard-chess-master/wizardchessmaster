@@ -133,43 +133,46 @@ function App() {
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
           <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
-            <div className="max-w-6xl mx-auto">
+            <div className="max-w-7xl mx-auto">
               
               {/* Top Ad Banner */}
               <AdBanner 
                 id="game-banner-top" 
-                className="mb-4 w-full max-w-lg mx-auto"
-                style={{ maxWidth: '500px', width: '100%' }}
+                className="mb-4 w-full max-w-2xl mx-auto"
+                style={{ maxWidth: '600px', width: '100%' }}
               />
               
-              {/* Main Game Content */}
-              <div className="flex flex-col lg:flex-row gap-4 items-start justify-center">
+              {/* Game Content - Simple Centered Layout */}
+              <div className="game-content flex flex-col items-center space-y-6">
                 
-                {/* Left Side - Game Info & Controls */}
-                <div className="w-full lg:w-80 space-y-4 order-2 lg:order-1">
-                  <GameUI onSettings={() => setShowSettings(true)} />
-                  <BoardControls onSettings={() => setShowSettings(true)} />
-                </div>
-                
-                {/* Center - Chess Board */}
-                <div className="flex-1 flex justify-center order-1 lg:order-2">
+                {/* Chess Board - Main Focus */}
+                <div className="board-section">
                   <ChessBoard />
                 </div>
                 
-                {/* Right Side - Mentor Panel */}
-                <div className="w-full lg:w-80 order-3">
-                  <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4">
-                    <h3 className="text-lg font-bold text-purple-800 mb-3 text-center">
-                      🧙‍♂️ Merlin the Wise
-                    </h3>
-                    <MentorIntegration />
-                  </div>
+                {/* Controls Row */}
+                <div className="controls-row flex flex-wrap gap-6 justify-center">
+                  <BoardControls onSettings={() => setShowSettings(true)} />
+                </div>
+                
+                {/* Game Status */}
+                <div className="game-status w-full max-w-4xl">
+                  <GameUI onSettings={() => setShowSettings(true)} />
                 </div>
                 
               </div>
+              
+              {/* Mentor Panel - Bottom Section */}
+              <div className="mentor-section w-full max-w-4xl mx-auto mt-6">
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4">
+                  <h2 className="text-lg font-bold text-purple-800 mb-3 text-center">
+                    🧙‍♂️ Merlin the Wise
+                  </h2>
+                  <MentorIntegration />
+                </div>
+              </div>
             </div>
             
-            {/* Floating Elements */}
             <AdaptiveDifficultyWizardAssistant />
             {gamePhase === 'ended' && <GameOverDialog />}
           </div>
