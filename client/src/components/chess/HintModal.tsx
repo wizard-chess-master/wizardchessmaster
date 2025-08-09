@@ -11,8 +11,30 @@ interface HintModalProps {
 export function HintModal({ isOpen, onClose, hintDescription, hintReasoning }: HintModalProps) {
   if (!isOpen) return null;
 
+  // Force close on escape key
+  React.useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [isOpen, onClose]);
+
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+    <div 
+      className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+      onClick={(e) => {
+        // Close when clicking on backdrop
+        if (e.target === e.currentTarget) {
+          onClose();
+        }
+      }}
+    >
       <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-4 border-amber-600 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-4 rounded-t-md flex items-center justify-between">
