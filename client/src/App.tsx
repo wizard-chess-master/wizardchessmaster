@@ -132,8 +132,8 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
-            <div className="max-w-6xl mx-auto">
+          <div className="game-layout min-h-screen bg-gradient-to-b from-gray-900 to-black p-2">
+            <div className="max-w-7xl mx-auto">
               
               {/* Top Ad Banner */}
               <AdBanner 
@@ -142,30 +142,30 @@ function App() {
                 style={{ maxWidth: '600px', width: '100%' }}
               />
               
-              {/* Game Content - Board with Side Controls */}
-              <div className="flex gap-6 items-start justify-center">
+              {/* Optimized Game Layout - Centered with minimal spacing */}
+              <div className="game-content flex flex-col items-center space-y-4">
                 
-                {/* Chess Board Section - Main Center */}
-                <div className="board-section flex justify-center">
+                {/* Chess Board - Main Focus */}
+                <div className="board-section">
                   <ChessBoard />
                 </div>
                 
-                {/* Board Controls - Right Side Menu */}
-                <div className="board-controls-section">
+                {/* Compact Controls Row */}
+                <div className="controls-row flex flex-wrap gap-4 justify-center">
                   <BoardControls onSettings={() => setShowSettings(true)} />
+                </div>
+                
+                {/* Game Status - Condensed */}
+                <div className="game-status w-full max-w-4xl">
+                  <GameUI onSettings={() => setShowSettings(true)} />
                 </div>
                 
               </div>
               
-              {/* Game UI Below - Status and History */}
-              <div className="game-info-section w-full max-w-4xl mt-6">
-                <GameUI onSettings={() => setShowSettings(true)} />
-              </div>
-              
-              {/* Dynamic AI Mentor Panel - Prominent Display */}
-              <div className="mentor-section w-full max-w-6xl mx-auto mt-8 mb-8">
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4">
-                  <h2 className="text-lg font-bold text-purple-800 mb-4 text-center">
+              {/* Dynamic AI Mentor Panel - Compact Side Layout */}
+              <div className="mentor-section w-full max-w-6xl mx-auto mt-4 mb-6">
+                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-3">
+                  <h2 className="text-md font-bold text-purple-800 mb-2 text-center">
                     🧙‍♂️ Merlin the Wise
                   </h2>
                   <MentorIntegration />
