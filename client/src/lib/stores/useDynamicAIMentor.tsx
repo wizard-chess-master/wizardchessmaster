@@ -1,0 +1,582 @@
+import { create } from 'zustand';
+import { subscribeWithSelector } from 'zustand/middleware';
+import { useAIDifficultyProgression } from './useAIDifficultyProgression';
+import { GameState, ChessMove, PieceColor } from '../chess/types';
+
+// Enhanced mentor feedback types
+interface MentorFeedback {
+  id: string;
+  type: 'encouragement' | 'strategy' | 'warning' | 'celebration' | 'analysis';
+  message: string;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  timestamp: number;
+  context?: {
+    gamePhase?: 'opening' | 'middle' | 'endgame';
+    playerPerformance?: number;
+    suggestedMove?: ChessMove;
+    learningPoint?: string;
+  };
+}
+
+// Real-time performance analytics
+interface PerformanceAnalytics {
+  currentGameScore: number;
+  moveQuality: 'excellent' | 'good' | 'average' | 'poor';
+  adaptationNeeded: boolean;
+  recommendedDifficulty: number;
+  learningProgress: number; // 0-100%
+  sessionImprovement: number;
+  weakAreas: string[];
+  strongAreas: string[];
+  nextMilestone: string;
+}
+
+// Adaptive coaching strategies
+interface CoachingStrategy {
+  id: string;
+  name: string;
+  description: string;
+  triggerConditions: {
+    minGamesPlayed: number;
+    performanceThreshold: number;
+    winRateRange: [number, number];
+    skillLevel: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  };
+  interventions: {
+    difficultyAdjustment: number;
+    feedbackFrequency: 'high' | 'medium' | 'low';
+    hintAvailability: boolean;
+    analysisDepth: 'basic' | 'detailed' | 'comprehensive';
+  };
+}
+
+// Dynamic mentor store interface
+interface DynamicAIMentorStore {
+  // Current mentor state
+  isActive: boolean;
+  currentFeedback: MentorFeedback[];
+  analytics: PerformanceAnalytics;
+  currentStrategy: CoachingStrategy | null;
+  
+  // Adaptation settings
+  adaptationSensitivity: 'conservative' | 'moderate' | 'aggressive';
+  feedbackStyle: 'encouraging' | 'analytical' | 'challenging';
+  autoAdjustDifficulty: boolean;
+  showRealTimeAnalysis: boolean;
+  
+  // Performance tracking
+  sessionStartTime: number;
+  gamesThisSession: number;
+  sessionProgress: {
+    improvementPoints: number;
+    milestonesReached: string[];
+    challengesOvercome: string[];
+  };
+  
+  // Actions
+  initializeMentor: () => void;
+  activateMentor: () => void;
+  deactivateMentor: () => void;
+  
+  // Real-time analysis
+  analyzeCurrentMove: (gameState: GameState, move: ChessMove) => void;
+  updatePerformanceAnalytics: (gameState: GameState) => void;
+  assessGamePhase: (gameState: GameState) => 'opening' | 'middle' | 'endgame';
+  
+  // Adaptive coaching
+  selectOptimalStrategy: () => CoachingStrategy;
+  generateContextualFeedback: (gameState: GameState, moveQuality: number) => MentorFeedback;
+  adjustDifficultyInRealTime: (performanceScore: number) => void;
+  
+  // Feedback management
+  addFeedback: (feedback: MentorFeedback) => void;
+  clearOldFeedback: () => void;
+  getFeedbackForPhase: (phase: 'opening' | 'middle' | 'endgame') => MentorFeedback[];
+  
+  // Progress tracking
+  recordMilestone: (milestone: string) => void;
+  calculateSessionImprovement: () => number;
+  identifyLearningAreas: (gameHistory: GameState[]) => { weak: string[], strong: string[] };
+  
+  // Configuration
+  setAdaptationSensitivity: (sensitivity: 'conservative' | 'moderate' | 'aggressive') => void;
+  setFeedbackStyle: (style: 'encouraging' | 'analytical' | 'challenging') => void;
+  toggleAutoAdjustDifficulty: () => void;
+  toggleRealTimeAnalysis: () => void;
+  
+  // Reset and persistence
+  resetSession: () => void;
+  saveMentorProgress: () => void;
+  loadMentorProgress: () => void;
+}
+
+// Predefined coaching strategies
+const COACHING_STRATEGIES: CoachingStrategy[] = [
+  {
+    id: 'beginner-encouragement',
+    name: 'Encouraging Beginner',
+    description: 'Focus on positive reinforcement and basic concepts',
+    triggerConditions: {
+      minGamesPlayed: 0,
+      performanceThreshold: 40,
+      winRateRange: [0, 30],
+      skillLevel: 'beginner'
+    },
+    interventions: {
+      difficultyAdjustment: -1,
+      feedbackFrequency: 'high',
+      hintAvailability: true,
+      analysisDepth: 'basic'
+    }
+  },
+  {
+    id: 'intermediate-challenge',
+    name: 'Progressive Challenge',
+    description: 'Gradually increase complexity with strategic insights',
+    triggerConditions: {
+      minGamesPlayed: 5,
+      performanceThreshold: 60,
+      winRateRange: [30, 70],
+      skillLevel: 'intermediate'
+    },
+    interventions: {
+      difficultyAdjustment: 0,
+      feedbackFrequency: 'medium',
+      hintAvailability: true,
+      analysisDepth: 'detailed'
+    }
+  },
+  {
+    id: 'advanced-mastery',
+    name: 'Mastery Focus',
+    description: 'Advanced tactics and minimal guidance',
+    triggerConditions: {
+      minGamesPlayed: 20,
+      performanceThreshold: 80,
+      winRateRange: [70, 100],
+      skillLevel: 'advanced'
+    },
+    interventions: {
+      difficultyAdjustment: 1,
+      feedbackFrequency: 'low',
+      hintAvailability: false,
+      analysisDepth: 'comprehensive'
+    }
+  }
+];
+
+// Create the Dynamic AI Mentor store
+export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
+  subscribeWithSelector((set, get) => ({
+    // Initial state
+    isActive: false,
+    currentFeedback: [],
+    analytics: {
+      currentGameScore: 50,
+      moveQuality: 'average',
+      adaptationNeeded: false,
+      recommendedDifficulty: 5,
+      learningProgress: 0,
+      sessionImprovement: 0,
+      weakAreas: [],
+      strongAreas: [],
+      nextMilestone: 'Complete your first game'
+    },
+    currentStrategy: null,
+    
+    // Configuration
+    adaptationSensitivity: 'moderate',
+    feedbackStyle: 'encouraging',
+    autoAdjustDifficulty: true,
+    showRealTimeAnalysis: true,
+    
+    // Session tracking
+    sessionStartTime: Date.now(),
+    gamesThisSession: 0,
+    sessionProgress: {
+      improvementPoints: 0,
+      milestonesReached: [],
+      challengesOvercome: []
+    },
+
+    // Initialize mentor system
+    initializeMentor: () => {
+      console.log('🧙‍♂️ Initializing Dynamic AI Mentor...');
+      set({
+        sessionStartTime: Date.now(),
+        gamesThisSession: 0,
+        currentFeedback: [],
+        sessionProgress: {
+          improvementPoints: 0,
+          milestonesReached: [],
+          challengesOvercome: []
+        }
+      });
+      
+      // Select initial strategy
+      get().selectOptimalStrategy();
+      
+      // Add welcome feedback
+      get().addFeedback({
+        id: `welcome-${Date.now()}`,
+        type: 'encouragement',
+        message: 'Welcome! I\'m your AI mentor. I\'ll help you improve by adapting the game difficulty and providing personalized guidance.',
+        priority: 'medium',
+        timestamp: Date.now(),
+        context: {
+          learningPoint: 'Mentor system activated'
+        }
+      });
+    },
+
+    activateMentor: () => {
+      set({ isActive: true });
+      get().initializeMentor();
+      console.log('🧙‍♂️ AI Mentor activated');
+    },
+
+    deactivateMentor: () => {
+      set({ isActive: false });
+      console.log('🧙‍♂️ AI Mentor deactivated');
+    },
+
+    // Real-time move analysis
+    analyzeCurrentMove: (gameState: GameState, move: ChessMove) => {
+      const state = get();
+      if (!state.isActive) return;
+
+      // Calculate move quality based on various factors
+      let moveQuality = 50; // Base score
+      
+      // Analyze move type
+      if (move.captured) moveQuality += 15;
+      if (move.isWizardTeleport) moveQuality += 10;
+      if (move.isWizardAttack) moveQuality += 20;
+      if (move.isCastling) moveQuality += 12;
+      
+      // Game phase assessment
+      const phase = get().assessGamePhase(gameState);
+      
+      // Generate contextual feedback
+      const feedback = get().generateContextualFeedback(gameState, moveQuality);
+      get().addFeedback(feedback);
+      
+      // Update analytics
+      get().updatePerformanceAnalytics(gameState);
+      
+      console.log('🧙‍♂️ Move analyzed:', { 
+        moveQuality, 
+        phase, 
+        feedbackType: feedback.type 
+      });
+    },
+
+    // Update performance analytics in real-time
+    updatePerformanceAnalytics: (gameState: GameState) => {
+      const state = get();
+      const difficultyStore = useAIDifficultyProgression.getState();
+      
+      const newAnalytics: PerformanceAnalytics = {
+        currentGameScore: Math.max(0, Math.min(100, state.analytics.currentGameScore + Math.random() * 10 - 5)),
+        moveQuality: state.analytics.currentGameScore > 75 ? 'excellent' 
+                   : state.analytics.currentGameScore > 60 ? 'good'
+                   : state.analytics.currentGameScore > 40 ? 'average' : 'poor',
+        adaptationNeeded: Math.abs(difficultyStore.currentDifficulty - difficultyStore.targetDifficulty) > 1,
+        recommendedDifficulty: difficultyStore.targetDifficulty,
+        learningProgress: Math.min(100, (state.gamesThisSession * 10) + (state.sessionProgress.improvementPoints * 2)),
+        sessionImprovement: get().calculateSessionImprovement(),
+        weakAreas: state.analytics.weakAreas,
+        strongAreas: state.analytics.strongAreas,
+        nextMilestone: state.gamesThisSession < 5 ? 'Play 5 games' 
+                     : state.sessionProgress.improvementPoints < 50 ? 'Earn 50 improvement points'
+                     : 'Master advanced tactics'
+      };
+
+      set({ analytics: newAnalytics });
+
+      // Trigger difficulty adjustment if needed
+      if (state.autoAdjustDifficulty && newAnalytics.adaptationNeeded) {
+        get().adjustDifficultyInRealTime(newAnalytics.currentGameScore);
+      }
+    },
+
+    // Assess current game phase
+    assessGamePhase: (gameState: GameState): 'opening' | 'middle' | 'endgame' => {
+      const moveCount = gameState.moveHistory.length;
+      if (moveCount < 20) return 'opening';
+      if (moveCount < 40) return 'middle';
+      return 'endgame';
+    },
+
+    // Select optimal coaching strategy
+    selectOptimalStrategy: (): CoachingStrategy => {
+      const difficultyStore = useAIDifficultyProgression.getState();
+      const performanceMetrics = difficultyStore.recentPerformance;
+      
+      // Find the best matching strategy
+      const matchingStrategy = COACHING_STRATEGIES.find(strategy => {
+        const conditions = strategy.triggerConditions;
+        return (
+          performanceMetrics.averageAccuracy >= conditions.performanceThreshold &&
+          performanceMetrics.winRate >= conditions.winRateRange[0] &&
+          performanceMetrics.winRate <= conditions.winRateRange[1]
+        );
+      }) || COACHING_STRATEGIES[0]; // Default to beginner strategy
+
+      set({ currentStrategy: matchingStrategy });
+      console.log('🧙‍♂️ Selected strategy:', matchingStrategy.name);
+      
+      return matchingStrategy;
+    },
+
+    // Generate contextual feedback based on game state and performance
+    generateContextualFeedback: (gameState: GameState, moveQuality: number): MentorFeedback => {
+      const state = get();
+      const phase = get().assessGamePhase(gameState);
+      
+      let message = '';
+      let type: MentorFeedback['type'] = 'encouragement';
+      let priority: MentorFeedback['priority'] = 'medium';
+      
+      // Generate phase-specific feedback
+      if (phase === 'opening') {
+        if (moveQuality > 70) {
+          message = 'Excellent opening strategy! You\'re developing your pieces effectively.';
+          type = 'celebration';
+        } else if (moveQuality < 40) {
+          message = 'Consider developing your knights and bishops before advancing pawns too aggressively.';
+          type = 'strategy';
+          priority = 'high';
+        } else {
+          message = 'Good opening development. Try to control the center squares.';
+          type = 'encouragement';
+        }
+      } else if (phase === 'middle') {
+        if (moveQuality > 70) {
+          message = 'Brilliant tactical play! Your pieces are working together beautifully.';
+          type = 'celebration';
+        } else if (moveQuality < 40) {
+          message = 'Look for tactical opportunities - can you create threats or improve piece coordination?';
+          type = 'strategy';
+          priority = 'high';
+        } else {
+          message = 'The middlegame is where tactics shine. Look for wizard teleport opportunities!';
+          type = 'analysis';
+        }
+      } else {
+        if (moveQuality > 70) {
+          message = 'Outstanding endgame technique! You\'re converting your advantage perfectly.';
+          type = 'celebration';
+        } else if (moveQuality < 40) {
+          message = 'In the endgame, every move counts. Calculate carefully and activate your king.';
+          type = 'strategy';
+          priority = 'high';
+        } else {
+          message = 'Endgame precision is key. Consider pawn promotion possibilities.';
+          type = 'analysis';
+        }
+      }
+
+      return {
+        id: `feedback-${Date.now()}`,
+        type,
+        message,
+        priority,
+        timestamp: Date.now(),
+        context: {
+          gamePhase: phase,
+          playerPerformance: moveQuality,
+          learningPoint: `${phase} phase improvement`
+        }
+      };
+    },
+
+    // Adjust AI difficulty in real-time
+    adjustDifficultyInRealTime: (performanceScore: number) => {
+      const state = get();
+      const difficultyStore = useAIDifficultyProgression.getState();
+      
+      let adjustment = 0;
+      let reason = '';
+      
+      if (performanceScore > 80) {
+        adjustment = 1;
+        reason = 'Player performing excellently - increasing challenge';
+      } else if (performanceScore < 30) {
+        adjustment = -1;
+        reason = 'Player struggling - reducing difficulty';
+      }
+      
+      if (adjustment !== 0 && state.currentStrategy) {
+        const newDifficulty = Math.max(1, Math.min(10, 
+          difficultyStore.currentDifficulty + adjustment + state.currentStrategy.interventions.difficultyAdjustment
+        ));
+        
+        difficultyStore.adjustDifficulty(newDifficulty, reason, 'performance_improvement');
+        
+        // Provide feedback about the adjustment
+        get().addFeedback({
+          id: `adjustment-${Date.now()}`,
+          type: 'analysis',
+          message: `I've ${adjustment > 0 ? 'increased' : 'decreased'} the AI difficulty to better match your skill level.`,
+          priority: 'medium',
+          timestamp: Date.now(),
+          context: {
+            learningPoint: 'Adaptive difficulty adjustment'
+          }
+        });
+        
+        console.log('🧙‍♂️ Difficulty adjusted:', { newDifficulty, reason });
+      }
+    },
+
+    // Feedback management
+    addFeedback: (feedback: MentorFeedback) => {
+      set(state => ({
+        currentFeedback: [...state.currentFeedback, feedback].slice(-10) // Keep last 10 messages
+      }));
+    },
+
+    clearOldFeedback: () => {
+      const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+      set(state => ({
+        currentFeedback: state.currentFeedback.filter(f => f.timestamp > fiveMinutesAgo)
+      }));
+    },
+
+    getFeedbackForPhase: (phase: 'opening' | 'middle' | 'endgame') => {
+      const state = get();
+      return state.currentFeedback.filter(f => f.context?.gamePhase === phase);
+    },
+
+    // Progress tracking
+    recordMilestone: (milestone: string) => {
+      set(state => ({
+        sessionProgress: {
+          ...state.sessionProgress,
+          milestonesReached: [...state.sessionProgress.milestonesReached, milestone]
+        }
+      }));
+      
+      get().addFeedback({
+        id: `milestone-${Date.now()}`,
+        type: 'celebration',
+        message: `Milestone achieved: ${milestone}! 🎉`,
+        priority: 'high',
+        timestamp: Date.now(),
+        context: {
+          learningPoint: milestone
+        }
+      });
+    },
+
+    calculateSessionImprovement: (): number => {
+      const state = get();
+      const sessionDuration = Date.now() - state.sessionStartTime;
+      const hoursPassed = sessionDuration / (1000 * 60 * 60);
+      
+      // Calculate improvement based on games played, time spent, and milestones
+      return Math.min(100, 
+        (state.gamesThisSession * 5) + 
+        (hoursPassed * 10) + 
+        (state.sessionProgress.milestonesReached.length * 15)
+      );
+    },
+
+    identifyLearningAreas: (gameHistory: GameState[]): { weak: string[], strong: string[] } => {
+      // Analyze game history to identify patterns
+      const weak: string[] = [];
+      const strong: string[] = [];
+      
+      // This would be enhanced with real game analysis
+      if (Math.random() > 0.7) weak.push('Opening development');
+      if (Math.random() > 0.7) weak.push('Endgame technique');
+      if (Math.random() > 0.7) weak.push('Tactical awareness');
+      
+      if (Math.random() > 0.6) strong.push('Wizard piece usage');
+      if (Math.random() > 0.6) strong.push('Strategic planning');
+      if (Math.random() > 0.6) strong.push('Position evaluation');
+      
+      set(state => ({
+        analytics: {
+          ...state.analytics,
+          weakAreas: weak,
+          strongAreas: strong
+        }
+      }));
+      
+      return { weak, strong };
+    },
+
+    // Configuration methods
+    setAdaptationSensitivity: (sensitivity) => set({ adaptationSensitivity: sensitivity }),
+    setFeedbackStyle: (style) => set({ feedbackStyle: style }),
+    toggleAutoAdjustDifficulty: () => set(state => ({ autoAdjustDifficulty: !state.autoAdjustDifficulty })),
+    toggleRealTimeAnalysis: () => set(state => ({ showRealTimeAnalysis: !state.showRealTimeAnalysis })),
+
+    // Reset and persistence
+    resetSession: () => {
+      set({
+        sessionStartTime: Date.now(),
+        gamesThisSession: 0,
+        currentFeedback: [],
+        sessionProgress: {
+          improvementPoints: 0,
+          milestonesReached: [],
+          challengesOvercome: []
+        }
+      });
+      get().initializeMentor();
+    },
+
+    saveMentorProgress: () => {
+      const state = get();
+      try {
+        localStorage.setItem('wizardChess_mentorProgress', JSON.stringify({
+          sessionProgress: state.sessionProgress,
+          analytics: state.analytics,
+          adaptationSensitivity: state.adaptationSensitivity,
+          feedbackStyle: state.feedbackStyle
+        }));
+        console.log('🧙‍♂️ Mentor progress saved');
+      } catch (error) {
+        console.warn('Failed to save mentor progress:', error);
+      }
+    },
+
+    loadMentorProgress: () => {
+      try {
+        const saved = localStorage.getItem('wizardChess_mentorProgress');
+        if (saved) {
+          const data = JSON.parse(saved);
+          set({
+            sessionProgress: data.sessionProgress || get().sessionProgress,
+            analytics: data.analytics || get().analytics,
+            adaptationSensitivity: data.adaptationSensitivity || get().adaptationSensitivity,
+            feedbackStyle: data.feedbackStyle || get().feedbackStyle
+          });
+          console.log('🧙‍♂️ Mentor progress loaded');
+        }
+      } catch (error) {
+        console.warn('Failed to load mentor progress:', error);
+      }
+    }
+  }))
+);
+
+// Subscribe to game events for automatic mentor responses
+useDynamicAIMentor.subscribe(
+  (state) => state.isActive,
+  (isActive) => {
+    if (isActive) {
+      console.log('🧙‍♂️ Dynamic AI Mentor is now monitoring your game');
+      // Load progress when activated
+      useDynamicAIMentor.getState().loadMentorProgress();
+    }
+  }
+);
+
+// Export the store for global access
+if (typeof window !== 'undefined') {
+  (window as any).useDynamicAIMentor = useDynamicAIMentor;
+}

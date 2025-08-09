@@ -12,6 +12,7 @@ import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AdaptiveDifficultyWizardAssistant } from "./components/chess/AdaptiveDifficultyWizardAssistant";
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
+import { MentorIntegration } from "./components/mentor/MentorIntegration";
 import { DiagnosticsPanel } from "./components/diagnostics/DiagnosticsPanel";
 import { useDiagnostics } from "./lib/stores/useDiagnostics";
 import { AdBanner } from "./components/monetization/AdBanner";
@@ -158,6 +159,11 @@ function App() {
               {/* Game UI Below - Status and History */}
               <div className="game-info-section w-full max-w-4xl mt-6">
                 <GameUI onSettings={() => setShowSettings(true)} />
+              </div>
+              
+              {/* Dynamic AI Mentor Panel */}
+              <div className="mentor-section w-full max-w-6xl mt-6">
+                <MentorIntegration />
               </div>
             </div>
             

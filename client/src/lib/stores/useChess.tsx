@@ -285,6 +285,20 @@ export const useChess = create<ChessStore>()(
 
       const newState = makeMove(state, move);
       set(newState);
+      
+      // Trigger Dynamic AI Mentor analysis (non-blocking)
+      setTimeout(() => {
+        try {
+          import('./useDynamicAIMentor').then(({ useDynamicAIMentor }) => {
+            const mentorState = useDynamicAIMentor.getState();
+            if (mentorState.isActive) {
+              mentorState.analyzeCurrentMove(newState, move);
+            }
+          });
+        } catch (error) {
+          console.log('Mentor system not available:', error);
+        }
+      }, 0);
 
       // Record PvP stats for local multiplayer games
       if (state.gameMode === 'local' && newState.gamePhase === 'ended') {
