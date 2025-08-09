@@ -27,23 +27,20 @@ export function AdminLogin({ onAuthChange }: AdminLoginProps) {
       console.log('🔐 AdminLogin: Authentication result:', result);
       
       if (result) {
-        console.log('🔐 AdminLogin: Authentication successful, clearing form and notifying parent');
+        console.log('🔐 AdminLogin: Authentication successful, clearing form');
         setError('');
         setAdminKey('');
         setIsOpen(false);
         
-        // Force a slight delay to ensure session is saved
-        setTimeout(() => {
-          console.log('🔐 AdminLogin: Calling onAuthChange(true)');
-          onAuthChange?.(true);
-          
-          // Force a page refresh to ensure all components re-render
-          console.log('🔐 AdminLogin: Forcing window reload to refresh all components');
-          window.location.reload();
-        }, 100);
+        // Show success message
+        alert('Admin authentication successful! Page will reload to show admin features.');
+        
+        // Immediate page reload to ensure all components re-render with new admin status
+        console.log('🔐 AdminLogin: Reloading page to show admin features');
+        window.location.reload();
       } else {
         console.log('🔐 AdminLogin: Authentication failed');
-        setError('Invalid admin key');
+        setError('Invalid admin key. Expected: wizard-admin-2025');
       }
     } catch (error) {
       console.error('🔐 AdminLogin: Error during authentication:', error);
@@ -166,11 +163,29 @@ export function AdminLogin({ onAuthChange }: AdminLoginProps) {
           </DialogTitle>
         </DialogHeader>
         
-        <div className="text-sm bg-blue-50 border border-blue-200 rounded p-3 mb-4">
-          <strong>Test Admin Key:</strong> wizard-admin-2025<br/>
-          <span className="text-xs text-gray-600">
-            After successful login, page will reload and admin features will appear in the main menu.
-          </span>
+        <div className="space-y-3 mb-4">
+          <div className="text-sm bg-green-50 border border-green-200 rounded p-3">
+            <div className="flex items-center justify-between mb-2">
+              <strong className="text-green-800">Quick Admin Access</strong>
+            </div>
+            <Button 
+              onClick={() => {
+                setAdminKey('wizard-admin-2025');
+                setTimeout(handleLogin, 100);
+              }}
+              className="w-full bg-green-600 hover:bg-green-700 text-white"
+              size="sm"
+            >
+              🔓 Enable Admin Features
+            </Button>
+            <div className="text-xs text-green-700 mt-2">
+              Enables Mass AI Training, Reset, and Statistics features
+            </div>
+          </div>
+          
+          <div className="text-sm bg-blue-50 border border-blue-200 rounded p-3">
+            <strong>Manual Entry:</strong> wizard-admin-2025
+          </div>
         </div>
         
         <Card>

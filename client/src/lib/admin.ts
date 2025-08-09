@@ -36,15 +36,16 @@ export const isAdminEnabled = (): boolean => {
 export const authenticateAdmin = (key: string): boolean => {
   const adminKey = import.meta.env.VITE_ADMIN_KEY || 'wizard-admin-2025';
   
-  // ADMIN DEBUG LOGS DISABLED
+  console.log('🔐 Admin: Authenticating with key:', key.substring(0, 5) + '***');
+  console.log('🔐 Admin: Expected key:', adminKey.substring(0, 5) + '***');
   
   if (key === adminKey) {
     sessionStorage.setItem(ADMIN_SESSION_KEY, 'authenticated');
-    // ADMIN DEBUG LOGS DISABLED
+    console.log('🔐 Admin: Session storage set, checking:', sessionStorage.getItem(ADMIN_SESSION_KEY));
     return true;
   }
   
-  // ADMIN DEBUG LOGS DISABLED
+  console.log('🔐 Admin: Authentication failed - key mismatch');
   return false;
 };
 
