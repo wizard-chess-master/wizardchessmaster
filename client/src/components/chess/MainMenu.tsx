@@ -15,7 +15,7 @@ import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
 // MULTIPLAYER DISABLED: import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
-import { AIDifficultyVisualization } from './AIDifficultyVisualization';
+
 import { AdminLogin } from './AdminLogin';
 
 import { isAdminFeatureEnabled, isAdminEnabled } from '../../lib/admin';
@@ -323,15 +323,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </Button>
           </LeaderboardDialog>
           
-          <AIDifficultyVisualization>
-            <Button
-              variant="outline"
-              className="medieval-btn"
-            >
-              <Brain className="w-4 h-4 mr-2" />
-              AI Difficulty
-            </Button>
-          </AIDifficultyVisualization>
+
           
           <div className="flex gap-2">
             <Button
