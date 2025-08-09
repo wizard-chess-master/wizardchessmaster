@@ -254,7 +254,7 @@ export const MassTrainingDialog: React.FC<MassTrainingDialogProps> = ({ children
           </Badge>
         </div>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto" aria-describedby="mass-training-description">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" aria-describedby="mass-training-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Brain className="w-5 h-5" />

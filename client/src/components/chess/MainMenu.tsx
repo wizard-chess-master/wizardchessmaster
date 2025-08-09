@@ -460,7 +460,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
       {/* AI Learning Stats Dialog - Admin Only */}
       {isAdminFeatureEnabled('stats') && (
         <Dialog open={showStatsDialog} onOpenChange={setShowStatsDialog}>
-        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Brain className="w-5 h-5" />
@@ -491,14 +491,15 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               <div className="space-y-4">
                 <div className="text-lg font-semibold mb-4">Learning Statistics</div>
                 
-                <div className="space-y-3">
+                {/* Core Statistics Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Total Games Analyzed:</span>
+                    <span className="font-medium">Total Games:</span>
                     <span className="font-bold text-lg">{learningStats.totalGamesAnalyzed}</span>
                   </div>
                   
                   <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Recent Games (last 100):</span>
+                    <span className="font-medium">Recent Games:</span>
                     <span className="font-bold text-lg">{learningStats.recentGames}</span>
                   </div>
                   
@@ -512,33 +513,58 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     <span className="font-bold text-lg">{learningStats.aiGames}</span>
                   </div>
                   
-                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Win Rate vs Human:</span>
-                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsHuman)}%</span>
+                  <div className="flex justify-between items-center p-3 bg-green-50 border border-green-200 rounded">
+                    <span className="font-medium text-green-800">Win vs Human:</span>
+                    <span className="font-bold text-lg text-green-700">{Math.round(learningStats.winRateVsHuman)}%</span>
                   </div>
                   
-                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Win Rate vs AI:</span>
-                    <span className="font-bold text-lg">{Math.round(learningStats.winRateVsAI)}%</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Move Patterns:</span>
-                    <span className="font-bold text-lg">{learningStats.movePatterns}</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center p-3 bg-slate-100 rounded">
-                    <span className="font-medium">Position Patterns:</span>
-                    <span className="font-bold text-lg">{learningStats.positionalPatterns}</span>
+                  <div className="flex justify-between items-center p-3 bg-blue-50 border border-blue-200 rounded">
+                    <span className="font-medium text-blue-800">Win vs AI:</span>
+                    <span className="font-bold text-lg text-blue-700">{Math.round(learningStats.winRateVsAI)}%</span>
                   </div>
                 </div>
 
+                {/* Learning Patterns */}
+                <div className="mt-4 p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                  <h3 className="font-semibold text-purple-800 mb-3">Learning Patterns</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-purple-700">Move Patterns:</span>
+                      <span className="font-bold text-lg text-purple-800">{learningStats.movePatterns}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-purple-700">Position Patterns:</span>
+                      <span className="font-bold text-lg text-purple-800">{learningStats.positionalPatterns}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Advanced Stats */}
+                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                  <h3 className="font-semibold text-amber-800 mb-3">Advanced Statistics</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-amber-700">Proficiency:</span>
+                      <span className="font-bold text-amber-800 capitalize">{learningStats.proficiencyLevel || 'Novice'}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-amber-700">Experience:</span>
+                      <span className="font-bold text-amber-800">{learningStats.experiencePoints || 0} XP</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium text-amber-700">Progress:</span>
+                      <span className="font-bold text-amber-800">{learningStats.learningProgress || 0}%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Preferred Strategies */}
                 {learningStats.preferredStrategies && learningStats.preferredStrategies.length > 0 && (
-                  <div className="mt-4">
-                    <div className="font-medium mb-2">Preferred Strategies:</div>
+                  <div className="mt-4 p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <h3 className="font-semibold text-indigo-800 mb-3">Preferred Strategies</h3>
                     <div className="flex flex-wrap gap-2">
                       {learningStats.preferredStrategies.map((strategy: string, index: number) => (
-                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 rounded text-sm">
+                        <span key={index} className="px-3 py-1 bg-indigo-200 text-indigo-800 rounded-full text-sm font-medium">
                           {strategy}
                         </span>
                       ))}
