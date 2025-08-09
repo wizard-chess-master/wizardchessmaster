@@ -162,7 +162,7 @@ export function PersonalizedHintModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-4 medieval-panel bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-400 shadow-2xl">
+      <DialogContent className="sm:max-w-2xl max-w-[95vw] medieval-panel bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-400 shadow-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 medieval-text">
             <Brain className="w-5 h-5 text-purple-600" />
