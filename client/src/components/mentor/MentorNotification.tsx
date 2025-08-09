@@ -185,11 +185,17 @@ export function MentorNotification() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setVisibleFeedback(null)}
-                className="h-6 w-6 p-0"
-                title="Close"
+                onClick={() => {
+                  // Cancel any ongoing speech when closing
+                  if ('speechSynthesis' in window) {
+                    speechSynthesis.cancel();
+                  }
+                  setVisibleFeedback(null);
+                }}
+                className="h-6 w-6 p-0 hover:bg-gray-200"
+                title="Close notification"
               >
-                <X className="h-3 w-3" />
+                <X className="h-4 w-4" />
               </Button>
             </div>
           </div>
