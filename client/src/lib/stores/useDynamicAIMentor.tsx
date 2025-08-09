@@ -220,7 +220,7 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       get().addFeedback({
         id: `welcome-${Date.now()}`,
         type: 'encouragement',
-        message: 'Welcome! I\'m your AI mentor. I\'ll help you improve by adapting the game difficulty and providing personalized guidance.',
+        message: 'Greetings, young apprentice! I am Merlin the Wise. I shall guide your chess journey with ancient wisdom and magical insights.',
         priority: 'medium',
         timestamp: Date.now(),
         context: {
@@ -429,7 +429,7 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
         get().addFeedback({
           id: `adjustment-${Date.now()}`,
           type: 'analysis',
-          message: `I've ${adjustment > 0 ? 'increased' : 'decreased'} the AI difficulty to better match your skill level.`,
+          message: `I have ${adjustment > 0 ? 'enhanced' : 'eased'} the challenge to better suit your growing abilities, young chess warrior.`,
           priority: 'medium',
           timestamp: Date.now(),
           context: {

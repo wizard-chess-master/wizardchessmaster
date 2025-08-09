@@ -107,18 +107,18 @@ export function DynamicMentorPanel() {
       <Card className="w-full max-w-md bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
         <CardHeader className="text-center">
           <Brain className="w-12 h-12 mx-auto text-purple-600 mb-2" />
-          <CardTitle className="text-lg text-purple-800">AI Mentor</CardTitle>
+          <CardTitle className="text-lg text-purple-800">Merlin the Wise</CardTitle>
         </CardHeader>
         <CardContent className="text-center">
           <p className="text-sm text-gray-600 mb-4">
-            Activate your AI mentor for personalized coaching, adaptive difficulty, and real-time feedback.
+            Awaken the ancient wizard Merlin for magical guidance, adaptive challenges, and mystical feedback.
           </p>
           <Button 
             onClick={activateMentor}
             className="w-full bg-purple-600 hover:bg-purple-700"
           >
             <Brain className="w-4 h-4 mr-2" />
-            Activate AI Mentor
+            Awaken Merlin the Wise
           </Button>
         </CardContent>
       </Card>

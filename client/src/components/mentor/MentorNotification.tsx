@@ -119,7 +119,7 @@ export function MentorNotification() {
             
             <div className="flex-1">
               <div className="font-medium text-sm mb-1">
-                AI Mentor
+                Merlin the Wise
               </div>
               <div className="text-sm leading-relaxed">
                 {visibleFeedback.message}
