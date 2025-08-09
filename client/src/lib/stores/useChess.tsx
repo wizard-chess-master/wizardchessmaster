@@ -104,9 +104,28 @@ export const useChess = create<ChessStore>()(
       setTimeout(() => {
         const { board } = get();
         console.log('✅ Board state verified after set:');
+        console.log('🔍 Row 9 (WHITE HOME ROW - should have pieces):', board[9]);
         console.log('🔍 Row 8 (white pawns):', board[8]);
         console.log('🔍 Row 7 (empty):', board[7]);
-        console.log('🔍 Piece at 8,4:', board[8][4]);
+        console.log('🔍 Row 2 (empty):', board[2]);
+        console.log('🔍 Row 1 (black pawns):', board[1]);
+        console.log('🔍 Row 0 (black pieces):', board[0]);
+        console.log('🔍 Piece at 9,4 (should be white queen):', board[9][4]);
+        console.log('🔍 Piece at 9,5 (should be white king):', board[9][5]);
+        console.log('🔍 Piece at 8,4 (should be white pawn):', board[8][4]);
+        
+        // Count pieces for verification
+        let whitePieces = 0, blackPieces = 0;
+        for (let row = 0; row < 10; row++) {
+          for (let col = 0; col < 10; col++) {
+            const piece = board[row][col];
+            if (piece) {
+              if (piece.color === 'white') whitePieces++;
+              if (piece.color === 'black') blackPieces++;
+            }
+          }
+        }
+        console.log('🔢 Total pieces count:', { whitePieces, blackPieces, expected: 20 });
       }, 100);
 
       // Start AI vs AI gameplay immediately

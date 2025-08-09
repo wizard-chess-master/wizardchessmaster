@@ -171,6 +171,11 @@ export function ChessBoard() {
         const isAnimatingPiece = animatingPiece && 
           animatingPiece.fromRow === row && animatingPiece.fromCol === col;
         
+        // Debug logging for white home row
+        if (row === 9 && piece) {
+          console.log(`🏠 WHITE HOME ROW - Position (${row},${col}):`, piece);
+        }
+        
         if (piece && imagesRef.current && !isAnimatingPiece) {
           drawPieceAtPosition(ctx, piece, x, y);
         }
