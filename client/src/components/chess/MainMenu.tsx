@@ -24,6 +24,7 @@ import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
 import { getPaymentManager } from '../../lib/monetization/paymentManager';
 import { MonetizationTester } from '../monetization/MonetizationTester';
 import { PremiumComparisonModal, usePremiumComparison } from '../monetization/PremiumComparisonModal';
+import { AchievementTestPanel } from '../achievements/AchievementTestPanel';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -39,6 +40,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const [showDebugDialog, setShowDebugDialog] = useState(false);
   const [debugResults, setDebugResults] = useState<any>(null);
   const [adminRefresh, setAdminRefresh] = useState(0);
+  const [showTestPanel, setShowTestPanel] = useState(false);
   const { showComparison, openComparison, closeComparison } = usePremiumComparison();
 
 
@@ -294,6 +296,22 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                       <Badge variant="secondary">
                         {learningStats?.totalGamesAnalyzed || 0} Games
                       </Badge>
+                    </div>
+                  </Button>
+                )}
+
+                {isAdminFeatureEnabled('debug') && (
+                  <Button
+                    className="medieval-btn mode-button"
+                    variant="outline"
+                    onClick={() => {
+                      (window as any).gameAudioManager?.onButtonClick();
+                      setShowTestPanel(true);
+                    }}
+                  >
+                    <div className="mode-content">
+                      <span>🎉 Test Achievement Celebrations</span>
+                      <Badge variant="secondary">New Feature</Badge>
                     </div>
                   </Button>
                 )}
@@ -685,6 +703,21 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         open={showComparison}
         onClose={closeComparison}
       />
+
+      {/* Achievement Test Panel Dialog - Admin Only */}
+      {isAdminFeatureEnabled('debug') && (
+        <Dialog open={showTestPanel} onOpenChange={setShowTestPanel}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                🎉 Achievement Celebration Test Panel
+              </DialogTitle>
+              <DialogClose />
+            </DialogHeader>
+            <AchievementTestPanel />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

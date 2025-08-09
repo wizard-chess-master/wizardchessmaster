@@ -7,6 +7,7 @@ import { Card, CardContent } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { X, Star, Trophy, Award } from 'lucide-react';
+import { EnhancedAchievementNotification } from './EnhancedAchievementNotification';
 
 interface AchievementNotificationProps {
   achievement: Achievement;
@@ -251,12 +252,12 @@ export function AchievementNotificationQueue({ onViewAll }: NotificationQueuePro
     if (remainingQueue.length > 0) {
       setTimeout(() => {
         setCurrentNotification(remainingQueue[0]);
-      }, 500); // Brief delay between notifications
+      }, 1000); // Longer delay for enhanced celebrations
     }
   };
 
   return currentNotification ? (
-    <AchievementNotification
+    <EnhancedAchievementNotification
       achievement={currentNotification}
       onClose={handleClose}
       onViewAll={onViewAll}
