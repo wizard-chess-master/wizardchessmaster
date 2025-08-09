@@ -16,18 +16,41 @@ export function MobileChessBoard({ className }: MobileChessBoardProps) {
 
   // Calculate optimal board size based on device and orientation
   const boardSize = useMemo(() => {
-    if (!deviceInfo.isMobile) return 'var(--chess-board-size)';
+    if (!deviceInfo.isMobile) return 600; // Default desktop size
     
-    const baseSize = Math.min(deviceInfo.screenWidth, deviceInfo.screenHeight) * 0.85;
+    const { screenWidth, screenHeight, orientation } = deviceInfo;
+    const padding = 32; // Account for padding and controls
     
+    let availableWidth = screenWidth - padding;
+    let availableHeight = screenHeight - padding;
+    
+    if (orientation === 'portrait') {
+      // Portrait: use most of width, leave space for controls at bottom
+      availableHeight = availableHeight - 120; // Reserve space for bottom controls
+      availableWidth = Math.min(availableWidth, availableHeight);
+    } else {
+      // Landscape: use height as constraint, leave space for side elements
+      availableWidth = Math.min(availableWidth * 0.7, availableHeight);
+    }
+    
+    // Apply size setting multipliers
+    let multiplier = 1.0;
     switch (settings.mobileChessBoardSize) {
       case 'small':
-        return Math.min(baseSize * 0.8, 300);
+        multiplier = 0.8;
+        break;
       case 'large':
-        return Math.min(baseSize, 450);
+        multiplier = 1.2;
+        break;
       default: // medium
-        return Math.min(baseSize * 0.9, 375);
+        multiplier = 1.0;
+        break;
     }
+    
+    const finalSize = Math.floor(Math.min(availableWidth, availableHeight) * multiplier);
+    
+    // Ensure minimum and maximum sizes
+    return Math.max(280, Math.min(finalSize, 500));
   }, [deviceInfo, settings.mobileChessBoardSize]);
 
   const coordinatesVisible = settings.mobileShowCoordinates && deviceInfo.orientation === 'landscape';
@@ -84,14 +107,18 @@ export function MobileChessBoard({ className }: MobileChessBoardProps) {
             'rounded-lg',
             'shadow-2xl',
             'bg-gradient-to-br from-amber-100 to-amber-200',
-            deviceInfo.orientation === 'portrait' && 'mx-auto'
+            'mx-auto'
           )}
           style={{
-            width: 'var(--mobile-board-size)',
-            height: 'var(--mobile-board-size)'
+            width: `${boardSize}px`,
+            height: `${boardSize}px`,
+            maxWidth: '100%',
+            maxHeight: '100%'
           }}
         >
-          <ChessBoard />
+          <div className="w-full h-full">
+            <ChessBoard />
+          </div>
           
           {/* Mobile-specific overlays */}
           {deviceInfo.isMobile && (

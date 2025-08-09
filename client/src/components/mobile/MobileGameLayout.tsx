@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDeviceDetection } from '@/lib/hooks/useDeviceDetection';
 import { useDeviceStore } from '@/lib/stores/useDeviceStore';
 import { useChess } from '@/lib/stores/useChess';
-import { MobileChessBoard } from './MobileChessBoard';
+import { ResponsiveMobileChessBoard } from './MobileChessBoardWrapper';
 import { MobileGameControls, MobileMenuOverlay } from './MobileGameControls';
 import { MobileSettingsDialog, MobileSettingsQuickAccess } from './MobileSettingsDialog';
 import { GameUI } from '@/components/chess/GameUI';
@@ -77,33 +77,33 @@ export function MobileGameLayout({
         
         {isPortrait ? (
           // Portrait Layout
-          <div className="flex flex-col items-center justify-start flex-1 p-4 space-y-4">
+          <div className="flex flex-col items-center justify-center flex-1 p-4 space-y-2 min-h-0">
             
-            {/* Game Info at top */}
+            {/* Game Info at top - compact */}
             {!settings.hideNonEssentialUI && (
-              <div className="w-full max-w-md">
+              <div className="w-full max-w-md flex-shrink-0">
                 <GameUI compact />
               </div>
             )}
             
-            {/* Chess Board in center */}
-            <div className="flex-1 flex items-center justify-center">
-              <MobileChessBoard />
+            {/* Chess Board in center - takes remaining space */}
+            <div className="flex-1 flex items-center justify-center min-h-0 w-full">
+              <ResponsiveMobileChessBoard />
             </div>
             
           </div>
         ) : (
           // Landscape Layout
-          <div className="flex items-center justify-center flex-1 p-2 gap-4">
+          <div className="flex items-center justify-center flex-1 p-2 gap-2 min-h-0">
             
             {/* Chess Board on left/center */}
-            <div className="flex-shrink-0">
-              <MobileChessBoard />
+            <div className="flex-shrink-0 h-full flex items-center justify-center">
+              <ResponsiveMobileChessBoard />
             </div>
             
             {/* Game Info on right */}
             {!settings.hideNonEssentialUI && (
-              <div className="flex-1 max-w-xs">
+              <div className="flex-1 max-w-xs h-full overflow-y-auto">
                 <GameUI compact />
               </div>
             )}
