@@ -12,8 +12,8 @@ export function HintModal({ isOpen, onClose, hintDescription, hintReasoning }: H
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-4 border-amber-600 rounded-lg shadow-2xl max-w-md w-full">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+      <div className="bg-gradient-to-b from-amber-50 to-amber-100 border-4 border-amber-600 rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-amber-600 to-amber-700 p-4 rounded-t-md flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -22,34 +22,35 @@ export function HintModal({ isOpen, onClose, hintDescription, hintReasoning }: H
           </div>
           <button
             onClick={onClose}
-            className="text-amber-200 hover:text-white transition-colors"
+            className="text-amber-200 hover:text-white transition-colors hover:bg-amber-800/20 rounded-full p-1"
+            title="Close hint"
           >
-            <X size={20} />
+            <X size={24} />
           </button>
         </div>
         
         {/* Content */}
-        <div className="p-6 space-y-4">
-          <div className="bg-white/70 rounded-lg p-4 border-2 border-amber-300">
-            <h3 className="font-semibold text-amber-800 mb-2 flex items-center gap-1">
+        <div className="p-6 space-y-6">
+          <div className="bg-white/80 rounded-lg p-5 border-2 border-amber-300 shadow-md">
+            <h3 className="font-bold text-amber-800 mb-3 flex items-center gap-2 text-lg">
               <span>⚡</span> Recommended Move
             </h3>
-            <p className="text-gray-800 leading-relaxed">{hintDescription}</p>
+            <p className="text-gray-800 leading-relaxed text-base">{hintDescription}</p>
           </div>
           
-          <div className="bg-white/70 rounded-lg p-4 border-2 border-amber-300">
-            <h3 className="font-semibold text-amber-800 mb-2 flex items-center gap-1">
+          <div className="bg-white/80 rounded-lg p-5 border-2 border-amber-300 shadow-md">
+            <h3 className="font-bold text-amber-800 mb-3 flex items-center gap-2 text-lg">
               <span>🧠</span> Strategic Value
             </h3>
-            <p className="text-gray-800 leading-relaxed">{hintReasoning}</p>
+            <p className="text-gray-800 leading-relaxed text-base">{hintReasoning}</p>
           </div>
         </div>
         
         {/* Footer */}
-        <div className="p-4 bg-amber-50 rounded-b-md border-t border-amber-300">
+        <div className="p-6 bg-amber-50 rounded-b-md border-t border-amber-300">
           <button
             onClick={onClose}
-            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-lg"
+            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-200 shadow-lg text-lg"
           >
             ✨ Got it, let's battle!
           </button>
