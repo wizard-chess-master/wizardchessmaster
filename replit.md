@@ -76,6 +76,7 @@ Preferred communication style: Simple, everyday language.
 - **Improved Settings Dialog**: Enhanced text visibility and contrast throughout settings interface with white background, dark text, proper borders, and organized sections for volume controls, audio information, and keyboard shortcuts.
 - **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading, event management, and system status monitoring.
 - **Custom Hint Modal System**: Replaced technical browser alerts with immersive medieval-themed modal featuring amber gradients, wizard styling, and fantasy language. Eliminates technical domain references for complete immersion.
+- **Floating Mentor Notifications**: Enhanced AI mentor system with floating notifications featuring real-time feedback display, text-to-speech voice synthesis, auto-hide functionality, and prominent visual positioning to eliminate need for scrolling to see feedback.
 
 ## External Dependencies
 

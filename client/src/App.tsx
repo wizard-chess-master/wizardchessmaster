@@ -13,6 +13,7 @@ import { AdaptiveDifficultyWizardAssistant } from "./components/chess/AdaptiveDi
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
 import { MentorIntegration } from "./components/mentor/MentorIntegration";
+import { MentorNotification } from "./components/mentor/MentorNotification";
 import { DiagnosticsPanel } from "./components/diagnostics/DiagnosticsPanel";
 import { useDiagnostics } from "./lib/stores/useDiagnostics";
 import { AdBanner } from "./components/monetization/AdBanner";
@@ -204,6 +205,9 @@ function App() {
 
 
         <AchievementNotificationQueue onViewAll={() => setShowAchievements(true)} />
+        
+        {/* Floating Mentor Notifications */}
+        <MentorNotification />
       </div>
     </div>
   );

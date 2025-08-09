@@ -4,7 +4,7 @@ import { useAIDifficultyProgression } from './useAIDifficultyProgression';
 import { GameState, ChessMove, PieceColor } from '../chess/types';
 
 // Enhanced mentor feedback types
-interface MentorFeedback {
+export interface MentorFeedback {
   id: string;
   type: 'encouragement' | 'strategy' | 'warning' | 'celebration' | 'analysis';
   message: string;
