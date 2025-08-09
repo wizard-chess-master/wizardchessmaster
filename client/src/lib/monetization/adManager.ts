@@ -87,36 +87,63 @@ class GoogleAdSenseManager implements AdManager {
       `;
 
       const adContainer = document.createElement('div');
-      adContainer.innerHTML = `
-        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; max-width: 90vw;">
-          <h3 style="margin: 0 0 15px 0; color: #333;">Game Complete!</h3>
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-${this.adConfig.publisherId}"
-               data-ad-slot="${this.adConfig.interstitialSlot}"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
-          <div style="margin-top: 15px;">
-            <button id="close-ad" style="
-              background: #4CAF50;
-              color: white;
-              border: none;
-              padding: 10px 20px;
-              border-radius: 4px;
-              cursor: pointer;
-              margin-right: 10px;
-            ">Continue Game</button>
-            <button id="upgrade-ad" style="
-              background: #FF9800;
-              color: white;
-              border: none;
-              padding: 10px 20px;
-              border-radius: 4px;
-              cursor: pointer;
-            ">Remove Ads ($2.99)</button>
-          </div>
-        </div>
+      
+      // Create main container div
+      const mainDiv = document.createElement('div');
+      mainDiv.style.cssText = 'background: white; padding: 20px; border-radius: 8px; text-align: center; max-width: 90vw;';
+      
+      // Create title
+      const title = document.createElement('h3');
+      title.style.cssText = 'margin: 0 0 15px 0; color: #333;';
+      title.textContent = 'Game Complete!';
+      
+      // Create ad slot
+      const adSlot = document.createElement('ins');
+      adSlot.className = 'adsbygoogle';
+      adSlot.style.display = 'block';
+      adSlot.setAttribute('data-ad-client', `ca-pub-${this.adConfig.publisherId}`);
+      adSlot.setAttribute('data-ad-slot', this.adConfig.interstitialSlot);
+      adSlot.setAttribute('data-ad-format', 'auto');
+      adSlot.setAttribute('data-full-width-responsive', 'true');
+      
+      // Create button container
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = 'margin-top: 15px;';
+      
+      // Create Continue Game button
+      const closeBtn = document.createElement('button');
+      closeBtn.id = 'close-ad';
+      closeBtn.style.cssText = `
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
       `;
+      closeBtn.textContent = 'Continue Game';
+      
+      // Create Remove Ads button
+      const upgradeBtn = document.createElement('button');
+      upgradeBtn.id = 'upgrade-ad';
+      upgradeBtn.style.cssText = `
+        background: #FF9800;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      `;
+      upgradeBtn.textContent = 'Remove Ads ($2.99)';
+      
+      // Assemble the DOM structure
+      buttonContainer.appendChild(closeBtn);
+      buttonContainer.appendChild(upgradeBtn);
+      mainDiv.appendChild(title);
+      mainDiv.appendChild(adSlot);
+      mainDiv.appendChild(buttonContainer);
+      adContainer.appendChild(mainDiv);
 
       overlay.appendChild(adContainer);
       document.body.appendChild(overlay);
@@ -186,37 +213,69 @@ class GoogleAdSenseManager implements AdManager {
       `;
 
       const adContainer = document.createElement('div');
-      adContainer.innerHTML = `
-        <div style="background: white; padding: 20px; border-radius: 8px; text-align: center; max-width: 90vw;">
-          <h3 style="margin: 0 0 15px 0; color: #333;">Watch Ad for Reward</h3>
-          <p style="color: #666; margin-bottom: 15px;">Watch this short ad to get your hint or undo!</p>
-          <ins class="adsbygoogle"
-               style="display:block"
-               data-ad-client="ca-pub-${this.adConfig.publisherId}"
-               data-ad-slot="${this.adConfig.rewardedSlot}"
-               data-ad-format="auto"
-               data-full-width-responsive="true"></ins>
-          <div style="margin-top: 15px;">
-            <button id="claim-reward" style="
-              background: #4CAF50;
-              color: white;
-              border: none;
-              padding: 10px 20px;
-              border-radius: 4px;
-              cursor: pointer;
-              margin-right: 10px;
-            ">Claim Reward</button>
-            <button id="skip-ad" style="
-              background: #9E9E9E;
-              color: white;
-              border: none;
-              padding: 10px 20px;
-              border-radius: 4px;
-              cursor: pointer;
-            ">Skip</button>
-          </div>
-        </div>
+      
+      // Create main container div
+      const mainDiv = document.createElement('div');
+      mainDiv.style.cssText = 'background: white; padding: 20px; border-radius: 8px; text-align: center; max-width: 90vw;';
+      
+      // Create title
+      const title = document.createElement('h3');
+      title.style.cssText = 'margin: 0 0 15px 0; color: #333;';
+      title.textContent = 'Watch Ad for Reward';
+      
+      // Create description
+      const description = document.createElement('p');
+      description.style.cssText = 'color: #666; margin-bottom: 15px;';
+      description.textContent = 'Watch this short ad to get your hint or undo!';
+      
+      // Create ad slot
+      const adSlot = document.createElement('ins');
+      adSlot.className = 'adsbygoogle';
+      adSlot.style.display = 'block';
+      adSlot.setAttribute('data-ad-client', `ca-pub-${this.adConfig.publisherId}`);
+      adSlot.setAttribute('data-ad-slot', this.adConfig.rewardedSlot);
+      adSlot.setAttribute('data-ad-format', 'auto');
+      adSlot.setAttribute('data-full-width-responsive', 'true');
+      
+      // Create button container
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = 'margin-top: 15px;';
+      
+      // Create Claim Reward button
+      const claimBtn = document.createElement('button');
+      claimBtn.id = 'claim-reward';
+      claimBtn.style.cssText = `
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-right: 10px;
       `;
+      claimBtn.textContent = 'Claim Reward';
+      
+      // Create Skip button
+      const skipBtn = document.createElement('button');
+      skipBtn.id = 'skip-ad';
+      skipBtn.style.cssText = `
+        background: #9E9E9E;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      `;
+      skipBtn.textContent = 'Skip';
+      
+      // Assemble the DOM structure
+      buttonContainer.appendChild(claimBtn);
+      buttonContainer.appendChild(skipBtn);
+      mainDiv.appendChild(title);
+      mainDiv.appendChild(description);
+      mainDiv.appendChild(adSlot);
+      mainDiv.appendChild(buttonContainer);
+      adContainer.appendChild(mainDiv);
 
       overlay.appendChild(adContainer);
       document.body.appendChild(overlay);
@@ -269,14 +328,21 @@ class GoogleAdSenseManager implements AdManager {
     }
 
     try {
-      container.innerHTML = `
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-${this.adConfig.publisherId}"
-             data-ad-slot="${this.adConfig.bannerSlot}"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-      `;
+      // Clear container first using safe DOM methods
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
+      
+      // Create ad slot element
+      const adSlot = document.createElement('ins');
+      adSlot.className = 'adsbygoogle';
+      adSlot.style.display = 'block';
+      adSlot.setAttribute('data-ad-client', `ca-pub-${this.adConfig.publisherId}`);
+      adSlot.setAttribute('data-ad-slot', this.adConfig.bannerSlot);
+      adSlot.setAttribute('data-ad-format', 'auto');
+      adSlot.setAttribute('data-full-width-responsive', 'true');
+      
+      container.appendChild(adSlot);
 
       ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
       console.log(`📰 Banner ad loaded in ${containerId}`);
@@ -288,7 +354,10 @@ class GoogleAdSenseManager implements AdManager {
   hideBannerAd(containerId: string): void {
     const container = document.getElementById(containerId);
     if (container) {
-      container.innerHTML = '';
+      // Clear container using safe DOM methods
+      while (container.firstChild) {
+        container.removeChild(container.firstChild);
+      }
     }
   }
 
