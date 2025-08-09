@@ -155,11 +155,6 @@ function App() {
                   <BoardControls onSettings={() => setShowSettings(true)} />
                 </div>
                 
-                {/* Game Status */}
-                <div className="game-status w-full max-w-4xl">
-                  <GameUI onSettings={() => setShowSettings(true)} />
-                </div>
-                
               </div>
             </div>
             
