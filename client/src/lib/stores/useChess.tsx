@@ -4,6 +4,7 @@ import { GameState, ChessMove, Position, GameMode, AIDifficulty, PieceColor } fr
 import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess/gameEngine";
 import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
+import { wizardChessAudio } from "../audio/audioManager";
 // Audio managed by ChessAudioController component
 import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
@@ -101,9 +102,15 @@ export const useChess = create<ChessStore>()(
       // Call cleanup function first
       cleanAudio();
       
-      // DISABLED - Theme music now controlled by MainMenu button only
-      console.log('🚫 DISABLED - Theme music now controlled by MainMenu button only');
-      // No audio creation here to prevent conflicts
+      // Auto-start theme music when entering game area
+      console.log('🎵 Game start - Theme-music1.mp3 handled by user controls only');
+      // Music will auto-start if not muted
+      const { isMuted } = useAudio.getState();
+      if (!isMuted) {
+        setTimeout(() => {
+          wizardChessAudio.playThemeMusic();
+        }, 500); // Small delay to ensure cleanup is complete
+      }
       
       // Verify board state after setting
       setTimeout(() => {

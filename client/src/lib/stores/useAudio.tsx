@@ -40,7 +40,7 @@ export const useAudio = create<AudioState>((set, get) => ({
     } else {
       // Start background music when unmuting
       console.log(`🔊 Audio unmuted`);
-      // Don't auto-start music here, let the user control it
+      playBackgroundMusic();
     }
   },
 
@@ -139,9 +139,9 @@ export const useAudio = create<AudioState>((set, get) => ({
     // Execute master cleanup
     masterAudioCleanup();
     
-    // DISABLED - Theme music now controlled by MainMenu button only
-    console.log('🚫 useAudio playBackgroundMusic disabled - music controlled by MainMenu');
-    // No automatic music playback to prevent conflicts
+    // Auto-start theme music when not muted
+    console.log('🎵 useAudio playBackgroundMusic - starting theme music');
+    wizardChessAudio.playThemeMusic();
   },
 
   stopBackgroundMusic: () => {
