@@ -1,6 +1,6 @@
 # Overview
 
-**Wizard Chess Duel** is a full-stack TypeScript application featuring a 10x10 chess variant with magical wizards. It offers AI opponent modes within a comprehensive medieval fantasy theme. Online multiplayer has been temporarily disabled due to functionality issues and will be re-enabled later. The project aims to provide an engaging and visually immersive chess experience with advanced AI capabilities and a robust monetization framework.
+**Wizard Chess Duel** is a full-stack TypeScript application featuring a 10x10 chess variant with magical wizards. It offers AI opponent modes within a comprehensive medieval fantasy theme with complete user authentication and cloud save functionality. Online multiplayer has been temporarily disabled due to functionality issues and will be re-enabled later. The project aims to provide an engaging and visually immersive chess experience with advanced AI capabilities, robust monetization framework, and seamless cross-device progression for premium members.
 
 Key features include:
 - A unique 10x10 board with custom wizard pieces.
@@ -11,6 +11,9 @@ Key features include:
 - Complete ad integration featuring post-game interstitials, in-play banners, and rewarded videos for hints/undos.
 - Comprehensive leaderboards for campaign and PvP modes.
 - A fully immersive medieval fantasy visual overhaul, including custom assets, UI, and animations.
+- Complete user authentication system with secure registration, login, and session management.
+- Cloud save functionality for premium members enabling cross-device progress synchronization.
+- Local backup system available to all registered users for progress protection.
 
 ## User Preferences
 
@@ -84,6 +87,9 @@ Preferred communication style: Simple, everyday language.
 - **Personalized Hint Learning Algorithm**: Complete machine learning system that tracks user interactions with hints (followed, ignored, dismissed, requested more), analyzes patterns to determine preferred complexity and style, adapts hint selection based on learned preferences, and provides real-time personalization insights with learning progress tracking. Features comprehensive settings panel with adaptation level controls and learning data reset functionality.
 - **Floating Mentor Notifications**: Enhanced AI mentor system with floating notifications featuring real-time feedback display, text-to-speech voice synthesis, auto-hide functionality, and prominent visual positioning to eliminate need for scrolling to see feedback.
 - **Production Deployment Optimization**: Enhanced server configuration with proper error handling, NODE_ENV fallbacks, dynamic PORT environment variable support, 0.0.0.0 host binding, and aligned static file serving. Added production build scripts and deployment test utilities to ensure Replit deployment compatibility.
+- **Comprehensive User Authentication System**: Complete authentication implementation with bcrypt password hashing, express-session management, user registration/login/logout flows, and secure session-based authentication. Features include user profile management, premium status tracking, and subscription synchronization via Stripe webhooks.
+- **Cloud Save & Backup System**: Premium members get cloud save functionality for cross-device progress synchronization, while all registered users can create local backups. Features automatic save detection, manual sync controls, and seamless data restoration with page reload integration.
+- **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated directly into the main menu interface with premium status indicators and logout functionality.
 
 ## External Dependencies
 
