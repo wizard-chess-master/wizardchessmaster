@@ -1120,13 +1120,13 @@ export function ChessBoard() {
     handleCanvasClick(event);
   };
 
-  // Calculate mobile-responsive sizing and styling
-  const isMobileDevice = finalIsMobile;
-  const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
-  
   // Force mobile mode for testing if screen is small (desktop mobile view mode)
   const forceMobileMode = deviceInfo.screenWidth <= 768 || window.innerWidth <= 768;
   const finalIsMobile = deviceInfo.isMobile || forceMobileMode;
+  
+  // Calculate mobile-responsive sizing and styling
+  const isMobileDevice = finalIsMobile;
+  const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
   
   // Debug device detection with detailed logging
   console.log('🔍 ChessBoard Device Detection Debug:', {
@@ -1206,12 +1206,12 @@ export function ChessBoard() {
           "relative",
           isMobileDevice && "mobile-chess-board"
         )}
-        style={isMobileDevice ? {
+        style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
           maxWidth: '100%',
-          maxHeight: '100%'
-        } : undefined}
+          maxHeight: isMobileDevice ? '100vh' : 'none'
+        }}
       >
         <div className="board-coordinates">
           {/* Column labels - hide on mobile portrait if setting is disabled */}
