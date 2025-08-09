@@ -180,22 +180,26 @@ export function ChessBoard() {
       let maxSize = 800;
       
       // Enhanced mobile-responsive sizing with device detection
+      console.log('🎨 Viewport sizing calculation:', { viewportWidth, viewportHeight });
+      
       if (viewportWidth < 480) {
         // Small mobile: prioritize fitting on screen
         maxSize = Math.min(viewportWidth * 0.95, Math.min(viewportHeight * 0.6, 350));
-        console.log('📱 Small mobile sizing:', maxSize);
+        console.log('📱 Small mobile sizing applied:', maxSize);
       } else if (viewportWidth < 768) {
         // Mobile: balance between size and usability  
         maxSize = Math.min(viewportWidth * 0.90, Math.min(viewportHeight * 0.7, 500));
-        console.log('📱 Mobile sizing:', maxSize);
+        console.log('📱 Mobile sizing applied:', maxSize);
       } else if (viewportWidth < 1024) {
         // Tablet: more generous sizing
         maxSize = Math.min(viewportWidth * 0.80, Math.min(viewportHeight * 0.8, 650));
-        console.log('📱 Tablet sizing:', maxSize);
+        console.log('📱 Tablet sizing applied:', maxSize);
       } else if (viewportWidth < 1200) {
         // Small desktop: standard sizing
         maxSize = Math.min(viewportWidth * 0.70, 800);
-        console.log('🖥️ Small desktop sizing:', maxSize);
+        console.log('🖥️ Small desktop sizing applied:', maxSize);
+      } else {
+        console.log('🖥️ Large desktop sizing applied:', maxSize);
       }
       
       // Ensure minimum size for playability
@@ -1120,18 +1124,24 @@ export function ChessBoard() {
   const isMobileDevice = finalIsMobile;
   const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
   
-  // Force mobile mode for testing if screen is small
-  const forceMobileMode = deviceInfo.screenWidth <= 768;
+  // Force mobile mode for testing if screen is small (desktop mobile view mode)
+  const forceMobileMode = deviceInfo.screenWidth <= 768 || window.innerWidth <= 768;
   const finalIsMobile = deviceInfo.isMobile || forceMobileMode;
   
-  // Debug device detection
+  // Debug device detection with detailed logging
   console.log('🔍 ChessBoard Device Detection Debug:', {
     deviceInfo,
     forceMobileMode,
     finalIsMobile,
     currentCanvasSize: canvasSize,
-    windowDimensions: { width: window.innerWidth, height: window.innerHeight }
+    windowDimensions: { width: window.innerWidth, height: window.innerHeight },
+    userAgent: navigator.userAgent
   });
+  
+  // Extra debugging for mobile view mode
+  if (forceMobileMode) {
+    console.log('📱 MOBILE MODE ACTIVE - Desktop mobile view detected');
+  }
   
   // Mobile-specific board size calculation
   const mobileBoardSize = React.useMemo(() => {
@@ -1164,8 +1174,18 @@ export function ChessBoard() {
     canvasSize,
     mobileBoardSize,
     effectiveBoardSize,
-    effectiveSquareSize
+    effectiveSquareSize,
+    appliedStyles: isMobileDevice ? 'MOBILE' : 'DESKTOP'
   });
+  
+  // Alert if mobile sizing is being applied
+  if (isMobileDevice && effectiveBoardSize !== canvasSize) {
+    console.log('✅ MOBILE RESPONSIVE SIZING ACTIVE:', {
+      originalSize: canvasSize,
+      mobileSize: effectiveBoardSize,
+      reduction: `${Math.round((1 - effectiveBoardSize/canvasSize) * 100)}%`
+    });
+  }
 
   return (
     <div className={cn(
