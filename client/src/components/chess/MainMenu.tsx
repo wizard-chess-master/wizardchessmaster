@@ -38,7 +38,7 @@ interface MainMenuProps {
 
 export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuProps) {
   const { startGame, resetGame } = useChess();
-  const { user, isLoggedIn, isPremium, logout } = useAuth();
+  const { user, isLoggedIn, isPremium, logout, checkSession } = useAuth();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
@@ -308,7 +308,11 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={handleLogout}
+                  onClick={async () => {
+                    (window as any).gameAudioManager?.onButtonClick();
+                    await logout();
+                    console.log('🚪 User logged out from MainMenu');
+                  }}
                   className="border-gray-300 text-gray-600 hover:bg-gray-50"
                 >
                   <LogOut className="w-4 h-4 mr-1" />
@@ -316,7 +320,14 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 </Button>
               </>
             ) : (
-              <LoginDialog>
+              <LoginDialog
+                onSuccess={async () => {
+                  console.log('🎉 Auth success - refreshing session and UI');
+                  // Force session refresh to update UI state
+                  await checkSession();
+                  console.log('✅ Session refreshed after auth success');
+                }}
+              >
                 <Button
                   variant="outline"
                   className="border-amber-300 text-amber-600 hover:bg-amber-50 flex-1"
