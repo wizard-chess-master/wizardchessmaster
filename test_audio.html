@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Test</title>
+</head>
+<body>
+    <h1>Audio Test</h1>
+    <button onclick="testThemeMusic2()">Test Theme-music2.mp3</button>
+    <button onclick="testThemeMusic1()">Test Theme-music1.mp3 (Fallback)</button>
+    <div id="status"></div>
+    
+    <script>
+        function log(message) {
+            document.getElementById('status').innerHTML += message + '<br>';
+            console.log(message);
+        }
+        
+        async function testThemeMusic2() {
+            log('🎵 Testing Theme-music2.mp3...');
+            
+            try {
+                // AudioContext cleanup
+                const context = new AudioContext();
+                await context.close();
+                log('✅ AudioContext closed');
+            } catch (e) {
+                log('AudioContext already closed');
+            }
+            
+            const audio = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
+            audio.volume = 0.1; // Lower volume for testing
+            
+            audio.addEventListener('loadeddata', () => {
+                log('✅ Theme-music2.mp3 loaded successfully');
+            });
+            
+            audio.addEventListener('error', (e) => {
+                log('❌ Theme-music2.mp3 failed to load: ' + e.message);
+            });
+            
+            try {
+                await audio.play();
+                log('✅ Theme-music2.mp3 playing successfully');
+                setTimeout(() => {
+                    audio.pause();
+                    log('🛑 Stopped test audio');
+                }, 2000);
+            } catch (error) {
+                log('❌ Failed to play Theme-music2.mp3: ' + error.message);
+            }
+        }
+        
+        async function testThemeMusic1() {
+            log('🎵 Testing Theme-music1.mp3 fallback...');
+            const audio = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
+            audio.volume = 0.1;
+            
+            try {
+                await audio.play();
+                log('✅ Theme-music1.mp3 fallback working');
+                setTimeout(() => {
+                    audio.pause();
+                    log('🛑 Stopped fallback test');
+                }, 2000);
+            } catch (error) {
+                log('❌ Fallback also failed: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
