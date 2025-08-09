@@ -326,7 +326,7 @@ function getWizardMoves(board: (ChessPiece | null)[][], pos: Position, piece: Ch
         // Can attack any enemy piece within range (even through occupied squares)
         else if (target.color !== piece.color) {
           moves.push(newPos);
-          break; // Stop checking further in this direction after finding an enemy
+          // Continue checking further squares - wizards can attack over pieces
         } else {
           // Own piece - can't attack it, but continue to check if we can teleport beyond it
           // (wizards can teleport over their own pieces to empty squares)
