@@ -25,6 +25,20 @@ export function getDB() {
 // modify the interface with any CRUD methods
 // you might need
 
+export interface LeaderboardEntry {
+  id: number;
+  playerName: string;
+  displayName: string;
+  score: number;
+  gamesWon: number;
+  gamesPlayed: number;
+  averageGameTime: number;
+  highestLevel?: number;
+  isPremium: boolean;
+  lastPlayed: Date;
+  rank?: number;
+}
+
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
@@ -34,17 +48,30 @@ export interface IStorage {
   updateUserPremiumStatus(userId: number, isPremium: boolean, subscriptionId?: string, subscriptionStatus?: string): Promise<void>;
   getUserSaveData(userId: number): Promise<UserSaveData | undefined>;
   createOrUpdateSaveData(userId: number, saveData: Omit<InsertUserSaveData, 'userId'>): Promise<UserSaveData>;
+  
+  // Leaderboard methods
+  updatePlayerStats(userId: number, stats: {
+    gamesWon?: number;
+    gamesPlayed?: number;
+    totalGameTime?: number;
+    highestLevel?: number;
+  }): Promise<void>;
+  getCampaignLeaderboard(limit?: number): Promise<LeaderboardEntry[]>;
+  getPvPLeaderboard(limit?: number): Promise<LeaderboardEntry[]>;
+  getPlayerRank(userId: number, type: 'campaign' | 'pvp'): Promise<number | null>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private saveData: Map<number, UserSaveData>;
+  private playerStats: Map<number, any>;
   currentId: number;
   currentSaveId: number;
 
   constructor() {
     this.users = new Map();
     this.saveData = new Map();
+    this.playerStats = new Map();
     this.currentId = 1;
     this.currentSaveId = 1;
   }
