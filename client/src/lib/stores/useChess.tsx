@@ -20,6 +20,10 @@ interface ChessStore extends GameState {
   // Settings
   hintsEnabled: boolean;
   
+  // AI Loading State
+  aiThinking: boolean;
+  aiThinkingMessage: string;
+  
   // Actions
   startGame: (mode: GameMode, aiDifficulty?: AIDifficulty) => void;
   selectSquare: (position: Position | null) => void;
@@ -29,6 +33,7 @@ interface ChessStore extends GameState {
   resetGame: () => void;
   undoMove: () => void;
   toggleHints: () => void;
+  setAIThinking: (thinking: boolean, message?: string) => void;
 }
 
 const initialState: GameState = {
@@ -51,6 +56,8 @@ export const useChess = create<ChessStore>()(
     ...initialState,
     gameStartTime: Date.now(),
     hintsEnabled: true,
+    aiThinking: false,
+    aiThinkingMessage: '',
 
     startGame: (mode: GameMode, aiDifficulty: AIDifficulty = 'medium') => {
       const newBoard = createInitialBoard();
@@ -404,24 +411,42 @@ export const useChess = create<ChessStore>()(
       }
     },
 
-    makeAIMove: () => {
+    makeAIMove: async () => {
       const state = get();
       if (state.gamePhase !== 'playing' || state.gameMode !== 'ai' || state.currentPlayer !== 'black') {
         return;
       }
 
-      const aiMove = getAIMove(state);
-      if (aiMove) {
-        // Audio managed by ChessAudioController component
+      // Set AI thinking state
+      const { setAIThinking } = get();
+      setAIThinking(true, `Calculating ${state.aiDifficulty} difficulty move...`);
 
-        const newState = makeMove(state, aiMove);
-        set(newState);
+      // Add realistic thinking delay based on difficulty
+      const thinkingDelay = state.aiDifficulty === 'easy' ? 800 : 
+                           state.aiDifficulty === 'medium' ? 1500 : 2500;
 
-        // Analyze completed games for AI learning
-        if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
-          const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
-          aiLearning.analyzeGame(newState, aiColor, 'human');
+      try {
+        // Simulate AI thinking time
+        await new Promise(resolve => setTimeout(resolve, thinkingDelay));
+
+        const aiMove = getAIMove(state);
+        if (aiMove) {
+          // Audio managed by ChessAudioController component
+
+          const newState = makeMove(state, aiMove);
+          set(newState);
+
+          // Analyze completed games for AI learning
+          if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
+            const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
+            aiLearning.analyzeGame(newState, aiColor, 'human');
+          }
         }
+      } catch (error) {
+        console.error('AI move calculation failed:', error);
+      } finally {
+        // Clear AI thinking state
+        setAIThinking(false);
       }
     },
 
@@ -455,6 +480,10 @@ export const useChess = create<ChessStore>()(
 
     toggleHints: () => {
       set(state => ({ hintsEnabled: !state.hintsEnabled }));
+    },
+
+    setAIThinking: (thinking: boolean, message: string = '') => {
+      set({ aiThinking: thinking, aiThinkingMessage: message });
     }
   }))
 );

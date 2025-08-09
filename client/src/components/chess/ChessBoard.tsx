@@ -3,9 +3,10 @@ import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
 import { ChessPiece } from './ChessPiece';
 import { Position } from '../../lib/chess/types';
+import { AIThinkingIndicator } from '../ui/AIThinkingIndicator';
 
 export function ChessBoard() {
-  const { board, selectedPosition, validMoves, selectSquare, moveHistory, isInCheck } = useChess();
+  const { board, selectedPosition, validMoves, selectSquare, moveHistory, isInCheck, aiThinking, aiDifficulty } = useChess();
   const { playPieceMovementSound, playGameEvent, playUISound, playWizardAbility } = useAudio();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<{ [key: string]: HTMLImageElement }>({});
@@ -1108,6 +1109,11 @@ export function ChessBoard() {
 
   return (
     <div className="board-container">
+      {/* AI Thinking Indicator */}
+      {aiThinking && (
+        <AIThinkingIndicator difficulty={aiDifficulty} />
+      )}
+      
       <div className="chess-board">
         <div className="board-coordinates">
           {/* Column labels */}
