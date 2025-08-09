@@ -17,6 +17,9 @@ export function createInitialBoard(): (ChessPiece | null)[][] {
   board[9][8] = createPiece('knight', 'white', 'w-knight-8');  // i1
   board[9][9] = createPiece('rook', 'white', 'w-rook-9');      // j1
   
+  console.log('🔧 Fixed board setup - verifying white home row:');
+  console.log('Position (9,6) wizard:', board[9][6]);
+  
   // White pawns (row 8) - all 10 columns
   for (let col = 0; col < 10; col++) {
     board[8][col] = createPiece('pawn', 'white', `w-pawn-${col}`);

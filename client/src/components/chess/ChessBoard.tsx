@@ -20,9 +20,77 @@ export function ChessBoard() {
     type: 'normal' | 'wizard-teleport' | 'attack' | 'castling',
     progress: number,
     startTime: number,
-    duration: number
+    duration: number,
+    isOpponentMove?: boolean
   } | null>(null);
   const [animationProgress, setAnimationProgress] = useState(0);
+  
+  // Opponent move highlighting
+  const [opponentMoveHighlight, setOpponentMoveHighlight] = useState<{
+    fromRow: number, 
+    fromCol: number, 
+    toRow: number, 
+    toCol: number,
+    startTime: number,
+    duration: number
+  } | null>(null);
+
+  // Animation controller function
+  const startMoveAnimation = (
+    piece: any, 
+    fromRow: number, 
+    fromCol: number, 
+    toRow: number, 
+    toCol: number,
+    type: 'normal' | 'wizard-teleport' | 'attack' | 'castling' = 'normal',
+    isOpponentMove: boolean = false
+  ) => {
+    console.log('🎬 Starting move animation:', { piece: piece.type, from: [fromRow, fromCol], to: [toRow, toCol], type, isOpponentMove });
+    
+    // Set animation duration to exactly 0.5 seconds (500ms) as requested
+    const duration = 500;
+    
+    setIsAnimating(true);
+    setAnimatingPiece({
+      piece,
+      fromRow,
+      fromCol, 
+      toRow,
+      toCol,
+      type,
+      progress: 0,
+      startTime: Date.now(),
+      duration,
+      isOpponentMove
+    });
+
+    // Trigger opponent move highlighting if it's an opponent move
+    if (isOpponentMove) {
+      setOpponentMoveHighlight({
+        fromRow,
+        fromCol,
+        toRow, 
+        toCol,
+        startTime: Date.now(),
+        duration: 300 // 0.3s fade as requested
+      });
+    }
+
+    // Play synchronized sound effects
+    if (type === 'wizard-teleport') {
+      playWizardAbility('teleport');
+      console.log('🎵 Playing wizard teleport sound');
+    } else if (type === 'attack') {
+      playWizardAbility('attack');
+      console.log('🎵 Playing wizard attack sound');
+    } else if (piece.captured) {
+      playGameEvent('capture');
+      console.log('🎵 Playing capture sound');
+    } else {
+      playPieceMovementSound(piece.type);
+      console.log('🎵 Playing move sound for', piece.type);
+    }
+  };
   
   // Enhanced particle system
   type Particle = {x: number, y: number, vx: number, vy: number, life: number, maxLife: number, color: string, size?: number};
@@ -43,6 +111,56 @@ export function ChessBoard() {
   
   // Animation frame reference
   const animationFrameRef = useRef<number>();
+
+  // Listen for animation events from chess store
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleChessAnimation = (event: CustomEvent) => {
+      const { piece, fromRow, fromCol, toRow, toCol, type, isOpponentMove, captured } = event.detail;
+      
+      // Create enhanced piece object for animation
+      const animationPiece = { ...piece, captured };
+      
+      startMoveAnimation(animationPiece, fromRow, fromCol, toRow, toCol, type, isOpponentMove);
+    };
+
+    canvas.addEventListener('chessAnimation', handleChessAnimation as EventListener);
+    
+    return () => {
+      canvas.removeEventListener('chessAnimation', handleChessAnimation as EventListener);
+    };
+  }, []);
+
+  // AI move animation handler
+  useEffect(() => {
+    const lastMove = moveHistory[moveHistory.length - 1];
+    if (lastMove && moveHistory.length > 0) {
+      // Detect if this was an AI move (assuming AI plays as black)
+      const isAIMove = lastMove.piece.color === 'black';
+      
+      if (isAIMove) {
+        console.log('🤖 Detected AI move, triggering opponent highlight');
+        const type = lastMove.isWizardTeleport ? 'wizard-teleport' 
+                   : lastMove.isWizardAttack ? 'attack'
+                   : lastMove.isCastling ? 'castling' 
+                   : 'normal';
+        
+        setTimeout(() => {
+          startMoveAnimation(
+            { ...lastMove.piece, captured: lastMove.captured },
+            lastMove.from.row,
+            lastMove.from.col,
+            lastMove.to.row,
+            lastMove.to.col,
+            type,
+            true // isOpponentMove
+          );
+        }, 100); // Small delay to ensure UI updates
+      }
+    }
+  }, [moveHistory]);
 
   // Responsive canvas sizing - 800x800 base, scales down for mobile
   useEffect(() => {
@@ -156,6 +274,22 @@ export function ChessBoard() {
           ctx.fillStyle = isLight ? '#90ee90' : '#68c968';
           ctx.shadowBlur = 10;
           ctx.shadowColor = '#00ff00';
+        } else if (opponentMoveHighlight && 
+                   ((opponentMoveHighlight.fromRow === row && opponentMoveHighlight.fromCol === col) ||
+                    (opponentMoveHighlight.toRow === row && opponentMoveHighlight.toCol === col))) {
+          // Yellow glow for opponent moves with fade effect
+          const elapsed = Date.now() - opponentMoveHighlight.startTime;
+          const fadeProgress = Math.min(elapsed / opponentMoveHighlight.duration, 1);
+          const alpha = 1 - fadeProgress; // Fade out over time
+          
+          ctx.fillStyle = isLight ? '#fffacd' : '#ffd700'; // Light yellow to gold
+          ctx.shadowBlur = 12 * alpha;
+          ctx.shadowColor = `rgba(255, 215, 0, ${alpha})`;
+          
+          // Remove highlight when fade is complete
+          if (fadeProgress >= 1) {
+            setOpponentMoveHighlight(null);
+          }
         } else {
           ctx.shadowBlur = 0;
         }
@@ -171,9 +305,9 @@ export function ChessBoard() {
         const isAnimatingPiece = animatingPiece && 
           animatingPiece.fromRow === row && animatingPiece.fromCol === col;
         
-        // Debug logging for white home row
-        if (row === 9 && piece) {
-          console.log(`🏠 WHITE HOME ROW - Position (${row},${col}):`, piece);
+        // Debug logging for missing pieces (only log once)
+        if (row === 9 && !piece && col === 6) {
+          console.log(`⚠️ MISSING PIECE at white home row (9,6) - should be wizard!`);
         }
         
         if (piece && imagesRef.current && !isAnimatingPiece) {
@@ -223,7 +357,7 @@ export function ChessBoard() {
       const elapsed = Date.now() - animatingPiece.startTime;
       const progress = Math.min(elapsed / animatingPiece.duration, 1);
       
-      // Smooth easing function (ease-out cubic)
+      // Enhanced smooth easing function (ease-out cubic)
       const easedProgress = animatingPiece.type === 'wizard-teleport' 
         ? progress // Linear for teleport (instant)
         : 1 - Math.pow(1 - progress, 3); // Cubic ease-out for smooth movement
@@ -265,6 +399,7 @@ export function ChessBoard() {
       
       // Check if animation is complete
       if (progress >= 1) {
+        console.log('✅ Animation completed for:', animatingPiece.piece.type);
         setAnimatingPiece(null);
         setIsAnimating(false);
       }

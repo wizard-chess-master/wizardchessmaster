@@ -264,12 +264,27 @@ export const useChess = create<ChessStore>()(
       // Play audio based on move type
       console.log('🎵 Playing audio for:', { piece: piece.type, captured: !!captured, isWizardAttack, isWizardTeleport, isCastling, promotion });
       
-      // Audio managed by ChessAudioController component
+      // Trigger animation with synchronized sound effects
+      const chessBoard = document.querySelector('canvas');
+      if (chessBoard) {
+        // Dispatch custom event to trigger animation
+        const animationEvent = new CustomEvent('chessAnimation', {
+          detail: {
+            piece,
+            fromRow: from.row,
+            fromCol: from.col,
+            toRow: to.row,
+            toCol: to.col,
+            type: isWizardTeleport ? 'wizard-teleport' : isWizardAttack ? 'attack' : isCastling ? 'castling' : 'normal',
+            isOpponentMove: false,
+            captured
+          }
+        });
+        chessBoard.dispatchEvent(animationEvent);
+      }
 
       const newState = makeMove(state, move);
       set(newState);
-      
-      // Audio managed by ChessAudioController component
 
       // Record PvP stats for local multiplayer games
       if (state.gameMode === 'local' && newState.gamePhase === 'ended') {
