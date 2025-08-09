@@ -345,47 +345,106 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       const state = get();
       const phase = get().assessGamePhase(gameState);
       
+      // Check for recent similar feedback to avoid repetition
+      const recentMessages = state.currentFeedback
+        .filter(f => Date.now() - f.timestamp < 45000) // Last 45 seconds
+        .map(f => f.message);
+      
       let message = '';
       let type: MentorFeedback['type'] = 'encouragement';
       let priority: MentorFeedback['priority'] = 'medium';
       
-      // Generate phase-specific feedback
+      // Generate phase-specific feedback with variations
+      // Arrays of varied messages to prevent repetition
+      const openingMessages = {
+        excellent: [
+          'Excellent opening strategy! You\'re developing your pieces effectively.',
+          'Superb opening play! Your development is textbook perfect.',
+          'Magnificent start! Your pieces are positioned beautifully.',
+          'Outstanding opening! You\'re controlling the center masterfully.'
+        ],
+        poor: [
+          'Consider developing your knights and bishops before advancing pawns too aggressively.',
+          'Focus on piece development over pawn storms in the opening.',
+          'Try developing your minor pieces before launching attacks.',
+          'Remember: knights before bishops, and castle early for safety.'
+        ],
+        average: [
+          'Good opening development. Try to control the center squares.',
+          'Solid opening moves. Consider improving your piece coordination.',
+          'Decent development. Look for central control opportunities.',
+          'Good progress. Focus on completing your development.'
+        ]
+      };
+
+      const middleMessages = {
+        excellent: [
+          'Brilliant tactical play! Your pieces are working together beautifully.',
+          'Magnificent tactics! Your coordination is exceptional.',
+          'Superb strategic play! You\'re creating powerful threats.',
+          'Outstanding combination! Your pieces dance in harmony.'
+        ],
+        poor: [
+          'Look for tactical opportunities - can you create threats or improve piece coordination?',
+          'Search for tactical motifs and improve your piece activity.',
+          'Consider reorganizing your pieces for better coordination.',
+          'Look for forcing moves - checks, captures, and threats!'
+        ],
+        average: [
+          'The middlegame is where tactics shine. Look for wizard teleport opportunities!',
+          'Good positioning. Consider tactical combinations with your wizards.',
+          'Solid play. Watch for tactical opportunities to break through.',
+          'Nice development. Look for ways to increase piece activity.'
+        ]
+      };
+
+      const endgameMessages = {
+        excellent: [
+          'Outstanding endgame technique! You\'re converting your advantage perfectly.',
+          'Masterful endgame play! Your technique is impeccable.',
+          'Brilliant endgame! You\'re demonstrating excellent precision.',
+          'Superb endgame technique! Victory is within your grasp.'
+        ],
+        poor: [
+          'In the endgame, every move counts. Calculate carefully and activate your king.',
+          'Endgame precision is crucial. Activate your king and advance carefully.',
+          'Every move matters now. Calculate deeply and avoid mistakes.',
+          'Focus on king activity and pawn advancement in the endgame.'
+        ],
+        average: [
+          'Endgame precision is key. Consider pawn promotion possibilities.',
+          'Good endgame positioning. Look for breakthrough opportunities.',
+          'Solid endgame play. Focus on king and pawn coordination.',
+          'Nice technique. Consider creating passed pawns.'
+        ]
+      };
+
+      // Select message category and random variation
       if (phase === 'opening') {
-        if (moveQuality > 70) {
-          message = 'Excellent opening strategy! You\'re developing your pieces effectively.';
-          type = 'celebration';
-        } else if (moveQuality < 40) {
-          message = 'Consider developing your knights and bishops before advancing pawns too aggressively.';
-          type = 'strategy';
-          priority = 'high';
-        } else {
-          message = 'Good opening development. Try to control the center squares.';
-          type = 'encouragement';
-        }
+        const category = moveQuality > 70 ? 'excellent' : moveQuality < 40 ? 'poor' : 'average';
+        const messages = openingMessages[category];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = moveQuality > 70 ? 'celebration' : moveQuality < 40 ? 'strategy' : 'encouragement';
+        priority = moveQuality < 40 ? 'high' : 'medium';
       } else if (phase === 'middle') {
-        if (moveQuality > 70) {
-          message = 'Brilliant tactical play! Your pieces are working together beautifully.';
-          type = 'celebration';
-        } else if (moveQuality < 40) {
-          message = 'Look for tactical opportunities - can you create threats or improve piece coordination?';
-          type = 'strategy';
-          priority = 'high';
-        } else {
-          message = 'The middlegame is where tactics shine. Look for wizard teleport opportunities!';
-          type = 'analysis';
-        }
+        const category = moveQuality > 70 ? 'excellent' : moveQuality < 40 ? 'poor' : 'average';
+        const messages = middleMessages[category];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = moveQuality > 70 ? 'celebration' : moveQuality < 40 ? 'strategy' : 'analysis';
+        priority = moveQuality < 40 ? 'high' : 'medium';
       } else {
-        if (moveQuality > 70) {
-          message = 'Outstanding endgame technique! You\'re converting your advantage perfectly.';
-          type = 'celebration';
-        } else if (moveQuality < 40) {
-          message = 'In the endgame, every move counts. Calculate carefully and activate your king.';
-          type = 'strategy';
-          priority = 'high';
-        } else {
-          message = 'Endgame precision is key. Consider pawn promotion possibilities.';
-          type = 'analysis';
-        }
+        const category = moveQuality > 70 ? 'excellent' : moveQuality < 40 ? 'poor' : 'average';
+        const messages = endgameMessages[category];
+        message = messages[Math.floor(Math.random() * messages.length)];
+        type = moveQuality > 70 ? 'celebration' : moveQuality < 40 ? 'strategy' : 'analysis';
+        priority = moveQuality < 40 ? 'high' : 'medium';
+      }
+
+      // Final check: if this exact message was recently shown, try another variation
+      if (recentMessages.includes(message)) {
+        // Try to get a different message from the same category
+        const fallbackMessage = `Wise move, young apprentice. Continue with such ${moveQuality > 70 ? 'excellent' : moveQuality < 40 ? 'thoughtful' : 'steady'} play.`;
+        message = fallbackMessage;
       }
 
       return {

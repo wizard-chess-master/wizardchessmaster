@@ -17,20 +17,72 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
   const { isMuted } = useAudio();
   const [showHintModal, setShowHintModal] = useState(false);
   const [currentHint, setCurrentHint] = useState({ description: '', reasoning: '' });
+  const [lastHintMove, setLastHintMove] = useState<string>('');
+  const [lastHintTime, setLastHintTime] = useState(0);
+  const [recentHints, setRecentHints] = useState<string[]>([]);
 
   const handleGetHint = async () => {
     try {
-      // Get AI suggestion for current position
-      const gameState = { board, currentPlayer, gamePhase: 'playing' as const };
-      const aiMove = await getAIMove(gameState, aiDifficulty);
+      // Prevent hints too frequently (minimum 3 seconds between hints)
+      const now = Date.now();
+      if (now - lastHintTime < 3000) {
+        return;
+      }
+
+      // Get current board state hash to detect position changes
+      const boardHash = JSON.stringify(board) + currentPlayer + moveHistory.length;
+      
+      // If same position and recent hint exists, don't repeat
+      if (lastHintMove === boardHash && recentHints.length > 0) {
+        return;
+      }
+
+      // Get AI suggestion for current position  
+      const gameState = { 
+        board, 
+        currentPlayer, 
+        gamePhase: 'playing' as const, 
+        aiDifficulty,
+        selectedPosition: null,
+        validMoves: [],
+        gameMode: 'ai' as const,
+        moveHistory,
+        isInCheck: false,
+        isCheckmate: false,
+        isStalemate: false,
+        winner: null
+      };
+      const aiMove = await getAIMove(gameState);
       if (aiMove) {
         const fromNotation = `${String.fromCharCode(97 + aiMove.from.col)}${10 - aiMove.from.row}`;
         const toNotation = `${String.fromCharCode(97 + aiMove.to.col)}${10 - aiMove.to.row}`;
+        const moveDescription = `${aiMove.piece?.type || 'piece'} from ${fromNotation} to ${toNotation}`;
+        
+        // Check if this exact hint was recently shown
+        if (recentHints.includes(moveDescription)) {
+          return;
+        }
+
+        // Vary the hint text to avoid repetition
+        const hintVariations = [
+          `Consider moving your ${moveDescription}`,
+          `Try moving your ${moveDescription}`,
+          `A good move would be ${moveDescription}`,
+          `You might want to move your ${moveDescription}`,
+          `The AI suggests ${moveDescription}`
+        ];
+        
+        const randomHint = hintVariations[Math.floor(Math.random() * hintVariations.length)];
         
         setCurrentHint({
-          description: `Consider moving your ${aiMove.piece?.type || 'piece'} from ${fromNotation} to ${toNotation}`,
-          reasoning: "This move was suggested by the AI as a strong tactical choice for the current position."
+          description: randomHint,
+          reasoning: "This move was analyzed as a strong tactical choice for the current position."
         });
+        
+        // Update tracking state
+        setLastHintMove(boardHash);
+        setLastHintTime(now);
+        setRecentHints(prev => [...prev.slice(-2), moveDescription]); // Keep last 3 hints
         setShowHintModal(true);
       }
     } catch (error) {
