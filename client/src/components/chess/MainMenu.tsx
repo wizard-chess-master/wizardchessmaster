@@ -21,6 +21,7 @@ import { AdminLogin } from './AdminLogin';
 import { isAdminFeatureEnabled, isAdminEnabled } from '../../lib/admin';
 import { runDebugVerification, runQuickAITest } from '../../lib/chess/runDebugTests';
 import { confirmAndResetTraining } from '../../lib/chess/trainingReset';
+import { getPaymentManager } from '../../lib/monetization/paymentManager';
 
 interface MainMenuProps {
   onSettings: () => void;
@@ -448,7 +449,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             onClick={() => {
               (window as any).gameAudioManager?.onButtonClick();
               console.log('💳 Remove Ads button clicked');
-              const paymentManager = require('../../lib/monetization/paymentManager').getPaymentManager();
+              const paymentManager = getPaymentManager();
               if (paymentManager.isUserPremium()) {
                 alert('🎉 You already have Premium! All ads are removed and premium features are unlocked.');
               } else {
