@@ -86,31 +86,8 @@ export const useChess = create<ChessStore>()(
         gameStartTime: Date.now()
       });
       
-      // ELIMINATE old music and FORCE Theme-music1.mp3 playback
-      // Clear all music variables pre-init
-      if ((window as any).gameAudioManager) {
-        (window as any).gameAudioManager = null;
-      }
-      
-      // Enhanced cleanup function
-      function cleanAudio() {
-        if (typeof AudioContext !== 'undefined') { 
-          new AudioContext().close(); 
-        } 
-        document.querySelectorAll('audio').forEach(a => { 
-          a.pause(); 
-          a.currentTime = 0; 
-          a.src = ''; 
-          a.remove(); 
-        }); 
-        console.log('Audio reset count:', document.querySelectorAll('audio').length);
-      }
-      
-      // Call cleanup function first
-      cleanAudio();
-      
-      // Auto-start theme music disabled to prevent conflicts
-      console.log('🎵 Game start - Music controlled only by user interaction (no auto-play)');
+      // Audio control completely disabled during game start to prevent conflicts
+      console.log('🎮 Game start - No audio manipulation (manual control only)');
       
       // Verify board state after setting
       setTimeout(() => {
