@@ -43,7 +43,7 @@ export function JoinFreeForm({ onSubmit, onClose, isLoading = false }: JoinFreeF
         <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white p-6 rounded-t-2xl">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-3xl font-bold mb-2">Join Free - Start Playing Now!</h2>
+              <h2 className="text-3xl font-bold mb-2">Create Account</h2>
               <p className="text-green-100 text-lg">
                 No credit card required • Instant access • 10,000+ active players
               </p>
@@ -150,7 +150,7 @@ export function JoinFreeForm({ onSubmit, onClose, isLoading = false }: JoinFreeF
                   ) : (
                     <>
                       <Crown className="w-5 h-5 mr-2" />
-                      Create Free Account - Start Playing!
+                      Create Account
                     </>
                   )}
                 </Button>
