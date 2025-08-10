@@ -20,26 +20,10 @@ export const FreemiumPromo: React.FC<FreemiumPromoProps> = ({
   const paymentManager = getPaymentManager();
   const adManager = getAdManager();
 
-  // Show promo based on trigger and user status
+  // DISABLED: Show promo based on trigger and user status
   useEffect(() => {
-    if (adManager.isAdFree()) return; // Don't show to premium users
-    
-    const lastPromoShown = localStorage.getItem('wizard-chess-last-promo');
-    const currentTime = Date.now();
-    
-    // Don't spam - show at most once per hour
-    if (lastPromoShown && currentTime - parseInt(lastPromoShown) < 60 * 60 * 1000) {
-      return;
-    }
-    
-    // Show promo after a delay based on trigger
-    const delay = trigger === 'game_start' ? 10000 : 1000; // 10s for game start, 1s for others
-    const timeout = setTimeout(() => {
-      setShowPromo(true);
-      localStorage.setItem('wizard-chess-last-promo', currentTime.toString());
-    }, delay);
-    
-    return () => clearTimeout(timeout);
+    // Always return early - disable all promos
+    return;
   }, [trigger, adManager]);
 
   // Countdown timer for limited-time offer
