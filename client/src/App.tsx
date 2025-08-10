@@ -12,6 +12,10 @@ import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { ResponsiveLayout } from "./components/layout/ResponsiveLayout";
 import { MobileGameLayout } from "./components/mobile/MobileGameLayout";
+import { MarketingRouter } from "./components/marketing/MarketingRouter";
+import { LandingPage } from "./components/marketing/LandingPage";
+import { BlogPost } from "./components/blog/BlogPost";
+import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -41,6 +45,8 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog'>('landing');
+  const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
 
@@ -134,10 +140,61 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const handleStartGame = () => {
+    setCurrentPage('game');
+    setShowLanding(false);
+  };
+
+  const handleNavigate = (page: string) => {
+    setCurrentPage(page as any);
+  };
+
+  // Show marketing/content pages with global navigation
+  if (currentPage !== 'game') {
+    return (
+      <AuthProvider>
+        <div className="App">
+          <GlobalNavigation 
+            currentPage={currentPage}
+            onNavigate={handleNavigate}
+            onStartGame={handleStartGame}
+          />
+          
+          {currentPage === 'landing' && (
+            <LandingPage 
+              onJoinFree={() => {
+                // This will be handled by the MarketingRouter
+              }}
+              onPlayNow={handleStartGame}
+            />
+          )}
+          
+          {(currentPage === 'strategy' || currentPage === 'ai-training' || currentPage === 'tournaments') && (
+            <MarketingRouter 
+              currentPage={currentPage}
+              onNavigate={handleNavigate}
+              onStartGame={handleStartGame}
+            />
+          )}
+          
+          {currentPage === 'blog' && (
+            <BlogPost onBack={() => setCurrentPage('game')} />
+          )}
+        </div>
+      </AuthProvider>
+    );
+  }
+
   return (
     <ResponsiveLayout>
       <AuthProvider>
         <div className="App">
+          <GlobalNavigation 
+            currentPage={currentPage}
+            onNavigate={handleNavigate}
+            onStartGame={() => setCurrentPage('game')}
+          />
+
         <div className="game-container">
         {/* Immersive Audio Controller - manages 3D spatial audio for chess game */}
         <ChessAudioController />
