@@ -6,6 +6,19 @@ import './responsive-game.css';
 import './styles/responsive.css';
 // DEBUG DISABLED: import './lib/debug-admin'; // Load admin debug utilities
 
+// Global error handling for production stability
+if (typeof window !== 'undefined') {
+  window.addEventListener('unhandledrejection', (event) => {
+    console.warn('Unhandled promise rejection:', event.reason);
+    // Prevent default to avoid console error spam
+    event.preventDefault();
+  });
+
+  window.addEventListener('error', (event) => {
+    console.warn('Global error caught:', event.error);
+  });
+}
+
 // FORCE Theme-music2.mp3 implementation in main initialization
 if (typeof window !== 'undefined') {
   // Theme music initialization function  

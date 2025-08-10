@@ -70,6 +70,7 @@ function App() {
         console.log('✅ Monetization systems initialized');
       } catch (error) {
         console.error('❌ Failed to initialize systems:', error);
+        // Don't let initialization failures break the app
       }
     };
     
