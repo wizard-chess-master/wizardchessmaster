@@ -238,13 +238,17 @@ export function OnlineChessTournamentPage() {
 
           <div className="bg-white rounded-lg shadow-lg p-8">
             <div className="text-center mb-8">
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-amber-100 to-orange-100 rounded-full mb-4 border-2 border-amber-300">
+                <span className="text-2xl mr-3">⏰</span>
+                <span className="font-bold text-amber-900 text-lg">COMING SOON</span>
+              </div>
               <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full mb-4">
                 <span className="text-2xl mr-2">🏆</span>
                 <span className="font-bold text-purple-900">Safe Competition • No Cash Prizes • Pure Skill</span>
               </div>
               <p className="text-purple-800 leading-relaxed max-w-3xl mx-auto">
-                Join epic wizard chess tournaments where skill and strategy are the only currencies that matter. 
-                Earn prestigious titles, exclusive avatars, premium time, and legendary badges in our carefully 
+                We're building epic wizard chess tournaments where skill and strategy are the only currencies that matter. 
+                Soon you'll earn prestigious titles, exclusive avatars, premium time, and legendary badges in our carefully 
                 designed competition system that celebrates pure chess mastery.
               </p>
             </div>
