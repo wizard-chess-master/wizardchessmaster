@@ -92,7 +92,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands left-wands" />
             <h1 className="game-title">
               <Zap className="title-icon" />
-              Wizard Chess Duel
+              Wizard Chess Master
             </h1>
             <img src="/assets/crossed-wizard-wands.png" alt="Crossed Wizard Wands" className="crossed-wands right-wands" />
           </div>
