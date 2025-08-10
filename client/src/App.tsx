@@ -145,6 +145,26 @@ function App() {
     setCurrentPage('game');
     setShowLanding(false);
   };
+  
+  // Listen for hash changes to handle navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1); // Remove the '#'
+      if (hash === 'game') {
+        setCurrentPage('game');
+      } else if (hash === 'multiplayer') {
+        setCurrentPage('multiplayer');
+      } else if (hash) {
+        setCurrentPage(hash as any);
+      }
+    };
+    
+    // Check initial hash
+    handleHashChange();
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const handleNavigate = (page: string) => {
     setCurrentPage(page as any);

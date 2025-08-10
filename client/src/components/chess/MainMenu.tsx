@@ -118,6 +118,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                     console.log('🎮 Player vs AI - Easy clicked');
                     (window as any).gameAudioManager?.onButtonClick();
                     console.log('🎮 Starting new AI game - easy mode');
+                    // Ensure we're on the game page first
+                    if (window.location.hash !== '#game') {
+                      window.location.hash = 'game';
+                    }
                     startGame('ai', 'easy');
                   }}
                 >
@@ -131,6 +135,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
+                    // Ensure we're on the game page first
+                    if (window.location.hash !== '#game') {
+                      window.location.hash = 'game';
+                    }
                     startGame('ai', 'medium');
                   }}
                 >
@@ -144,6 +152,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
+                    // Ensure we're on the game page first
+                    if (window.location.hash !== '#game') {
+                      window.location.hash = 'game';
+                    }
                     startGame('ai', 'hard');
                   }}
                 >
@@ -157,6 +169,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
+                    // Ensure we're on the game page first
+                    if (window.location.hash !== '#game') {
+                      window.location.hash = 'game';
+                    }
                     startGame('ai-vs-ai', 'hard');
                   }}
                 >
@@ -194,6 +210,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   variant="outline"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
+                    // Ensure we're on the game page first
+                    if (window.location.hash !== '#game') {
+                      window.location.hash = 'game';
+                    }
                     startGame('local');
                   }}
                 >
