@@ -246,12 +246,14 @@ router.post('/validate-reset-token', async (req: AuthRequest, res: Response) => 
   }
 });
 
-// Debug endpoint to grant premium access (development only)
+// Debug endpoint to grant premium access (testing enabled for tokingteepee@gmail.com)
 router.post('/grant-premium', async (req: AuthRequest, res: Response) => {
-  if (process.env.NODE_ENV === 'production') {
+  // Only allow for specific test email
+  const testEmail = 'tokingteepee@gmail.com';
+  if (req.body.email !== testEmail) {
     return res.status(403).json({
       success: false,
-      error: 'Not available in production'
+      error: 'Not available for this email'
     });
   }
 

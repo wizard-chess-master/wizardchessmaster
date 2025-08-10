@@ -48,8 +48,9 @@ export function PremiumTestButton({ email = 'tokingteepee@gmail.com' }: PremiumT
     }
   };
 
-  // Only show in development
-  if (process.env.NODE_ENV === 'production') {
+  // Show in development or if testing is enabled
+  const showInProduction = import.meta.env.VITE_ENABLE_PREMIUM_TESTING === 'true';
+  if (import.meta.env.PROD && !showInProduction) {
     return null;
   }
 
