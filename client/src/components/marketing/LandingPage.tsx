@@ -286,15 +286,7 @@ export function LandingPage({ onJoinFree, onPlayNow }: LandingPageProps) {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              onClick={onJoinFree}
-              size="lg" 
-              className="bg-white text-amber-600 hover:bg-gray-100 text-lg px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition-all"
-            >
-              <CheckCircle className="w-5 h-5 mr-2" />
-              Start Game
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            {/* Button removed - direct game access via navigation menu */}
           </div>
 
           <p className="mt-6 text-sm opacity-75">

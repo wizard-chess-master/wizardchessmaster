@@ -68,7 +68,7 @@ export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: Globa
                 size="sm"
               >
                 <Play className="w-4 h-4 mr-2" />
-                Play Now
+                Game
               </Button>
             </div>
 
