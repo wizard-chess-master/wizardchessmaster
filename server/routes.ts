@@ -6,6 +6,8 @@ import webhookRoutes from "./routes/webhooks";
 import authRoutes from "./routes/auth";
 import saveDataRoutes from "./routes/savedata";
 import leaderboardRoutes from "./routes/leaderboard";
+import campaignRoutes from "./routes/campaign";
+import usersRoutes from "./routes/users";
 import { multiplayerRouter } from "./routes/multiplayer";
 import chessRoutes from "./routes/chess";
 
@@ -22,8 +24,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register cloud save routes  
   app.use('/api/savedata', saveDataRoutes);
 
-  // Register leaderboard routes
+  // Register leaderboard routes (both singular and plural for compatibility)
   app.use('/api/leaderboards', leaderboardRoutes);
+  app.use('/api/leaderboard', leaderboardRoutes);
+  
+  // Register campaign routes
+  app.use('/api/campaign', campaignRoutes);
+  
+  // Register user routes
+  app.use('/api/users', usersRoutes);
 
   // Register payment and webhook routes
   app.use('/api/payments', paymentRoutes);

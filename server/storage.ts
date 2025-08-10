@@ -42,9 +42,11 @@ export interface LeaderboardEntry {
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
+  getUserById(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUser(id: number, updates: Partial<User>): Promise<User | undefined>;
   verifyPassword(username: string, password: string): Promise<User | null>;
   updateUserPremiumStatus(userId: number, isPremium: boolean, subscriptionId?: string, subscriptionStatus?: string): Promise<void>;
   getUserSaveData(userId: number): Promise<UserSaveData | undefined>;
@@ -85,6 +87,10 @@ export class MemStorage implements IStorage {
   }
 
   async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+  
+  async getUserById(id: number): Promise<User | undefined> {
     return this.users.get(id);
   }
 
@@ -184,13 +190,13 @@ export class MemStorage implements IStorage {
     return true;
   }
 
-  async getUserByEmail(email: string): Promise<User | null> {
-    for (const [userId, user] of this.users.entries()) {
-      if (user.email === email) {
-        return user;
-      }
-    }
-    return null;
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const user = this.users.get(id);
+    if (!user) return undefined;
+    
+    const updatedUser = { ...user, ...updates };
+    this.users.set(id, updatedUser);
+    return updatedUser;
   }
 
   async updateUserPremiumStatus(userId: number, isPremium: boolean, subscriptionId?: string, subscriptionStatus?: string): Promise<void> {

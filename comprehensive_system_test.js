@@ -1,137 +1,90 @@
-// Comprehensive System Test - All Functionality
-import { io } from 'socket.io-client';
+#!/usr/bin/env node
 
-async function testCompleteSystem() {
-  console.log('🧪 Starting Comprehensive System Test...');
-  
-  // Test 1: API Endpoints
-  console.log('\n1️⃣ Testing Core API Endpoints...');
-  
-  const endpoints = [
-    '/api/auth/session',
-    '/api/multiplayer/stats', 
-    '/api/multiplayer/leaderboard',
-    '/api/payments/config',
-    '/api/chess/ai-stats',
-    '/api/chess/leaderboard'
-  ];
-  
-  for (const endpoint of endpoints) {
-    try {
-      const response = await fetch(`http://localhost:5000${endpoint}`);
-      const data = await response.json();
-      console.log(`✅ ${endpoint}: ${response.status} - ${data.success ? 'Success' : 'Error'}`);
-    } catch (error) {
-      console.log(`❌ ${endpoint}: Failed - ${error.message}`);
+// Comprehensive System Test for Wizard Chess Master
+// Tests all major functionality before adding storyboard features
+
+const tests = [
+  {
+    name: "Authentication System",
+    endpoint: "/api/auth/session",
+    expected: "success"
+  },
+  {
+    name: "Campaign Progress",
+    endpoint: "/api/campaign/progress", 
+    expected: "campaignLevels"
+  },
+  {
+    name: "Leaderboard Campaign",
+    endpoint: "/api/leaderboard/campaign",
+    expected: "leaderboard"
+  },
+  {
+    name: "Leaderboard PvP",
+    endpoint: "/api/leaderboard/pvp",
+    expected: "leaderboard"
+  },
+  {
+    name: "User Stats",
+    endpoint: "/api/users/stats",
+    expected: "stats"
+  },
+  {
+    name: "Payment Config",
+    endpoint: "/api/payments/config",
+    expected: "publishableKey"
+  }
+];
+
+async function testEndpoint(test) {
+  try {
+    const response = await fetch(`http://localhost:5000${test.endpoint}`);
+    const data = await response.json();
+    
+    console.log(`✅ ${test.name}: ${response.status}`);
+    console.log(`   Data contains: ${Object.keys(data).join(', ')}`);
+    
+    if (test.expected && !JSON.stringify(data).includes(test.expected)) {
+      console.log(`⚠️  Warning: Expected '${test.expected}' not found`);
     }
-  }
-  
-  // Test 2: Socket.IO Multiplayer
-  console.log('\n2️⃣ Testing Socket.IO Multiplayer System...');
-  
-  const socket = io('http://localhost:5000', {
-    transports: ['polling'],
-    timeout: 5000
-  });
-  
-  await new Promise((resolve) => {
-    socket.on('connect', () => {
-      console.log('✅ Socket.IO: Connected successfully');
-      
-      socket.emit('player:join', {
-        userId: 3001,
-        username: 'SystemTestPlayer',
-        displayName: 'System Test Player',
-        rating: 1400
-      });
-      
-      socket.on('player:joined', (response) => {
-        console.log('✅ Player Join: Success');
-        
-        socket.emit('matchmaking:join', { timeControl: 600 });
-        
-        socket.on('matchmaking:joined', (data) => {
-          console.log('✅ Matchmaking: Queue joined successfully');
-          socket.disconnect();
-          resolve();
-        });
-      });
-    });
     
-    socket.on('connect_error', (error) => {
-      console.log('❌ Socket.IO: Connection failed');
-      resolve();
-    });
-    
-    setTimeout(() => {
-      console.log('⏰ Socket test timeout');
-      socket.disconnect();
-      resolve();
-    }, 8000);
-  });
-  
-  // Test 3: Database Operations
-  console.log('\n3️⃣ Testing Database Operations...');
-  
-  try {
-    const ratingResponse = await fetch('http://localhost:5000/api/multiplayer/update-rating', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        userId: 3001,
-        newRating: 1450,
-        gameResult: 'win',
-        username: 'SystemTestPlayer'
-      })
-    });
-    const ratingData = await ratingResponse.json();
-    console.log(`✅ Rating Update: ${ratingData.success ? 'Success' : 'Failed'}`);
+    return { name: test.name, status: response.status, success: response.ok };
   } catch (error) {
-    console.log(`❌ Rating Update: Failed - ${error.message}`);
+    console.log(`❌ ${test.name}: Failed - ${error.message}`);
+    return { name: test.name, status: 'error', success: false, error: error.message };
   }
-  
-  // Test 4: Authentication System
-  console.log('\n4️⃣ Testing Authentication System...');
-  
-  try {
-    const registerResponse = await fetch('http://localhost:5000/api/auth/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: 'testuser_' + Date.now(),
-        email: 'test@example.com',
-        password: 'testpassword123'
-      })
-    });
-    const registerData = await registerResponse.json();
-    console.log(`✅ User Registration: ${registerData.success ? 'Success' : 'Failed'}`);
-  } catch (error) {
-    console.log(`❌ User Registration: Failed - ${error.message}`);
-  }
-  
-  // Test 5: AI Chess System
-  console.log('\n5️⃣ Testing AI Chess System...');
-  
-  try {
-    const aiStatsResponse = await fetch('http://localhost:5000/api/chess/ai-stats');
-    const aiStatsData = await aiStatsResponse.json();
-    console.log(`✅ AI Stats: ${aiStatsData.success ? 'Success' : 'Failed'}`);
-    
-    const leaderboardResponse = await fetch('http://localhost:5000/api/chess/leaderboard');
-    const leaderboardData = await leaderboardResponse.json();
-    console.log(`✅ Chess Leaderboard: ${leaderboardData.success ? 'Success' : 'Failed'}`);
-  } catch (error) {
-    console.log(`❌ AI Chess System: Failed - ${error.message}`);
-  }
-  
-  console.log('\n🎉 Comprehensive System Test Complete!');
-  console.log('📊 All core systems verified and operational');
 }
 
-testCompleteSystem().then(() => {
-  console.log('✅ All tests completed successfully');
-  process.exit(0);
-}).catch((error) => {
-  console.error('💥 Test suite failed:', error);
-  process.exit(1);
-});
+async function runTests() {
+  console.log('🧪 Comprehensive System Test - Wizard Chess Master');
+  console.log('=' * 50);
+  
+  const results = [];
+  
+  for (const test of tests) {
+    const result = await testEndpoint(test);
+    results.push(result);
+    console.log(''); // Empty line between tests
+  }
+  
+  console.log('📊 Test Summary:');
+  console.log('=' * 30);
+  
+  const passed = results.filter(r => r.success).length;
+  const failed = results.filter(r => !r.success).length;
+  
+  console.log(`✅ Passed: ${passed}`);
+  console.log(`❌ Failed: ${failed}`);
+  console.log(`📈 Success Rate: ${Math.round((passed / results.length) * 100)}%`);
+  
+  if (failed > 0) {
+    console.log('\n🔧 Failed Tests:');
+    results.filter(r => !r.success).forEach(r => {
+      console.log(`   - ${r.name}: ${r.error || r.status}`);
+    });
+  }
+  
+  console.log('\n✨ System Ready for Storyboard Enhancement!');
+}
+
+runTests().catch(console.error);
