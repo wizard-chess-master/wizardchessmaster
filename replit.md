@@ -15,6 +15,7 @@ Key capabilities include:
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
+Preferred workflow: Focus on substantial features over trivial UI issues. Avoid excessive time on minor problems that don't significantly impact core functionality.
 
 # System Architecture
 
