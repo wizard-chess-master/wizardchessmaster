@@ -8,6 +8,7 @@ import { usePersonalizedHints } from '../../lib/stores/usePersonalizedHints';
 import { hintLearning } from '../../lib/hints/hintLearning';
 import { PersonalizedHintModal } from '../hints/PersonalizedHintModal';
 import { getAIMove } from '../../lib/chess/aiPlayer';
+import { QuickHintButton } from '../hints/QuickHintButton';
 
 
 interface BoardControlsProps {
@@ -253,6 +254,9 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
               <span className="text-xs leading-none">Hint</span>
             </Button>
           )}
+
+          {/* Quick Hint Button - Contextual for new players */}
+          <QuickHintButton className="mb-2" />
 
           <Button
             variant="outline"

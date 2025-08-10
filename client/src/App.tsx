@@ -16,6 +16,7 @@ import { MarketingRouter } from "./components/marketing/MarketingRouter";
 import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
 import { BlogRouter, BlogPageType } from "./components/blog";
+import { ContextualHintOverlay } from "./components/hints/ContextualHintOverlay";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
 import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
@@ -267,14 +268,18 @@ function App() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <MobileGameLayout
-            onSettings={() => setShowSettings(true)}
-            onAchievements={() => setShowAchievements(true)}
-            onMenu={() => {
-              const { resetGame } = useChess.getState();
-              resetGame();
-            }}
-          >
+          <>
+            {/* Contextual Hint Overlay for New Players */}
+            <ContextualHintOverlay />
+            
+            <MobileGameLayout
+              onSettings={() => setShowSettings(true)}
+              onAchievements={() => setShowAchievements(true)}
+              onMenu={() => {
+                const { resetGame } = useChess.getState();
+                resetGame();
+              }}
+            >
             <div className="desktop-game-layout hidden md:block min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
               <div className="max-w-7xl mx-auto">
                 
@@ -319,6 +324,7 @@ function App() {
             {/* Mobile game layout is handled by MobileGameLayout wrapper */}
             {gamePhase === 'ended' && <GameOverDialog />}
           </MobileGameLayout>
+          </>
         )}
 
         <SettingsDialog 

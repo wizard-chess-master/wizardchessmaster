@@ -70,7 +70,6 @@ export function GameUI({ onSettings }: GameUIProps) {
     <div className="game-ui w-full">
       {/* Mobile Top Ad Banner - Hidden on Desktop */}
       <AdBanner 
-        id="game-banner-mobile" 
         className="mb-3 lg:hidden"
         style={{ maxWidth: '400px', width: '100%' }}
       />

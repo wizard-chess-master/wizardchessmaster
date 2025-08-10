@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { useAudio } from '../../lib/stores/useAudio';
 import { HintLearningSettings } from '../hints/HintLearningSettings';
+import { useHintSystem } from '../../hooks/useHintSystem';
+import { HintSettings } from '../settings/HintSettings';
 
 interface SettingsDialogProps {
   isOpen: boolean;
@@ -26,6 +28,12 @@ interface SettingsDialogProps {
 export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
   const { isMuted, toggleMute } = useAudio();
   const [volume, setVolume] = useState(50);
+  const { 
+    hintState, 
+    toggleHints, 
+    resetDismissedHints, 
+    markAsExperienced 
+  } = useHintSystem();
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -124,6 +132,13 @@ export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
 
           {/* Hint Learning Settings */}
           <TabsContent value="hints" className="space-y-6">
+            <HintSettings
+              showHints={hintState.showHints}
+              isNewPlayer={hintState.isNewPlayer}
+              onToggleHints={toggleHints}
+              onResetHints={resetDismissedHints}
+              onMarkExperienced={markAsExperienced}
+            />
             <HintLearningSettings />
           </TabsContent>
 
