@@ -184,6 +184,15 @@ export class MemStorage implements IStorage {
     return true;
   }
 
+  async getUserByEmail(email: string): Promise<User | null> {
+    for (const [userId, user] of this.users.entries()) {
+      if (user.email === email) {
+        return user;
+      }
+    }
+    return null;
+  }
+
   async updateUserPremiumStatus(userId: number, isPremium: boolean, subscriptionId?: string, subscriptionStatus?: string): Promise<void> {
     const user = this.users.get(userId);
     if (!user) throw new Error('User not found');

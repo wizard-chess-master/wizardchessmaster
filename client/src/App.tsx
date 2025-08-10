@@ -18,6 +18,7 @@ import { BlogPost } from "./components/blog/BlogPost";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
 import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
+import { PremiumTestButton } from "./components/debug/PremiumTestButton";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -225,6 +226,8 @@ function App() {
           {currentPage === 'reset-password' && (
             <ResetPasswordForm />
           )}
+
+          <PremiumTestButton email="tokingteepee@gmail.com" />
         </div>
       </AuthProvider>
     );
@@ -336,6 +339,8 @@ function App() {
         
         {/* Campaign Reward Celebration */}
         <CelebrationComponent />
+        
+        <PremiumTestButton email="tokingteepee@gmail.com" />
         </div>
       </div>
       </AuthProvider>

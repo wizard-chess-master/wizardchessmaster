@@ -246,6 +246,57 @@ router.post('/validate-reset-token', async (req: AuthRequest, res: Response) => 
   }
 });
 
+// Debug endpoint to grant premium access (development only)
+router.post('/grant-premium', async (req: AuthRequest, res: Response) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(403).json({
+      success: false,
+      error: 'Not available in production'
+    });
+  }
+
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: 'Email is required'
+      });
+    }
+
+    const user = await storage.getUserByEmail(email);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    // Grant premium access
+    await storage.updateUserPremiumStatus(user.id, true, 'dev_subscription', 'active');
+
+    console.log(`✅ Premium access granted to: ${user.email}`);
+
+    res.json({
+      success: true,
+      message: 'Premium access granted successfully',
+      user: {
+        ...user,
+        isPremium: true,
+        subscriptionStatus: 'active'
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ Grant premium error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to grant premium access'
+    });
+  }
+});
+
 // Middleware to require authentication
 export const requireAuth = (req: AuthRequest, res: Response, next: any) => {
   if (!req.session.userId) {

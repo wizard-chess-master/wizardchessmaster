@@ -3,12 +3,18 @@
 **Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression.
 
 ## Recent Changes (August 10, 2025)
+- **Password Recovery System**: Complete password recovery implementation with secure token-based reset functionality
+  - Database schema for password reset tokens with expiration and usage tracking
+  - Backend API endpoints for requesting and processing password resets
+  - Frontend password recovery dialog integrated into login system
+  - Standalone reset password page with token validation
+  - Security features: 1-hour token expiration, one-time use, masked email display
+- **Development Premium Access**: Added debug endpoint to grant premium access for testing multiplayer features
 - **Button Functionality Resolved**: Fixed Join Free button and navigation buttons that were not responding to clicks
 - **Console Error Management**: Enhanced error handling for AdSense sizing issues and audio DOMExceptions
 - **Website Navigation**: All marketing page buttons now work correctly with proper logging
 - **Arena Login Fixed**: Added LoginDialog integration to "Login to Play Online" button in multiplayer arena
 - **Tournaments Page Updated**: Added "Coming Soon" banner to tournaments page for stable deployment
-- **Deployment Ready**: All critical button functionality verified and working correctly
 
 Key capabilities include:
 - A unique 10x10 board with custom wizard pieces.
