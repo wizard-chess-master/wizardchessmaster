@@ -1,132 +1,104 @@
 # Overview
 
-**Wizard Chess Master** is a full-stack TypeScript application featuring a 10x10 chess variant with magical wizards. It offers AI opponent modes within a comprehensive medieval fantasy theme with complete user authentication and cloud save functionality. Online multiplayer has been temporarily disabled due to functionality issues and will be re-enabled later. The project aims to provide an engaging and visually immersive chess experience with advanced AI capabilities, robust monetization framework, and seamless cross-device progression for premium members.
+**Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression.
 
-Key features include:
+Key capabilities include:
 - A unique 10x10 board with custom wizard pieces.
-- AI opponents with adjustable difficulty, including an advanced minimax AI and a neural network learning system.
-- Optimized AI training system limited to 500 games with batch processing and efficient alpha-beta pruning.
-- Enhanced campaign mode with story unlocks, board variants, and premium progression system.
-- Streamlined single-tier monetization with $5/month subscription, A/B price testing, and advanced freemium conversion optimization.
-- Complete ad integration featuring post-game interstitials, in-play banners, and rewarded videos for hints/undos.
+- AI opponents with adjustable difficulty, including advanced minimax AI and neural network learning.
+- Enhanced campaign mode with story unlocks and board variants.
+- Streamlined single-tier monetization with a subscription model, A/B price testing, and freemium conversion optimization.
 - Comprehensive leaderboards for campaign and PvP modes.
 - A fully immersive medieval fantasy visual overhaul, including custom assets, UI, and animations.
 - Complete user authentication system with secure registration, login, and session management.
-- Cloud save functionality for premium members enabling cross-device progress synchronization.
-- Local backup system available to all registered users for progress protection.
+- Cloud save functionality for premium members enabling cross-device progress synchronization, with local backup for all registered users.
 
-## User Preferences
+# User Preferences
 
 Preferred communication style: Simple, everyday language.
 
-## System Architecture
+# System Architecture
 
-### Frontend Architecture
+## Frontend Architecture
 - **React with TypeScript**: Component-based UI for type safety.
-- **Zustand State Management**: Lightweight state management for game state and audio.
+- **Zustand State Management**: Lightweight state management for game state.
 - **Tailwind CSS + Radix UI + Medieval Theme**: Modern styling with accessible components and a comprehensive medieval fantasy CSS design.
 - **Vite Build Tool**: Fast development and optimized production builds.
 - **Canvas-Based Chess Rendering**: Custom sprite rendering with smooth animations and glowing effects.
 - **Responsive Medieval Design**: Mobile-first approach with fantasy-themed layouts and wooden UI elements.
 
-### Backend Architecture
+## Backend Architecture
 - **Express.js Server**: RESTful API with TypeScript.
 - **Modular Route System**: Organized route handlers with consistent error handling.
 - **In-Memory Storage**: Simple storage interface, designed for future database integration.
 
-### Data Storage Solutions
+## Data Storage Solutions
 - **Drizzle ORM**: Type-safe database toolkit configured for PostgreSQL.
 - **Neon Database**: Serverless PostgreSQL hosting.
 - **Schema Management**: Shared schema definitions with Zod validation.
 - **Migration System**: Database migrations managed via Drizzle Kit.
 
-### Game Logic Architecture
+## Game Logic Architecture
 - **Chess Engine**: Complete 10x10 chess implementation with piece movement validation, including custom wizard abilities.
 - **Advanced AI System**: Integrates Minimax with alpha-beta pruning, neural network learning, and strategy pattern recognition.
 - **AI Difficulty Levels**: Easy, medium, hard, plus an advanced minimax AI and adaptive difficulty based on player performance.
-- **Comprehensive AI Training System**: Allows for 1-10000 game training sessions with real-time statistics and progress tracking.
+- **Comprehensive AI Training System**: Allows for up to 500 game training sessions with batch processing and efficient alpha-beta pruning.
 - **Adaptive AI Difficulty Progression**: Real-time tracking and visualization of AI difficulty adjustments.
-- **Audio System**: HTML5 Audio for sound effects with user-configurable mute controls managed via a centralized audio store.
 
-### UI/UX Decisions
+## UI/UX Decisions
 - **Medieval Fantasy Visual Overhaul**: Features castle backgrounds, wooden UI panels, stone textures, gold accents, and atmospheric styling.
 - **Enhanced Canvas Rendering**: Glowing highlights for selected squares and valid moves, with shadow effects.
 - **Smooth Animations**: 0.5s piece movement animations and glowing canvas effects.
 - **Medieval Typography**: Integrated Cinzel font for authentic text styling.
 - **Layout Optimization**: Streamlined component design, reduced blank space, single-column layouts, and consistent width constraints for improved responsiveness.
 - **Comprehensive Leaderboard System**: Tracks campaign progress and PvP ratings with visual rankings, advanced statistics, and real-time updates.
+- **Achievement Celebration Microinteractions**: Multi-layered celebration system with screen shake, particle bursts, confetti, fireworks, and haptic feedback.
+- **Improved Settings Dialog**: Enhanced text visibility and contrast with clear organization.
 
-### Comprehensive HTML5 Audio System 
-- **Wizard Chess Audio Manager**: Complete HTML5 Audio API implementation with MP3 file support
-- **Sound Effects Integration**: Move sounds, captures, wizard abilities, game events triggered on gameplay
-- **Voice Narration System**: Game intro, victory celebration, hints, and story elements
-- **Background Music**: Theme music with looping functionality and dynamic volume control
-- **Volume Controls**: Master volume slider, mute toggle, and test sound functionality
-- **Button Click Integration**: All UI buttons play click sounds for enhanced user experience
-- **Replit-Optimized**: Stable performance with graceful error handling and preloading system
-
-### Technical Implementations
+## Technical Implementations
 - **Castling System**: Implemented with king moving 3 squares and proper validation.
-- **Optimized AI Training System**: Limited to 500 games maximum with batch processing, efficient minimax with alpha-beta pruning, and neural network learning optimized for performance.
-- **Enhanced Campaign Mode**: 12 progressive levels with story content, board variants (classic, forest, castle, mountain, desert, volcanic, ice, cosmic), premium level locks, comprehensive rewards system, and 5-star rating system (95%+ for 5 stars, 85%+ for 4 stars, 75%+ for 3 stars, 65%+ for 2 stars, 50%+ for 1 star).
-- **Streamlined Monetization System**: Single $5/month subscription with A/B price testing ($4.99-$6.99), advanced freemium limitations (1 hint/game, undos premium-only), strategic upgrade prompts, limited-time offers ($3.99 first month), and comprehensive Stripe integration.
-- **Ad Integration Removed**: Post-game promotional content removed for cleaner user experience.
-- **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Reset AI Training, View AI Learning Stats). Debug buttons removed for cleaner interface.
-- **Complete Audio System Removal**: All music and sound effects completely removed per user request - user will implement custom MP3-based audio system independently.
-- **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves including teleport swirls and spell glows.
-- **Immersive 3D Audio System**: Web Audio API-powered spatial audio with HRTF panning, piece-specific movement sounds, wizard teleport/attack effects, dynamic music intensity, medieval background music, convolution reverb for magical ambiance, and low-latency responsive audio optimized for Replit hosting.
-- **Enhanced Audio Architecture**: Sound effects and voice system prepared for immersive content including voice management (narrator, coach, assistant), enhanced SFX manager with MP3 support, and audio coordinator for orchestrated sound experiences. Music system completely removed per user request.
-- **Production Deployment Configuration**: Comprehensive deployment fixes including proper host binding (0.0.0.0), NODE_ENV=production environment variable configuration, enhanced error handling for server startup, improved static file serving, production build verification, and replit.toml deployment configuration for Autoscale deployment target.
-- **Complete Stripe Payment Integration**: Real Stripe payment processing with server-side API routes (/api/payments, /api/webhooks), checkout session creation, webhook handlers for subscription events, client-side integration with dynamic key configuration, proper error handling, and secure payment flow with session verification.
-- **Fixed Double Audio Issue**: Resolved audio duplication by centralizing all audio control through useAudio store, removing duplicate Audio() instances from multiple components.
-- **Hint Modal Positioning Fix**: Corrected PersonalizedHintModal alignment by removing conflicting CSS classes that interfered with Radix UI's built-in centering, added proper accessibility attributes.
-- **Comprehensive Achievement Celebration Microinteractions**: Multi-layered celebration system featuring screen shake effects, particle burst animations, confetti for epic+ achievements, firework displays for legendary rarities, enhanced notification cards with animated borders and glows, haptic feedback integration, and rarity-specific visual effects with coordinated timing and smooth transitions.
-- **Improved Settings Dialog**: Enhanced text visibility and contrast throughout settings interface with white background, dark text, proper borders, and organized sections for volume controls, audio information, and keyboard shortcuts.
-- **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading, event management, and system status monitoring.
-- **Advanced Hint Modal System**: Replaced technical browser alerts with immersive medieval-themed modal featuring amber gradients, wizard styling, and fantasy language. Enhanced with 60 total hint variations (20 per difficulty level) - beginner hints for easy mode, tactical hints for medium, and grandmaster-level hints for hard difficulty. Includes anti-repetition logic with 3-second cooldown and position tracking.
-- **Personalized Hint Learning Algorithm**: Complete machine learning system that tracks user interactions with hints (followed, ignored, dismissed, requested more), analyzes patterns to determine preferred complexity and style, adapts hint selection based on learned preferences, and provides real-time personalization insights with learning progress tracking. Features comprehensive settings panel with adaptation level controls and learning data reset functionality.
-- **Floating Mentor Notifications**: Enhanced AI mentor system with floating notifications featuring real-time feedback display, text-to-speech voice synthesis, auto-hide functionality, and prominent visual positioning to eliminate need for scrolling to see feedback.
-- **Production Deployment Optimization**: Enhanced server configuration with proper error handling, NODE_ENV fallbacks, dynamic PORT environment variable support, 0.0.0.0 host binding, and aligned static file serving. Added production build scripts and deployment test utilities to ensure Replit deployment compatibility.
-- **Comprehensive User Authentication System**: Complete authentication implementation with bcrypt password hashing, express-session management, user registration/login/logout flows, and secure session-based authentication. Features include user profile management, premium status tracking, and subscription synchronization via Stripe webhooks.
-- **Cloud Save & Backup System**: Premium members get cloud save functionality for cross-device progress synchronization, while all registered users can create local backups. Features automatic save detection, manual sync controls, and seamless data restoration with page reload integration.
-- **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated directly into the main menu interface with premium status indicators and logout functionality.
-- **Upgraded Leaderboard System**: Complete migration from manual name entry to authenticated player data with PostgreSQL database integration, comprehensive API routes (/api/leaderboards), player statistics tracking, campaign and PvP rankings, and server synchronization for registered users while maintaining backward compatibility with existing local data.
-- **Mobile-Friendly Responsive Design**: Comprehensive device detection system with built-in capabilities to recognize device types (mobile, tablet, desktop) and serve optimized experiences. Features include mobile-specific chess board sizing, touch-optimized controls, orientation-aware layouts, device-specific settings management, performance optimizations for mobile devices, and responsive CSS with safe area support for modern mobile browsers.
+- **Enhanced Campaign Mode**: 12 progressive levels with story content, board variants, premium level locks, and a comprehensive rewards system.
+- **Streamlined Monetization System**: Single $5/month subscription with A/B price testing, advanced freemium limitations, and strategic upgrade prompts.
+- **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Reset AI Training, View AI Learning Stats).
+- **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves.
+- **Production Deployment Configuration**: Comprehensive deployment fixes including proper host binding, environment variable configuration, and Replit.toml setup for Autoscale.
+- **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading and event management.
+- **Advanced Hint Modal System**: Replaced technical alerts with immersive medieval-themed modals featuring 60 total hint variations and anti-repetition logic.
+- **Personalized Hint Learning Algorithm**: Machine learning system that tracks user interactions with hints, analyzes patterns, and adapts hint selection based on learned preferences.
+- **Floating Mentor Notifications**: Enhanced AI mentor system with floating notifications featuring real-time feedback, text-to-speech, and auto-hide functionality.
+- **Comprehensive User Authentication System**: Complete authentication implementation with bcrypt password hashing, session management, user registration/login/logout flows, and secure session-based authentication. Features user profile management and premium status tracking.
+- **Cloud Save & Backup System**: Premium members get cloud save functionality for cross-device progress synchronization; all registered users can create local backups. Features automatic save detection and manual sync controls.
+- **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated into the main menu with premium status indicators.
+- **Upgraded Leaderboard System**: Migration from manual name entry to authenticated player data with PostgreSQL database integration, comprehensive API routes, player statistics tracking, and server synchronization for registered users.
+- **Mobile-Friendly Responsive Design**: Comprehensive device detection with optimized experiences for mobile, tablet, and desktop, including mobile-specific board sizing, touch-optimized controls, and performance optimizations.
 
-## External Dependencies
+# External Dependencies
 
-### Database & ORM
+## Database & ORM
 - **Neon Database**: Serverless PostgreSQL hosting.
 - **Drizzle ORM**: Database queries and schema management.
 - **PostgreSQL**: Primary database dialect.
 
-### UI & Styling
+## UI & Styling
 - **Radix UI**: Accessible component primitives.
 - **Tailwind CSS**: Utility-first CSS framework.
 - **Lucide React**: Icon library.
 - **Inter Font**: Typography via Fontsource.
 
-### 3D Graphics
+## 3D Graphics
 - **Three.js**: 3D rendering engine.
 - **React Three Fiber**: React renderer for Three.js.
 - **React Three Drei**: Helpers for R3F.
 - **GLSL Shaders**: Custom shader support via vite-plugin-glsl.
 
-### Development Tools
+## Development Tools
 - **Vite**: Build tool and dev server.
 - **ESBuild**: Fast bundling for production.
 - **TypeScript**: Type checking and compilation.
 
-### State & Data Management
+## State & Data Management
 - **Zustand**: State management library.
 - **TanStack Query**: Server state management and caching.
 - **Zod**: Runtime type validation.
 
-### Advanced Monetization Architecture
-- **Streamlined Subscription Model**: Single $5/month tier with comprehensive premium features
-- **A/B Price Testing**: Dynamic pricing variants ($4.99-$6.99) with localStorage persistence
-- **Advanced Freemium Limitations**: Reduced free hints (1/game), undos premium-only, strategic upgrade prompts
-- **Conversion Optimization**: Strategic promo modals, limited-time offers, countdown timers
-- **Google AdSense**: Banner ads, interstitial post-game, rewarded videos for hints
-- **Stripe Integration**: Secure payment processing with plan selector UI
-- **Admin Testing Tools**: Free/premium toggle, pricing cycling, promo testing for optimization
+## Monetization Integration
+- **Stripe**: Secure payment processing for subscriptions.

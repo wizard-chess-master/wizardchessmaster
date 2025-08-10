@@ -165,7 +165,7 @@ export function SettingsDialog({ isOpen, onClose }: SettingsDialogProps) {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Info className="w-5 h-5 text-purple-600" />
-                  About Wizard Chess Duel
+                  About Wizard Chess Master
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
