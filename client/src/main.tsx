@@ -45,12 +45,12 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// FORCE Theme-music2.mp3 implementation in main initialization
+// FORCE Theme-music1.mp3 implementation in main initialization
 if (typeof window !== 'undefined') {
   // Theme music initialization function  
   const initializeThemeMusic = () => {
     // Don't auto-start music in main.tsx - let user control it
-    console.log('🎵 Main.tsx: Theme-music2.mp3 ready - user will control theme music');
+    console.log('🎵 Main.tsx: Theme-music1.mp3 ready - user will control theme music');
     
     // Store cleanup function globally
     (window as any).stopAllAudio = function() {

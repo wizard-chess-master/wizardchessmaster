@@ -326,10 +326,8 @@ class WizardChessAudioManager {
   }
 
   async onGameStart(): Promise<void> {
-    if (!this.themeMusic) {
-      await this.playThemeMusic();
-    }
-    this.playVoice('game_intro');
+    // Disabled automatic music to prevent conflicts
+    console.log('Game start event (music controlled manually)');
   }
 
   async playThemeMusic(): Promise<void> {
@@ -337,7 +335,7 @@ class WizardChessAudioManager {
     
     this.stopMusic();
     
-    const theme = new Audio('/assets/music/Theme-music2.mp3');
+    const theme = new Audio('/assets/music/Theme-music1.mp3');
     theme.loop = true;
     theme.volume = 0.42;
     

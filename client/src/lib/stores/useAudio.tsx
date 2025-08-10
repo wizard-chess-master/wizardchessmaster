@@ -38,9 +38,8 @@ export const useAudio = create<AudioState>((set, get) => ({
       stopBackgroundMusic();
       console.log(`🔊 Audio muted`);
     } else {
-      // Start background music when unmuting
-      console.log(`🔊 Audio unmuted`);
-      playBackgroundMusic();
+      // Background music disabled to prevent conflicts
+      console.log(`🔊 Audio unmuted (music controlled manually)`);
     }
   },
 
@@ -98,34 +97,9 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   playBackgroundMusic: () => {
-    const { isMuted, volume, stopBackgroundMusic } = get();
-    if (isMuted) return;
-
-    // Comprehensive cleanup to prevent audio conflicts
-    console.log('🎵 Background music request - cleaning all existing audio');
-    
-    // Stop wizard chess audio completely 
-    wizardChessAudio.stopMusic();
-    wizardChessAudio.stopAllVoices();
-    
-    // Stop any existing background music first
-    stopBackgroundMusic();
-    
-    if (isMuted) {
-      console.log('🎵 Background music not started - audio is muted');
-      return;
-    }
-    
-    // Stop all existing audio to prevent conflicts
-    document.querySelectorAll('audio').forEach(a => {
-      a.pause();
-      a.currentTime = 0;
-      a.src = '';
-    });
-    
-    // Auto-start theme music when not muted
-    console.log('🎵 useAudio playBackgroundMusic - starting theme music');
-    wizardChessAudio.playThemeMusic();
+    console.log('🎵 Background music request blocked - manual control only');
+    // Completely disabled to prevent audio conflicts during campaign interactions
+    return;
   },
 
   stopBackgroundMusic: () => {
