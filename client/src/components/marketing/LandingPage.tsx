@@ -286,7 +286,7 @@ export function LandingPage({ onJoinFree, onPlayNow }: LandingPageProps) {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {/* Button removed - direct game access via navigation menu */}
+            {/* All problematic buttons completely removed */}
           </div>
 
           <p className="mt-6 text-sm opacity-75">
