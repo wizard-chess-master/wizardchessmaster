@@ -139,10 +139,17 @@ class WizardChessAudioManager {
       // Reset and play
       audio.currentTime = 0;
       audio.volume = this.volume;
-      await audio.play();
-      console.log(`🎵 Playing sound effect: ${effectKey}`);
+      const playPromise = audio.play();
+      
+      // Handle the promise properly to prevent unhandled rejection
+      if (playPromise !== undefined) {
+        await playPromise.catch(error => {
+          // Silent failure for audio play - this is common and expected
+          console.debug(`Audio play failed for ${effectKey} (normal behavior):`, error.name);
+        });
+      }
     } catch (error) {
-      console.warn(`⚠️ Failed to play sound effect ${effectKey}:`, error);
+      console.debug(`Failed to play sound effect ${effectKey}:`, error);
     }
   }
 
@@ -162,10 +169,16 @@ class WizardChessAudioManager {
     try {
       audio.currentTime = 0;
       audio.volume = this.volume;
-      await audio.play();
-      console.log(`🗣️ Playing voice: ${voiceKey}`);
+      const playPromise = audio.play();
+      
+      // Handle the promise properly to prevent unhandled rejection
+      if (playPromise !== undefined) {
+        await playPromise.catch(error => {
+          console.debug(`Voice play failed for ${voiceKey} (normal behavior):`, error.name);
+        });
+      }
     } catch (error) {
-      console.warn(`⚠️ Failed to play voice ${voiceKey}:`, error);
+      console.debug(`Failed to play voice ${voiceKey}:`, error);
     }
   }
 
@@ -189,10 +202,16 @@ class WizardChessAudioManager {
       audio.currentTime = 0;
       audio.volume = this.volume * 0.6; // Music should be quieter than SFX
       this.currentMusic = audio;
-      await audio.play();
-      console.log(`🎼 Playing music: ${musicKey} (${this.config.music[musicKey]})`);
+      const playPromise = audio.play();
+      
+      // Handle the promise properly to prevent unhandled rejection
+      if (playPromise !== undefined) {
+        await playPromise.catch(error => {
+          console.debug(`Music play failed for ${musicKey} (normal behavior):`, error.name);
+        });
+      }
     } catch (error) {
-      console.warn(`⚠️ Failed to play music ${musicKey}:`, error);
+      console.debug(`Failed to play music ${musicKey}:`, error);
     }
   }
 

@@ -9,12 +9,25 @@ import './styles/responsive.css';
 // Global error handling for production stability
 if (typeof window !== 'undefined') {
   window.addEventListener('unhandledrejection', (event) => {
+    // Handle audio-related DOMExceptions silently
+    if (event.reason instanceof DOMException) {
+      console.debug('Audio DOMException caught (normal browser behavior):', event.reason.name);
+      event.preventDefault();
+      return;
+    }
+    
     console.warn('Unhandled promise rejection:', event.reason);
     // Prevent default to avoid console error spam
     event.preventDefault();
   });
 
   window.addEventListener('error', (event) => {
+    // Handle audio-related errors gracefully
+    if (event.error instanceof DOMException) {
+      console.debug('Audio error caught (normal browser behavior):', event.error.name);
+      return;
+    }
+    
     console.warn('Global error caught:', event.error);
   });
 }

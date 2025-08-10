@@ -19,23 +19,31 @@ class GlobalAudioManager {
       this.buttonClickAudio.preload = 'auto';
       this.buttonClickAudio.volume = 0.6;
       
-      // Test if audio can be loaded
-      await new Promise((resolve, reject) => {
-        if (!this.buttonClickAudio) {
-          reject(new Error('Audio element not created'));
-          return;
-        }
-        
-        this.buttonClickAudio.oncanplaythrough = () => resolve(true);
-        this.buttonClickAudio.onerror = reject;
-        this.buttonClickAudio.load();
-      });
+      // Test if audio can be loaded with timeout
+      await Promise.race([
+        new Promise((resolve, reject) => {
+          if (!this.buttonClickAudio) {
+            reject(new Error('Audio element not created'));
+            return;
+          }
+          
+          this.buttonClickAudio.oncanplaythrough = () => resolve(true);
+          this.buttonClickAudio.onerror = (e) => {
+            console.warn('Audio load error (expected in some browsers):', e);
+            resolve(false); // Don't reject, just resolve as failed
+          };
+          this.buttonClickAudio.load();
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Audio load timeout')), 3000))
+      ]);
       
       this.isInitialized = true;
       console.log('✅ Global Audio Manager initialized successfully');
     } catch (error) {
-      console.warn('⚠️ Global Audio Manager initialization failed:', error);
+      console.warn('⚠️ Global Audio Manager initialization failed (this is normal in some browsers):', error);
       this.isInitialized = false;
+      // Clear the audio element if initialization failed
+      this.buttonClickAudio = null;
     }
   }
 
@@ -47,10 +55,18 @@ class GlobalAudioManager {
     try {
       // Reset audio to start if it's already playing
       this.buttonClickAudio.currentTime = 0;
-      await this.buttonClickAudio.play();
-      console.log('🔊 Button click sound played');
+      const playPromise = this.buttonClickAudio.play();
+      
+      // Handle the promise properly to prevent unhandled rejection
+      if (playPromise !== undefined) {
+        await playPromise.catch(error => {
+          // Silent failure for audio play - this is common and expected
+          console.debug('Audio play failed (normal behavior):', error.name);
+        });
+      }
     } catch (error) {
-      console.warn('⚠️ Button click sound failed:', error);
+      // Silent audio failure - don't spam console
+      console.debug('Button click sound failed:', error);
     }
   }
 
