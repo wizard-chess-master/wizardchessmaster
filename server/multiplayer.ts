@@ -29,14 +29,8 @@ class MultiplayerManager {
   private activeGames: Map<string, GameData> = new Map();
   private matchmakingQueue: PlayerData[] = [];
 
-  constructor(httpServer: HttpServer) {
-    this.io = new SocketServer(httpServer, {
-      cors: {
-        origin: process.env.NODE_ENV === 'production' ? false : '*',
-        methods: ['GET', 'POST']
-      }
-    });
-
+  constructor(io: SocketServer) {
+    this.io = io;
     this.setupSocketHandlers();
   }
 

@@ -69,17 +69,18 @@ app.use((req, res, next) => {
     const httpServer = createServer(app);
     const server = await registerRoutes(app);
     
-    // Initialize Socket.IO
+    // Initialize Socket.IO with the HTTP server
     const io = new SocketIOServer(httpServer, {
       cors: {
         origin: "*",
         methods: ["GET", "POST"]
       },
-      path: "/socket.io/"
+      path: "/socket.io/",
+      transports: ['websocket', 'polling']
     });
 
-    // Initialize multiplayer manager
-    const multiplayerManager = new MultiplayerManager(httpServer);
+    // Initialize multiplayer manager with Socket.IO instance
+    const multiplayerManager = new MultiplayerManager(io);
 
     console.log('🔌 Socket.IO multiplayer system initialized');
 
