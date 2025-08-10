@@ -71,10 +71,10 @@ export const PremiumComparisonModal: React.FC<PremiumComparisonModalProps> = ({
     },
     { 
       icon: <Users className="w-5 h-5 text-pink-400" />, 
-      text: 'Premium tournaments & prizes', 
+      text: 'Premium tournaments & titles', 
       highlight: true, 
-      value: 'Win real rewards',
-      tooltip: 'Exclusive tournaments with cash prizes up to $500'
+      value: 'Exclusive competitive play',
+      tooltip: 'Premium tournaments with special titles, badges, and achievements'
     },
     { 
       icon: <Check className="w-5 h-5 text-emerald-400" />, 
@@ -374,7 +374,7 @@ export const PremiumComparisonModal: React.FC<PremiumComparisonModalProps> = ({
                   </div>
                   <div className="flex items-center gap-2">
                     <Check className="w-5 h-5 text-green-400" />
-                    <span>Tournament prizes up to $500</span>
+                    <span>Premium tournaments & titles</span>
                   </div>
                 </div>
                 
