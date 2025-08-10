@@ -138,7 +138,8 @@ export function CampaignMode({ onBackToMenu }: CampaignModeProps) {
     startCampaignLevel(levelId);
     
     // Start the campaign game with AI difficulty  
-    startGame('ai', level.aiStrength.toString());
+    const difficulty = level.aiStrength <= 2 ? 'easy' : level.aiStrength <= 4 ? 'medium' : 'hard';
+    startGame('ai', difficulty);
     
     // Return to game view
     onBackToMenu();
