@@ -56,6 +56,14 @@ export const useAudio = create<AudioState>((set, get) => ({
     // COMPREHENSIVE AUDIO CLEANUP as urgently requested
     console.log('🛑 URGENT: Comprehensive audio cleanup on initialization...');
     
+    // Stop ALL audio including old theme music
+    document.querySelectorAll('audio').forEach(a => { 
+      a.pause(); 
+      a.currentTime = 0;
+      a.src = '';
+      a.remove();
+    });
+    
     // Close any existing AudioContext
     try {
       if (typeof AudioContext !== 'undefined') {
@@ -69,11 +77,15 @@ export const useAudio = create<AudioState>((set, get) => ({
       console.log('⚠️ AudioContext not available or already closed');
     }
     
-    // Comprehensive DOM audio cleanup
-    document.querySelectorAll('audio').forEach(a => { 
-      a.pause(); 
-      a.currentTime = 0; 
-    });
+    // Clear any global audio references
+    if ((window as any).currentTheme) {
+      (window as any).currentTheme.pause();
+      (window as any).currentTheme = null;
+    }
+    
+    // Stop wizard chess audio manager instances
+    wizardChessAudio.stopMusic();
+    wizardChessAudio.stopAllVoices();
     
     // Exhaustive audio logging as requested
     console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
@@ -86,58 +98,23 @@ export const useAudio = create<AudioState>((set, get) => ({
   },
 
   playBackgroundMusic: () => {
-    const { isMuted } = get();
-    
-    // Master audio cleanup function
-    function masterAudioCleanup() {
-      console.log('🛑 MASTER AUDIO CLEANUP - Stopping ALL audio systems...');
-      
-      // 1. Stop WizardChessAudioManager
-      if (wizardChessAudio?.stopAllAudio) {
-        wizardChessAudio.stopAllAudio();
-      }
-      
-      // 2. Stop GameAudioManager
-      if ((window as any).gameAudioManager?.stopAll) {
-        (window as any).gameAudioManager.stopAll();
-      }
-      
-      // 3. Close ImmersiveAudioSystem
-      if ((window as any).immersiveAudio?.dispose) {
-        (window as any).immersiveAudio.dispose();
-      }
-      
-      // 4. Close ALL AudioContexts
-      if (typeof AudioContext !== 'undefined') {
-        try {
-          const context = new AudioContext();
-          context.close();
-        } catch (e) {}
-      }
-      
-      // 5. Remove ALL DOM audio elements
-      document.querySelectorAll('audio').forEach(a => {
-        a.pause();
-        a.currentTime = 0;
-        a.src = '';
-        a.remove();
-      });
-      
-      // 6. Clear global references
-      (window as any).currentTheme = null;
-      (window as any).backgroundMusic = null;
-      (window as any).gameAudioManager = null;
-      
-      console.log('🛑 Master cleanup complete');
-    }
+    const { isMuted, volume, stopBackgroundMusic } = get();
+    if (isMuted) return;
+
+    // Stop any existing background music first
+    stopBackgroundMusic();
     
     if (isMuted) {
       console.log('🎵 Background music not started - audio is muted');
       return;
     }
     
-    // Execute master cleanup
-    masterAudioCleanup();
+    // Stop all existing audio to prevent conflicts
+    document.querySelectorAll('audio').forEach(a => {
+      a.pause();
+      a.currentTime = 0;
+      a.src = '';
+    });
     
     // Auto-start theme music when not muted
     console.log('🎵 useAudio playBackgroundMusic - starting theme music');
@@ -146,12 +123,23 @@ export const useAudio = create<AudioState>((set, get) => ({
 
   stopBackgroundMusic: () => {
     const { backgroundMusic } = get();
+    
+    // Stop all audio including background music
+    document.querySelectorAll('audio').forEach(a => {
+      a.pause();
+      a.currentTime = 0;
+    });
+    
+    // Stop wizard chess audio
+    wizardChessAudio.stopMusic();
+    
     if (backgroundMusic) {
       backgroundMusic.pause();
       backgroundMusic.currentTime = 0;
       set({ backgroundMusic: null });
-      console.log('🛑 Background music stopped');
     }
+    
+    console.log('🛑 All background music stopped');
   },
 
   playUISound: (type: string) => {
