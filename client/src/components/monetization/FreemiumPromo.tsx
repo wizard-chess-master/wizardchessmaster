@@ -149,7 +149,7 @@ export const FreemiumPromo: React.FC<FreemiumPromoProps> = ({
               className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold"
             >
               <Crown className="w-4 h-4 mr-2" />
-              Start Premium
+              Upgrade Now
             </Button>
             <Button
               variant="outline"
