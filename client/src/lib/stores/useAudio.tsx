@@ -101,6 +101,13 @@ export const useAudio = create<AudioState>((set, get) => ({
     const { isMuted, volume, stopBackgroundMusic } = get();
     if (isMuted) return;
 
+    // Comprehensive cleanup to prevent audio conflicts
+    console.log('🎵 Background music request - cleaning all existing audio');
+    
+    // Stop wizard chess audio completely 
+    wizardChessAudio.stopMusic();
+    wizardChessAudio.stopAllVoices();
+    
     // Stop any existing background music first
     stopBackgroundMusic();
     

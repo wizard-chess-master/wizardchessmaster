@@ -109,15 +109,8 @@ export const useChess = create<ChessStore>()(
       // Call cleanup function first
       cleanAudio();
       
-      // Auto-start theme music when entering game area
-      console.log('🎵 Game start - Theme-music1.mp3 handled by user controls only');
-      // Music will auto-start if not muted
-      const { isMuted } = useAudio.getState();
-      if (!isMuted) {
-        setTimeout(() => {
-          wizardChessAudio.playThemeMusic();
-        }, 500); // Small delay to ensure cleanup is complete
-      }
+      // Auto-start theme music disabled to prevent conflicts
+      console.log('🎵 Game start - Music controlled only by user interaction (no auto-play)');
       
       // Verify board state after setting
       setTimeout(() => {
