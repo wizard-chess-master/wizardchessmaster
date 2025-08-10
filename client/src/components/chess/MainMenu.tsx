@@ -37,7 +37,8 @@ interface MainMenuProps {
 }
 
 export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuProps) {
-  const { startGame, resetGame, gamePhase } = useChess();
+  const chessStore = useChess();
+  const { startGame, resetGame, gamePhase } = chessStore;
   const { user, isLoggedIn, isPremium, logout, checkSession } = useAuth();
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
@@ -113,34 +114,26 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               <div className="game-mode-buttons">
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={(e) => {
-                    console.log('🎮 BUTTON CLICKED - Player vs AI Easy');
-                    console.log('🎮 Current game phase:', gamePhase);
+                  onClick={() => {
+                    console.log('🎮 FORCE START BUTTON CLICKED');
                     
-                    e.preventDefault();
-                    e.stopPropagation();
+                    // Get the current store
+                    const store = useChess.getState();
+                    console.log('🎮 Current store state:', store);
                     
-                    // Try audio
-                    try {
-                      (window as any).gameAudioManager?.onButtonClick();
-                    } catch (audioError) {
-                      console.warn('Audio failed:', audioError);
-                    }
+                    // Force the state change directly
+                    useChess.setState({
+                      ...store,
+                      gamePhase: 'playing',
+                      gameMode: 'ai',
+                      aiDifficulty: 'easy',
+                      currentPlayer: 'white'
+                    });
                     
-                    // Force start game
-                    console.log('🎮 Calling startGame function...');
-                    const result = startGame('ai', 'easy');
-                    console.log('🎮 StartGame result:', result);
-                    
-                    // Force navigation if game phase changes
-                    setTimeout(() => {
-                      const newPhase = useChess.getState().gamePhase;
-                      console.log('🎮 New game phase after startGame:', newPhase);
-                      if (newPhase === 'playing') {
-                        console.log('🎮 Game started successfully, attempting navigation');
-                        window.location.hash = '#game';
-                      }
-                    }, 50);
+                    // Check if state changed
+                    const newState = useChess.getState();
+                    console.log('🎮 New state after forced update:', newState);
+                    console.log('🎮 Game phase is now:', newState.gamePhase);
                   }}
                 >
                   <div className="mode-content">
