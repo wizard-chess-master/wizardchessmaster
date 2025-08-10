@@ -115,8 +115,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               <div className="game-mode-buttons">
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => {
-                    (window as any).gameAudioManager?.onButtonClick();
+                  onClick={(e) => {
+                    console.log('🎮 Medium AI button clicked');
                     startGame('ai', 'medium');
                   }}
                 >
@@ -128,8 +128,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => {
-                    (window as any).gameAudioManager?.onButtonClick();
+                  onClick={(e) => {
+                    console.log('🎮 Hard AI button clicked');
                     startGame('ai', 'hard');
                   }}
                 >
@@ -141,8 +141,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => {
-                    (window as any).gameAudioManager?.onButtonClick();
+                  onClick={(e) => {
+                    console.log('🎮 AI vs AI button clicked');
                     startGame('ai-vs-ai', 'hard');
                   }}
                 >
@@ -178,8 +178,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   variant="outline"
-                  onClick={() => {
-                    (window as any).gameAudioManager?.onButtonClick();
+                  onClick={(e) => {
+                    console.log('🎮 Local multiplayer button clicked');
                     startGame('local');
                   }}
                 >
@@ -294,8 +294,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={async () => {
-                    (window as any).gameAudioManager?.onButtonClick();
+                  onClick={async (e) => {
+                    console.log('🚪 Logout button clicked');
                     await logout();
                     console.log('🚪 User logged out from MainMenu');
                   }}
@@ -327,8 +327,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
 
           <Button
             variant="outline"
-            onClick={() => {
-              (window as any).gameAudioManager?.onButtonClick();
+            onClick={(e) => {
+              console.log('⚙️ Settings button clicked');
               onSettings();
             }}
             className="medieval-btn"
@@ -339,8 +339,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           
           <Button
             variant="outline"
-            onClick={() => {
-              (window as any).gameAudioManager?.onButtonClick();
+            onClick={(e) => {
+              console.log('🏆 Achievements button clicked');
               onAchievements();
             }}
             className="medieval-btn"
@@ -351,8 +351,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           
           <Button
             variant="outline"
-            onClick={() => {
-              (window as any).gameAudioManager?.onButtonClick();
+            onClick={(e) => {
+              console.log('👑 Collection button clicked');
               onCollection();
             }}
             className="medieval-btn"
@@ -376,9 +376,8 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           <div className="flex gap-2">
             <Button
               variant="default"
-              onClick={() => {
-                (window as any).gameAudioManager?.onButtonClick();
-                console.log('💳 Remove Ads button clicked');
+              onClick={(e) => {
+                console.log('💳 Premium upgrade button clicked');
                 const paymentManager = getPaymentManager();
                 if (paymentManager.isUserPremium()) {
                   alert('🎉 You already have Premium! All ads are removed and premium features are unlocked.');

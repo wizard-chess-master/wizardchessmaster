@@ -43,6 +43,100 @@
     </script>
   </head>
   <body>
+    <!-- No JavaScript fallback -->
+    <noscript>
+      <style>
+        body {
+          font-family: 'Georgia', serif;
+          line-height: 1.6;
+          margin: 0;
+          padding: 20px;
+          background: linear-gradient(135deg, #2c1810 0%, #5d4037 100%);
+          color: #f5f5dc;
+        }
+        .noscript-container {
+          max-width: 800px;
+          margin: 0 auto;
+          text-align: center;
+        }
+        .noscript-header {
+          padding: 40px 0;
+        }
+        .noscript-header h1 {
+          font-size: 2.5em;
+          color: #ffd700;
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+          margin: 0;
+        }
+        .noscript-content {
+          background: rgba(139, 110, 99, 0.2);
+          padding: 30px;
+          border-radius: 8px;
+          border: 2px solid #8d6e63;
+          margin: 20px 0;
+        }
+        .noscript-button {
+          display: inline-block;
+          background: linear-gradient(45deg, #ffd700, #ffb300);
+          color: #2c1810;
+          padding: 15px 30px;
+          font-size: 1.2em;
+          font-weight: bold;
+          text-decoration: none;
+          border-radius: 6px;
+          margin: 10px;
+        }
+        .noscript-features {
+          text-align: left;
+          display: inline-block;
+        }
+        .noscript-features li {
+          margin: 10px 0;
+        }
+        @media (max-width: 768px) {
+          .noscript-header h1 {
+            font-size: 1.8em;
+          }
+          .noscript-content {
+            padding: 20px;
+            margin: 10px 0;
+          }
+        }
+      </style>
+      <div class="noscript-container">
+        <div class="noscript-header">
+          <h1>Wizard Chess Master</h1>
+          <p>Advanced Chess Training & Strategy Game</p>
+        </div>
+        
+        <div class="noscript-content">
+          <h2>Interactive Game Requires JavaScript</h2>
+          <p>To access the full chess experience with interactive gameplay, please enable JavaScript in your browser.</p>
+          
+          <h3>What You'll Get With JavaScript Enabled:</h3>
+          <ul class="noscript-features">
+            <li>Interactive 10x10 chess board with magical wizards</li>
+            <li>Real-time multiplayer games with players worldwide</li>
+            <li>Advanced AI opponents with adaptive learning</li>
+            <li>Campaign mode with story progression</li>
+            <li>Hint system and move analysis</li>
+            <li>Live tournaments and rankings</li>
+            <li>Cross-device progress synchronization</li>
+          </ul>
+          
+          <h3>Enable JavaScript Instructions:</h3>
+          <p><strong>Chrome/Edge:</strong> Settings → Privacy and Security → Site Settings → JavaScript → Allow</p>
+          <p><strong>Firefox:</strong> Type "about:config" → Search "javascript.enabled" → Set to true</p>
+          <p><strong>Safari:</strong> Preferences → Security → Enable JavaScript</p>
+          
+          <div style="margin-top: 30px;">
+            <a href="/" class="noscript-button">Refresh Page After Enabling</a>
+            <a href="/noscript" class="noscript-button">View Strategy Guide</a>
+          </div>
+        </div>
+      </div>
+    </noscript>
+
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

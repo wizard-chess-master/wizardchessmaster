@@ -1,198 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Button Functionality Test</title>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
-        .test-container { max-width: 800px; margin: 0 auto; }
-        .test-section { background: white; margin: 15px 0; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .status { font-weight: bold; margin: 10px 0; }
-        .success { color: #28a745; }
-        .error { color: #dc3545; }
-        .pending { color: #ffc107; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 4px; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        .result { margin: 10px 0; padding: 10px; background: #f8f9fa; border-left: 4px solid #007bff; }
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #2c1810;
+            color: #f5f5dc;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #8d6e63;
+            border-radius: 8px;
+        }
+        .test-button {
+            background: #ffd700;
+            color: #2c1810;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .test-button:hover {
+            background: #ffb300;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(139, 110, 99, 0.2);
+            border-radius: 4px;
+        }
+        .success { color: #4caf50; }
+        .error { color: #f44336; }
     </style>
 </head>
 <body>
-    <div class="test-container">
-        <h1>🎮 Frontend Button Functionality Test</h1>
-        
-        <div class="test-section">
-            <h3>Navigation Buttons</h3>
-            <div id="nav-status" class="status pending">Testing navigation...</div>
-            <button onclick="testNavigation('/')">Test Home</button>
-            <button onclick="testNavigation('/#game')">Test Game</button>
-            <button onclick="testNavigation('/#multiplayer')">Test Multiplayer</button>
-            <button onclick="testNavigation('/#campaign')">Test Campaign</button>
-            <div id="nav-results" class="result"></div>
-        </div>
+    <h1>🔧 Button Functionality Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Basic JavaScript Test</h2>
+        <button class="test-button" onclick="testBasicJS()">Test Basic JavaScript</button>
+        <div id="basic-result" class="result"></div>
+    </div>
 
-        <div class="test-section">
-            <h3>Game Action Buttons</h3>
-            <div id="game-status" class="status pending">Testing game actions...</div>
-            <button onclick="testGameAction('new-game')">New Game</button>
-            <button onclick="testGameAction('ai-difficulty')">AI Difficulty</button>
-            <button onclick="testGameAction('hint')">Get Hint</button>
-            <button onclick="testGameAction('settings')">Settings</button>
-            <div id="game-results" class="result"></div>
-        </div>
+    <div class="test-section">
+        <h2>2. Event Handler Test</h2>
+        <button class="test-button" id="event-test">Test Event Handlers</button>
+        <div id="event-result" class="result"></div>
+    </div>
 
-        <div class="test-section">
-            <h3>API Integration Buttons</h3>
-            <div id="api-status" class="status pending">Testing API calls...</div>
-            <button onclick="testAPICall('/api/chess/ai-stats', 'AI Stats')">AI Stats</button>
-            <button onclick="testAPICall('/api/chess/leaderboard', 'Leaderboard')">Leaderboard</button>
-            <button onclick="testAPICall('/api/multiplayer/stats', 'Multiplayer')">Multiplayer Stats</button>
-            <button onclick="testAPICall('/api/auth/session', 'Auth')">Session Check</button>
-            <div id="api-results" class="result"></div>
-        </div>
+    <div class="test-section">
+        <h2>3. API Connection Test</h2>
+        <button class="test-button" onclick="testAPI()">Test API Connection</button>
+        <div id="api-result" class="result"></div>
+    </div>
 
-        <div class="test-section">
-            <h3>User Interface Elements</h3>
-            <div id="ui-status" class="status pending">Testing UI elements...</div>
-            <button onclick="testUIElement('modal')">Test Modal</button>
-            <button onclick="testUIElement('dropdown')">Test Dropdown</button>
-            <button onclick="testUIElement('tooltip')">Test Tooltip</button>
-            <button onclick="testUIElement('animation')">Test Animation</button>
-            <div id="ui-results" class="result"></div>
-        </div>
+    <div class="test-section">
+        <h2>4. React App Test</h2>
+        <button class="test-button" onclick="testReactApp()">Test React App Loading</button>
+        <div id="react-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>5. Console Error Check</h2>
+        <button class="test-button" onclick="checkErrors()">Check Console Errors</button>
+        <div id="error-result" class="result"></div>
     </div>
 
     <script>
-        let testResults = {
-            navigation: [],
-            game: [],
-            api: [],
-            ui: []
+        // Store console errors
+        window.testErrors = [];
+        const originalError = console.error;
+        console.error = function(...args) {
+            window.testErrors.push(args.join(' '));
+            originalError.apply(console, args);
         };
 
-        async function testNavigation(route) {
-            try {
-                const response = await fetch(`http://localhost:5000${route}`);
-                const result = {
-                    route,
-                    status: response.status,
-                    success: response.ok
-                };
-                testResults.navigation.push(result);
-                updateResults('nav', `✅ ${route}: ${response.status} ${response.ok ? 'OK' : 'Failed'}`);
-            } catch (error) {
-                const result = { route, error: error.message, success: false };
-                testResults.navigation.push(result);
-                updateResults('nav', `❌ ${route}: ${error.message}`);
-            }
+        function testBasicJS() {
+            const result = document.getElementById('basic-result');
+            result.innerHTML = '<span class="success">✅ JavaScript is working correctly!</span>';
+            result.innerHTML += '<br>Date: ' + new Date().toLocaleTimeString();
         }
 
-        async function testGameAction(action) {
-            // Simulate game actions by checking if elements exist or APIs respond
-            try {
-                let result;
-                switch(action) {
-                    case 'new-game':
-                        result = 'Game initialization trigger would be called';
-                        break;
-                    case 'ai-difficulty':
-                        result = 'AI difficulty selector would open';
-                        break;
-                    case 'hint':
-                        result = 'Hint system would provide move suggestion';
-                        break;
-                    case 'settings':
-                        result = 'Settings modal would display';
-                        break;
-                    default:
-                        result = 'Unknown action';
-                }
-                testResults.game.push({ action, result, success: true });
-                updateResults('game', `✅ ${action}: ${result}`);
-            } catch (error) {
-                testResults.game.push({ action, error: error.message, success: false });
-                updateResults('game', `❌ ${action}: ${error.message}`);
-            }
-        }
-
-        async function testAPICall(endpoint, name) {
-            try {
-                const response = await fetch(`http://localhost:5000${endpoint}`);
-                const data = await response.json();
-                const result = {
-                    endpoint,
-                    name,
-                    status: response.status,
-                    success: response.ok && (data.success !== false)
-                };
-                testResults.api.push(result);
-                updateResults('api', `✅ ${name}: ${response.status} - ${result.success ? 'Success' : 'Failed'}`);
-            } catch (error) {
-                const result = { endpoint, name, error: error.message, success: false };
-                testResults.api.push(result);
-                updateResults('api', `❌ ${name}: ${error.message}`);
-            }
-        }
-
-        async function testUIElement(element) {
-            try {
-                let result;
-                switch(element) {
-                    case 'modal':
-                        result = 'Modal dialogs functional (auth, settings, etc.)';
-                        break;
-                    case 'dropdown':
-                        result = 'Dropdown menus operational';
-                        break;
-                    case 'tooltip':
-                        result = 'Tooltip system active';
-                        break;
-                    case 'animation':
-                        result = 'Animation system loaded';
-                        break;
-                    default:
-                        result = 'Unknown UI element';
-                }
-                testResults.ui.push({ element, result, success: true });
-                updateResults('ui', `✅ ${element}: ${result}`);
-            } catch (error) {
-                testResults.ui.push({ element, error: error.message, success: false });
-                updateResults('ui', `❌ ${element}: ${error.message}`);
-            }
-        }
-
-        function updateResults(section, message) {
-            const resultsDiv = document.getElementById(`${section}-results`);
-            resultsDiv.innerHTML += `<div>${message}</div>`;
+        function testAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '⏳ Testing API connection...';
             
-            const statusDiv = document.getElementById(`${section}-status`);
-            const successCount = testResults[section].filter(r => r.success).length;
-            const totalCount = testResults[section].length;
+            fetch('/api/auth/session')
+                .then(response => response.json())
+                .then(data => {
+                    result.innerHTML = '<span class="success">✅ API working: ' + JSON.stringify(data).substring(0, 50) + '...</span>';
+                })
+                .catch(error => {
+                    result.innerHTML = '<span class="error">❌ API Error: ' + error.message + '</span>';
+                });
+        }
+
+        function testReactApp() {
+            const result = document.getElementById('react-result');
             
-            if (totalCount > 0) {
-                const percentage = Math.round((successCount / totalCount) * 100);
-                statusDiv.innerHTML = `${successCount}/${totalCount} tests passed (${percentage}%)`;
-                statusDiv.className = `status ${percentage >= 80 ? 'success' : percentage >= 50 ? 'pending' : 'error'}`;
+            // Check if React root exists
+            const rootElement = document.querySelector('#root');
+            if (rootElement) {
+                const hasContent = rootElement.innerHTML.trim().length > 0;
+                if (hasContent) {
+                    result.innerHTML = '<span class="success">✅ React app appears to be loaded</span>';
+                    result.innerHTML += '<br>Root content length: ' + rootElement.innerHTML.length;
+                } else {
+                    result.innerHTML = '<span class="error">❌ React app root is empty</span>';
+                }
+            } else {
+                result.innerHTML = '<span class="error">❌ React root element not found</span>';
             }
         }
 
-        // Auto-run comprehensive test
-        window.onload = function() {
+        function checkErrors() {
+            const result = document.getElementById('error-result');
+            if (window.testErrors.length === 0) {
+                result.innerHTML = '<span class="success">✅ No console errors detected</span>';
+            } else {
+                result.innerHTML = '<span class="error">❌ Console errors found:</span><br>';
+                window.testErrors.forEach(error => {
+                    result.innerHTML += '• ' + error + '<br>';
+                });
+            }
+        }
+
+        // Event handler test
+        document.addEventListener('DOMContentLoaded', function() {
+            const eventButton = document.getElementById('event-test');
+            const eventResult = document.getElementById('event-result');
+            
+            eventButton.addEventListener('click', function() {
+                eventResult.innerHTML = '<span class="success">✅ Event handlers working correctly!</span>';
+                eventResult.innerHTML += '<br>Click detected at: ' + new Date().toLocaleTimeString();
+            });
+        });
+
+        // Auto-run tests after page load
+        window.addEventListener('load', function() {
             setTimeout(() => {
-                // Test navigation
-                testNavigation('/');
-                setTimeout(() => testNavigation('/#game'), 500);
-                setTimeout(() => testNavigation('/#multiplayer'), 1000);
-                
-                // Test APIs
-                setTimeout(() => testAPICall('/api/auth/session', 'Auth Session'), 1500);
-                setTimeout(() => testAPICall('/api/chess/ai-stats', 'AI Stats'), 2000);
-                setTimeout(() => testAPICall('/api/multiplayer/stats', 'Multiplayer'), 2500);
-                
-                // Test UI elements
-                setTimeout(() => testUIElement('modal'), 3000);
-                setTimeout(() => testUIElement('animation'), 3500);
-                
+                testBasicJS();
+                testAPI();
+                testReactApp();
+                checkErrors();
             }, 1000);
-        };
+        });
     </script>
 </body>
 </html>

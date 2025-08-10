@@ -5,6 +5,7 @@ import { Server as SocketIOServer } from "socket.io";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { MultiplayerManager } from "./multiplayer";
+import path from "path";
 
 const app = express();
 
@@ -90,6 +91,11 @@ app.use((req, res, next) => {
       
       console.error('Express error:', err);
       res.status(status).json({ message });
+    });
+
+    // Add noscript fallback route before setting up vite/static
+    app.get('/noscript', (req, res) => {
+      res.sendFile(path.join(process.cwd(), 'server/public/noscript.html'));
     });
 
     // importantly only setup vite in development and after
