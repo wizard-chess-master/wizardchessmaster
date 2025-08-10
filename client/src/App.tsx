@@ -246,7 +246,6 @@ function App() {
                 
                 {/* Top Ad Banner */}
                 <AdBanner 
-                  id="game-banner-top" 
                   className="mb-4 w-full max-w-2xl mx-auto"
                   style={{ maxWidth: '600px', width: '100%' }}
                 />
