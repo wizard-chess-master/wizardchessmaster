@@ -7,12 +7,7 @@ const router = Router();
 
 // Extend Express Request to include session
 interface AuthRequest extends Request {
-  session: {
-    userId?: number;
-    user?: Omit<User, 'password'>;
-    destroy: (callback: (err?: any) => void) => void;
-    [key: string]: any;
-  };
+  session: any;
 }
 
 // Register new user

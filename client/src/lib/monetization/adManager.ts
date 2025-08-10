@@ -362,6 +362,28 @@ class GoogleAdSenseManager implements AdManager {
   }
 
   isAdFree(): boolean {
+    // CRITICAL: Check actual premium status from auth, not just localStorage
+    if (typeof window !== 'undefined') {
+      try {
+        // Import dynamically to avoid circular dependency
+        const authManagerModule = require('../auth/authManager');
+        const authManager = authManagerModule.default;
+        
+        // Only allow ad-free if user is actually premium
+        const isPremium = authManager.isPremium();
+        if (!isPremium) {
+          // Force reset ad-free status if not premium
+          this.adFreeStatus = false;
+          localStorage.setItem('wizard-chess-ad-free', 'false');
+          return false;
+        }
+        
+        return this.adFreeStatus && isPremium;
+      } catch (error) {
+        console.warn('⚠️ Could not verify premium status, defaulting to free');
+        return false;
+      }
+    }
     return this.adFreeStatus;
   }
 
@@ -382,6 +404,23 @@ class GoogleAdSenseManager implements AdManager {
     try {
       const stored = localStorage.getItem('wizard-chess-ad-free');
       this.adFreeStatus = stored ? JSON.parse(stored) : false;
+      
+      // SECURITY: Validate against actual premium status on load
+      if (this.adFreeStatus && typeof window !== 'undefined') {
+        try {
+          const authManagerModule = require('../auth/authManager');
+          const authManager = authManagerModule.default;
+          
+          if (!authManager.isPremium()) {
+            console.log('🔒 Resetting ad-free status - user not premium');
+            this.adFreeStatus = false;
+            localStorage.setItem('wizard-chess-ad-free', 'false');
+          }
+        } catch (error) {
+          console.warn('⚠️ Could not verify premium status on load');
+          this.adFreeStatus = false;
+        }
+      }
     } catch {
       this.adFreeStatus = false;
     }
