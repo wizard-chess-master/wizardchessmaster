@@ -115,28 +115,12 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 Player vs AI - Easy clicked');
+                    console.log('🎮 Player vs AI - Easy clicked - DIRECT START');
                     (window as any).gameAudioManager?.onButtonClick();
-                    console.log('🎮 Starting new AI game - easy mode');
                     
-                    // Use a more reliable navigation method
-                    try {
-                      // Try multiple navigation methods for compatibility
-                      if (window.location.hash !== '#game') {
-                        console.log('🔄 Navigating to game page via hash');
-                        window.location.hash = 'game';
-                      }
-                      
-                      // Add a small delay to ensure navigation completes
-                      setTimeout(() => {
-                        console.log('🎮 Starting game after navigation delay');
-                        startGame('ai', 'easy');
-                      }, 100);
-                    } catch (error) {
-                      console.error('❌ Navigation error:', error);
-                      // Fallback: start game directly
-                      startGame('ai', 'easy');
-                    }
+                    // Direct approach - just start the game immediately
+                    startGame('ai', 'easy');
+                    console.log('🎮 Game start command sent');
                   }}
                 >
                   <div className="mode-content">
@@ -149,17 +133,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
-                    try {
-                      if (window.location.hash !== '#game') {
-                        window.location.hash = 'game';
-                      }
-                      setTimeout(() => {
-                        startGame('ai', 'medium');
-                      }, 100);
-                    } catch (error) {
-                      console.error('❌ Navigation error:', error);
-                      startGame('ai', 'medium');
-                    }
+                    startGame('ai', 'medium');
                   }}
                 >
                   <div className="mode-content">
@@ -172,17 +146,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
-                    try {
-                      if (window.location.hash !== '#game') {
-                        window.location.hash = 'game';
-                      }
-                      setTimeout(() => {
-                        startGame('ai', 'hard');
-                      }, 100);
-                    } catch (error) {
-                      console.error('❌ Navigation error:', error);
-                      startGame('ai', 'hard');
-                    }
+                    startGame('ai', 'hard');
                   }}
                 >
                   <div className="mode-content">
@@ -195,17 +159,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   className="medieval-btn mode-button"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
-                    try {
-                      if (window.location.hash !== '#game') {
-                        window.location.hash = 'game';
-                      }
-                      setTimeout(() => {
-                        startGame('ai-vs-ai', 'hard');
-                      }, 100);
-                    } catch (error) {
-                      console.error('❌ Navigation error:', error);
-                      startGame('ai-vs-ai', 'hard');
-                    }
+                    startGame('ai-vs-ai', 'hard');
                   }}
                 >
                   <div className="mode-content">
@@ -242,17 +196,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   variant="outline"
                   onClick={() => {
                     (window as any).gameAudioManager?.onButtonClick();
-                    try {
-                      if (window.location.hash !== '#game') {
-                        window.location.hash = 'game';
-                      }
-                      setTimeout(() => {
-                        startGame('local');
-                      }, 100);
-                    } catch (error) {
-                      console.error('❌ Navigation error:', error);
-                      startGame('local');
-                    }
+                    startGame('local');
                   }}
                 >
                   <div className="mode-content">
