@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '../ui/card';
+import { Button } from '../ui/button';
+import { Progress } from '../ui/progress';
+import { Badge } from '../ui/badge';
 import { X, ChevronRight, ChevronLeft, Play, Pause } from 'lucide-react';
-import { useAudio } from '@/lib/stores/useAudio';
+import { useAudio } from '../../lib/stores/useAudio';
 
 interface StoryScene {
   id: string;
