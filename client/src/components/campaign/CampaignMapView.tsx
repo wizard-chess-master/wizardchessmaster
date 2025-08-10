@@ -173,7 +173,12 @@ export function CampaignMapView({ onLevelSelect, onShowStory }: CampaignMapViewP
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-20 left-1/2 transform -translate-x-1/2 z-10"
+                className="absolute top-20 z-10"
+                style={{
+                  left: node.position.x > 70 ? 'auto' : '50%',
+                  right: node.position.x > 70 ? '0' : 'auto',
+                  transform: node.position.x > 70 ? 'translateX(0)' : 'translateX(-50%)'
+                }}
               >
                 <Card className="w-64 shadow-xl border-2 border-amber-300">
                   <CardContent className="p-4">

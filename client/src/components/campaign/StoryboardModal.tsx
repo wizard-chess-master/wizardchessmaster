@@ -96,7 +96,7 @@ export function StoryboardModal({ isOpen, onClose, onComplete, story }: Storyboa
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
       >
         {/* Background Image */}
         {currentScene.backgroundImage && (
@@ -113,7 +113,7 @@ export function StoryboardModal({ isOpen, onClose, onComplete, story }: Storyboa
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="relative w-full max-w-4xl mx-4"
+          className="relative w-full max-w-4xl max-h-[95vh] overflow-y-auto"
         >
           <Card className="overflow-hidden shadow-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50">
             {/* Header */}

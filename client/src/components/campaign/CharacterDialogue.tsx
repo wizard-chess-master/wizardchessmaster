@@ -161,14 +161,15 @@ export function CharacterDialogue({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+        style={{ padding: '2rem' }}
       >
         <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
           transition={{ type: "spring", damping: 25, stiffness: 200 }}
-          className="w-full max-w-2xl"
+          className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
         >
           <Card className={`${styles.borderColor} border-2 bg-gradient-to-br ${styles.bgGradient} shadow-2xl`}>
             <CardContent className="p-6">
