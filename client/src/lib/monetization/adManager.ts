@@ -437,9 +437,9 @@ let adManager: AdManager | null = null;
 
 export const getAdManager = (): AdManager => {
   if (!adManager) {
-    // Default config - should be replaced with real publisher ID
+    // Production AdSense configuration
     const config: AdConfig = {
-      publisherId: 'DEMO-PUBLISHER-ID', // Replace with real AdSense publisher ID
+      publisherId: '4938312134119004', // Your actual AdSense publisher ID
       interstitialSlot: '1234567890',
       bannerSlot: '0987654321',
       rewardedSlot: '1122334455'

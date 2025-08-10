@@ -10,10 +10,10 @@
  * 3. Add this script to your HTML head section or run it after page load
  */
 
-// AdSense Configuration - UPDATE BEFORE DEPLOYMENT
+// AdSense Configuration - LIVE CONFIGURATION
 const ADSENSE_CONFIG = {
-  publisherId: "YOUR_ADSENSE_PUBLISHER_ID", // Replace with your actual publisher ID
-  enabled: false // Set to true when ready to deploy with real AdSense
+  publisherId: "ca-pub-4938312134119004", // Your actual AdSense publisher ID
+  enabled: true // AdSense is now active
 };
 
 // Function to initialize AdSense
