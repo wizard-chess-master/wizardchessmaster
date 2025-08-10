@@ -331,6 +331,13 @@ class GoogleAdSenseManager implements AdManager {
       return;
     }
 
+    // Check if container has valid dimensions
+    const containerRect = container.getBoundingClientRect();
+    if (containerRect.width === 0 || containerRect.height === 0) {
+      console.debug(`⚠️ Skipping banner ad - container ${containerId} has zero dimensions (${containerRect.width}x${containerRect.height})`);
+      return;
+    }
+
     try {
       // Clear container first using safe DOM methods
       while (container.firstChild) {
@@ -348,8 +355,18 @@ class GoogleAdSenseManager implements AdManager {
       
       container.appendChild(adSlot);
 
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
-      console.log(`📰 Banner ad loaded in ${containerId}`);
+      // Push to AdSense with error handling for sizing issues
+      try {
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+        console.log(`📰 Banner ad loaded in ${containerId} (${containerRect.width}x${containerRect.height})`);
+      } catch (adError: any) {
+        // Handle specific AdSense sizing errors silently
+        if (adError.message && adError.message.includes('No slot size')) {
+          console.debug(`AdSense sizing issue for ${containerId} - this is normal when containers are hidden`);
+        } else {
+          console.warn('❌ AdSense push error:', adError);
+        }
+      }
     } catch (error) {
       console.error('❌ Banner ad error:', error);
     }

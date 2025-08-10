@@ -16,6 +16,13 @@ if (typeof window !== 'undefined') {
       return;
     }
     
+    // Handle AdSense TagErrors silently (common when containers have zero width)
+    if (event.reason && event.reason.name === 'TagError' && event.reason.message?.includes('No slot size')) {
+      console.debug('AdSense sizing issue (normal when containers are hidden)');
+      event.preventDefault();
+      return;
+    }
+    
     console.warn('Unhandled promise rejection:', event.reason);
     // Prevent default to avoid console error spam
     event.preventDefault();
@@ -25,6 +32,12 @@ if (typeof window !== 'undefined') {
     // Handle audio-related errors gracefully
     if (event.error instanceof DOMException) {
       console.debug('Audio error caught (normal browser behavior):', event.error.name);
+      return;
+    }
+    
+    // Handle AdSense TagErrors gracefully
+    if (event.error && event.error.name === 'TagError') {
+      console.debug('AdSense error caught (normal browser behavior):', event.error.name);
       return;
     }
     
