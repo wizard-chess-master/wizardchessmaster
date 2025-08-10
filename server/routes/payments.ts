@@ -38,9 +38,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
     }
 
     // Get the base URL for success/cancel redirects
-    const baseUrl = process.env.NODE_ENV === 'production' 
-      ? `https://${process.env.REPLIT_DEV_DOMAIN || 'your-app.replit.app'}`
-      : `https://${process.env.REPLIT_DEV_DOMAIN || 'localhost:5000'}`;
+    const baseUrl = `https://${process.env.REPLIT_DEV_DOMAIN || req.get('host')}`;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -51,8 +49,8 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
           quantity: 1,
         },
       ],
-      success_url: `${baseUrl}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/?canceled=true`,
+      success_url: `${baseUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${baseUrl}/?payment=canceled`,
       metadata: {
         planId: planId,
         userId: 'anonymous' // Will be enhanced with actual user sessions later

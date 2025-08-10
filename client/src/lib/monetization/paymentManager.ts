@@ -5,6 +5,7 @@
 
 import { loadStripe, Stripe } from '@stripe/stripe-js';
 import { getAdManager } from './adManager';
+import { handlePaymentRedirect, handlePaymentError } from '../utils/paymentUtils';
 
 export interface PaymentPlan {
   id: string;
@@ -145,20 +146,20 @@ class StripePaymentManager implements PaymentManager {
       });
 
       if (!response.ok) {
-        throw new Error(`Payment session creation failed: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Payment session creation failed');
       }
 
       const { sessionId, url } = await response.json();
       
       if (url) {
-        // Redirect to Stripe Checkout
-        window.location.href = url;
+        handlePaymentRedirect(url);
         return sessionId;
       }
 
       return sessionId;
     } catch (error) {
-      console.error('❌ Payment session creation failed:', error);
+      handlePaymentError(error);
       return null;
     }
   }
@@ -190,20 +191,20 @@ class StripePaymentManager implements PaymentManager {
       });
 
       if (!response.ok) {
-        throw new Error(`Subscription session creation failed: ${response.statusText}`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Subscription session creation failed');
       }
 
       const { sessionId, url } = await response.json();
       
       if (url) {
-        // Redirect to Stripe Checkout
-        window.location.href = url;
+        handlePaymentRedirect(url);
         return sessionId;
       }
 
       return sessionId;
     } catch (error) {
-      console.error('❌ Subscription session creation failed:', error);
+      handlePaymentError(error);
       return null;
     }
   }
