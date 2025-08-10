@@ -14,10 +14,9 @@ export function ChessAudioController() {
   } = useChess();
   const { isMuted } = useAudio();
 
-  // Initialize audio when component mounts
+  // Audio initialization completely disabled to prevent conflicts
   useEffect(() => {
-    const { initializeAudio } = useAudio.getState();
-    initializeAudio();
+    console.log('🎵 ChessAudioController: Audio initialization disabled (manual control only)');
   }, []);
 
   // Handle game phase changes (auto-music disabled to prevent conflicts)
