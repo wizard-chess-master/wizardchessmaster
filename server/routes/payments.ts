@@ -15,7 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 // Payment plans configuration
 const PAYMENT_PLANS = {
   'premium-monthly': {
-    stripePriceId: process.env.STRIPE_PRICE_ID || 'price_premium_monthly',
+    stripePriceId: process.env.STRIPE_PRICE_ID || 'price_1QbXWlK5PQfYHneDzUFuqLT5',
     name: 'Wizard Chess Premium',
     type: 'subscription' as const
   }
@@ -37,8 +37,13 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Invalid plan ID' });
     }
 
-    // Get the base URL for success/cancel redirects
-    const baseUrl = `https://${process.env.REPLIT_DEV_DOMAIN || req.get('host')}`;
+    // Get the base URL for success/cancel redirects  
+    const host = req.get('host');
+    const protocol = req.get('x-forwarded-proto') || 'https';
+    const baseUrl = `${protocol}://${host}`;
+
+    console.log('Creating Stripe session with baseUrl:', baseUrl);
+    console.log('Using price ID:', plan.stripePriceId);
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -51,6 +56,7 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
       ],
       success_url: `${baseUrl}/?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${baseUrl}/?payment=canceled`,
+      allow_promotion_codes: true,
       metadata: {
         planId: planId,
         userId: 'anonymous' // Will be enhanced with actual user sessions later
@@ -64,9 +70,16 @@ router.post("/create-checkout-session", async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    console.error('Error details:', {
+      message: (error as Error).message,
+      stack: (error as Error).stack,
+      planId,
+      priceId: plan?.stripePriceId
+    });
+    
     res.status(500).json({ 
       error: 'Failed to create checkout session',
-      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+      details: (error as Error).message
     });
   }
 });

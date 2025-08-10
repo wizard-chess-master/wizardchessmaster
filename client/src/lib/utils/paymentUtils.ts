@@ -5,28 +5,19 @@
 export const handlePaymentRedirect = (url: string): void => {
   console.log('🔄 Redirecting to payment checkout...');
   
+  // Always use the current window for better compatibility
   try {
-    // First try to open in new tab
-    const checkoutWindow = window.open(url, '_blank', 'noopener,noreferrer');
-    
-    if (!checkoutWindow || checkoutWindow.closed) {
-      // If popup blocked, show user message and use current window
-      console.log('💡 Popup blocked, redirecting in current window...');
-      
-      // Add a small delay to show the message
-      setTimeout(() => {
-        window.location.href = url;
-      }, 1000);
-      
-      // Show loading message
-      showPaymentLoadingMessage();
-    } else {
-      console.log('✅ Payment window opened successfully');
+    // Validate URL before redirect
+    if (!url || !url.includes('checkout.stripe.com')) {
+      throw new Error('Invalid checkout URL received');
     }
+    
+    console.log('✅ Redirecting to Stripe checkout:', url);
+    window.location.href = url;
+    
   } catch (error) {
     console.error('❌ Payment redirect error:', error);
-    // Fallback to current window redirect
-    window.location.href = url;
+    handlePaymentError(error);
   }
 };
 
