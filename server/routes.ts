@@ -6,7 +6,7 @@ import webhookRoutes from "./routes/webhooks";
 import authRoutes from "./routes/auth";
 import saveDataRoutes from "./routes/savedata";
 import leaderboardRoutes from "./routes/leaderboard";
-// MULTIPLAYER DISABLED: import { MultiplayerManager } from "./multiplayer";
+import { multiplayerRouter } from "./routes/multiplayer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
@@ -27,6 +27,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register payment and webhook routes
   app.use('/api/payments', paymentRoutes);
   app.use('/api/webhooks', webhookRoutes);
+  
+  // Register multiplayer routes
+  app.use('/api/multiplayer', multiplayerRouter);
 
   const httpServer = createServer(app);
   

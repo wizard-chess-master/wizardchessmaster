@@ -4,7 +4,7 @@ import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import MultiplayerManager from "./multiplayer/socketHandlers";
+import { MultiplayerManager } from "./multiplayer";
 
 const app = express();
 
@@ -79,11 +79,7 @@ app.use((req, res, next) => {
     });
 
     // Initialize multiplayer manager
-    const multiplayerManager = new MultiplayerManager(io);
-    
-    io.on('connection', (socket) => {
-      multiplayerManager.handleConnection(socket);
-    });
+    const multiplayerManager = new MultiplayerManager(httpServer);
 
     console.log('🔌 Socket.IO multiplayer system initialized');
 

@@ -18,7 +18,7 @@ import {
   Zap
 } from 'lucide-react';
 import { useAuth } from '../../lib/stores/useAuth';
-// import { useSocket } from '../../lib/stores/useSocket';
+import { useMultiplayer } from '../../lib/stores/useMultiplayer';
 import { AdBanner } from '../monetization/AdBanner';
 
 interface GameRoom {
@@ -52,9 +52,7 @@ interface Player {
 
 export function MultiplayerLobby() {
   const { user, isLoggedIn } = useAuth();
-  // const { socket, isConnected } = useSocket();
-  const socket = null; // Placeholder until Socket.IO is fully integrated
-  const isConnected = false;
+  const { socket, isConnected, connect, disconnect } = useMultiplayer();
   const [activeTab, setActiveTab] = useState<'play' | 'watch' | 'players'>('play');
   const [gameRooms, setGameRooms] = useState<GameRoom[]>([]);
   const [onlinePlayers, setOnlinePlayers] = useState<Player[]>([]);

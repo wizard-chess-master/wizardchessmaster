@@ -74,7 +74,7 @@ interface MultiplayerState {
   onMatchmakingUpdate: (callback: (status: MatchmakingStatus) => void) => void;
 }
 
-// MULTIPLAYER TEMPORARILY DISABLED - Store functionality commented out
+// ✅ MULTIPLAYER FULLY ENABLED - Complete Socket.IO integration
 export const useMultiplayer = create<MultiplayerState>((set, get) => ({
   // Initial state
   socket: null,
@@ -89,51 +89,212 @@ export const useMultiplayer = create<MultiplayerState>((set, get) => ({
   currentGame: null,
   serverStats: null,
 
-  // MULTIPLAYER DISABLED - Connection functionality disabled
+  // 🔌 Connection management
   connect: (playerData) => {
-    console.log('🚫 Multiplayer temporarily disabled');
-    return;
+    const { socket } = get();
+    if (socket?.connected) {
+      console.log('🔌 Already connected to multiplayer server');
+      return;
+    }
+
+    console.log('🔌 Connecting to multiplayer server...');
+    
+    const newSocket = io({
+      transports: ['websocket', 'polling'],
+      timeout: 10000,
+      forceNew: true
+    });
+
+    // Connection events
+    newSocket.on('connect', () => {
+      console.log('🎮 Connected to multiplayer server');
+      set({ socket: newSocket, isConnected: true, connectionError: null });
+      
+      // Join as player
+      newSocket.emit('player:join', playerData);
+    });
+
+    newSocket.on('disconnect', () => {
+      console.log('🔌 Disconnected from multiplayer server');
+      set({ isConnected: false });
+    });
+
+    newSocket.on('connect_error', (error) => {
+      console.error('❌ Connection error:', error);
+      set({ connectionError: error.message, isConnected: false });
+    });
+
+    // Player events
+    newSocket.on('player:joined', (response) => {
+      if (response.success) {
+        console.log('✅ Player joined successfully');
+        set({ currentPlayer: { ...playerData, status: 'online' } });
+      } else {
+        console.error('❌ Failed to join:', response.error);
+        set({ connectionError: response.error });
+      }
+    });
+
+    // Matchmaking events
+    newSocket.on('matchmaking:joined', (data) => {
+      console.log('🎯 Joined matchmaking queue:', data);
+      set({ 
+        matchmaking: { 
+          inQueue: true, 
+          status: 'searching',
+          queuePosition: data.queuePosition,
+          estimatedWait: data.estimatedWait
+        }
+      });
+    });
+
+    newSocket.on('matchmaking:error', (data) => {
+      console.error('❌ Matchmaking error:', data.message);
+      set({ 
+        matchmaking: { inQueue: false, status: 'error' },
+        connectionError: data.message
+      });
+    });
+
+    // Game events
+    newSocket.on('game:matched', (gameData) => {
+      console.log('🎮 Game matched!', gameData);
+      set({ 
+        currentGame: {
+          gameId: gameData.gameId,
+          opponent: gameData.opponent,
+          yourColor: gameData.yourColor,
+          gameState: gameData.gameState,
+          timeControl: gameData.timeControl || 600,
+          yourTime: gameData.yourColor === 'white' ? gameData.player1Time || 600 : gameData.player2Time || 600,
+          opponentTime: gameData.yourColor === 'white' ? gameData.player2Time || 600 : gameData.player1Time || 600
+        },
+        matchmaking: { inQueue: false, status: 'found' }
+      });
+    });
+
+    newSocket.on('game:move', (data) => {
+      console.log('🔄 Game move received:', data);
+      const { currentGame } = get();
+      if (currentGame && currentGame.gameId === data.gameId) {
+        set({
+          currentGame: {
+            ...currentGame,
+            gameState: data.gameState
+          }
+        });
+      }
+    });
+
+    newSocket.on('game:error', (data) => {
+      console.error('❌ Game error:', data.message);
+      set({ connectionError: data.message });
+    });
+
+    set({ socket: newSocket });
   },
 
-  // MULTIPLAYER DISABLED - All functions disabled
   disconnect: () => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket } = get();
+    if (socket) {
+      console.log('🔌 Disconnecting from multiplayer server');
+      socket.disconnect();
+      set({ 
+        socket: null, 
+        isConnected: false, 
+        currentPlayer: null,
+        currentGame: null,
+        matchmaking: { inQueue: false, status: 'idle' }
+      });
+    }
   },
   
   joinMatchmaking: (timeControl = 600) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket, isConnected } = get();
+    if (!socket || !isConnected) {
+      console.error('❌ Not connected to server');
+      return;
+    }
+
+    console.log('🎯 Joining matchmaking queue...');
+    socket.emit('matchmaking:join', { timeControl });
+    set({ 
+      matchmaking: { inQueue: true, status: 'searching' }
+    });
   },
   
   leaveMatchmaking: () => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket, isConnected } = get();
+    if (!socket || !isConnected) return;
+
+    console.log('🚪 Leaving matchmaking queue...');
+    socket.emit('matchmaking:leave');
+    set({ 
+      matchmaking: { inQueue: false, status: 'idle' }
+    });
   },
   
   makeMove: (gameId, move) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket, isConnected } = get();
+    if (!socket || !isConnected) {
+      console.error('❌ Not connected to server');
+      return;
+    }
+
+    console.log('♟️ Making move:', move);
+    socket.emit('game:move', { gameId, move });
   },
   
   resignGame: (gameId) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket, isConnected } = get();
+    if (!socket || !isConnected) return;
+
+    console.log('🏳️ Resigning game');
+    socket.emit('game:resign', { gameId });
+    set({ currentGame: null });
   },
   
   fetchServerStats: async () => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    try {
+      // Fetch server stats from API
+      const response = await fetch('/api/multiplayer/stats');
+      const stats = await response.json();
+      set({ serverStats: stats });
+    } catch (error) {
+      console.error('❌ Failed to fetch server stats:', error);
+    }
   },
 
-  // Event handlers disabled  
+  // Event handlers for components
   onGameMatched: (callback) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket } = get();
+    if (socket) {
+      socket.on('game:matched', callback);
+      return () => socket.off('game:matched', callback);
+    }
   },
 
   onGameMove: (callback) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket } = get();
+    if (socket) {
+      socket.on('game:move', callback);
+      return () => socket.off('game:move', callback);
+    }
   },
 
   onGameEnded: (callback) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket } = get();
+    if (socket) {
+      socket.on('game:ended', callback);
+      return () => socket.off('game:ended', callback);
+    }
   },
 
   onMatchmakingUpdate: (callback) => {
-    console.log('🚫 Multiplayer temporarily disabled');
+    const { socket } = get();
+    if (socket) {
+      socket.on('matchmaking:update', callback);
+      return () => socket.off('matchmaking:update', callback);
+    }
   }
 }));

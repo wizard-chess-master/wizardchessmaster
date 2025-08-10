@@ -16,7 +16,7 @@ import { MarketingRouter } from "./components/marketing/MarketingRouter";
 import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
-import { MultiplayerLobby } from "./components/multiplayer/MultiplayerLobby";
+import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -215,7 +215,7 @@ function App() {
           )}
           
           {currentPage === 'multiplayer' && (
-            <MultiplayerLobby />
+            <MultiplayerHub />
           )}
         </div>
       </AuthProvider>
