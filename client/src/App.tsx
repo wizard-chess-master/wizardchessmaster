@@ -46,7 +46,11 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer'>('landing');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer'>(() => {
+    // Check hash on initial load
+    const hash = window.location.hash.slice(1);
+    return hash === 'game' ? 'game' : 'landing';
+  });
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -150,12 +154,23 @@ function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the '#'
+      console.log('🔄 Hash changed to:', hash);
       if (hash === 'game') {
         setCurrentPage('game');
+        // Auto-start game when navigating to #game
+        setTimeout(() => {
+          const { gamePhase, startGame } = useChess.getState();
+          if (gamePhase === 'menu') {
+            console.log('🎮 Auto-starting game from hash navigation');
+            startGame('ai', 'easy');
+          }
+        }, 100);
       } else if (hash === 'multiplayer') {
         setCurrentPage('multiplayer');
       } else if (hash) {
         setCurrentPage(hash as any);
+      } else {
+        setCurrentPage('landing');
       }
     };
     

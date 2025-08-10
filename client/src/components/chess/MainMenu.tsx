@@ -116,22 +116,9 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 COMPREHENSIVE FIX - Button clicked');
-                    
-                    // First, force the App page state to 'game'
-                    window.location.hash = '#game';
-                    console.log('🎮 Set hash to #game');
-                    
-                    // Then start the actual game
-                    startGame('ai', 'easy');
-                    console.log('🎮 Called startGame function');
-                    
-                    // Double check the game actually started
-                    setTimeout(() => {
-                      const state = useChess.getState();
-                      console.log('🎮 Final game state:', state.gamePhase);
-                      console.log('🎮 Current URL hash:', window.location.hash);
-                    }, 100);
+                    console.log('🎮 SIMPLE RELOAD APPROACH');
+                    // Force a page reload with the game hash
+                    window.location.href = window.location.origin + window.location.pathname + '#game';
                   }}
                 >
                   <div className="mode-content">
