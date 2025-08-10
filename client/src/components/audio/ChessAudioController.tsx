@@ -48,7 +48,7 @@ export function ChessAudioController() {
     if (!lastMove) return;
 
     // Check for capture
-    if (lastMove.capturedPiece) {
+    if (lastMove.captured) {
       wizardChessAudio.onPieceCapture();
     } else {
       // Regular move sound
@@ -57,9 +57,9 @@ export function ChessAudioController() {
 
     // Check for wizard special moves
     if (lastMove.piece?.type === 'wizard') {
-      if (lastMove.isSpecialMove) {
+      if (lastMove.special) {
         wizardChessAudio.onWizardTeleport();
-      } else if (lastMove.capturedPiece) {
+      } else if (lastMove.captured) {
         wizardChessAudio.onWizardAttack();
       }
     }
