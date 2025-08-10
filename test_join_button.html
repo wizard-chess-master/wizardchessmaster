@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Join Button</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Button Functionality Test</h1>
+    
+    <div id="results"></div>
+    
+    <button onclick="testJoinButton()">Test Join Free Button</button>
+    <button onclick="testNavigationButtons()">Test Navigation Buttons</button>
+    
+    <script>
+        function addResult(message, isSuccess = true) {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = 'test-result ' + (isSuccess ? 'success' : 'error');
+            div.innerHTML = message;
+            resultsDiv.appendChild(div);
+        }
+        
+        async function testJoinButton() {
+            addResult('Testing Join Free button...', true);
+            
+            try {
+                const response = await fetch('http://localhost:5000/');
+                const html = await response.text();
+                
+                // Check if the button exists
+                if (html.includes('Join Free')) {
+                    addResult('✅ "Join Free" button found in HTML', true);
+                } else {
+                    addResult('❌ "Join Free" button not found', false);
+                    return;
+                }
+                
+                // Check for onClick handlers
+                if (html.includes('onClick') || html.includes('onclick')) {
+                    addResult('✅ onClick handlers detected', true);
+                } else {
+                    addResult('⚠️ No onClick handlers found', false);
+                }
+                
+                // Check for React components
+                if (html.includes('react') || html.includes('React')) {
+                    addResult('✅ React framework detected', true);
+                } else {
+                    addResult('⚠️ React framework not clearly detected', false);
+                }
+                
+            } catch (error) {
+                addResult('❌ Error testing button: ' + error.message, false);
+            }
+        }
+        
+        async function testNavigationButtons() {
+            addResult('Testing navigation buttons...', true);
+            
+            try {
+                const response = await fetch('http://localhost:5000/');
+                const html = await response.text();
+                
+                const navButtons = ['Strategy', 'AI Training', 'Tournaments', 'Blog'];
+                let foundButtons = 0;
+                
+                navButtons.forEach(buttonText => {
+                    if (html.includes(buttonText)) {
+                        addResult(`✅ "${buttonText}" navigation button found`, true);
+                        foundButtons++;
+                    } else {
+                        addResult(`❌ "${buttonText}" navigation button not found`, false);
+                    }
+                });
+                
+                if (foundButtons === navButtons.length) {
+                    addResult('✅ All navigation buttons present', true);
+                } else {
+                    addResult(`⚠️ Only ${foundButtons}/${navButtons.length} navigation buttons found`, false);
+                }
+                
+            } catch (error) {
+                addResult('❌ Error testing navigation: ' + error.message, false);
+            }
+        }
+        
+        // Auto-run tests
+        window.onload = function() {
+            testJoinButton();
+            setTimeout(testNavigationButtons, 1000);
+        };
+    </script>
+</body>
+</html>

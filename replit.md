@@ -2,6 +2,11 @@
 
 **Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression.
 
+## Recent Changes (August 10, 2025)
+- **Button Functionality Resolved**: Fixed Join Free button and navigation buttons that were not responding to clicks
+- **Console Error Management**: Enhanced error handling for AdSense sizing issues and audio DOMExceptions
+- **Website Navigation**: All marketing page buttons now work correctly with proper logging
+
 Key capabilities include:
 - A unique 10x10 board with custom wizard pieces.
 - AI opponents with adjustable difficulty, including advanced minimax AI and neural network learning.
