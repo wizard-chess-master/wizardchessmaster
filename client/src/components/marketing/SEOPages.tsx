@@ -233,119 +233,306 @@ export function OnlineChessTournamentPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-purple-900 mb-6">
-            Online Chess Tournaments: Free, Premium & Cash Prize Events
+            Wizard Chess Tournaments: Compete & Earn Legendary Rewards
           </h1>
 
           <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-purple-900 mb-4">
-              Tournament Types & Prize Structure
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full mb-4">
+                <span className="text-2xl mr-2">🏆</span>
+                <span className="font-bold text-purple-900">Safe Competition • No Cash Prizes • Pure Skill</span>
+              </div>
+              <p className="text-purple-800 leading-relaxed max-w-3xl mx-auto">
+                Join epic wizard chess tournaments where skill and strategy are the only currencies that matter. 
+                Earn prestigious titles, exclusive avatars, premium time, and legendary badges in our carefully 
+                designed competition system that celebrates pure chess mastery.
+              </p>
+            </div>
+
+            <h2 className="text-2xl font-bold text-purple-900 mb-6 text-center">
+              Tournament Categories
             </h2>
-            <p className="text-purple-800 mb-6 leading-relaxed">
-              Our comprehensive tournament system offers something for every player, from free weekly 
-              championships to premium-exclusive events and cash prize tournaments with real money rewards.
-            </p>
 
-            <div className="grid md:grid-cols-3 gap-6 mb-8">
-              <div className="border border-green-200 bg-green-50 p-4 rounded-lg">
-                <h3 className="font-bold text-green-800 mb-2">🎁 Free Tournaments</h3>
-                <ul className="text-sm text-green-700 space-y-1">
-                  <li>• Weekly championships</li>
-                  <li>• Daily blitz events</li>
-                  <li>• Badge & premium time rewards</li>
-                  <li>• Open to all registered players</li>
-                </ul>
+            <div className="grid md:grid-cols-2 gap-8 mb-8">
+              <div className="border-2 border-green-300 bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl shadow-lg">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-green-600 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-white text-xl">🆓</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-green-800 text-xl">Free Tournaments</h3>
+                    <p className="text-green-600 text-sm">Open to Everyone</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center text-green-700">
+                    <span className="mr-3 text-lg">🎖️</span>
+                    <span>Champion badges & achievements</span>
+                  </div>
+                  <div className="flex items-center text-green-700">
+                    <span className="mr-3 text-lg">⏰</span>
+                    <span>Premium time rewards (7-30 days)</span>
+                  </div>
+                  <div className="flex items-center text-green-700">
+                    <span className="mr-3 text-lg">📅</span>
+                    <span>Daily blitz & weekly championships</span>
+                  </div>
+                  <div className="flex items-center text-green-700">
+                    <span className="mr-3 text-lg">🌟</span>
+                    <span>Leaderboard recognition</span>
+                  </div>
+                  <div className="flex items-center text-green-700">
+                    <span className="mr-3 text-lg">🔓</span>
+                    <span>No registration barriers</span>
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-green-100 rounded-lg border border-green-200">
+                  <p className="text-green-800 font-medium text-center">
+                    Perfect starting point for all skill levels!
+                  </p>
+                </div>
               </div>
 
-              <div className="border border-amber-200 bg-amber-50 p-4 rounded-lg">
-                <h3 className="font-bold text-amber-800 mb-2">👑 Premium Tournaments</h3>
-                <ul className="text-sm text-amber-700 space-y-1">
-                  <li>• Exclusive member events</li>
-                  <li>• Special titles & avatars</li>
-                  <li>• Higher skill competition</li>
-                  <li>• Premium membership required</li>
-                </ul>
-              </div>
-
-              <div className="border border-emerald-200 bg-emerald-50 p-4 rounded-lg">
-                <h3 className="font-bold text-emerald-800 mb-2">💰 Cash Tournaments</h3>
-                <ul className="text-sm text-emerald-700 space-y-1">
-                  <li>• Real money prizes up to $500</li>
-                  <li>• Entry fees: $5-$10</li>
-                  <li>• Monthly & weekly events</li>
-                  <li>• Premium + rating requirements</li>
-                </ul>
+              <div className="border-2 border-amber-300 bg-gradient-to-br from-amber-50 to-yellow-50 p-6 rounded-xl shadow-lg">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center mr-4">
+                    <span className="text-white text-xl">👑</span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-amber-800 text-xl">Premium Tournaments</h3>
+                    <p className="text-amber-600 text-sm">Members Only</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center text-amber-700">
+                    <span className="mr-3 text-lg">🎯</span>
+                    <span>Exclusive championship events</span>
+                  </div>
+                  <div className="flex items-center text-amber-700">
+                    <span className="mr-3 text-lg">🏅</span>
+                    <span>Legendary titles & rare avatars</span>
+                  </div>
+                  <div className="flex items-center text-amber-700">
+                    <span className="mr-3 text-lg">⚔️</span>
+                    <span>Elite-level competition</span>
+                  </div>
+                  <div className="flex items-center text-amber-700">
+                    <span className="mr-3 text-lg">💎</span>
+                    <span>Unique cosmetic rewards</span>
+                  </div>
+                  <div className="flex items-center text-amber-700">
+                    <span className="mr-3 text-lg">🔒</span>
+                    <span>Premium membership required</span>
+                  </div>
+                </div>
+                
+                <div className="mt-6 p-4 bg-amber-100 rounded-lg border border-amber-200">
+                  <p className="text-amber-800 font-medium text-center">
+                    Elite competition with prestigious rewards!
+                  </p>
+                </div>
               </div>
             </div>
 
             <AdBanner containerId="tournament-content-banner" size="banner" />
 
-            <h2 className="text-2xl font-bold text-purple-900 mb-4 mt-8">
-              Current Active Tournaments
+            <h2 className="text-2xl font-bold text-purple-900 mb-6 mt-8 text-center">
+              🔥 Active Tournaments This Week
             </h2>
 
             <div className="space-y-6">
-              <div className="border border-purple-200 rounded-lg p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-purple-900">Weekly Free Championship</h3>
-                    <p className="text-purple-700">Open to all • 234/500 participants</p>
+              {/* Featured Tournament */}
+              <div className="border-2 border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-6 shadow-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mr-4">
+                      <span className="text-white text-2xl">👑</span>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-purple-900">Weekly Grand Championship</h3>
+                      <p className="text-purple-700">Open to all • 412/1000 participants</p>
+                      <div className="flex items-center mt-1">
+                        <span className="text-yellow-500 text-sm">⭐⭐⭐⭐⭐</span>
+                        <span className="text-purple-600 text-sm ml-2">Most Popular</span>
+                      </div>
+                    </div>
                   </div>
-                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">
-                    Free Entry
-                  </span>
+                  <div className="text-right">
+                    <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-bold">
+                      FREE ENTRY
+                    </span>
+                    <p className="text-purple-600 text-sm mt-1">Ends in 4 days</p>
+                  </div>
                 </div>
-                <p className="text-purple-800 mb-4">
-                  Win premium membership time and exclusive champion badges in our largest free tournament.
+                
+                <p className="text-purple-800 mb-4 leading-relaxed">
+                  Our flagship tournament where legends are born! Compete for the most prestigious rewards 
+                  and cement your place in Wizard Chess history.
                 </p>
+                
+                <div className="grid md:grid-cols-3 gap-4 mb-4">
+                  <div className="text-center p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <div className="text-2xl mb-1">🥇</div>
+                    <div className="font-bold text-yellow-800">1st Place</div>
+                    <div className="text-sm text-yellow-700">30 Days Premium + "Grand Master" Title + Legendary Crown Avatar</div>
+                  </div>
+                  <div className="text-center p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="text-2xl mb-1">🥈</div>
+                    <div className="font-bold text-gray-800">2nd Place</div>
+                    <div className="text-sm text-gray-700">14 Days Premium + "Chess Sage" Title + Royal Robes Avatar</div>
+                  </div>
+                  <div className="text-center p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                    <div className="text-2xl mb-1">🥉</div>
+                    <div className="font-bold text-orange-800">3rd Place</div>
+                    <div className="text-sm text-orange-700">7 Days Premium + "Knight Champion" Title + Noble Badge</div>
+                  </div>
+                </div>
+                
                 <div className="flex items-center justify-between">
                   <div className="text-sm text-purple-600">
-                    🥇 30 Days Premium • 🥈 14 Days Premium • 🥉 7 Days Premium
+                    <span className="font-medium">Plus:</span> Top 10 get exclusive tournament badges • All participants earn XP
                   </div>
-                  <Button className="bg-green-600 hover:bg-green-700 text-white">
-                    Join Free Tournament
+                  <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-2">
+                    Join Championship
                   </Button>
                 </div>
               </div>
 
-              <div className="border border-emerald-200 rounded-lg p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-purple-900">Grand Championship - $500 Prize Pool</h3>
-                    <p className="text-purple-700">Premium members • 28/50 participants</p>
+              {/* Daily Blitz */}
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="border border-blue-200 bg-blue-50 rounded-lg p-6">
+                  <div className="flex items-center mb-3">
+                    <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-white">⚡</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-blue-900">Daily Speed Blitz</h3>
+                      <p className="text-blue-700 text-sm">5-minute games • 89/150 players</p>
+                    </div>
                   </div>
-                  <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-sm font-medium">
-                    $10 Entry Fee
-                  </span>
+                  <p className="text-blue-800 text-sm mb-3">
+                    Fast-paced action for quick thinkers. New tournament every day!
+                  </p>
+                  <div className="text-xs text-blue-600 mb-3">
+                    🏆 Winner gets "Speed Demon" badge + 3 days premium
+                  </div>
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white w-full">
+                    Join Blitz
+                  </Button>
                 </div>
-                <p className="text-purple-800 mb-4">
-                  Our biggest cash prize tournament with $500 total prizes for top performers.
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="text-sm text-purple-600">
-                    🥇 $250 Cash • 🥈 $150 Cash • 🥉 $100 Cash
+
+                <div className="border border-amber-200 bg-amber-50 rounded-lg p-6">
+                  <div className="flex items-center mb-3">
+                    <div className="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center mr-3">
+                      <span className="text-white">🔒</span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-amber-900">Premium Elite League</h3>
+                      <p className="text-amber-700 text-sm">Members only • 24/50 players</p>
+                    </div>
                   </div>
-                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                    Join Cash Tournament
+                  <p className="text-amber-800 text-sm mb-3">
+                    Exclusive high-skill competition with the most prestigious rewards.
+                  </p>
+                  <div className="text-xs text-amber-600 mb-3">
+                    🏆 Winner gets "Elite Champion" title + rare golden avatar
+                  </div>
+                  <Button size="sm" className="bg-amber-600 hover:bg-amber-700 text-white w-full">
+                    Requires Premium
                   </Button>
                 </div>
               </div>
             </div>
 
-            <div className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg">
-              <h3 className="text-xl font-bold text-amber-800 mb-3">
-                Ready to Compete?
+            {/* Tournament Benefits & CTA */}
+            <div className="mt-8 p-8 bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-200 rounded-xl shadow-lg">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold text-purple-900 mb-3">
+                  🎯 Why Choose Our Tournament System?
+                </h3>
+                <p className="text-purple-700 leading-relaxed max-w-2xl mx-auto">
+                  Experience the purest form of chess competition. No gambling, no unfair advantages - 
+                  just skill, strategy, and legendary rewards that celebrate your mastery.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6 mb-8">
+                <div className="text-center p-4 bg-white rounded-lg border border-purple-100">
+                  <div className="text-3xl mb-2">🛡️</div>
+                  <h4 className="font-bold text-purple-900 mb-2">Fair Play Guaranteed</h4>
+                  <p className="text-purple-700 text-sm">Advanced anti-cheat systems ensure every match is decided by pure skill</p>
+                </div>
+                <div className="text-center p-4 bg-white rounded-lg border border-purple-100">
+                  <div className="text-3xl mb-2">🎨</div>
+                  <h4 className="font-bold text-purple-900 mb-2">Exclusive Rewards</h4>
+                  <p className="text-purple-700 text-sm">Unique titles, avatars, and badges you can't get anywhere else</p>
+                </div>
+                <div className="text-center p-4 bg-white rounded-lg border border-purple-100">
+                  <div className="text-3xl mb-2">🌟</div>
+                  <h4 className="font-bold text-purple-900 mb-2">Skill Progression</h4>
+                  <p className="text-purple-700 text-sm">Tournament play is the fastest way to improve your chess rating</p>
+                </div>
+              </div>
+
+              <div className="text-center">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                  <Button className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-8 py-3 text-lg">
+                    Join Free Tournaments
+                  </Button>
+                  <Button variant="outline" className="border-2 border-purple-500 text-purple-700 hover:bg-purple-50 px-8 py-3 text-lg">
+                    Unlock Premium Events
+                  </Button>
+                </div>
+                <p className="text-purple-600 text-sm mt-4">
+                  Start competing today • No credit card required • Instant access
+                </p>
+              </div>
+            </div>
+
+            {/* Tournament Schedule */}
+            <div className="mt-8 bg-white border border-purple-200 rounded-lg p-6">
+              <h3 className="text-xl font-bold text-purple-900 mb-4 text-center">
+                📅 Weekly Tournament Schedule
               </h3>
-              <p className="text-amber-700 mb-4">
-                Start with free tournaments to build your skills, then advance to premium and cash prize events 
-                as you improve your ranking and chess mastery.
-              </p>
-              <div className="flex gap-3">
-                <Button className="bg-green-600 hover:bg-green-700 text-white">
-                  View All Tournaments
-                </Button>
-                <Button variant="outline" className="border-amber-500 text-amber-700 hover:bg-amber-50">
-                  Upgrade to Premium
-                </Button>
+              <div className="grid md:grid-cols-7 gap-2 text-sm">
+                <div className="text-center p-3 bg-red-50 border border-red-200 rounded">
+                  <div className="font-bold text-red-800">Monday</div>
+                  <div className="text-red-700">Speed Blitz</div>
+                  <div className="text-xs text-red-600">5pm UTC</div>
+                </div>
+                <div className="text-center p-3 bg-blue-50 border border-blue-200 rounded">
+                  <div className="font-bold text-blue-800">Tuesday</div>
+                  <div className="text-blue-700">Beginner Cup</div>
+                  <div className="text-xs text-blue-600">6pm UTC</div>
+                </div>
+                <div className="text-center p-3 bg-green-50 border border-green-200 rounded">
+                  <div className="font-bold text-green-800">Wednesday</div>
+                  <div className="text-green-700">Standard Play</div>
+                  <div className="text-xs text-green-600">7pm UTC</div>
+                </div>
+                <div className="text-center p-3 bg-yellow-50 border border-yellow-200 rounded">
+                  <div className="font-bold text-yellow-800">Thursday</div>
+                  <div className="text-yellow-700">Rapid Round</div>
+                  <div className="text-xs text-yellow-600">8pm UTC</div>
+                </div>
+                <div className="text-center p-3 bg-purple-50 border border-purple-200 rounded">
+                  <div className="font-bold text-purple-800">Friday</div>
+                  <div className="text-purple-700">Weekend Prep</div>
+                  <div className="text-xs text-purple-600">5pm UTC</div>
+                </div>
+                <div className="text-center p-3 bg-pink-50 border border-pink-200 rounded">
+                  <div className="font-bold text-pink-800">Saturday</div>
+                  <div className="text-pink-700">Grand Champ</div>
+                  <div className="text-xs text-pink-600">2pm UTC</div>
+                </div>
+                <div className="text-center p-3 bg-amber-50 border border-amber-200 rounded">
+                  <div className="font-bold text-amber-800">Sunday</div>
+                  <div className="text-amber-700">Premium Elite</div>
+                  <div className="text-xs text-amber-600">3pm UTC</div>
+                </div>
               </div>
             </div>
           </div>
