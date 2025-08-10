@@ -82,6 +82,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
     <div className="main-menu flex flex-col items-center justify-center min-h-screen">
       {/* Top Menu Ad Banner */}
       <AdBanner 
+        containerId="menu-top-banner"
         className="mb-4"
         style={{ maxWidth: '600px', width: '100%' }}
       />
@@ -115,25 +116,22 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
-                    console.log('🎮 FORCE START BUTTON CLICKED');
+                    console.log('🎮 COMPREHENSIVE FIX - Button clicked');
                     
-                    // Get the current store
-                    const store = useChess.getState();
-                    console.log('🎮 Current store state:', store);
+                    // First, force the App page state to 'game'
+                    window.location.hash = '#game';
+                    console.log('🎮 Set hash to #game');
                     
-                    // Force the state change directly
-                    useChess.setState({
-                      ...store,
-                      gamePhase: 'playing',
-                      gameMode: 'ai',
-                      aiDifficulty: 'easy',
-                      currentPlayer: 'white'
-                    });
+                    // Then start the actual game
+                    startGame('ai', 'easy');
+                    console.log('🎮 Called startGame function');
                     
-                    // Check if state changed
-                    const newState = useChess.getState();
-                    console.log('🎮 New state after forced update:', newState);
-                    console.log('🎮 Game phase is now:', newState.gamePhase);
+                    // Double check the game actually started
+                    setTimeout(() => {
+                      const state = useChess.getState();
+                      console.log('🎮 Final game state:', state.gamePhase);
+                      console.log('🎮 Current URL hash:', window.location.hash);
+                    }, 100);
                   }}
                 >
                   <div className="mode-content">
