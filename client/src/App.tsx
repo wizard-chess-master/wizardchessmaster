@@ -15,6 +15,7 @@ import { MobileGameLayout } from "./components/mobile/MobileGameLayout";
 import { MarketingRouter } from "./components/marketing/MarketingRouter";
 import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
+import { BlogRouter, BlogPageType } from "./components/blog";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
 import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
@@ -48,7 +49,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'reset-password'>('game');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'reset-password' | BlogPageType>('game');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -217,6 +218,16 @@ function App() {
           
           {currentPage === 'blog' && (
             <BlogPost onBack={() => setCurrentPage('game')} />
+          )}
+
+          {(currentPage as BlogPageType) && [
+            'chess-training', 'advanced-chess', 'strategy-game', 'interactive-chess',
+            '10x10-chess-board', 'magical-wizards', 'real-time-multiplayer', 'ai-opponents',
+            'adaptive-learning', 'campaign-mode', 'story-progression', 'hint-system',
+            'move-analysis', 'live-tournaments', 'chess-rankings', 'cross-device-synchronization',
+            'chess-gameplay', 'online-chess-tools', 'chess-mastery', 'multiplayer-chess'
+          ].includes(currentPage as BlogPageType) && (
+            <BlogRouter currentPage={currentPage as BlogPageType} />
           )}
           
           {currentPage === 'multiplayer' && (

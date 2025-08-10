@@ -1,16 +1,15 @@
 User-agent: *
 Allow: /
 
-# Sitemap
-Sitemap: https://wizardchessmaster.com/sitemap.xml
-
-# Block unnecessary crawling
-Disallow: /api/
-Disallow: /assets/temp/
-Disallow: /node_modules/
-
-# Allow search engine optimization
-Allow: /chess-strategy
+# Allow all chess-related content
+Allow: /blog/
+Allow: /strategy
 Allow: /ai-training
 Allow: /tournaments
-Allow: /play
+Allow: /multiplayer
+
+# Sitemap location
+Sitemap: https://wizardchessmaster.com/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
