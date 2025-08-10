@@ -31,27 +31,31 @@ class GoogleAdSenseManager implements AdManager {
   }
 
   async initialize(): Promise<void> {
-    if (this.isInitialized) return;
+    if (this.isInitialized) {
+      console.log('🎯 AdSense already initialized');
+      return;
+    }
 
     try {
-      // Load Google AdSense script
-      const script = document.createElement('script');
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-${this.adConfig.publisherId}`;
-      script.async = true;
-      script.crossOrigin = 'anonymous';
+      // Wait for AdSense script to load (since it's already in HTML)
+      let attempts = 0;
+      const maxAttempts = 20;
       
-      document.head.appendChild(script);
+      while (attempts < maxAttempts) {
+        if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
+          this.isInitialized = true;
+          console.log('🎯 AdSense initialized successfully with publisher:', this.adConfig.publisherId);
+          this.loadAdFreeStatus();
+          return;
+        }
+        
+        await new Promise(resolve => setTimeout(resolve, 250));
+        attempts++;
+      }
       
-      // Wait for script to load
-      await new Promise((resolve, reject) => {
-        script.onload = resolve;
-        script.onerror = reject;
-      });
-
-      this.isInitialized = true;
-      console.log('🎯 AdSense initialized successfully');
+      console.warn('⚠️ AdSense script not loaded after waiting');
     } catch (error) {
-      console.error('❌ Failed to initialize AdSense:', error);
+      console.error('❌ AdSense initialization failed:', error);
     }
   }
 
