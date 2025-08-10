@@ -115,11 +115,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               <div className="game-mode-buttons">
                 <Button
                   className="medieval-btn mode-button"
-                  onClick={() => {
-                    console.log('🎮 SIMPLE RELOAD APPROACH');
-                    // Force a page reload with the game hash
-                    window.location.href = window.location.origin + window.location.pathname + '#game';
-                  }}
+                  onClick={() => startGame('ai', 'easy')}
                 >
                   <div className="mode-content">
                     <span>🧙 Player vs AI - Easy</span>

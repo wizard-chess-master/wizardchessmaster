@@ -46,11 +46,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer'>(() => {
-    // Check hash on initial load
-    const hash = window.location.hash.slice(1);
-    return hash === 'game' ? 'game' : 'landing';
-  });
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer'>('game');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
