@@ -113,8 +113,6 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </CardHeader>
             <CardContent>
               <div className="game-mode-buttons">
-
-                
                 <Button
                   className="medieval-btn mode-button"
                   onClick={() => {
