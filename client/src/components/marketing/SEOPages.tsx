@@ -233,33 +233,119 @@ export function OnlineChessTournamentPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-purple-900 mb-6">
-            Online Chess Tournaments: Compete and Win Prizes
+            Online Chess Tournaments: Free, Premium & Cash Prize Events
           </h1>
 
           <div className="bg-white rounded-lg shadow-lg p-8">
             <h2 className="text-2xl font-bold text-purple-900 mb-4">
-              Weekly Wizard Chess Championships
+              Tournament Types & Prize Structure
             </h2>
             <p className="text-purple-800 mb-6 leading-relaxed">
-              Join competitive online chess tournaments featuring both traditional and wizard chess variants. 
-              Compete against players worldwide, climb the rankings, and win exciting prizes in our 
-              structured tournament system.
+              Our comprehensive tournament system offers something for every player, from free weekly 
+              championships to premium-exclusive events and cash prize tournaments with real money rewards.
             </p>
+
+            <div className="grid md:grid-cols-3 gap-6 mb-8">
+              <div className="border border-green-200 bg-green-50 p-4 rounded-lg">
+                <h3 className="font-bold text-green-800 mb-2">🎁 Free Tournaments</h3>
+                <ul className="text-sm text-green-700 space-y-1">
+                  <li>• Weekly championships</li>
+                  <li>• Daily blitz events</li>
+                  <li>• Badge & premium time rewards</li>
+                  <li>• Open to all registered players</li>
+                </ul>
+              </div>
+
+              <div className="border border-amber-200 bg-amber-50 p-4 rounded-lg">
+                <h3 className="font-bold text-amber-800 mb-2">👑 Premium Tournaments</h3>
+                <ul className="text-sm text-amber-700 space-y-1">
+                  <li>• Exclusive member events</li>
+                  <li>• Special titles & avatars</li>
+                  <li>• Higher skill competition</li>
+                  <li>• Premium membership required</li>
+                </ul>
+              </div>
+
+              <div className="border border-emerald-200 bg-emerald-50 p-4 rounded-lg">
+                <h3 className="font-bold text-emerald-800 mb-2">💰 Cash Tournaments</h3>
+                <ul className="text-sm text-emerald-700 space-y-1">
+                  <li>• Real money prizes up to $500</li>
+                  <li>• Entry fees: $5-$10</li>
+                  <li>• Monthly & weekly events</li>
+                  <li>• Premium + rating requirements</li>
+                </ul>
+              </div>
+            </div>
 
             <AdBanner containerId="tournament-content-banner" size="banner" />
 
-            <div className="mt-8 space-y-6">
+            <h2 className="text-2xl font-bold text-purple-900 mb-4 mt-8">
+              Current Active Tournaments
+            </h2>
+
+            <div className="space-y-6">
               <div className="border border-purple-200 rounded-lg p-6">
-                <h3 className="text-xl font-bold text-purple-900 mb-3">Current Tournament</h3>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-start mb-4">
                   <div>
-                    <p className="font-semibold text-purple-800">Grand Wizard Championship</p>
-                    <p className="text-purple-700">Prize Pool: $500 • 156 Players Registered</p>
+                    <h3 className="text-xl font-bold text-purple-900">Weekly Free Championship</h3>
+                    <p className="text-purple-700">Open to all • 234/500 participants</p>
                   </div>
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white">
-                    Join Tournament
+                  <span className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium">
+                    Free Entry
+                  </span>
+                </div>
+                <p className="text-purple-800 mb-4">
+                  Win premium membership time and exclusive champion badges in our largest free tournament.
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-purple-600">
+                    🥇 30 Days Premium • 🥈 14 Days Premium • 🥉 7 Days Premium
+                  </div>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white">
+                    Join Free Tournament
                   </Button>
                 </div>
+              </div>
+
+              <div className="border border-emerald-200 rounded-lg p-6">
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <h3 className="text-xl font-bold text-purple-900">Grand Championship - $500 Prize Pool</h3>
+                    <p className="text-purple-700">Premium members • 28/50 participants</p>
+                  </div>
+                  <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-sm font-medium">
+                    $10 Entry Fee
+                  </span>
+                </div>
+                <p className="text-purple-800 mb-4">
+                  Our biggest cash prize tournament with $500 total prizes for top performers.
+                </p>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-purple-600">
+                    🥇 $250 Cash • 🥈 $150 Cash • 🥉 $100 Cash
+                  </div>
+                  <Button className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                    Join Cash Tournament
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg">
+              <h3 className="text-xl font-bold text-amber-800 mb-3">
+                Ready to Compete?
+              </h3>
+              <p className="text-amber-700 mb-4">
+                Start with free tournaments to build your skills, then advance to premium and cash prize events 
+                as you improve your ranking and chess mastery.
+              </p>
+              <div className="flex gap-3">
+                <Button className="bg-green-600 hover:bg-green-700 text-white">
+                  View All Tournaments
+                </Button>
+                <Button variant="outline" className="border-amber-500 text-amber-700 hover:bg-amber-50">
+                  Upgrade to Premium
+                </Button>
               </div>
             </div>
           </div>
