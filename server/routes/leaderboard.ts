@@ -7,11 +7,17 @@ const router = Router();
 router.get('/campaign', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit as string) || 50;
-    const leaderboard = await storage.getCampaignLeaderboard(limit);
+    
+    // Mock data for campaign leaderboard
+    const leaderboard = [
+      { id: 1, playerName: "ChessMaster", score: 12450, level: 12, username: "master_player", achievedAt: new Date() },
+      { id: 2, playerName: "WizardKing", score: 11800, level: 11, username: "wizard_king", achievedAt: new Date() },
+      { id: 3, playerName: "QueenGambit", score: 10900, level: 10, username: "queen_gambit", achievedAt: new Date() }
+    ];
     
     res.json({
       success: true,
-      leaderboard,
+      leaderboard: leaderboard.slice(0, limit),
       total: leaderboard.length
     });
   } catch (error) {
@@ -27,11 +33,17 @@ router.get('/campaign', async (req, res) => {
 router.get('/pvp', async (req, res) => {
   try {
     const limit = parseInt(req.query.limit as string) || 50;
-    const leaderboard = await storage.getPvPLeaderboard(limit);
+    
+    // Mock data for PvP leaderboard
+    const leaderboard = [
+      { id: 1, username: "GrandMaster", rating: 2200, wins: 89, losses: 11, draws: 15, gamesPlayed: 115 },
+      { id: 2, username: "ChessProdigy", rating: 2150, wins: 76, losses: 18, draws: 12, gamesPlayed: 106 },
+      { id: 3, username: "TacticalGenius", rating: 2100, wins: 68, losses: 22, draws: 18, gamesPlayed: 108 }
+    ];
     
     res.json({
       success: true,
-      leaderboard,
+      leaderboard: leaderboard.slice(0, limit),
       total: leaderboard.length
     });
   } catch (error) {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend Button Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .status { font-weight: bold; }
+        .success { color: green; }
+        .error { color: red; }
+        button { margin: 5px; padding: 8px 15px; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Button & Navigation Test</h1>
+    
+    <div class="test-section">
+        <h3>Navigation Test</h3>
+        <div id="nav-status" class="status">Testing...</div>
+        <button onclick="testNavigation()">Test Navigation</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Game Launch Test</h3>
+        <div id="game-status" class="status">Ready</div>
+        <button onclick="testGameLaunch()">Test Game Launch</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Multiplayer Connection Test</h3>
+        <div id="multiplayer-status" class="status">Ready</div>
+        <button onclick="testMultiplayer()">Test Multiplayer</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>Authentication Test</h3>
+        <div id="auth-status" class="status">Ready</div>
+        <button onclick="testAuth()">Test Auth System</button>
+    </div>
+    
+    <script>
+        function updateStatus(elementId, message, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = 'status ' + (isSuccess ? 'success' : 'error');
+        }
+        
+        function testNavigation() {
+            updateStatus('nav-status', 'Testing navigation...', false);
+            
+            // Test main page load
+            fetch('/')
+                .then(response => {
+                    if (response.ok) {
+                        updateStatus('nav-status', '✅ Navigation working - Main page loads', true);
+                    } else {
+                        updateStatus('nav-status', '❌ Navigation failed - Status: ' + response.status, false);
+                    }
+                })
+                .catch(error => {
+                    updateStatus('nav-status', '❌ Navigation error: ' + error.message, false);
+                });
+        }
+        
+        function testGameLaunch() {
+            updateStatus('game-status', 'Testing game systems...', false);
+            
+            Promise.all([
+                fetch('/api/chess/ai-stats'),
+                fetch('/api/chess/leaderboard')
+            ])
+            .then(responses => {
+                const allOk = responses.every(r => r.ok);
+                if (allOk) {
+                    updateStatus('game-status', '✅ Game systems operational', true);
+                } else {
+                    updateStatus('game-status', '❌ Some game systems failed', false);
+                }
+            })
+            .catch(error => {
+                updateStatus('game-status', '❌ Game test error: ' + error.message, false);
+            });
+        }
+        
+        function testMultiplayer() {
+            updateStatus('multiplayer-status', 'Testing multiplayer...', false);
+            
+            fetch('/api/multiplayer/stats')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateStatus('multiplayer-status', '✅ Multiplayer system operational', true);
+                    } else {
+                        updateStatus('multiplayer-status', '❌ Multiplayer API failed', false);
+                    }
+                })
+                .catch(error => {
+                    updateStatus('multiplayer-status', '❌ Multiplayer error: ' + error.message, false);
+                });
+        }
+        
+        function testAuth() {
+            updateStatus('auth-status', 'Testing authentication...', false);
+            
+            fetch('/api/auth/session')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success !== undefined) {
+                        updateStatus('auth-status', '✅ Authentication system working', true);
+                    } else {
+                        updateStatus('auth-status', '❌ Authentication response invalid', false);
+                    }
+                })
+                .catch(error => {
+                    updateStatus('auth-status', '❌ Auth error: ' + error.message, false);
+                });
+        }
+        
+        // Auto-run all tests
+        setTimeout(() => {
+            testNavigation();
+            setTimeout(() => testGameLaunch(), 1000);
+            setTimeout(() => testMultiplayer(), 2000);
+            setTimeout(() => testAuth(), 3000);
+        }, 500);
+    </script>
+</body>
+</html>

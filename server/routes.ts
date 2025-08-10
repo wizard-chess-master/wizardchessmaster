@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth";
 import saveDataRoutes from "./routes/savedata";
 import leaderboardRoutes from "./routes/leaderboard";
 import { multiplayerRouter } from "./routes/multiplayer";
+import chessRoutes from "./routes/chess";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
@@ -30,6 +31,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register multiplayer routes
   app.use('/api/multiplayer', multiplayerRouter);
+  
+  // Register chess routes
+  app.use('/api/chess', chessRoutes);
 
   const httpServer = createServer(app);
   

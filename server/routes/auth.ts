@@ -13,7 +13,12 @@ interface AuthRequest extends Request {
 // Register new user
 router.post('/register', async (req: AuthRequest, res: Response) => {
   try {
-    const userData = insertUserSchema.parse(req.body);
+    // Add displayName if not provided
+    const requestData = {
+      ...req.body,
+      displayName: req.body.displayName || req.body.username
+    };
+    const userData = insertUserSchema.parse(requestData);
     
     // Check if username already exists
     const existingUser = await storage.getUserByUsername(userData.username);
