@@ -45,16 +45,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const Comp = asChild ? Slot : "button"
     
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.preventDefault();
-      e.stopPropagation();
+      // DON'T prevent default - this was breaking navigation
       
-      // Simple audio feedback
+      // Simple audio feedback (optional)
       try {
         if ((window as any).gameAudioManager?.onButtonClick) {
           (window as any).gameAudioManager.onButtonClick();
         }
       } catch (error) {
-        console.log('Audio unavailable:', error);
+        // Silent audio failure
       }
       
       // Call original onClick if provided
