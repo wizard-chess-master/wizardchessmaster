@@ -326,145 +326,29 @@ class WizardChessAudioManager {
   }
 
   async onGameStart(): Promise<void> {
-    await this.playThemeMusic();
+    if (!this.themeMusic) {
+      await this.playThemeMusic();
+    }
     this.playVoice('game_intro');
   }
 
-  // Direct Theme Music Implementation as requested
   async playThemeMusic(): Promise<void> {
-    if (this.muted) return;
+    if (this.muted || this.themeMusic) return;
     
-    console.log('🎵 ELIMINATE old music - Starting direct Theme-music2.mp3 implementation...');
-    console.log('🎵 FORCE Dynamic cache busting with Date.now() parameter added');
+    this.stopMusic();
     
-    // Clear all music variables pre-init
-    if ((window as any).gameAudioManager) {
-      (window as any).gameAudioManager = null;
-    }
-    
-    // Enhanced cleanup function with AudioContext.close()
-    async function cleanAudio() {
-      try {
-        const context = new AudioContext();
-        await context.close();
-        console.log('✅ AudioContext closed');
-      } catch (e) {
-        console.log('AudioContext already closed or unavailable');
-      }
-      
-      document.querySelectorAll('audio').forEach(a => { 
-        a.pause(); 
-        a.currentTime = 0;
-        a.remove(); 
-      });
-      console.log('Audio cleanup:', document.querySelectorAll('audio').length);
-    }
-    
-    // Call cleanup function before theme playback
-    await cleanAudio();
-    
-    // COMPLETE AUDIO CLEANUP - Stop ALL audio sources FIRST
-    this.stopAllAudio();
-    
-    console.log('🎼 ✅ VERIFICATION STEP 1: All competing audio stopped');
-    console.log('🎼 ✅ VERIFICATION STEP 2: ELIMINATE old music and FORCE loading ONLY Theme-music2.mp3 with dynamic cache busting');
-    
-    // Stop any existing theme music
-    if (this.themeMusic) {
-      this.themeMusic.pause();
-      this.themeMusic.currentTime = 0;
-      this.themeMusic = null;
-      console.log('🛑 Previous theme music stopped and cleared');
-    }
-    
-    // ELIMINATE old music and FORCE new Audio instance with dynamic cache busting and fallback
-    const theme = new Audio(`/assets/music/Theme-music2.mp3?t=${Date.now()}`);
+    const theme = new Audio('/assets/music/Theme-music2.mp3');
     theme.loop = true;
-    theme.volume = 0.42; // Exact volume as requested
-    
-    // Add error handling for file not found
-    theme.addEventListener('error', (e) => {
-      console.error('❌ Theme-music2.mp3 failed to load, trying fallback:', e);
-      // Fallback to Theme-music1.mp3 if Theme-music2.mp3 doesn't exist
-      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
-      fallback.loop = true;
-      fallback.volume = 0.42;
-      this.themeMusic = fallback;
-      fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
-    });
-    
-    // Log theme creation as specifically requested
-    console.log('Theme created:', theme.src);
-    
-    // Debug logging as requested - verify ONLY Theme-music2.mp3
-    console.log('🎼 Current audio:', theme.src);
-    console.log('🎼 Theme music source:', theme.src);
-    console.log('🎼 Theme music loop enabled:', theme.loop);
-    console.log('🎼 Theme music volume should be 0.42:', theme.volume);
-    console.log('🎼 ✅ VERIFICATION: This is the ONLY audio that should play');
-    
-    // Log active audio sources as requested
-    console.log('Audio:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    theme.volume = 0.42;
     
     this.themeMusic = theme;
     
-    // Handle loading and play
-    theme.addEventListener('loadeddata', () => {
-      console.log('✅ Theme-music2.mp3 loaded successfully');
-      console.log('🎼 ✅ File size:', theme.duration || 'Loading...');
-      console.log('🎼 ✅ Ready state:', theme.readyState);
-    });
-    
-    theme.addEventListener('error', (error) => {
-      console.error('❌ Theme music failed to load, trying fallback:', error);
-      // Try fallback to Theme-music1.mp3
-      const fallback = new Audio(`/assets/music/Theme-music1.mp3?t=${Date.now()}`);
-      fallback.loop = true;
-      fallback.volume = 0.42;
-      this.themeMusic = fallback;
-      fallback.play().catch(err => console.error('❌ Fallback music also failed:', err));
-    });
-    
-    theme.addEventListener('ended', () => {
-      console.log('🔄 Theme music ended, restarting loop');
-    });
-    
-    // Play the music with comprehensive logging
-    theme.play()
-      .then(() => {
-        console.log('🎼 ✅ Theme-music2.mp3 FORCED started playing successfully');
-        console.log('Theme forced:', theme.src, theme.paused ? 'Paused' : 'Playing');
-        console.log('🎼 ✅ CONFIRMED: Only Theme-music2.mp3 is now playing');
-        console.log('🎼 ✅ Loop status:', theme.loop);
-        console.log('🎼 ✅ Volume level (should be 0.42):', theme.volume);
-        console.log('🎼 ✅ FINAL VERIFICATION: Audio source is:', theme.src.split('/').pop());
-        
-        // EXHAUSTIVE FINAL VERIFICATION as urgently requested
-        const activeAudio = Array.from(document.querySelectorAll('audio')).map(a => a.src);
-        console.log('🎼 ✅ Active audio sources:', activeAudio);
-        console.log('🎼 ✅ Active audio count:', activeAudio.length);
-        console.log('Audio check:', activeAudio);
-        
-        // AudioContext state logging as requested
-        try {
-          console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
-          if (typeof AudioContext !== 'undefined') {
-            console.log('AudioContext state: Available for use');
-          }
-        } catch (e) {
-          console.log('AudioContext: Not accessible');
-        }
-        console.log('🎼 ✅ NO OTHER MUSIC should be playing - verification complete');
-        
-        // Log ALL active audio sources as requested
-        const allAudios = Array.from(document.querySelectorAll('audio'));
-        console.log('Active audio sources:', allAudios.map(a => a.src));
-        console.log('Active audio count:', allAudios.length);
-        console.log('Theme music volume should be 0.42:', theme.volume);
-      })
-      .catch(error => {
-        console.error('❌ FAILED to play Theme-music1.mp3:', error);
-      });
+    try {
+      await theme.play();
+      console.log('✅ Theme music started');
+    } catch (error) {
+      console.log('Theme music autoplay prevented');
+    }
   }
 
   onGameEnd(victory: boolean): void {
