@@ -20,7 +20,8 @@ interface GlobalNavigationProps {
 export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: GlobalNavigationProps) {
   const navItems = [
     { id: 'landing', label: 'Home', icon: Home },
-    { id: 'strategy', label: 'Chess Strategy', icon: BookOpen },
+    { id: 'multiplayer', label: 'Play Online', icon: Play },
+    { id: 'strategy', label: 'Strategy', icon: BookOpen },
     { id: 'ai-training', label: 'AI Training', icon: Brain },
     { id: 'tournaments', label: 'Tournaments', icon: Trophy },
     { id: 'blog', label: 'Blog', icon: Newspaper },

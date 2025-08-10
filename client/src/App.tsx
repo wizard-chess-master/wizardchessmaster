@@ -16,6 +16,7 @@ import { MarketingRouter } from "./components/marketing/MarketingRouter";
 import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
+import { MultiplayerLobby } from "./components/multiplayer/MultiplayerLobby";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -45,7 +46,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog'>('landing');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer'>('landing');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -179,6 +180,10 @@ function App() {
           
           {currentPage === 'blog' && (
             <BlogPost onBack={() => setCurrentPage('game')} />
+          )}
+          
+          {currentPage === 'multiplayer' && (
+            <MultiplayerLobby />
           )}
         </div>
       </AuthProvider>

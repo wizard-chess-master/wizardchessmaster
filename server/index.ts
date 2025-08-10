@@ -1,7 +1,10 @@
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import MultiplayerManager from "./multiplayer/socketHandlers";
 
 const app = express();
 
@@ -63,7 +66,26 @@ app.use((req, res, next) => {
 
     console.log(`Starting server in ${process.env.NODE_ENV} mode`);
 
+    const httpServer = createServer(app);
     const server = await registerRoutes(app);
+    
+    // Initialize Socket.IO
+    const io = new SocketIOServer(httpServer, {
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+      },
+      path: "/socket.io/"
+    });
+
+    // Initialize multiplayer manager
+    const multiplayerManager = new MultiplayerManager(io);
+    
+    io.on('connection', (socket) => {
+      multiplayerManager.handleConnection(socket);
+    });
+
+    console.log('🔌 Socket.IO multiplayer system initialized');
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
@@ -86,7 +108,7 @@ app.use((req, res, next) => {
     // this serves both the API and the client
     const port = process.env.PORT ? parseInt(process.env.PORT) : 5000;
     
-    server.listen({
+    httpServer.listen({
       port,
       host: "0.0.0.0",
       reusePort: true,
