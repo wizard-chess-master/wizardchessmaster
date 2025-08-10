@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { storage } from '../storage';
-import { insertUserSchema, loginSchema } from '@shared/schema';
+import { insertUserSchema, loginSchema, passwordResetRequestSchema, passwordResetSchema } from '@shared/schema';
 import type { User } from '@shared/schema';
 
 const router = Router();
@@ -105,7 +105,7 @@ router.post('/login', async (req: AuthRequest, res: Response) => {
 router.post('/logout', (req: AuthRequest, res: Response) => {
   const username = req.session.user?.username;
   
-  req.session.destroy((err) => {
+  req.session.destroy((err: any) => {
     if (err) {
       console.error('❌ Logout error:', err);
       return res.status(500).json({ 
@@ -135,6 +135,113 @@ router.get('/session', (req: AuthRequest, res: Response) => {
       success: true, 
       user: null,
       isLoggedIn: false 
+    });
+  }
+});
+
+// Password recovery - Request reset token
+router.post('/forgot-password', async (req: AuthRequest, res: Response) => {
+  try {
+    const { email } = passwordResetRequestSchema.parse(req.body);
+    
+    // Find user by email
+    const user = await storage.getUserByEmail(email);
+    if (!user) {
+      // For security, don't reveal if email exists or not
+      return res.json({
+        success: true,
+        message: 'If an account with that email exists, a password reset link has been sent.'
+      });
+    }
+    
+    // Generate reset token
+    const token = await storage.createPasswordResetToken(user.id);
+    
+    // In a real app, you would send an email here
+    // For demo purposes, we'll log the reset link
+    console.log(`🔐 Password reset requested for ${user.email}`);
+    console.log(`🔗 Reset link: ${process.env.CLIENT_URL || 'http://localhost:5000'}/reset-password?token=${token}`);
+    
+    res.json({
+      success: true,
+      message: 'If an account with that email exists, a password reset link has been sent.',
+      // In development, include the token for testing
+      ...(process.env.NODE_ENV === 'development' && { resetToken: token })
+    });
+    
+  } catch (error) {
+    console.error('❌ Password reset request error:', error);
+    res.status(400).json({
+      success: false,
+      error: 'Invalid email address'
+    });
+  }
+});
+
+// Password recovery - Reset password with token
+router.post('/reset-password', async (req: AuthRequest, res: Response) => {
+  try {
+    const { token, newPassword } = passwordResetSchema.parse(req.body);
+    
+    // Validate token and get user
+    const user = await storage.validatePasswordResetToken(token);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid or expired reset token'
+      });
+    }
+    
+    // Reset the password
+    const success = await storage.resetPassword(token, newPassword);
+    if (!success) {
+      return res.status(400).json({
+        success: false,
+        error: 'Failed to reset password'
+      });
+    }
+    
+    console.log(`✅ Password reset successful for user: ${user.username}`);
+    
+    res.json({
+      success: true,
+      message: 'Password reset successful! You can now log in with your new password.'
+    });
+    
+  } catch (error) {
+    console.error('❌ Password reset error:', error);
+    res.status(400).json({
+      success: false,
+      error: 'Invalid reset data'
+    });
+  }
+});
+
+// Validate reset token (for checking if token is valid before showing reset form)
+router.post('/validate-reset-token', async (req: AuthRequest, res: Response) => {
+  try {
+    const { token } = req.body;
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        error: 'Reset token is required'
+      });
+    }
+    
+    const user = await storage.validatePasswordResetToken(token);
+    
+    res.json({
+      success: true,
+      valid: !!user,
+      email: user ? user.email.replace(/(.{2}).*(@.*)/, '$1***$2') : null // Masked email
+    });
+    
+  } catch (error) {
+    console.error('❌ Token validation error:', error);
+    res.status(400).json({
+      success: false,
+      error: 'Failed to validate token'
     });
   }
 });

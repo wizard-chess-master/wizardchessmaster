@@ -16,6 +16,16 @@ export const users = pgTable("users", {
   lastSeen: timestamp("last_seen").defaultNow().notNull(),
 });
 
+// Password reset tokens table
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  token: text("token").notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  used: boolean("used").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // User game progress and save data
 export const userSaveData = pgTable("user_save_data", {
   id: serial("id").primaryKey(),
@@ -105,6 +115,16 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+// Password recovery schemas
+export const passwordResetRequestSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+export const passwordResetSchema = z.object({
+  token: z.string().min(1, "Reset token is required"),
+  newPassword: z.string().min(6, "Password must be at least 6 characters"),
+});
+
 export const insertUserSaveDataSchema = createInsertSchema(userSaveData).omit({
   id: true,
   createdAt: true,
@@ -118,7 +138,10 @@ export const insertMatchmakingSchema = createInsertSchema(matchmakingQueue);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
+export type PasswordResetRequest = z.infer<typeof passwordResetRequestSchema>;
+export type PasswordReset = z.infer<typeof passwordResetSchema>;
 export type User = typeof users.$inferSelect;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
 export type UserSaveData = typeof userSaveData.$inferSelect;
 export type InsertUserSaveData = z.infer<typeof insertUserSaveDataSchema>;
 export type CampaignLeaderboardEntry = typeof campaignLeaderboard.$inferSelect;

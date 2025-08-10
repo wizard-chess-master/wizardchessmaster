@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/lib/stores/useAuth';
 import { LogIn, UserPlus, Crown } from 'lucide-react';
+import { PasswordRecovery } from './PasswordRecovery';
 
 interface LoginDialogProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ interface LoginDialogProps {
 export function LoginDialog({ children, onSuccess }: LoginDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
+  const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   
   // Login form state
   const [loginData, setLoginData] = useState({
@@ -74,6 +76,7 @@ export function LoginDialog({ children, onSuccess }: LoginDialogProps) {
     setIsOpen(open);
     if (!open) {
       clearError();
+      setShowPasswordRecovery(false);
       setLoginData({ username: '', password: '' });
       setRegisterData({
         username: '',
@@ -83,6 +86,15 @@ export function LoginDialog({ children, onSuccess }: LoginDialogProps) {
         displayName: ''
       });
     }
+  };
+
+  const handlePasswordRecoveryClose = () => {
+    setShowPasswordRecovery(false);
+  };
+
+  const handleBackToLogin = () => {
+    setShowPasswordRecovery(false);
+    setActiveTab('login');
   };
 
   return (
@@ -153,6 +165,16 @@ export function LoginDialog({ children, onSuccess }: LoginDialogProps) {
               >
                 {isLoading ? 'Logging in...' : 'Login'}
               </Button>
+              
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowPasswordRecovery(true)}
+                  className="text-sm text-amber-700 hover:text-amber-900 underline"
+                >
+                  Forgot your password?
+                </button>
+              </div>
             </form>
           </TabsContent>
 
@@ -244,6 +266,12 @@ export function LoginDialog({ children, onSuccess }: LoginDialogProps) {
           Create an account to save your progress and unlock premium features!
         </div>
       </DialogContent>
+
+      <PasswordRecovery
+        isOpen={showPasswordRecovery}
+        onClose={handlePasswordRecoveryClose}
+        onBackToLogin={handleBackToLogin}
+      />
     </Dialog>
   );
 }

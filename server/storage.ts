@@ -1,8 +1,9 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
-import { eq } from 'drizzle-orm';
-import { users, userSaveData, type User, type InsertUser, type UserSaveData, type InsertUserSaveData } from "@shared/schema";
+import { eq, and, gt } from 'drizzle-orm';
+import { users, userSaveData, passwordResetTokens, type User, type InsertUser, type UserSaveData, type InsertUserSaveData, type PasswordResetToken } from "@shared/schema";
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 
 // Database connection (optional for development)
 let db: any = null;
@@ -49,6 +50,11 @@ export interface IStorage {
   getUserSaveData(userId: number): Promise<UserSaveData | undefined>;
   createOrUpdateSaveData(userId: number, saveData: Omit<InsertUserSaveData, 'userId'>): Promise<UserSaveData>;
   
+  // Password recovery methods
+  createPasswordResetToken(userId: number): Promise<string>;
+  validatePasswordResetToken(token: string): Promise<User | null>;
+  resetPassword(token: string, newPassword: string): Promise<boolean>;
+  
   // Leaderboard methods
   updatePlayerStats(userId: number, stats: {
     gamesWon?: number;
@@ -65,6 +71,7 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private saveData: Map<number, UserSaveData>;
   private playerStats: Map<number, any>;
+  private resetTokens: Map<string, { userId: number; expiresAt: Date; used: boolean; createdAt: Date }>;
   currentId: number;
   currentSaveId: number;
 
@@ -72,6 +79,7 @@ export class MemStorage implements IStorage {
     this.users = new Map();
     this.saveData = new Map();
     this.playerStats = new Map();
+    this.resetTokens = new Map();
     this.currentId = 1;
     this.currentSaveId = 1;
   }
@@ -122,6 +130,58 @@ export class MemStorage implements IStorage {
     this.users.set(user.id, user);
     
     return user;
+  }
+
+  async createPasswordResetToken(userId: number): Promise<string> {
+    // Generate a secure random token
+    const token = crypto.randomBytes(32).toString('hex');
+    
+    // Set expiration to 1 hour from now
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    
+    this.resetTokens.set(token, {
+      userId,
+      expiresAt,
+      used: false,
+      createdAt: new Date()
+    });
+    
+    return token;
+  }
+
+  async validatePasswordResetToken(token: string): Promise<User | null> {
+    const tokenData = this.resetTokens.get(token);
+    
+    if (!tokenData || tokenData.used || tokenData.expiresAt < new Date()) {
+      return null;
+    }
+    
+    const user = await this.getUser(tokenData.userId);
+    return user || null;
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<boolean> {
+    const tokenData = this.resetTokens.get(token);
+    
+    if (!tokenData || tokenData.used || tokenData.expiresAt < new Date()) {
+      return false;
+    }
+    
+    const user = this.users.get(tokenData.userId);
+    if (!user) return false;
+    
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Update user's password
+    user.password = hashedPassword;
+    this.users.set(user.id, user);
+    
+    // Mark token as used
+    tokenData.used = true;
+    this.resetTokens.set(token, tokenData);
+    
+    return true;
   }
 
   async updateUserPremiumStatus(userId: number, isPremium: boolean, subscriptionId?: string, subscriptionStatus?: string): Promise<void> {
@@ -298,6 +358,73 @@ export class DatabaseStorage implements IStorage {
       .where(eq(users.id, user.id));
     
     return { ...user, lastSeen: new Date() };
+  }
+
+  async createPasswordResetToken(userId: number): Promise<string> {
+    // Generate a secure random token
+    const token = crypto.randomBytes(32).toString('hex');
+    
+    // Set expiration to 1 hour from now
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    
+    await this.db.insert(passwordResetTokens).values({
+      userId,
+      token,
+      expiresAt
+    });
+    
+    return token;
+  }
+
+  async validatePasswordResetToken(token: string): Promise<User | null> {
+    const result = await this.db.select()
+      .from(passwordResetTokens)
+      .where(and(
+        eq(passwordResetTokens.token, token),
+        eq(passwordResetTokens.used, false),
+        gt(passwordResetTokens.expiresAt, new Date())
+      ))
+      .limit(1);
+    
+    if (result.length === 0) {
+      return null;
+    }
+    
+    const user = await this.getUser(result[0].userId);
+    return user || null;
+  }
+
+  async resetPassword(token: string, newPassword: string): Promise<boolean> {
+    // First validate the token
+    const tokenResult = await this.db.select()
+      .from(passwordResetTokens)
+      .where(and(
+        eq(passwordResetTokens.token, token),
+        eq(passwordResetTokens.used, false),
+        gt(passwordResetTokens.expiresAt, new Date())
+      ))
+      .limit(1);
+    
+    if (tokenResult.length === 0) {
+      return false;
+    }
+    
+    const tokenData = tokenResult[0];
+    
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Update user's password
+    await this.db.update(users)
+      .set({ password: hashedPassword })
+      .where(eq(users.id, tokenData.userId));
+    
+    // Mark token as used
+    await this.db.update(passwordResetTokens)
+      .set({ used: true })
+      .where(eq(passwordResetTokens.id, tokenData.id));
+    
+    return true;
   }
 
   async updateUserPremiumStatus(userId: number, isPremium: boolean, subscriptionId?: string, subscriptionStatus?: string): Promise<void> {

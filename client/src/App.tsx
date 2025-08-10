@@ -17,6 +17,7 @@ import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
+import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -46,7 +47,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer'>('game');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'reset-password'>('game');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -164,6 +165,8 @@ function App() {
         }, 100);
       } else if (hash === 'multiplayer') {
         setCurrentPage('multiplayer');
+      } else if (hash === 'reset-password' || window.location.pathname === '/reset-password') {
+        setCurrentPage('reset-password');
       } else if (hash) {
         setCurrentPage(hash as any);
       } else {
@@ -217,6 +220,10 @@ function App() {
           
           {currentPage === 'multiplayer' && (
             <MultiplayerHub />
+          )}
+
+          {currentPage === 'reset-password' && (
+            <ResetPasswordForm />
           )}
         </div>
       </AuthProvider>
