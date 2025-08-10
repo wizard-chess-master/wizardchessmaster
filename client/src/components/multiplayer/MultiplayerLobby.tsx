@@ -20,6 +20,7 @@ import {
 import { useAuth } from '../../lib/stores/useAuth';
 import { useMultiplayer } from '../../lib/stores/useMultiplayer';
 import { AdBanner } from '../monetization/AdBanner';
+import { LoginDialog } from '../auth/LoginDialog';
 
 interface GameRoom {
   id: string;
@@ -194,9 +195,17 @@ export function MultiplayerLobby() {
             <p className="text-blue-800 mb-6">
               Play against real players from around the world. Log in to access multiplayer features.
             </p>
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full">
-              Login to Play Online
-            </Button>
+            <LoginDialog>
+              <Button 
+                className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                onClick={(e) => {
+                  console.log('🔐 Login to Play Online button clicked in arena');
+                  // LoginDialog will handle the modal opening
+                }}
+              >
+                Login to Play Online
+              </Button>
+            </LoginDialog>
           </CardContent>
         </Card>
       </div>
