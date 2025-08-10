@@ -3,18 +3,18 @@
 **Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression.
 
 ## Recent Changes (August 10, 2025)
+- **Contextual Hint Overlay for New Players**: Complete implementation of intelligent hint system
+  - Smart triggers based on game state (first move, piece selection, check warnings, wizard moves, endgame)
+  - Dismissible overlay system with priority levels and anti-repetition logic
+  - Experience level tracking (auto-graduates to experienced after 5 games)
+  - Settings integration for hint preferences and reset functionality
+  - Quick hint button component for instant tips
+  - LocalStorage persistence for dismissed hints and user preferences
 - **Password Recovery System**: Complete password recovery implementation with secure token-based reset functionality
-  - Database schema for password reset tokens with expiration and usage tracking
-  - Backend API endpoints for requesting and processing password resets
-  - Frontend password recovery dialog integrated into login system
-  - Standalone reset password page with token validation
-  - Security features: 1-hour token expiration, one-time use, masked email display
+- **System Stability**: All major API routing issues resolved, comprehensive testing completed
 - **Development Premium Access**: Added debug endpoint to grant premium access for testing multiplayer features
 - **Button Functionality Resolved**: Fixed Join Free button and navigation buttons that were not responding to clicks
 - **Console Error Management**: Enhanced error handling for AdSense sizing issues and audio DOMExceptions
-- **Website Navigation**: All marketing page buttons now work correctly with proper logging
-- **Arena Login Fixed**: Added LoginDialog integration to "Login to Play Online" button in multiplayer arena
-- **Tournaments Page Updated**: Added "Coming Soon" banner to tournaments page for stable deployment
 
 Key capabilities include:
 - A unique 10x10 board with custom wizard pieces.
@@ -91,6 +91,7 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 - **Global Navigation System**: Seamless navigation between marketing pages and game interface with responsive design, ensuring users can easily access strategy guides, training content, and premium features.
 - **Comprehensive Tournament System**: Multi-tiered tournament structure featuring free tournaments (badge rewards, premium time prizes) and premium-exclusive tournaments (special titles, avatars, exclusive badges) designed to maintain competitive integrity without cash incentives that could encourage cheating.
 - **Enhanced Premium Comparison Modal**: Completely revamped free vs premium page with tabbed interface, social proof testimonials, limited-time discount offers, animated visual elements, and conversion-optimized pricing presentation designed to maximize subscription conversions.
+- **Contextual Hint Overlay System**: Intelligent new player guidance system with game state awareness, featuring automatic hint triggers, dismissible overlays, experience tracking, and personalized learning preferences integrated throughout the game interface.
 
 # External Dependencies
 

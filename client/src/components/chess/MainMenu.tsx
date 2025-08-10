@@ -14,6 +14,7 @@ import { aiLearning } from '../../lib/chess/aiLearning';
 import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
+import { CampaignMode } from '../campaign/CampaignMode';
 // MULTIPLAYER DISABLED: import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { LoginDialog } from '../auth/LoginDialog';
@@ -47,6 +48,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const [debugResults, setDebugResults] = useState<any>(null);
   const [adminRefresh, setAdminRefresh] = useState(0);
   const [showTestPanel, setShowTestPanel] = useState(false);
+  const [showCampaignMode, setShowCampaignMode] = useState(false);
   const { showComparison, openComparison, closeComparison } = usePremiumComparison();
 
 
@@ -77,6 +79,13 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
     // Load existing learning data
     refreshLearningStats();
   }, []);
+
+  // Campaign Mode View
+  if (showCampaignMode) {
+    return (
+      <CampaignMode onBackToMenu={() => setShowCampaignMode(false)} />
+    );
+  }
 
   return (
     <div className="main-menu flex flex-col items-center justify-center min-h-screen">
@@ -153,14 +162,15 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 </Button>
                 
 
-                <CampaignDialog>
-                  <Button className="medieval-btn mode-button">
-                    <div className="mode-content">
-                      <span>🏆 Campaign Mode</span>
-                      <Badge variant="secondary">Progressive AI</Badge>
-                    </div>
-                  </Button>
-                </CampaignDialog>
+                <Button
+                  className="medieval-btn mode-button"
+                  onClick={() => setShowCampaignMode(true)}
+                >
+                  <div className="mode-content">
+                    <span>🏆 Campaign Mode</span>
+                    <Badge variant="secondary">Story & Progression</Badge>
+                  </div>
+                </Button>
 
                 {/* MULTIPLAYER TEMPORARILY DISABLED - Will be re-enabled later
                 <OnlineMultiplayerDialog>
