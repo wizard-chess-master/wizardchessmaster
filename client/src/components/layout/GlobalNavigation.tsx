@@ -49,7 +49,11 @@ export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: Globa
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onNavigate(item.id)}
+                    onClick={(e) => {
+                      console.log(`🖱️ Navigation button clicked: ${item.label} (${item.id})`);
+                      e.preventDefault();
+                      onNavigate(item.id);
+                    }}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                       currentPage === item.id 
                         ? 'bg-amber-700 text-white' 
@@ -93,7 +97,11 @@ export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: Globa
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onNavigate(item.id)}
+                    onClick={(e) => {
+                      console.log(`📱 Mobile navigation button clicked: ${item.label} (${item.id})`);
+                      e.preventDefault();
+                      onNavigate(item.id);
+                    }}
                     className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${
                       currentPage === item.id 
                         ? 'bg-amber-700 text-white' 

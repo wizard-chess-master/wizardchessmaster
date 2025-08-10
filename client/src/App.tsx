@@ -196,7 +196,8 @@ function App() {
           {currentPage === 'landing' && (
             <LandingPage 
               onJoinFree={() => {
-                // This will be handled by the MarketingRouter
+                console.log('🆓 Join Free button clicked - starting game directly');
+                handleStartGame();
               }}
               onPlayNow={handleStartGame}
             />

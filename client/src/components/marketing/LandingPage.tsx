@@ -50,7 +50,11 @@ export function LandingPage({ onJoinFree, onPlayNow }: LandingPageProps) {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
-              onClick={onJoinFree}
+              onClick={(e) => {
+                console.log('🆓 Join Free button clicked on landing page');
+                e.preventDefault();
+                onJoinFree();
+              }}
               size="lg" 
               className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white text-lg px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition-all"
             >
@@ -59,7 +63,11 @@ export function LandingPage({ onJoinFree, onPlayNow }: LandingPageProps) {
             </Button>
             
             <Button 
-              onClick={onPlayNow}
+              onClick={(e) => {
+                console.log('🎮 Play Demo Now button clicked on landing page');
+                e.preventDefault();
+                onPlayNow();
+              }}
               variant="outline" 
               size="lg"
               className="border-2 border-amber-600 text-amber-700 hover:bg-amber-600 hover:text-white text-lg px-8 py-4 rounded-xl shadow-lg transform hover:scale-105 transition-all"
