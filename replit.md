@@ -3,6 +3,12 @@
 **Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression.
 
 ## Recent Changes (August 10, 2025)
+- **Campaign Storyboard System**: Complete visual story experience implementation
+  - StoryboardModal with scene progression, character introductions, and background images
+  - CampaignMapView with interactive level nodes, connected paths, and star ratings
+  - CharacterDialogue system with personality-based conversations and dialogue choices
+  - Enhanced CampaignMode integration with story triggers and character interactions
+  - Responsive dialog positioning that adapts to screen boundaries
 - **Contextual Hint Overlay for New Players**: Complete implementation of intelligent hint system
   - Smart triggers based on game state (first move, piece selection, check warnings, wizard moves, endgame)
   - Dismissible overlay system with priority levels and anti-repetition logic
@@ -92,6 +98,7 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 - **Comprehensive Tournament System**: Multi-tiered tournament structure featuring free tournaments (badge rewards, premium time prizes) and premium-exclusive tournaments (special titles, avatars, exclusive badges) designed to maintain competitive integrity without cash incentives that could encourage cheating.
 - **Enhanced Premium Comparison Modal**: Completely revamped free vs premium page with tabbed interface, social proof testimonials, limited-time discount offers, animated visual elements, and conversion-optimized pricing presentation designed to maximize subscription conversions.
 - **Contextual Hint Overlay System**: Intelligent new player guidance system with game state awareness, featuring automatic hint triggers, dismissible overlays, experience tracking, and personalized learning preferences integrated throughout the game interface.
+- **Campaign Storyboard System**: Immersive visual story experience featuring StoryboardModal with scene progression, CampaignMapView with interactive level progression, CharacterDialogue system with personality-based conversations, and enhanced campaign mode with story triggers and character interactions.
 
 # External Dependencies
 
