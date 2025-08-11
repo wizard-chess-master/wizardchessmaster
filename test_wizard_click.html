@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Wizard Click in Multiplayer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .success { background: rgba(0, 255, 0, 0.2); }
+        .error { background: rgba(255, 0, 0, 0.2); }
+        .info { background: rgba(0, 150, 255, 0.2); }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #7c3aed;
+            transform: translateY(-2px);
+        }
+        h2 {
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+        .status {
+            padding: 5px 10px;
+            background: rgba(255, 215, 0, 0.2);
+            border-radius: 5px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧙 Wizard Piece Click Test in Multiplayer</h1>
+        
+        <div class="test-section">
+            <h2>Test Setup</h2>
+            <p>This test will join a multiplayer game and test clicking on wizard pieces.</p>
+            <button onclick="runFullTest()">Run Full Test</button>
+            <button onclick="window.location.href='/'">Go to Game</button>
+        </div>
+
+        <div class="test-section">
+            <h2>Test Results</h2>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            resultsDiv.appendChild(resultDiv);
+            console.log(message);
+        }
+
+        async function runFullTest() {
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+            
+            log('Starting Wizard Click Test...', 'info');
+            
+            try {
+                // Step 1: Navigate to multiplayer lobby
+                log('Step 1: Navigating to multiplayer lobby...');
+                window.location.hash = '#multiplayer';
+                await wait(2000);
+                
+                // Step 2: Join demo room
+                log('Step 2: Attempting to join demo room...');
+                const joinButton = document.querySelector('button[data-room-id="demo-room-1"]');
+                if (joinButton) {
+                    joinButton.click();
+                    log('Clicked join button for demo room', 'success');
+                } else {
+                    // Try creating room
+                    const quickMatchButton = Array.from(document.querySelectorAll('button')).find(
+                        btn => btn.textContent.includes('Quick Match')
+                    );
+                    if (quickMatchButton) {
+                        quickMatchButton.click();
+                        log('Started Quick Match', 'success');
+                    } else {
+                        log('No join or quick match button found', 'error');
+                        return;
+                    }
+                }
+                
+                await wait(3000);
+                
+                // Step 3: Test wizard piece clicking
+                log('Step 3: Testing wizard piece selection...');
+                
+                // Get the canvas
+                const canvas = document.querySelector('canvas');
+                if (!canvas) {
+                    log('Canvas not found!', 'error');
+                    return;
+                }
+                
+                // Calculate wizard positions
+                const rect = canvas.getBoundingClientRect();
+                const boardSize = canvas.width;
+                const squareSize = boardSize / 10;
+                
+                // White wizards are at row 9, columns 3 and 6
+                const wizard1Col = 3;
+                const wizard1Row = 9;
+                const wizard2Col = 6;
+                const wizard2Row = 9;
+                
+                // Click on first white wizard (d1)
+                const wizard1X = rect.left + (wizard1Col * squareSize) + (squareSize / 2);
+                const wizard1Y = rect.top + (wizard1Row * squareSize) + (squareSize / 2);
+                
+                log(`Clicking on wizard at d1 (row ${wizard1Row}, col ${wizard1Col})`);
+                log(`Canvas rect: ${JSON.stringify({left: rect.left, top: rect.top, width: rect.width, height: rect.height})}`);
+                log(`Calculated click position: x=${wizard1X}, y=${wizard1Y}`);
+                
+                simulateClick(canvas, wizard1X - rect.left, wizard1Y - rect.top);
+                await wait(1000);
+                
+                // Check console for selection result
+                checkConsoleForWizardSelection();
+                
+                // Click on second white wizard (g1)
+                const wizard2X = rect.left + (wizard2Col * squareSize) + (squareSize / 2);
+                const wizard2Y = rect.top + (wizard2Row * squareSize) + (squareSize / 2);
+                
+                log(`Clicking on wizard at g1 (row ${wizard2Row}, col ${wizard2Col})`);
+                log(`Calculated click position: x=${wizard2X}, y=${wizard2Y}`);
+                
+                simulateClick(canvas, wizard2X - rect.left, wizard2Y - rect.top);
+                await wait(1000);
+                
+                // Check console for selection result
+                checkConsoleForWizardSelection();
+                
+                log('Test complete! Check console for detailed debug output.', 'success');
+                
+            } catch (error) {
+                log(`Test failed: ${error.message}`, 'error');
+                console.error(error);
+            }
+        }
+        
+        function simulateClick(element, x, y) {
+            const event = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true,
+                clientX: element.getBoundingClientRect().left + x,
+                clientY: element.getBoundingClientRect().top + y
+            });
+            element.dispatchEvent(event);
+            log(`Simulated click at relative position (${x}, ${y})`);
+        }
+        
+        function checkConsoleForWizardSelection() {
+            // This would check the actual console output, but for now we'll just note it
+            log('Check browser console for piece selection debug output', 'info');
+        }
+        
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>

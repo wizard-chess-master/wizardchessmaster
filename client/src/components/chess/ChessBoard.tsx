@@ -532,10 +532,9 @@ export function ChessBoard() {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     
-    // Use the effective square size which accounts for mobile/desktop differences
-    const actualSquareSize = effectiveBoardSize / 10;
-    const col = Math.floor(x / actualSquareSize);
-    const row = Math.floor(y / actualSquareSize);
+    // Use the same squareSize that's used for rendering the board
+    const col = Math.floor(x / squareSize);
+    const row = Math.floor(y / squareSize);
     
     console.log('🎯 Click coordinates DEBUG:', { 
       clientX: event.clientX,
@@ -544,11 +543,10 @@ export function ChessBoard() {
       rectTop: rect.top,
       relativeX: x,
       relativeY: y,
-      effectiveBoardSize,
-      actualSquareSize,
+      canvasSize,
+      squareSizeUsed: squareSize,
       calculatedRow: row,
       calculatedCol: col,
-      squareSizeUsed: squareSize,
       piece: board[row]?.[col]
     });
     
