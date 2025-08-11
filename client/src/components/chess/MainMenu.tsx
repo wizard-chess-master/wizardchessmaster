@@ -436,7 +436,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           
 
           
-          {!user?.isPremium && (
+          {(!user?.isPremium && isLoggedIn) && (
             <div className="flex gap-2">
               <Button
                 variant="default"
@@ -465,27 +465,22 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </div>
           )}
           
-          {user?.isPremium && (
-            <div 
-              className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300 z-50" 
-              data-testid="premium-badge"
-              style={{ 
-                position: 'relative',
-                minHeight: '60px',
-                backgroundColor: '#fef3c7',
-                border: '2px solid #f59e0b',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-              }}
-            >
-              <Crown className="w-5 h-5 text-amber-600" style={{ color: '#d97706' }} />
-              <div>
-                <div className="text-sm font-semibold text-amber-800" style={{ color: '#92400e', fontSize: '16px', fontWeight: 'bold' }}>
-                  🎉 PREMIUM MEMBER 🎉
+          {(user?.isPremium || isLoggedIn) && (
+            <div className="premium-status-container">
+              {user?.isPremium ? (
+                <div 
+                  className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300" 
+                  data-testid="premium-badge"
+                >
+                  <Crown className="w-5 h-5 text-amber-600" />
+                  <div>
+                    <div className="text-sm font-semibold text-amber-800">Premium Member</div>
+                    <div className="text-xs text-amber-700">Ad-free • Unlimited hints • Full campaign</div>
+                  </div>
                 </div>
-                <div className="text-xs text-amber-700" style={{ color: '#b45309', fontSize: '12px' }}>
-                  ✨ Ad-free • Unlimited hints • Full campaign ✨
-                </div>
-              </div>
+              ) : (
+                <div className="text-xs text-gray-600">Logged in as free user</div>
+              )}
             </div>
           )}
 

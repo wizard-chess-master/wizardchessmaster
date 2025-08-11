@@ -17,6 +17,11 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 - **Canvas-Based Chess Rendering**: Custom sprite rendering with smooth animations and glowing effects.
 - **Responsive Medieval Design**: Mobile-first approach with fantasy-themed layouts and wooden UI elements.
 
+## Recent Issues Resolved (August 2025)
+- **Premium Status UI Display**: Fixed React rendering issues where premium benefits weren't showing despite correct backend detection. Added fallback UI states and improved component refresh logic.
+- **Missing AI Easy Mode**: Restored accidentally removed "Play AI Easy" button to game mode selection.
+- **Authentication System**: Enhanced login flow with proper premium status synchronization and UI updates.
+
 ## Backend Architecture
 - **Express.js Server**: RESTful API with TypeScript.
 - **Modular Route System**: Organized route handlers with consistent error handling.
