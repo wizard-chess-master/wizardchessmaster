@@ -53,6 +53,9 @@ export function MultiplayerHub() {
     return (
       <MultiplayerGame 
         onBackToLobby={() => {
+          // Reset game state when going back to lobby
+          const { resetGame } = useChess.getState();
+          resetGame();
           useMultiplayer.getState().setCurrentGame(null);
           window.location.hash = '#multiplayer';
         }}

@@ -37,6 +37,13 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
       return;
     }
 
+    // Start the game if not already started
+    const { gamePhase, startGame } = useChess.getState();
+    if (gamePhase === 'menu') {
+      console.log('🎮 Starting multiplayer game - transitioning from menu to playing');
+      startGame('multiplayer', 'medium');
+    }
+
     // Sync multiplayer game state with local game state
     if (currentGame.gameState) {
       // Update local game state to match multiplayer state
