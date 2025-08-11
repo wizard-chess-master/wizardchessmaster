@@ -42,7 +42,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const { startGame, resetGame, gamePhase } = chessStore;
   const { user, isLoggedIn, isPremium, logout, checkSession } = useAuth();
   
-  // Debug premium status
+  // Debug premium status and listen for updates
   useEffect(() => {
     if (user) {
       console.log('🔍 MainMenu: User premium status:', {
@@ -52,6 +52,19 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         authStorePremium: isPremium()
       });
     }
+    
+    // Listen for premium status updates
+    const handlePremiumUpdate = (event: CustomEvent) => {
+      console.log('🔄 MainMenu: Received premium status update', event.detail);
+      // Force re-render by updating state
+      setAdminRefresh(prev => prev + 1);
+    };
+    
+    window.addEventListener('premium-status-updated', handlePremiumUpdate as EventListener);
+    
+    return () => {
+      window.removeEventListener('premium-status-updated', handlePremiumUpdate as EventListener);
+    };
   }, [user, isPremium]);
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
@@ -301,7 +314,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   <User className="w-4 h-4 text-green-700" />
                   <span className="text-sm text-green-700">
                     Welcome, {user?.displayName}
-                    {user?.isPremium && <Crown className="w-3 h-3 inline ml-1 text-amber-600" />}
+                    {user?.isPremium && <Crown className="w-3 h-3 inline ml-1 text-amber-600" data-testid="premium-crown" />}
                   </span>
                 </div>
                 
@@ -408,6 +421,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   paymentManager.showPlanSelector();
                 }}
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0 flex-1"
+                data-testid="upgrade-button"
               >
                 <Crown className="w-4 h-4 mr-2" />
                 Upgrade to Premium
@@ -427,7 +441,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           )}
           
           {user?.isPremium && (
-            <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300">
+            <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300" data-testid="premium-badge">
               <Crown className="w-5 h-5 text-amber-600" />
               <div>
                 <div className="text-sm font-semibold text-amber-800">Premium Member</div>

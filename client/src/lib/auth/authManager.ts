@@ -133,6 +133,13 @@ class AuthManager {
               const { getAdManager } = await import('../monetization/adManager');
               const adManager = getAdManager();
               adManager.setAdFreeStatus(true);
+              
+              // Force UI refresh by dispatching custom event
+              window.dispatchEvent(new CustomEvent('premium-status-updated', {
+                detail: { isPremium: true, user: data.user }
+              }));
+              
+              console.log('🔄 Premium status UI refresh triggered');
             } catch (error) {
               console.log('⚠️ Could not update ad-free status:', error);
             }
