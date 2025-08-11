@@ -106,6 +106,47 @@ class MultiplayerManager {
         socket.broadcast.emit('room:available', roomData);
       });
 
+      // Handle joining existing rooms
+      socket.on('lobby:join-room', async (data: { roomId: string }) => {
+        console.log('🎮 Room join request received:', data);
+        const player = this.connectedPlayers.get(socket.id);
+        if (!player) {
+          socket.emit('room:error', { message: 'Player not authenticated' });
+          return;
+        }
+
+        // For now, simulate successful room join
+        console.log(`🎮 Player ${player.displayName} attempting to join room ${data.roomId}`);
+        
+        socket.join(data.roomId);
+        
+        // Start a game between players
+        const gameId = `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const gameData = {
+          gameId,
+          roomId: data.roomId,
+          players: [player],
+          status: 'starting',
+          createdAt: new Date()
+        };
+
+        console.log(`🎮 Game ${gameId} starting in room ${data.roomId}`);
+        
+        // Emit to all players in the room
+        this.io.to(data.roomId).emit('game:started', {
+          gameId,
+          roomId: data.roomId,
+          message: `Game starting! Players: ${player.displayName}`,
+          redirect: '/game/multiplayer'
+        });
+
+        socket.emit('room:joined', {
+          success: true,
+          gameId,
+          message: 'Successfully joined room! Game starting...'
+        });
+      });
+
       socket.on('matchmaking:find-opponent', async (data: { gameMode?: string; timeControl?: string; ratingRange?: number }) => {
         console.log('🎯 Matchmaking request received:', data);
         const player = this.connectedPlayers.get(socket.id);

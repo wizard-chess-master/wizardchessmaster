@@ -133,8 +133,17 @@ export function MultiplayerLobby() {
     });
 
     socket.on('game:started', (gameData: any) => {
-      // Redirect to game when matched
-      console.log('Game started:', gameData);
+      console.log('🎮 Game started:', gameData);
+      // Navigate to multiplayer game
+      window.location.hash = '#multiplayer-game';
+    });
+
+    socket.on('room:joined', (response: { success: boolean; gameId: string; message: string }) => {
+      console.log('🎮 Room joined successfully:', response);
+      if (response.success) {
+        // Navigate to game
+        window.location.hash = '#multiplayer-game';
+      }
     });
 
     // Request initial lobby data
@@ -144,6 +153,7 @@ export function MultiplayerLobby() {
       socket.off('room:created');
       socket.off('room:error');
       socket.off('room:available');
+      socket.off('room:joined');
       socket.off('lobby:rooms-updated');
       socket.off('lobby:players-updated');
       socket.off('game:invitation');
