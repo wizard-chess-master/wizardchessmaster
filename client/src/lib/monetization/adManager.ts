@@ -429,16 +429,19 @@ class GoogleAdSenseManager implements AdManager {
       // SECURITY: Validate against actual premium status on load
       if (this.adFreeStatus && typeof window !== 'undefined') {
         try {
-          const authManagerModule = require('../auth/authManager');
-          const authManager = authManagerModule.default;
-          
-          if (!authManager.isPremium()) {
-            console.log('🔒 Resetting ad-free status - user not premium');
+          // Use dynamic import instead of require
+          import('../auth/authManager').then(({ default: authManager }) => {
+            if (!authManager.isPremium()) {
+              console.log('🔒 Resetting ad-free status - user not premium');
+              this.adFreeStatus = false;
+              localStorage.setItem('wizard-chess-ad-free', 'false');
+            }
+          }).catch((error) => {
+            console.warn('⚠️ Could not verify premium status, defaulting to free');
             this.adFreeStatus = false;
-            localStorage.setItem('wizard-chess-ad-free', 'false');
-          }
+          });
         } catch (error) {
-          console.warn('⚠️ Could not verify premium status on load');
+          console.warn('⚠️ Could not verify premium status, defaulting to free');
           this.adFreeStatus = false;
         }
       }

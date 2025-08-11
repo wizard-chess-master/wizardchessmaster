@@ -15,10 +15,12 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production',
+    secure: false, // Allow non-HTTPS for development
     httpOnly: true,
-    maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-  }
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    sameSite: 'lax' // Allow cross-origin requests
+  },
+  name: 'wizard-chess-session' // Custom session name
 }));
 
 // Special middleware for Stripe webhooks - must handle raw body
