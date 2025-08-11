@@ -102,8 +102,8 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const yourTimePercent = (currentGame.yourTime / currentGame.timeControl) * 100;
-  const opponentTimePercent = (currentGame.opponentTime / currentGame.timeControl) * 100;
+  const yourTimePercent = currentGame.timeControl > 0 ? (currentGame.yourTime / currentGame.timeControl) * 100 : 100;
+  const opponentTimePercent = currentGame.timeControl > 0 ? (currentGame.opponentTime / currentGame.timeControl) * 100 : 100;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">

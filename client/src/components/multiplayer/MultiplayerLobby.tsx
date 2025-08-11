@@ -138,9 +138,15 @@ export function MultiplayerLobby() {
       const gameInfo = {
         gameId: gameData.gameId,
         roomId: gameData.roomId,
-        players: gameData.players || [],
-        status: 'playing' as const,
-        gameState: null
+        opponent: {
+          name: gameData.opponent?.name || 'Unknown Player',
+          rating: gameData.opponent?.rating || 1200
+        },
+        yourColor: gameData.yourColor || 'white',
+        gameState: gameData.gameState || null,
+        timeControl: gameData.timeControl || 600,
+        yourTime: gameData.yourTime || 600,
+        opponentTime: gameData.opponentTime || 600
       };
       
       // Update multiplayer store with game data  
@@ -160,9 +166,15 @@ export function MultiplayerLobby() {
         const gameInfo = {
           gameId: response.gameId,
           roomId: 'unknown',
-          players: [],
-          status: 'playing' as const,
-          gameState: null
+          opponent: {
+            name: 'Unknown Player',
+            rating: 1200
+          },
+          yourColor: 'white' as const,
+          gameState: null,
+          timeControl: 600,
+          yourTime: 600,
+          opponentTime: 600
         };
         
         // Update multiplayer store with game data
