@@ -41,7 +41,7 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
       >
 
         <section className="relative container mx-auto px-4 py-16 text-center">
-          <div className="max-w-4xl mx-auto relative z-10">
+          <div className="max-w-4xl mx-auto relative z-20">
           {/* Logo Container - Ready for 512x512 SVG/PNG */}
           <div className="flex justify-center mb-6">
             <div className="w-24 h-24 bg-amber-200/50 rounded-full flex items-center justify-center border-4 border-amber-300/50">
@@ -52,14 +52,14 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
             </div>
           </div>
           
-          <h1 className="text-6xl font-bold text-amber-900 mb-6 leading-tight">
+          <h1 className="text-6xl font-bold text-white drop-shadow-lg mb-6 leading-tight">
             Master the Art of
-            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-amber-600">
+            <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-amber-300">
               Wizard Chess
             </span>
           </h1>
           
-          <p className="text-xl text-amber-800 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-amber-100 drop-shadow-md mb-8 max-w-3xl mx-auto leading-relaxed">
             Experience the ultimate 10x10 chess adventure with magical wizards, intelligent AI opponents, 
             and medieval fantasy gameplay. Join thousands of players mastering strategic wizard battles.
           </p>

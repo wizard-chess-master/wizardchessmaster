@@ -34,10 +34,14 @@ export function AnimatedHeroBanner({
             loop 
             muted 
             playsInline
+            preload="metadata"
             className="w-full h-full object-cover transform transition-transform duration-3000 ease-out"
             style={{ 
               transform: isLoaded ? 'scale(1.05)' : 'scale(1)',
             }}
+            onLoadStart={() => console.log('Video loading started')}
+            onCanPlay={() => console.log('Video can play')}
+            onError={(e) => console.error('Video error:', e)}
           >
             <source src={backgroundVideo} type="video/mp4" />
             {/* Fallback for browsers that don't support video */}
@@ -57,7 +61,7 @@ export function AnimatedHeroBanner({
         )}
         
         {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/50" />
       </div>
 
       {/* Floating Particles Effect */}
@@ -76,14 +80,9 @@ export function AnimatedHeroBanner({
         ))}
       </div>
 
-      {/* Content Area */}
-      <div className="relative z-10">
-        {children}
-      </div>
-
-      {/* Animated Chess Board Layer */}
+      {/* Animated Chess Board Layer - Behind Content */}
       {chessBoardImage ? (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
           <div 
             className={`transition-all duration-2000 ease-out ${
               isLoaded 
@@ -95,12 +94,14 @@ export function AnimatedHeroBanner({
               src={chessBoardImage}
               alt="Wizard Chess Board"
               className="w-[500px] h-[500px] object-contain animate-gentle-float animate-chess-glow hero-chess-board"
+              onLoad={() => console.log('Chess board image loaded')}
+              onError={() => console.error('Chess board image failed to load')}
             />
           </div>
         </div>
       ) : (
         // Fallback animated chess elements
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
           <div className={`grid grid-cols-2 gap-8 transition-all duration-2000 ease-out ${
             isLoaded ? 'opacity-40 transform translate-y-0' : 'opacity-0 transform translate-y-8'
           }`}>
@@ -114,6 +115,11 @@ export function AnimatedHeroBanner({
           </div>
         </div>
       )}
+
+      {/* Content Area - Above Chess Board */}
+      <div className="relative z-10">
+        {children}
+      </div>
 
       {/* Floating UI Accent Elements */}
       <div className={`absolute top-8 right-8 transition-all duration-1500 ease-out ${
