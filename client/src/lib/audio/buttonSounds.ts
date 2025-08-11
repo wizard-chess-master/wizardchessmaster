@@ -2,7 +2,8 @@
 import { wizardChessAudio } from './audioManager';
 
 export const playButtonClickSound = () => {
-  wizardChessAudio.onButtonClick();
+  console.log('🔍 TESTING: playButtonClickSound called - DISABLED to prevent audio triggers');
+  // wizardChessAudio.onButtonClick(); // DISABLED to prevent unwanted music
 };
 
 export const withButtonSound = (onClick?: () => void) => {
