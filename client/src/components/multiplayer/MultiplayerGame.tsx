@@ -38,10 +38,16 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
     }
 
     // Start the game if not already started
-    const { gamePhase, startGame } = useChess.getState();
+    const { gamePhase, startGame, setGameMode } = useChess.getState();
     if (gamePhase === 'menu') {
       console.log('🎮 Starting multiplayer game - transitioning from menu to playing');
       startGame('multiplayer', 'medium');
+      
+      // Set player restriction based on assigned color
+      console.log('🎮 Setting player color restriction:', currentGame.yourColor);
+      
+      // Game state will be managed by server updates
+      // Player color assignment is stored in currentGame.yourColor
     }
 
     // Sync multiplayer game state with local game state
@@ -115,9 +121,9 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
   const opponentTimePercent = currentGame.timeControl > 0 ? (currentGame.opponentTime / currentGame.timeControl) * 100 : 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 relative">
       {/* Game Header */}
-      <div className="bg-white shadow-sm border-b border-blue-200 px-4 py-2 relative z-10">
+      <div className="bg-white shadow-sm border-b border-blue-200 px-4 py-2 fixed top-0 left-0 right-0 z-50">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button 
@@ -163,7 +169,7 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 pt-20 pb-6">
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Players Panel */}
           <div className="space-y-4">
