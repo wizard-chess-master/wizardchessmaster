@@ -121,9 +121,9 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
   const opponentTimePercent = currentGame.timeControl > 0 ? (currentGame.opponentTime / currentGame.timeControl) * 100 : 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 relative">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       {/* Game Header */}
-      <div className="bg-white shadow-sm border-b border-blue-200 px-4 py-3 fixed top-0 left-0 right-0 z-50 h-16">
+      <div className="bg-white shadow-sm border-b border-blue-200 px-4 py-3 fixed top-0 left-0 right-0 z-50 h-20">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button 
@@ -169,7 +169,7 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-20 pb-6" style={{ marginTop: '4rem' }}>
+      <div className="container mx-auto px-4 pb-6" style={{ paddingTop: '6rem' }}>
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Players Panel */}
           <div className="space-y-4">
@@ -254,9 +254,9 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
           </div>
 
           {/* Chess Board */}
-          <div className="lg:col-span-2 relative z-0 mt-4">
+          <div className="lg:col-span-2 relative z-10 mt-8">
             <div className="flex justify-center">
-              <div className="relative">
+              <div className="relative bg-white rounded-lg shadow-lg p-4">
                 <ChessBoard />
               </div>
             </div>
