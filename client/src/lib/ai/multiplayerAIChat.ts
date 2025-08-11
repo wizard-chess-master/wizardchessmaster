@@ -16,6 +16,7 @@ export class MultiplayerAIChat {
   private useOpenAI: boolean = false;
   private recentMessages: string[] = []; // Track recent messages to avoid repetition
   private lastIdleCommentTime: number = 0;
+  private conversationContext: string[] = []; // Track conversation for context
   
   constructor(personalityId: string = 'coach') {
     this.currentPersonality = aiPersonalities[personalityId] || aiPersonalities.coach;
@@ -96,12 +97,23 @@ export class MultiplayerAIChat {
     return getAIComment(this.currentPersonality, moveType);
   }
   
-  // Get idle chatter when no moves for a while
+  // Get idle chatter when no moves for a while (less frequently)
   getIdleComment(): string {
     const now = Date.now();
-    if (now - this.lastMoveTime > 30000) { // 30 seconds of inactivity
-      this.lastMoveTime = now;
-      return getRandomMessage(this.currentPersonality.idleChatter);
+    // Only send idle comments every 60 seconds, and avoid repetition
+    if (now - this.lastIdleCommentTime > 60000 && now - this.lastMoveTime > 30000) {
+      this.lastIdleCommentTime = now;
+      const messages = this.currentPersonality.idleChatter.filter(
+        msg => !this.recentMessages.includes(msg)
+      );
+      if (messages.length > 0) {
+        const message = getRandomMessage(messages);
+        this.recentMessages.push(message);
+        if (this.recentMessages.length > 5) {
+          this.recentMessages.shift(); // Keep only last 5 messages
+        }
+        return message;
+      }
     }
     return '';
   }
@@ -109,6 +121,113 @@ export class MultiplayerAIChat {
   // Get encouragement after a bad move or difficult position
   getEncouragement(): string {
     return getRandomMessage(this.currentPersonality.encouragement);
+  }
+  
+  // Respond to player messages in chat
+  async respondToMessage(playerMessage: string): Promise<string> {
+    // Add to conversation context
+    this.conversationContext.push(`Player: ${playerMessage}`);
+    if (this.conversationContext.length > 10) {
+      this.conversationContext.shift(); // Keep only last 10 messages for context
+    }
+    
+    // If OpenAI is available, use it for natural conversation
+    if (this.useOpenAI && this.openai) {
+      try {
+        const response = await this.openai.chat.completions.create({
+          model: MODEL,
+          messages: [
+            {
+              role: 'system',
+              content: `You are ${this.currentPersonality.name}, a chess commentator. ${this.currentPersonality.description}
+              You're chatting with a player during a multiplayer chess game. Keep responses brief (1-2 sentences), friendly, and chess-related when appropriate.
+              Conversation context: ${this.conversationContext.join('\n')}`
+            },
+            {
+              role: 'user',
+              content: playerMessage
+            }
+          ],
+          max_tokens: 60,
+          temperature: 0.8
+        });
+        
+        const aiResponse = response.choices[0].message.content || '';
+        this.conversationContext.push(`AI: ${aiResponse}`);
+        return aiResponse;
+      } catch (error) {
+        console.log('🤖 Using template responses for chat');
+      }
+    }
+    
+    // Fallback to template-based responses
+    const lowerMessage = playerMessage.toLowerCase();
+    
+    // Common greetings
+    if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey')) {
+      const greetings = [
+        `Hello there! Ready for some chess?`,
+        `Hey! Let's see some great moves today!`,
+        `Greetings! May the best player win!`,
+        `Hi! I'm excited to watch this match!`
+      ];
+      return getRandomMessage(greetings);
+    }
+    
+    // Questions about the game
+    if (lowerMessage.includes('how') || lowerMessage.includes('what') || lowerMessage.includes('why')) {
+      const responses = [
+        `That's an interesting question! Focus on controlling the center.`,
+        `Good thinking! Watch for tactical opportunities.`,
+        `Consider developing your pieces before attacking.`,
+        `Think about your opponent's threats too!`
+      ];
+      return getRandomMessage(responses);
+    }
+    
+    // Good game / thanks
+    if (lowerMessage.includes('gg') || lowerMessage.includes('good game') || lowerMessage.includes('thanks')) {
+      const responses = [
+        `Great game! Well played!`,
+        `Thanks for the match! That was exciting!`,
+        `Good game indeed! You played well!`,
+        `It was a pleasure watching this match!`
+      ];
+      return getRandomMessage(responses);
+    }
+    
+    // Nice move / good move
+    if (lowerMessage.includes('nice') || lowerMessage.includes('good move') || lowerMessage.includes('great')) {
+      const responses = [
+        `Yes, that was brilliant!`,
+        `Excellent observation! That was indeed a strong move.`,
+        `I agree! Very well calculated.`,
+        `Absolutely! That's the kind of play I love to see!`
+      ];
+      return getRandomMessage(responses);
+    }
+    
+    // Help / advice
+    if (lowerMessage.includes('help') || lowerMessage.includes('advice') || lowerMessage.includes('tip')) {
+      const responses = [
+        `Remember: Control the center, develop pieces, and castle early!`,
+        `Look for pins, forks, and skewers - they win material!`,
+        `Don't forget about the wizards - they can teleport and attack from range!`,
+        `Think at least 2-3 moves ahead and consider your opponent's best reply.`
+      ];
+      return getRandomMessage(responses);
+    }
+    
+    // Default responses for other messages
+    const defaultResponses = [
+      `Interesting point! Let's see how this game develops.`,
+      `I'm watching closely! This is getting exciting.`,
+      `Good to hear from you! Keep those moves coming!`,
+      `Indeed! Chess is full of surprises.`,
+      `Let's focus on the game - every move counts!`
+    ];
+    
+    return getRandomMessage(defaultResponses);
   }
   
   // Use OpenAI for more sophisticated commentary

@@ -151,6 +151,14 @@ function App() {
   const handleStartGame = () => {
     setCurrentPage('game');
     setShowLanding(false);
+    // Directly start an AI Easy game when Play Now is clicked
+    setTimeout(() => {
+      const { gamePhase, startGame } = useChess.getState();
+      if (gamePhase === 'menu') {
+        console.log('🎮 Auto-starting AI Easy game from Play Now button');
+        startGame('ai', 'easy');
+      }
+    }, 100);
   };
   
   // Listen for hash changes to handle navigation

@@ -70,7 +70,7 @@ export function MultiplayerGame() {
     }
   }, [moveHistory, board]);
   
-  // Add idle commentary
+  // Add idle commentary (less frequently)
   useEffect(() => {
     const idleTimer = setInterval(() => {
       const idleComment = aiChat.current.getIdleComment();
@@ -83,7 +83,7 @@ export function MultiplayerGame() {
           isAI: true
         }]);
       }
-    }, 35000); // Check every 35 seconds
+    }, 65000); // Check every 65 seconds (but AI will only comment if 60s have passed since last comment)
     
     return () => clearInterval(idleTimer);
   }, [chatMessages.length]);
@@ -98,15 +98,30 @@ export function MultiplayerGame() {
     setShowChat(!showChat);
   };
 
-  const sendChatMessage = () => {
+  const sendChatMessage = async () => {
     if (newMessage.trim()) {
-      const message = {
+      const playerMessage = {
         id: Date.now().toString(),
         player: 'You',
         message: newMessage,
         timestamp: new Date()
       };
-      setChatMessages([...chatMessages, message]);
+      setChatMessages(prev => [...prev, playerMessage]);
+      
+      // Get AI response
+      const aiResponse = await aiChat.current.respondToMessage(newMessage);
+      if (aiResponse) {
+        setTimeout(() => {
+          setChatMessages(prev => [...prev, {
+            id: `ai-response-${Date.now()}`,
+            player: '🤖 AI Coach',
+            message: aiResponse,
+            timestamp: new Date(),
+            isAI: true
+          }]);
+        }, 500); // Small delay to make it feel more natural
+      }
+      
       setNewMessage('');
     }
   };
