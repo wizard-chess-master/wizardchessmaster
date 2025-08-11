@@ -11,6 +11,8 @@ export function MultiplayerHub() {
   const [showMatchmaking, setShowMatchmaking] = useState(false);
 
   useEffect(() => {
+    console.log('🔍 MultiplayerHub mount check - isConnected:', isConnected, 'isLoggedIn:', isLoggedIn);
+    
     if (!isConnected) {
       if (isLoggedIn && user) {
         console.log('🔌 Auto-connecting authenticated user to multiplayer:', user.username);
@@ -24,12 +26,14 @@ export function MultiplayerHub() {
       } else {
         console.log('🔌 Auto-connecting guest user to multiplayer');
         // Connect as guest user
-        connect({
+        const guestData = {
           userId: Math.floor(Math.random() * 1000000), // Random guest ID
           username: `Guest${Math.floor(Math.random() * 10000)}`,
           displayName: `Guest Player`,
           rating: 1200
-        });
+        };
+        console.log('🔍 Guest user data:', guestData);
+        connect(guestData);
       }
     }
   }, [isLoggedIn, user, isConnected, connect]);

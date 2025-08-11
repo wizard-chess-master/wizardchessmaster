@@ -54,6 +54,10 @@ interface Player {
 export function MultiplayerLobby() {
   const { user, isLoggedIn } = useAuth();
   const { socket, isConnected, connect, disconnect } = useMultiplayer();
+  
+  // Debug logging
+  console.log('🔍 MultiplayerLobby render - socket:', !!socket, 'isConnected:', isConnected, 'isLoggedIn:', isLoggedIn);
+  
   const [activeTab, setActiveTab] = useState<'play' | 'watch' | 'players'>('play');
   const [gameRooms, setGameRooms] = useState<GameRoom[]>([]);
   const [onlinePlayers, setOnlinePlayers] = useState<Player[]>([]);

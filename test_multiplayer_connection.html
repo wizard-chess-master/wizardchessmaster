@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Multiplayer Connection Test</title>
+</head>
+<body>
+    <h1>Testing Multiplayer Connection</h1>
+    <div id="status">Connecting...</div>
+    <button id="testButton" disabled>Test Quick Match</button>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const statusDiv = document.getElementById('status');
+        const testButton = document.getElementById('testButton');
+        
+        console.log('🔌 Starting Socket.IO test...');
+        
+        const socket = io({
+            transports: ['websocket', 'polling'],
+            timeout: 10000
+        });
+        
+        socket.on('connect', () => {
+            console.log('✅ Connected to server:', socket.id);
+            statusDiv.innerHTML = `✅ Connected: ${socket.id}`;
+            testButton.disabled = false;
+            
+            // Test player join
+            const playerData = {
+                userId: Math.floor(Math.random() * 1000000),
+                username: `TestGuest${Math.floor(Math.random() * 1000)}`,
+                displayName: 'Test Guest Player',
+                rating: 1200
+            };
+            
+            console.log('👤 Joining as player:', playerData);
+            socket.emit('player:join', playerData);
+        });
+        
+        socket.on('connection:confirmed', (data) => {
+            console.log('✅ Connection confirmed:', data);
+        });
+        
+        socket.on('player:joined', (response) => {
+            console.log('✅ Player join response:', response);
+            statusDiv.innerHTML += `<br>✅ Player joined successfully`;
+        });
+        
+        socket.on('connect_error', (error) => {
+            console.error('❌ Connection error:', error);
+            statusDiv.innerHTML = `❌ Connection failed: ${error.message}`;
+        });
+        
+        socket.on('disconnect', () => {
+            console.log('🔌 Disconnected');
+            statusDiv.innerHTML = '🔌 Disconnected';
+            testButton.disabled = true;
+        });
+        
+        testButton.addEventListener('click', () => {
+            console.log('🎯 Testing quick match...');
+            socket.emit('matchmaking:find-opponent', {
+                gameMode: 'casual',
+                timeControl: '10+0',
+                ratingRange: 200
+            });
+            statusDiv.innerHTML += `<br>🎯 Quick match request sent`;
+        });
+        
+        socket.on('matchmaking:joined', (data) => {
+            console.log('🎯 Matchmaking joined:', data);
+            statusDiv.innerHTML += `<br>🎯 In matchmaking queue`;
+        });
+        
+        socket.on('matchmaking:error', (data) => {
+            console.error('❌ Matchmaking error:', data);
+            statusDiv.innerHTML += `<br>❌ Matchmaking error: ${data.message}`;
+        });
+    </script>
+</body>
+</html>
