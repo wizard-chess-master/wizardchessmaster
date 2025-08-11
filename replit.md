@@ -18,6 +18,7 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 - **Responsive Medieval Design**: Mobile-first approach with fantasy-themed layouts and wooden UI elements.
 
 ## Recent Issues Resolved (August 2025)
+- **Multiplayer Online Play Buttons** (August 11, 2025): Fixed critical multiplayer connection issues preventing online play buttons from functioning. Resolved database storage errors (missing getUserById/updateUser methods), enabled guest user connections without login requirement, and updated button logic to check connection status. All online play features now work for both authenticated and guest users.
 - **Premium Status UI Display**: Fixed React rendering issues where premium benefits weren't showing despite correct backend detection. Added fallback UI states and improved component refresh logic.
 - **Missing AI Easy Mode**: Restored accidentally removed "Play AI Easy" button to game mode selection.
 - **Authentication System**: Enhanced login flow with proper premium status synchronization and UI updates.
