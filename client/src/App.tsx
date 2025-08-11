@@ -52,7 +52,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'multiplayer-game' | 'reset-password' | BlogPageType>('game');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'multiplayer-game' | 'reset-password' | BlogPageType>('landing');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -172,13 +172,18 @@ function App() {
       console.log('🎯 New player, starting with easy AI');
     }
     
-    // Start game FIRST, then change page
+    // Start the game immediately BEFORE changing page
     const { startGame } = useChess.getState();
+    console.log('🎮 Starting game with adaptive difficulty:', difficulty);
     startGame('ai', difficulty);
     
-    // Then navigate to game page
+    // Force a re-render by updating the page
     setCurrentPage('game');
     setShowLanding(false);
+    
+    // Verify game started
+    const { gamePhase: newPhase } = useChess.getState();
+    console.log('✅ Game phase after start:', newPhase);
   };
   
   // Listen for hash changes to handle navigation
