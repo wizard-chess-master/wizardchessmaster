@@ -15,7 +15,10 @@ import {
   Play,
   Search,
   UserPlus,
-  Zap
+  Zap,
+  Plus,
+  Cpu,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '../../lib/stores/useAuth';
 import { useMultiplayer } from '../../lib/stores/useMultiplayer';
@@ -53,7 +56,7 @@ interface Player {
 
 export function MultiplayerLobby() {
   const { user, isLoggedIn } = useAuth();
-  const { socket, isConnected, connect, disconnect } = useMultiplayer();
+  const { socket, isConnected, connect, disconnect, currentGame } = useMultiplayer();
   
   // Debug logging
   console.log('🔍 MultiplayerLobby render - socket:', !!socket, 'isConnected:', isConnected, 'isLoggedIn:', isLoggedIn);
@@ -66,6 +69,7 @@ export function MultiplayerLobby() {
   const [selectedGameMode, setSelectedGameMode] = useState<string>('casual');
   const [isPrivateRoom, setIsPrivateRoom] = useState(false);
   const [searchOpponent, setSearchOpponent] = useState('');
+  const [matchmakingStatus, setMatchmakingStatus] = useState<string>('');
 
   useEffect(() => {
     if (!socket || !isConnected) {
@@ -232,6 +236,27 @@ export function MultiplayerLobby() {
       timeControl: '10+0',
       ratingRange: 200 // ±200 rating points
     });
+    
+    // Set up AI fallback after 5 seconds
+    setTimeout(() => {
+      if (!currentGame) {
+        console.log('🤖 No players found, offering AI opponent...');
+        setMatchmakingStatus('No players available - Starting AI match...');
+        
+        // After showing the message, start AI game
+        setTimeout(() => {
+          console.log('🎮 Starting AI game from multiplayer quick match');
+          window.location.hash = '#play';
+          // Trigger AI game start
+          setTimeout(() => {
+            const playButton = document.querySelector('[data-ai-medium]');
+            if (playButton instanceof HTMLElement) {
+              playButton.click();
+            }
+          }, 500);
+        }, 2000);
+      }
+    }, 5000);
   };
 
   const handleChallengePlayer = (playerId: string) => {
@@ -467,13 +492,30 @@ export function MultiplayerLobby() {
               <div className="col-span-2 text-center py-12">
                 <Globe className="w-16 h-16 text-blue-400 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-blue-900 mb-2">No games available</h3>
-                <p className="text-blue-700 mb-4">Be the first to create a game room!</p>
-                <Button 
-                  onClick={() => setShowCreateRoom(true)}
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Create Game Room
-                </Button>
+                <p className="text-blue-700 mb-6">Be the first to create a game room or play against AI!</p>
+                <div className="flex gap-4 justify-center">
+                  <Button 
+                    onClick={() => setShowCreateRoom(true)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Game Room
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      console.log('🤖 Playing against AI from no games available');
+                      window.location.hash = '#play';
+                      setTimeout(() => {
+                        const aiButton = document.querySelector('[data-ai-medium]');
+                        if (aiButton instanceof HTMLElement) aiButton.click();
+                      }, 500);
+                    }}
+                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                  >
+                    <Cpu className="w-4 h-4 mr-2" />
+                    Play vs AI
+                  </Button>
+                </div>
               </div>
             )}
           </div>
