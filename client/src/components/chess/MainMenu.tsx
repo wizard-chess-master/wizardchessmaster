@@ -160,6 +160,19 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <Button
                   className="medieval-btn mode-button"
                   onClick={(e) => {
+                    console.log('🎮 Easy AI button clicked');
+                    startGame('ai', 'easy');
+                  }}
+                >
+                  <div className="mode-content">
+                    <span>⚡ Player vs AI - Easy</span>
+                    <Badge variant="secondary">Beginner</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="medieval-btn mode-button"
+                  onClick={(e) => {
                     console.log('🎮 Medium AI button clicked');
                     startGame('ai', 'medium');
                   }}
