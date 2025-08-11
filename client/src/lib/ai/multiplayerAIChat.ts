@@ -1,0 +1,167 @@
+// AI Chat System for Multiplayer Games
+// Provides contextual commentary during online games
+
+import OpenAI from 'openai';
+import { aiPersonalities, getAIComment, getRandomMessage, type AIPersonality } from './aiChatPersonalities';
+import type { ChessMove, Piece } from '../chess/types';
+
+// the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+const MODEL = 'gpt-4o';
+
+export class MultiplayerAIChat {
+  private openai: OpenAI | null = null;
+  private currentPersonality: AIPersonality;
+  private lastMoveTime: number = Date.now();
+  private moveCount: number = 0;
+  private useOpenAI: boolean = false;
+  
+  constructor(personalityId: string = 'coach') {
+    this.currentPersonality = aiPersonalities[personalityId] || aiPersonalities.coach;
+    
+    // Initialize OpenAI if API key is available
+    const apiKey = process.env.OPENAI_API_KEY || (window as any).OPENAI_API_KEY;
+    if (apiKey) {
+      this.openai = new OpenAI({ 
+        apiKey,
+        dangerouslyAllowBrowser: true // Required for client-side usage
+      });
+      this.useOpenAI = true;
+      console.log('🤖 AI Chat initialized with OpenAI');
+    } else {
+      console.log('🤖 AI Chat initialized with personality templates (no OpenAI key)');
+    }
+  }
+  
+  // Change AI personality
+  setPersonality(personalityId: string) {
+    this.currentPersonality = aiPersonalities[personalityId] || aiPersonalities.coach;
+  }
+  
+  // Get greeting message when game starts
+  getGreeting(): string {
+    return getRandomMessage(this.currentPersonality.greetings);
+  }
+  
+  // Analyze a move and generate appropriate commentary
+  async analyzeMove(
+    move: ChessMove,
+    boardState: (Piece | null)[][],
+    currentPlayer: 'white' | 'black'
+  ): Promise<string> {
+    this.moveCount++;
+    
+    // Determine basic move type
+    let moveType: 'good' | 'neutral' | 'bad' | 'check' | 'capture' | 'castle' | 'idle' = 'neutral';
+    
+    if (move.isCastling) {
+      moveType = 'castle';
+    } else if (move.captured) {
+      moveType = 'capture';
+    } else if (this.isCheck(boardState, currentPlayer === 'white' ? 'black' : 'white')) {
+      moveType = 'check';
+    } else {
+      // Simple heuristic for move quality
+      const centralSquares = [
+        [3, 3], [3, 4], [3, 5], [3, 6],
+        [4, 3], [4, 4], [4, 5], [4, 6],
+        [5, 3], [5, 4], [5, 5], [5, 6],
+        [6, 3], [6, 4], [6, 5], [6, 6]
+      ];
+      
+      const isCentralMove = centralSquares.some(
+        ([row, col]) => move.to.row === row && move.to.col === col
+      );
+      
+      if (isCentralMove && this.moveCount < 10) {
+        moveType = 'good';
+      } else if (move.piece.type === 'wizard' && move.isWizardAttack) {
+        moveType = 'good';
+      }
+    }
+    
+    // If OpenAI is available and it's a significant move, get smart commentary
+    if (this.useOpenAI && this.openai && (moveType === 'check' || moveType === 'capture' || Math.random() < 0.3)) {
+      try {
+        const smartComment = await this.getSmartCommentary(move, boardState, moveType);
+        if (smartComment) return smartComment;
+      } catch (error) {
+        console.log('🤖 Falling back to template comments');
+      }
+    }
+    
+    // Use personality templates
+    return getAIComment(this.currentPersonality, moveType);
+  }
+  
+  // Get idle chatter when no moves for a while
+  getIdleComment(): string {
+    const now = Date.now();
+    if (now - this.lastMoveTime > 30000) { // 30 seconds of inactivity
+      this.lastMoveTime = now;
+      return getRandomMessage(this.currentPersonality.idleChatter);
+    }
+    return '';
+  }
+  
+  // Get encouragement after a bad move or difficult position
+  getEncouragement(): string {
+    return getRandomMessage(this.currentPersonality.encouragement);
+  }
+  
+  // Use OpenAI for more sophisticated commentary
+  private async getSmartCommentary(
+    move: ChessMove,
+    boardState: (Piece | null)[][],
+    moveType: string
+  ): Promise<string | null> {
+    if (!this.openai) return null;
+    
+    try {
+      const prompt = `You are ${this.currentPersonality.name}, a chess commentator with this personality: ${this.currentPersonality.description}.
+      
+      A ${move.piece.color} ${move.piece.type} just moved from ${this.positionToAlgebraic(move.from)} to ${this.positionToAlgebraic(move.to)}.
+      Move type: ${moveType}
+      ${move.captured ? `Captured: ${move.captured.type}` : ''}
+      
+      Provide a SHORT (max 15 words), personality-appropriate comment about this move. Be ${this.currentPersonality.id === 'coach' ? 'encouraging and educational' : this.currentPersonality.id === 'rival' ? 'competitive but respectful' : 'mystical and mysterious'}.`;
+      
+      const response = await this.openai.chat.completions.create({
+        model: MODEL,
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 50,
+        temperature: 0.8
+      });
+      
+      return response.choices[0]?.message?.content || null;
+    } catch (error) {
+      console.error('🤖 OpenAI commentary error:', error);
+      return null;
+    }
+  }
+  
+  // Helper: Convert position to algebraic notation
+  private positionToAlgebraic(pos: { row: number; col: number }): string {
+    const files = 'abcdefghij';
+    const rank = 10 - pos.row;
+    return `${files[pos.col]}${rank}`;
+  }
+  
+  // Helper: Check if king is in check
+  private isCheck(board: (Piece | null)[][], kingColor: 'white' | 'black'): boolean {
+    // Simplified check detection
+    // In a real implementation, this would check all enemy pieces' valid moves
+    return false; // Placeholder
+  }
+}
+
+// Singleton instance for the app
+let aiChatInstance: MultiplayerAIChat | null = null;
+
+export function getAIChatInstance(personalityId?: string): MultiplayerAIChat {
+  if (!aiChatInstance) {
+    aiChatInstance = new MultiplayerAIChat(personalityId);
+  } else if (personalityId && personalityId !== aiChatInstance['currentPersonality'].id) {
+    aiChatInstance.setPersonality(personalityId);
+  }
+  return aiChatInstance;
+}

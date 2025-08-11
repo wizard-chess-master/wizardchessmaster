@@ -17,7 +17,10 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 - **Canvas-Based Chess Rendering**: Custom sprite rendering with smooth animations and glowing effects.
 - **Responsive Medieval Design**: Mobile-first approach with fantasy-themed layouts and wooden UI elements.
 
-## Recent Issues Resolved (August 2025)
+## Recent Features Added (August 2025)
+- **AI Chat in Multiplayer Games** (August 11, 2025): Integrated AI commentary system for online multiplayer games. Features three distinct AI personalities (Coach Magnus, Viktor the Bold, Merlin the Wise) that provide contextual commentary during matches. The AI comments on moves, offers encouragement, and adds engaging dialogue to make online games feel more lively even when opponents aren't chatting. Uses OpenAI GPT-4o when API key is available, falls back to personality templates otherwise.
+
+# Recent Issues Resolved (August 2025)
 - **Multiplayer Online Play Buttons** (August 11, 2025): Fixed critical multiplayer connection issues preventing online play buttons from functioning. Resolved database storage errors (missing getUserById/updateUser methods), enabled guest user connections without login requirement, and updated button logic to check connection status. All online play features now work for both authenticated and guest users.
 - **Premium Status UI Display**: Fixed React rendering issues where premium benefits weren't showing despite correct backend detection. Added fallback UI states and improved component refresh logic.
 - **Missing AI Easy Mode**: Restored accidentally removed "Play AI Easy" button to game mode selection.

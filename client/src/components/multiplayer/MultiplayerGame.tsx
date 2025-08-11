@@ -1,20 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { SimpleMultiplayerLayout } from './SimpleMultiplayerLayout';
 import { useChess } from '../../lib/stores/useChess';
 import { useMultiplayer } from '../../lib/stores/useMultiplayer';
 import { useAudio } from '../../lib/stores/useAudio';
+import { getAIChatInstance } from '../../lib/ai/multiplayerAIChat';
 
 export function MultiplayerGame() {
   const { disconnect, currentGame, setCurrentGame } = useMultiplayer();
-  const { gamePhase, startGame, resetGame } = useChess();
+  const { gamePhase, startGame, resetGame, board, moveHistory } = useChess();
   const { playPieceMovementSound } = useAudio();
+  const aiChat = useRef(getAIChatInstance('coach'));
+  const lastMoveCount = useRef(0);
   
-  const [showChat, setShowChat] = useState(false);
+  const [showChat, setShowChat] = useState(true); // Default to showing chat
   const [chatMessages, setChatMessages] = useState<Array<{
     id: string;
     player: string;
     message: string;
     timestamp: Date;
+    isAI?: boolean;
   }>>([]);
   const [newMessage, setNewMessage] = useState('');
 
@@ -30,9 +34,59 @@ export function MultiplayerGame() {
   useEffect(() => {
     if (currentGame && gamePhase === 'menu') {
       console.log('🎮 Starting multiplayer game');
-      startGame('ai', 'medium');
+      startGame('multiplayer', 'medium');
+      
+      // Add AI greeting
+      const greeting = aiChat.current.getGreeting();
+      setChatMessages([{
+        id: 'ai-greeting',
+        player: '🤖 AI Coach',
+        message: greeting,
+        timestamp: new Date(),
+        isAI: true
+      }]);
     }
   }, [currentGame, gamePhase, startGame]);
+  
+  // Monitor moves and generate AI commentary
+  useEffect(() => {
+    if (moveHistory.length > lastMoveCount.current) {
+      const lastMove = moveHistory[moveHistory.length - 1];
+      if (lastMove) {
+        // Generate AI comment for the move
+        aiChat.current.analyzeMove(lastMove, board, lastMove.piece.color).then(comment => {
+          if (comment) {
+            setChatMessages(prev => [...prev, {
+              id: `ai-${Date.now()}`,
+              player: '🤖 AI Coach',
+              message: comment,
+              timestamp: new Date(),
+              isAI: true
+            }]);
+          }
+        });
+      }
+      lastMoveCount.current = moveHistory.length;
+    }
+  }, [moveHistory, board]);
+  
+  // Add idle commentary
+  useEffect(() => {
+    const idleTimer = setInterval(() => {
+      const idleComment = aiChat.current.getIdleComment();
+      if (idleComment && chatMessages.length > 0) {
+        setChatMessages(prev => [...prev, {
+          id: `ai-idle-${Date.now()}`,
+          player: '🤖 AI Coach',
+          message: idleComment,
+          timestamp: new Date(),
+          isAI: true
+        }]);
+      }
+    }, 35000); // Check every 35 seconds
+    
+    return () => clearInterval(idleTimer);
+  }, [chatMessages.length]);
 
   const handleLeaveRoom = () => {
     resetGame();

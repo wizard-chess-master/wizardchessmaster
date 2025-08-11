@@ -15,6 +15,7 @@ interface SimpleMultiplayerLayoutProps {
     player: string;
     message: string;
     timestamp: Date;
+    isAI?: boolean;
   }>;
   newMessage: string;
   setNewMessage: (message: string) => void;
@@ -257,12 +258,18 @@ export function SimpleMultiplayerLayout({
                     chatMessages.map((msg) => (
                       <div key={msg.id} className="text-sm">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-blue-900">{msg.player}</span>
+                          <span className={`font-semibold ${msg.isAI ? 'text-purple-700' : 'text-blue-900'}`}>
+                            {msg.player}
+                          </span>
                           <span className="text-xs text-blue-600">
                             {msg.timestamp.toLocaleTimeString()}
                           </span>
                         </div>
-                        <div className="text-blue-800 bg-white rounded px-2 py-1 shadow-sm">
+                        <div className={`rounded px-2 py-1 shadow-sm ${
+                          msg.isAI 
+                            ? 'text-purple-800 bg-purple-50 border border-purple-200 italic' 
+                            : 'text-blue-800 bg-white'
+                        }`}>
                           {msg.message}
                         </div>
                       </div>

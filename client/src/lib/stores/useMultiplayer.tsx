@@ -76,7 +76,8 @@ interface MultiplayerState {
 }
 
 // ✅ MULTIPLAYER FULLY ENABLED - Complete Socket.IO integration
-export const useMultiplayer = create<MultiplayerState>((set, get) => ({
+// Make store globally accessible for other modules
+const multiplayerStore = create<MultiplayerState>((set, get) => ({
   // Initial state
   socket: null,
   isConnected: false,
@@ -316,3 +317,11 @@ export const useMultiplayer = create<MultiplayerState>((set, get) => ({
     }
   }
 }));
+
+// Export the store
+export const useMultiplayer = multiplayerStore;
+
+// Make it globally accessible for other modules
+if (typeof window !== 'undefined') {
+  (window as any).multiplayerStore = multiplayerStore;
+}

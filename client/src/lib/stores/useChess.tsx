@@ -182,18 +182,33 @@ export const useChess = create<ChessStore>()(
       const piece = state.board[position.row][position.col];
       console.log('🔍 Clicked position:', position, 'Piece found:', piece, 'Current player:', state.currentPlayer);
       
-      // For now, in multiplayer mode, allow all moves (server will validate)
-      // TODO: Add proper turn-based restrictions when server state sync is implemented
+      // In multiplayer mode, check if player can move this color
+      let canSelectPiece = false;
+      if (state.gameMode === 'multiplayer') {
+        // Get the player's assigned color from multiplayer store
+        const multiplayerState = (window as any).multiplayerStore?.getState?.();
+        const yourColor = multiplayerState?.currentGame?.yourColor;
+        canSelectPiece = !!(piece && piece.color === yourColor);
+        console.log('🎮 Multiplayer piece selection:', {
+          yourColor,
+          pieceColor: piece?.color,
+          canSelect: canSelectPiece
+        });
+      } else {
+        // In other modes, use current player
+        canSelectPiece = !!(piece && piece.color === state.currentPlayer);
+      }
       
       console.log('🎮 Piece selection check:', {
         gameMode: state.gameMode,
         pieceColor: piece?.color,
         currentPlayer: state.currentPlayer,
-        pieceExists: !!piece
+        pieceExists: !!piece,
+        canSelect: canSelectPiece
       });
       
-      // If clicking on current player's piece, select it
-      if (piece && piece.color === state.currentPlayer) {
+      // If clicking on player's piece, select it
+      if (canSelectPiece && piece) {
         console.log('✅ Selecting piece:', piece, 'at', position);
         const validMoves = getValidMovesForPosition(state, position);
         console.log('📋 Valid moves found:', validMoves.length, validMoves);
