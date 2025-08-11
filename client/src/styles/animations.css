@@ -1,215 +1,117 @@
-/* Enhanced Chess Board Animations */
+/* Animated Hero Banner Styles */
 
-.chess-canvas {
-  transition: all 0.3s ease;
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.chess-canvas.glow-selected {
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 
-              0 0 40px rgba(255, 215, 0, 0.6), 
-              0 0 60px rgba(255, 215, 0, 0.4);
-  transform: scale(1.02);
-}
-
-/* Enhanced animation states */
-.chess-canvas.animating {
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-/* Particle Effects Keyframes */
-@keyframes sparkle {
-  0% {
-    opacity: 1;
-    transform: scale(0) rotate(0deg);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1) rotate(180deg);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0) rotate(360deg);
-  }
-}
-
-@keyframes magic-glow {
-  0% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.5);
-  }
-}
-
-@keyframes capture-explosion {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.5);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(2);
-  }
-}
-
-@keyframes wizard-teleport {
-  0% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    opacity: 0;
-    transform: scale(1.5) rotate(180deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(360deg);
-  }
-}
-
-/* Enhanced attack burst animation */
-@keyframes attack-burst {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.8);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.3);
-    box-shadow: 0 0 0 20px rgba(255, 215, 0, 0.4);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(2);
-    box-shadow: 0 0 0 40px rgba(255, 215, 0, 0);
-  }
-}
-
-.attack-burst {
-  animation: attack-burst 0.2s ease-out forwards;
-}
-
-/* Victory and Defeat Animations */
-@keyframes victory-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 30px rgba(0, 255, 0, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
-  }
-}
-
-@keyframes defeat-shake {
+@keyframes float {
   0%, 100% { 
-    transform: translateX(0); 
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.3;
   }
-  10%, 30%, 50%, 70%, 90% { 
-    transform: translateX(-5px); 
-  }
-  20%, 40%, 60%, 80% { 
-    transform: translateX(5px); 
-  }
-}
-
-.victory-animation {
-  animation: victory-pulse 2s infinite;
-}
-
-.defeat-animation {
-  animation: defeat-shake 0.5s ease-in-out 3;
-}
-
-/* Enhanced Piece Movement Effects */
-@keyframes piece-slide {
-  0% {
-    opacity: 1;
-    transform: translateX(0) translateY(0);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(var(--target-x)) translateY(var(--target-y));
-  }
-}
-
-@keyframes piece-trail {
-  0% {
+  50% { 
+    transform: translateY(-20px) rotate(180deg);
     opacity: 0.8;
+  }
+}
+
+@keyframes gentle-float {
+  0%, 100% { 
+    transform: translateY(0px) scale(1);
+  }
+  50% { 
+    transform: translateY(-10px) scale(1.02);
+  }
+}
+
+@keyframes pulse-gentle {
+  0%, 100% { 
     transform: scale(1);
+    opacity: 0.7;
   }
-  100% {
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes chess-piece-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3));
+  }
+  50% { 
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6));
+  }
+}
+
+@keyframes board-entrance {
+  0% { 
+    transform: translateY(30px) scale(0.95) rotateX(10deg);
     opacity: 0;
-    transform: scale(0.3);
+  }
+  100% { 
+    transform: translateY(0px) scale(1) rotateX(0deg);
+    opacity: 1;
   }
 }
 
-.piece-trail {
-  animation: piece-trail 0.5s ease-out forwards;
+/* Apply animations */
+.animate-gradient-shift {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
 }
 
-.piece-sliding {
-  animation: piece-slide 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+.animate-float {
+  animation: float linear infinite;
 }
 
-/* Check Warning Animation */
-@keyframes check-warning {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.8);
-  }
-  50% {
-    box-shadow: 0 0 0 20px rgba(255, 0, 0, 0.3);
-  }
+.animate-gentle-float {
+  animation: gentle-float 6s ease-in-out infinite;
 }
 
-.check-warning {
-  animation: check-warning 1s ease-in-out 3;
+.animate-pulse-gentle {
+  animation: pulse-gentle 3s ease-in-out infinite;
 }
 
-/* Castling Special Effect */
-@keyframes castling-flash {
-  0% {
-    background: rgba(255, 215, 0, 0);
-  }
-  50% {
-    background: rgba(255, 215, 0, 0.3);
-  }
-  100% {
-    background: rgba(255, 215, 0, 0);
-  }
+.animate-chess-glow {
+  animation: chess-piece-glow 4s ease-in-out infinite;
 }
 
-.castling-effect {
-  animation: castling-flash 0.8s ease-in-out 2;
+.animate-board-entrance {
+  animation: board-entrance 2s ease-out forwards;
 }
 
-/* Enhanced Hover Effects */
-.chess-canvas:hover {
-  transform: scale(1.01);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+/* Hero banner specific styles */
+.hero-chess-board {
+  transition: all 0.3s ease;
+  will-change: transform;
 }
 
-/* Mobile Responsive Animations */
+.hero-chess-board:hover {
+  transform: scale(1.02);
+  filter: brightness(1.1);
+}
+
+/* Responsive chess board sizing */
 @media (max-width: 768px) {
-  .chess-canvas.glow-selected {
-    transform: scale(1.01);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  .hero-chess-board {
+    max-width: 280px;
+    max-height: 280px;
   }
-  
-  .chess-canvas:hover {
-    transform: scale(1.005);
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-chess-board {
+    max-width: 400px;
+    max-height: 400px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .hero-chess-board {
+    max-width: 500px;
+    max-height: 500px;
   }
 }

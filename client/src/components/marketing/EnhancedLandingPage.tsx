@@ -18,6 +18,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { AdBanner } from '../monetization/AdBanner';
+import { AnimatedHeroBanner } from '../ui/AnimatedHeroBanner';
 
 interface EnhancedLandingPageProps {
   onJoinFree: () => void;
@@ -32,20 +33,14 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
         <AdBanner containerId="header-banner" size="leaderboard" />
       </div>
 
-      {/* Hero Section with Background Image Container */}
-      <section className="relative container mx-auto px-4 py-16 text-center overflow-hidden">
-        {/* Hero Background Image Container - Ready for 1920x1080 WebP */}
-        <div className="absolute inset-0 -z-10">
-          <div className="w-full h-full bg-gradient-to-br from-amber-900/20 via-purple-900/20 to-amber-800/20 flex items-center justify-center">
-            <div className="text-amber-600/20 text-6xl font-bold">
-              Hero Background Ready
-              <br />
-              1920x1080 WebP
-            </div>
-          </div>
-        </div>
+      {/* Animated Hero Section */}
+      <AnimatedHeroBanner 
+        chessBoardImage="/images/chess-board-preview-800x800.png"
+        className="min-h-[600px] md:min-h-[700px]"
+      >
 
-        <div className="max-w-4xl mx-auto relative z-10">
+        <section className="relative container mx-auto px-4 py-16 text-center">
+          <div className="max-w-4xl mx-auto relative z-10">
           {/* Logo Container - Ready for 512x512 SVG/PNG */}
           <div className="flex justify-center mb-6">
             <div className="w-24 h-24 bg-amber-200/50 rounded-full flex items-center justify-center border-4 border-amber-300/50">
@@ -97,25 +92,9 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
             </Button>
           </div>
 
-          {/* Game Preview Container - Ready for 800x800 Chess Board Screenshot */}
-          <div className="relative max-w-2xl mx-auto">
-            <div className="aspect-square bg-gradient-to-br from-amber-100 to-yellow-100 rounded-2xl border-4 border-amber-300/50 shadow-2xl flex items-center justify-center">
-              <div className="text-center text-amber-600/70">
-                <Gamepad2 className="w-16 h-16 mx-auto mb-4" />
-                <div className="text-lg font-semibold">Game Preview</div>
-                <div className="text-sm">800x800 Chess Board</div>
-              </div>
-            </div>
-            {/* Floating UI Elements */}
-            <div className="absolute -top-4 -right-4 bg-white rounded-full p-3 shadow-lg">
-              <Crown className="w-6 h-6 text-amber-600" />
-            </div>
-            <div className="absolute -bottom-4 -left-4 bg-white rounded-full p-3 shadow-lg">
-              <Zap className="w-6 h-6 text-purple-600" />
-            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </AnimatedHeroBanner>
 
       {/* Features Section with Screenshot Containers */}
       <section className="py-16 bg-white">
