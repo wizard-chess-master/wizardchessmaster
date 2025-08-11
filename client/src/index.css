@@ -181,13 +181,14 @@ canvas {
   animation: board-entrance 2s ease-out forwards;
 }
 
-/* Hero banner specific styles */
+/* Hero banner specific styles - Desktop optimized */
 .hero-chess-board {
   transition: all 0.3s ease;
   will-change: transform;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
 }
 
 .hero-chess-board:hover {
   transform: scale(1.02);
-  filter: brightness(1.1);
+  filter: brightness(1.1) drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4));
 }

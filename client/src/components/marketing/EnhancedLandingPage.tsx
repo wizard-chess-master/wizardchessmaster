@@ -37,7 +37,7 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
       <AnimatedHeroBanner 
         backgroundVideo="/videos/hero-background-animation.mp4"
         chessBoardImage="/images/chess-board-preview-800x800.png"
-        className="min-h-[600px] md:min-h-[700px]"
+        className="min-h-[700px]"
       >
 
         <section className="relative container mx-auto px-4 py-16 text-center">
@@ -52,7 +52,7 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
             </div>
           </div>
           
-          <h1 className="text-5xl md:text-6xl font-bold text-amber-900 mb-6 leading-tight">
+          <h1 className="text-6xl font-bold text-amber-900 mb-6 leading-tight">
             Master the Art of
             <span className="block text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-amber-600">
               Wizard Chess

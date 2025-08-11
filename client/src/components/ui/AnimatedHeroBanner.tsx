@@ -94,7 +94,7 @@ export function AnimatedHeroBanner({
             <img 
               src={chessBoardImage}
               alt="Wizard Chess Board"
-              className="w-80 h-80 md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] object-contain animate-gentle-float animate-chess-glow hero-chess-board"
+              className="w-[500px] h-[500px] object-contain animate-gentle-float animate-chess-glow hero-chess-board"
             />
           </div>
         </div>
