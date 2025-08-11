@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LandingPage } from './LandingPage';
+import { EnhancedLandingPage } from './EnhancedLandingPage';
 import { JoinFreeForm } from './JoinFreeForm';
 import { ChessStrategyPage, AIChessTrainingPage, OnlineChessTournamentPage } from './SEOPages';
 import { useAuth } from '../../lib/stores/useAuth';
@@ -55,7 +55,7 @@ export function MarketingRouter({ currentPage, onNavigate, onStartGame }: Market
         return <OnlineChessTournamentPage />;
       default:
         return (
-          <LandingPage 
+          <EnhancedLandingPage 
             onJoinFree={handleJoinFree}
             onPlayNow={onStartGame}
           />
