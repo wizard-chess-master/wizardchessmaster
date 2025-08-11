@@ -14,6 +14,8 @@ export class MultiplayerAIChat {
   private lastMoveTime: number = Date.now();
   private moveCount: number = 0;
   private useOpenAI: boolean = false;
+  private recentMessages: string[] = []; // Track recent messages to avoid repetition
+  private lastIdleCommentTime: number = 0;
   
   constructor(personalityId: string = 'coach') {
     this.currentPersonality = aiPersonalities[personalityId] || aiPersonalities.coach;
