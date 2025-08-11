@@ -100,6 +100,24 @@ export function MultiplayerLobby() {
       return;
     }
 
+    // Listen for room creation success
+    socket.on('room:created', (response: { success: boolean; room: any; message: string }) => {
+      console.log('🏠 Room created successfully:', response);
+      if (response.success && response.room) {
+        setGameRooms(prev => [...prev, response.room]);
+      }
+    });
+
+    socket.on('room:error', (error: { message: string }) => {
+      console.error('🚫 Room creation error:', error);
+    });
+
+    // Listen for new rooms from other players
+    socket.on('room:available', (roomData: GameRoom) => {
+      console.log('🏠 New room available:', roomData);
+      setGameRooms(prev => [...prev, roomData]);
+    });
+
     // Listen for lobby updates
     socket.on('lobby:rooms-updated', (rooms: GameRoom[]) => {
       setGameRooms(rooms);
@@ -123,6 +141,9 @@ export function MultiplayerLobby() {
     socket.emit('lobby:join');
 
     return () => {
+      socket.off('room:created');
+      socket.off('room:error');
+      socket.off('room:available');
       socket.off('lobby:rooms-updated');
       socket.off('lobby:players-updated');
       socket.off('game:invitation');
@@ -140,7 +161,7 @@ export function MultiplayerLobby() {
       isPrivate: isPrivateRoom
     };
 
-    socket.emit('lobby:create-room', roomData);
+    socket.emit('room:create', roomData);
     setShowCreateRoom(false);
   };
 

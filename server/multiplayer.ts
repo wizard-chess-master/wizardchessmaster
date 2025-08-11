@@ -65,6 +65,47 @@ class MultiplayerManager {
         }
       });
 
+      // Handle room creation
+      socket.on('room:create', async (data: { gameMode?: string; timeControl?: string; isPrivate?: boolean }) => {
+        console.log('🏠 Room creation request received:', data);
+        const player = this.connectedPlayers.get(socket.id);
+        if (!player) {
+          socket.emit('room:error', { message: 'Player not authenticated' });
+          return;
+        }
+
+        const roomId = `room_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const roomData = {
+          id: roomId,
+          hostPlayer: {
+            id: player.userId.toString(),
+            username: player.username,
+            displayName: player.displayName,
+            rating: player.rating,
+            isPremium: false
+          },
+          gameMode: data.gameMode || 'casual',
+          timeControl: data.timeControl || '10+0',
+          isPrivate: data.isPrivate || false,
+          status: 'waiting' as const,
+          createdAt: new Date()
+        };
+
+        // Store room data (you could add to a rooms Map)
+        socket.join(roomId);
+        
+        console.log(`🏠 Room ${roomId} created by ${player.displayName}`);
+        
+        socket.emit('room:created', { 
+          success: true, 
+          room: roomData,
+          message: `Room created successfully! Room ID: ${roomId}`
+        });
+
+        // Broadcast new room to all players
+        socket.broadcast.emit('room:available', roomData);
+      });
+
       socket.on('matchmaking:find-opponent', async (data: { gameMode?: string; timeControl?: string; ratingRange?: number }) => {
         console.log('🎯 Matchmaking request received:', data);
         const player = this.connectedPlayers.get(socket.id);
