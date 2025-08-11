@@ -218,29 +218,29 @@ export function SimpleMultiplayerLayout({
 
         {/* Chess Board - Center */}
         <div className="lg:col-span-6">
-          <div className="flex justify-center" style={{ marginTop: '-50px' }}>
+          <div className="flex justify-center">
             <div 
               className="bg-white rounded-lg shadow-sm border border-blue-200 p-4"
               style={{ 
                 position: 'relative', 
                 zIndex: 1,
                 isolation: 'isolate',
-                maxWidth: '650px',
+                maxWidth: '750px',
                 width: '100%',
                 overflow: 'visible'
               }}
             >
-              <div style={{ transform: 'scale(0.72)', transformOrigin: 'center center' }}>
+              <div style={{ transform: 'scale(0.88)', transformOrigin: 'center center' }}>
                 <ChessBoard />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Chat - Right Side */}
+        {/* Chat - Right Side (Always Visible) */}
         <div className="lg:col-span-3">
-          {showChat && (
-            <Card className="border-blue-200 h-[600px] flex flex-col">
+          {(
+            <Card className="border-blue-200 h-[700px] flex flex-col">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-blue-900 flex items-center gap-2">
                   <MessageCircle className="w-4 h-4" />
@@ -248,7 +248,7 @@ export function SimpleMultiplayerLayout({
                 </CardTitle>
               </CardHeader>
               <CardContent className="flex-1 flex flex-col">
-                <div className="flex-1 overflow-y-auto space-y-2 mb-4 max-h-[400px] bg-blue-50 rounded p-3">
+                <div className="flex-1 overflow-y-auto space-y-2 mb-4 max-h-[500px] bg-blue-50 rounded p-3">
                   {chatMessages.length === 0 ? (
                     <div className="text-center text-blue-600 text-sm py-8">
                       No messages yet. Say hello!
@@ -286,6 +286,28 @@ export function SimpleMultiplayerLayout({
                   >
                     Send
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ) || (
+            /* Empty State when Chat is Hidden */
+            <Card className="border-blue-200 h-[700px] flex flex-col">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm text-blue-900">Game Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col items-center justify-center">
+                <Button
+                  onClick={onToggleChat}
+                  variant="outline"
+                  size="lg"
+                  className="border-blue-300 text-blue-700 hover:bg-blue-50 mb-4"
+                >
+                  <MessageCircle className="w-5 h-5 mr-2" />
+                  Open Chat
+                </Button>
+                <div className="text-center text-blue-600 text-sm">
+                  <p className="mb-2">Chat with your opponent</p>
+                  <p className="text-xs text-blue-500">Share strategies and make friends!</p>
                 </div>
               </CardContent>
             </Card>
