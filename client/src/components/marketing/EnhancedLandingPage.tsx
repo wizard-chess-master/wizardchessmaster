@@ -35,6 +35,7 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
 
       {/* Animated Hero Section */}
       <AnimatedHeroBanner 
+        backgroundVideo="/videos/hero-background-animation.mp4"
         chessBoardImage="/images/chess-board-preview-800x800.png"
         className="min-h-[600px] md:min-h-[700px]"
       >

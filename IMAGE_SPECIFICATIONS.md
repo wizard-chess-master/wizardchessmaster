@@ -12,16 +12,18 @@ This guide outlines the exact image specifications needed for the enhanced front
 | Feature Screenshots | WebP/JPEG | 400x300px | Features section | Product demos |
 | Player Avatars | PNG/JPEG | 64x64px | Testimonials | Social proof |
 | CTA Background | WebP/JPEG | 1920x600px | Final section | Conversion focus |
+| Hero Animation | MP4 Video | 1920x1080px | Hero background | Animated ambiance |
 
 ## 🏆 Priority Order for Maximum Impact
 
-### 1. **Hero Background Image** ⭐⭐⭐⭐⭐
-- **Format**: WebP (preferred) or JPEG
+### 1. **Hero Background Video** ⭐⭐⭐⭐⭐
+- **Format**: MP4 (H.264 codec)
 - **Dimensions**: 1920x1080px (16:9 ratio)
-- **File Size**: Under 200KB
-- **Content**: Medieval castle/fantasy landscape with warm lighting
+- **File Size**: Under 5MB
+- **Duration**: 10-30 seconds (seamless loop)
+- **Content**: Medieval castle/fantasy landscape with subtle animation
 - **Style**: Atmospheric, not too busy, allows text overlay
-- **Location**: Behind main hero text and buttons
+- **Location**: Behind main hero text and chess board
 
 ### 2. **Chess Board Preview** ⭐⭐⭐⭐⭐
 - **Format**: PNG (for transparency) or WebP

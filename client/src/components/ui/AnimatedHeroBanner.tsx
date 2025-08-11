@@ -3,13 +3,15 @@ import { Crown, Zap } from 'lucide-react';
 
 interface AnimatedHeroBannerProps {
   backgroundImage?: string; // Path to background image (1920x1080)
+  backgroundVideo?: string; // Path to background MP4 video (1920x1080)
   chessBoardImage?: string; // Path to transparent chess board PNG (800x800)
   className?: string;
   children?: React.ReactNode;
 }
 
 export function AnimatedHeroBanner({ 
-  backgroundImage, 
+  backgroundImage,
+  backgroundVideo, 
   chessBoardImage, 
   className = "", 
   children 
@@ -26,9 +28,24 @@ export function AnimatedHeroBanner({
     <div className={`relative overflow-hidden ${className}`}>
       {/* Animated Background Layer */}
       <div className="absolute inset-0 -z-20">
-        {backgroundImage ? (
+        {backgroundVideo ? (
+          <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            className="w-full h-full object-cover transform transition-transform duration-3000 ease-out"
+            style={{ 
+              transform: isLoaded ? 'scale(1.05)' : 'scale(1)',
+            }}
+          >
+            <source src={backgroundVideo} type="video/mp4" />
+            {/* Fallback for browsers that don't support video */}
+            <div className="w-full h-full bg-gradient-to-br from-amber-900/40 via-purple-900/30 to-amber-800/40 animate-gradient-shift" />
+          </video>
+        ) : backgroundImage ? (
           <div 
-            className="w-full h-full bg-cover bg-center bg-no-repeat transform transition-transform duration-[3000ms] ease-out"
+            className="w-full h-full bg-cover bg-center bg-no-repeat transform transition-transform duration-3000 ease-out"
             style={{ 
               backgroundImage: `url(${backgroundImage})`,
               transform: isLoaded ? 'scale(1.05)' : 'scale(1)',
@@ -40,7 +57,7 @@ export function AnimatedHeroBanner({
         )}
         
         {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       {/* Floating Particles Effect */}
