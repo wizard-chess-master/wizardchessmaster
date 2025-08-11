@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Status Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .status { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .premium { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .free { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        button { padding: 10px 20px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🔐 Premium Status Check for Tokingteepee</h1>
+    
+    <button onclick="checkStatus()">🔍 Check Premium Status</button>
+    <button onclick="loginAndCheck()">🚀 Login & Check</button>
+    
+    <div id="results"></div>
+
+    <script>
+        async function checkStatus() {
+            try {
+                // Check session first
+                const sessionResponse = await fetch('/api/auth/session', {
+                    credentials: 'include'
+                });
+                const sessionData = await sessionResponse.json();
+                
+                displayResult('Session Status', sessionData);
+                
+                // Check localStorage ad-free status
+                const adFreeStatus = localStorage.getItem('wizard-chess-ad-free');
+                displayResult('Local Ad-Free Status', { adFreeStatus });
+                
+            } catch (error) {
+                displayResult('Error', { error: error.message });
+            }
+        }
+        
+        async function loginAndCheck() {
+            try {
+                // Login first
+                const loginResponse = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: 'Tokingteepee', password: 'WizardChess123!' }),
+                    credentials: 'include'
+                });
+                
+                const loginData = await loginResponse.json();
+                displayResult('Login Result', loginData);
+                
+                // Wait a moment then check status
+                setTimeout(checkStatus, 1000);
+                
+            } catch (error) {
+                displayResult('Login Error', { error: error.message });
+            }
+        }
+        
+        function displayResult(title, data) {
+            const results = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            
+            let className = 'status';
+            if (data.user && data.user.isPremium) {
+                className += ' premium';
+            } else if (data.isLoggedIn === false || (data.user && !data.user.isPremium)) {
+                className += ' free';
+            }
+            
+            resultDiv.className = className;
+            resultDiv.innerHTML = `<strong>${title}:</strong><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
+            results.appendChild(resultDiv);
+        }
+        
+        // Auto-check on page load
+        window.onload = () => {
+            checkStatus();
+        };
+    </script>
+</body>
+</html>

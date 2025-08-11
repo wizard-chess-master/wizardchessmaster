@@ -427,23 +427,32 @@ class GoogleAdSenseManager implements AdManager {
       this.adFreeStatus = stored ? JSON.parse(stored) : false;
       
       // SECURITY: Validate against actual premium status on load
-      if (this.adFreeStatus && typeof window !== 'undefined') {
-        try {
-          // Use dynamic import instead of require
-          import('../auth/authManager').then(({ default: authManager }) => {
-            if (!authManager.isPremium()) {
-              console.log('🔒 Resetting ad-free status - user not premium');
-              this.adFreeStatus = false;
-              localStorage.setItem('wizard-chess-ad-free', 'false');
-            }
-          }).catch((error) => {
-            console.warn('⚠️ Could not verify premium status, defaulting to free');
-            this.adFreeStatus = false;
-          });
-        } catch (error) {
-          console.warn('⚠️ Could not verify premium status, defaulting to free');
-          this.adFreeStatus = false;
-        }
+      if (typeof window !== 'undefined') {
+        // Wait a bit for auth system to initialize, then check
+        setTimeout(async () => {
+          try {
+            const authManager = (await import('../auth/authManager')).default;
+            
+            // Give auth manager time to check session
+            setTimeout(() => {
+              const isPremium = authManager.isPremium();
+              const isAuthenticated = authManager.isAuthenticated();
+              
+              if (isAuthenticated && isPremium) {
+                console.log('✅ User has premium access - enabling ad-free');
+                this.adFreeStatus = true;
+                localStorage.setItem('wizard-chess-ad-free', 'true');
+              } else if (this.adFreeStatus && !isPremium) {
+                console.log('🔒 Resetting ad-free status - user not premium');
+                this.adFreeStatus = false;
+                localStorage.setItem('wizard-chess-ad-free', 'false');
+              }
+            }, 1000); // Wait 1 second for auth to initialize
+            
+          } catch (error) {
+            console.warn('⚠️ Could not verify premium status after delay');
+          }
+        }, 500); // Initial 500ms delay
       }
     } catch {
       this.adFreeStatus = false;

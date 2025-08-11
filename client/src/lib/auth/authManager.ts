@@ -124,6 +124,20 @@ class AuthManager {
         this.currentUser = data.user;
         this.notifyListeners();
         console.log('✅ User logged in:', data.user.username);
+        
+        // Update ad-free status for premium users
+        if (data.user.isPremium) {
+          console.log('💎 Premium user detected - updating ad-free status');
+          setTimeout(async () => {
+            try {
+              const { getAdManager } = await import('../monetization/adManager');
+              const adManager = getAdManager();
+              adManager.setAdFreeStatus(true);
+            } catch (error) {
+              console.log('⚠️ Could not update ad-free status:', error);
+            }
+          }, 100);
+        }
       }
 
       return data;
