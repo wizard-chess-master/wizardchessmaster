@@ -5,6 +5,7 @@ import { createInitialBoard, makeMove, getValidMovesForPosition } from "../chess
 import { getAIMove } from "../chess/aiPlayer";
 import { useAudio } from "./useAudio";
 import { wizardChessAudio } from "../audio/audioManager";
+import { useMultiplayer } from "./useMultiplayer";
 // Audio managed by ChessAudioController component
 import { aiLearning } from "../chess/aiLearning";
 import { gameEventTracker } from "../achievements/gameEventTracker";
@@ -329,6 +330,28 @@ export const useChess = create<ChessStore>()(
 
       const newState = makeMove(state, move);
       set(newState);
+      
+      // 🎮 CRITICAL: Send move to multiplayer server if in multiplayer mode
+      if (state.gameMode === 'multiplayer') {
+        try {
+          const { currentGame, makeMove: sendMoveToServer } = useMultiplayer.getState();
+          
+          if (currentGame && sendMoveToServer) {
+            console.log('🔄 Sending move to multiplayer server:', {
+              gameId: currentGame.gameId,
+              move: move,
+              isWizardMove: piece.type === 'wizard',
+              isWizardTeleport,
+              isWizardAttack
+            });
+            sendMoveToServer(currentGame.gameId, move);
+          } else {
+            console.error('❌ Multiplayer game not available for move synchronization:', { currentGame: !!currentGame });
+          }
+        } catch (error) {
+          console.error('❌ Failed to send move to multiplayer server:', error);
+        }
+      }
       
       // Trigger Dynamic AI Mentor analysis (non-blocking)
       setTimeout(() => {
