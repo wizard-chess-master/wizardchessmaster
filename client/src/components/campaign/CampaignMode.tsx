@@ -53,7 +53,7 @@ interface DialogueData {
 
 export function CampaignMode({ onBackToMenu }: CampaignModeProps) {
   const { levels, startCampaignLevel } = useCampaign();
-  const { startGame } = useChess();
+  // Removed startGame import - using direct state management to avoid audio triggers
   
   const [showStoryboard, setShowStoryboard] = useState(false);
   const [showDialogue, setShowDialogue] = useState(false);
