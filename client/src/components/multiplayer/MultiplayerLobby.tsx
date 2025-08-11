@@ -246,14 +246,12 @@ export function MultiplayerLobby() {
         // After showing the message, start AI game
         setTimeout(() => {
           console.log('🎮 Starting AI game from multiplayer quick match');
+          // Disconnect from multiplayer to avoid conflicts
+          const { disconnect } = useMultiplayer.getState();
+          disconnect();
+          // Set hash to start AI game
           window.location.hash = '#play';
-          // Trigger AI game start
-          setTimeout(() => {
-            const playButton = document.querySelector('[data-ai-medium]');
-            if (playButton instanceof HTMLElement) {
-              playButton.click();
-            }
-          }, 500);
+          // Hash change handler will automatically start the game with adaptive difficulty
         }, 2000);
       }
     }, 5000);
