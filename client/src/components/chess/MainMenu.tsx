@@ -321,7 +321,12 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   <User className="w-4 h-4 text-green-700" />
                   <span className="text-sm text-green-700">
                     Welcome, {user?.displayName}
-                    {user?.isPremium && <Crown className="w-3 h-3 inline ml-1 text-amber-600" data-testid="premium-crown" />}
+                    {user?.isPremium && (
+                      <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <Crown className="w-4 h-4 inline ml-2 text-amber-600" data-testid="premium-crown" style={{ color: '#d97706' }} />
+                        <span style={{ color: '#d97706', fontSize: '12px', fontWeight: 'bold', marginLeft: '4px' }}>PREMIUM</span>
+                      </span>
+                    )}
                   </span>
                 </div>
                 
@@ -448,11 +453,25 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           )}
           
           {user?.isPremium && (
-            <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300" data-testid="premium-badge">
-              <Crown className="w-5 h-5 text-amber-600" />
+            <div 
+              className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300 z-50" 
+              data-testid="premium-badge"
+              style={{ 
+                position: 'relative',
+                minHeight: '60px',
+                backgroundColor: '#fef3c7',
+                border: '2px solid #f59e0b',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <Crown className="w-5 h-5 text-amber-600" style={{ color: '#d97706' }} />
               <div>
-                <div className="text-sm font-semibold text-amber-800">Premium Member</div>
-                <div className="text-xs text-amber-700">Ad-free • Unlimited hints • Full campaign</div>
+                <div className="text-sm font-semibold text-amber-800" style={{ color: '#92400e', fontSize: '16px', fontWeight: 'bold' }}>
+                  🎉 PREMIUM MEMBER 🎉
+                </div>
+                <div className="text-xs text-amber-700" style={{ color: '#b45309', fontSize: '12px' }}>
+                  ✨ Ad-free • Unlimited hints • Full campaign ✨
+                </div>
               </div>
             </div>
           )}

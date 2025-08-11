@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Direct Premium Display Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .premium-test {
+            background: linear-gradient(to right, #fef3c7, #fde68a);
+            border: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .crown { color: #d97706; font-size: 20px; margin-right: 10px; }
+        .premium-text { color: #92400e; font-size: 18px; font-weight: bold; }
+        .benefits { color: #b45309; font-size: 14px; margin-top: 8px; }
+        .test-info { background: #e5e7eb; padding: 15px; border-radius: 5px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Premium Display Test</h1>
+    
+    <div class="test-info">
+        <strong>This page tests if premium elements can be displayed at all.</strong><br>
+        If you can see the premium badge below clearly, then the issue is with React rendering, not CSS.
+    </div>
+    
+    <div class="premium-test">
+        <div style="display: flex; align-items: center;">
+            <span class="crown">👑</span>
+            <div>
+                <div class="premium-text">🎉 PREMIUM MEMBER 🎉</div>
+                <div class="benefits">✨ Ad-free • Unlimited hints • Full campaign ✨</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-info">
+        <strong>User Status Check:</strong><br>
+        <div id="status-check">Checking login status...</div>
+    </div>
+
+    <script>
+        // Check login status
+        fetch('/api/auth/session', { credentials: 'include' })
+            .then(r => r.json())
+            .then(data => {
+                const statusDiv = document.getElementById('status-check');
+                if (data.success && data.user) {
+                    statusDiv.innerHTML = `
+                        <div style="color: green;">
+                            ✅ Logged in as: ${data.user.displayName}<br>
+                            💎 Premium Status: ${data.user.isPremium ? 'YES' : 'NO'}<br>
+                            🆔 Subscription: ${data.user.subscriptionStatus || 'None'}
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = '<div style="color: red;">❌ Not logged in</div>';
+                }
+            })
+            .catch(e => {
+                document.getElementById('status-check').innerHTML = `<div style="color: red;">❌ Error: ${e.message}</div>`;
+            });
+        
+        console.log('🧪 Premium display test page loaded');
+    </script>
+</body>
+</html>
