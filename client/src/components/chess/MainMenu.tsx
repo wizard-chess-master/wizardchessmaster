@@ -41,6 +41,18 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const chessStore = useChess();
   const { startGame, resetGame, gamePhase } = chessStore;
   const { user, isLoggedIn, isPremium, logout, checkSession } = useAuth();
+  
+  // Debug premium status
+  useEffect(() => {
+    if (user) {
+      console.log('🔍 MainMenu: User premium status:', {
+        username: user.username,
+        isPremium: user.isPremium,
+        subscriptionStatus: user.subscriptionStatus,
+        authStorePremium: isPremium()
+      });
+    }
+  }, [user, isPremium]);
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
@@ -289,7 +301,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   <User className="w-4 h-4 text-green-700" />
                   <span className="text-sm text-green-700">
                     Welcome, {user?.displayName}
-                    {isPremium() && <Crown className="w-3 h-3 inline ml-1 text-amber-600" />}
+                    {user?.isPremium && <Crown className="w-3 h-3 inline ml-1 text-amber-600" />}
                   </span>
                 </div>
                 
@@ -386,35 +398,43 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
           
 
           
-          <div className="flex gap-2">
-            <Button
-              variant="default"
-              onClick={(e) => {
-                console.log('💳 Premium upgrade button clicked');
-                const paymentManager = getPaymentManager();
-                if (paymentManager.isUserPremium()) {
-                  alert('🎉 You already have Premium! All ads are removed and premium features are unlocked.');
-                } else {
+          {!user?.isPremium && (
+            <div className="flex gap-2">
+              <Button
+                variant="default"
+                onClick={(e) => {
+                  console.log('💳 Premium upgrade button clicked');
+                  const paymentManager = getPaymentManager();
                   paymentManager.showPlanSelector();
-                }
-              }}
-              className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0 flex-1"
-            >
-              <Crown className="w-4 h-4 mr-2" />
-              Upgrade to Premium
-            </Button>
+                }}
+                className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white border-0 flex-1"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Upgrade to Premium
+              </Button>
             
-            <Button
-              variant="outline"
-              onClick={() => {
-                (window as any).gameAudioManager?.onButtonClick();
-                openComparison();
-              }}
-              className="border-yellow-500 text-yellow-600 hover:bg-yellow-50"
-            >
-              Compare
-            </Button>
-          </div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  (window as any).gameAudioManager?.onButtonClick();
+                  openComparison();
+                }}
+                className="border-yellow-500 text-yellow-600 hover:bg-yellow-50"
+              >
+                Compare
+              </Button>
+            </div>
+          )}
+          
+          {user?.isPremium && (
+            <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-amber-100 to-yellow-100 rounded-lg border border-amber-300">
+              <Crown className="w-5 h-5 text-amber-600" />
+              <div>
+                <div className="text-sm font-semibold text-amber-800">Premium Member</div>
+                <div className="text-xs text-amber-700">Ad-free • Unlimited hints • Full campaign</div>
+              </div>
+            </div>
+          )}
 
 
         </div>
