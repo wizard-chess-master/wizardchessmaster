@@ -136,6 +136,13 @@ export function CampaignMode({ onBackToMenu }: CampaignModeProps) {
     if (!level || !level.unlocked) return;
 
     console.log('🎮 Campaign level selected:', levelId, 'No audio triggers');
+    console.log('🔍 TESTING: handleLevelSelect called with level:', levelId);
+    console.log('🔍 TESTING: Using resetGame and setState instead of startGame');
+    
+    // Add alert to verify this function is being called correctly
+    if (typeof window !== 'undefined') {
+      console.log('🔍 TESTING: About to call resetGame and setState - no startGame');
+    }
     
     setSelectedLevel(level);
     startCampaignLevel(levelId);
