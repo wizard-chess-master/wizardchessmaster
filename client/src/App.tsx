@@ -149,16 +149,36 @@ function App() {
   }, []);
 
   const handleStartGame = () => {
+    console.log('🎮 Play Now clicked - starting game directly');
+    
+    // Get player's skill level from local storage or default to easy
+    const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+    const winRate = playerStats.winRate || 0;
+    const gamesPlayed = playerStats.gamesPlayed || 0;
+    
+    // Determine AI difficulty based on player performance
+    let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
+    if (gamesPlayed >= 3) {
+      if (winRate > 0.7) {
+        difficulty = 'hard';
+        console.log('🎯 Player win rate > 70%, setting AI to hard');
+      } else if (winRate > 0.4) {
+        difficulty = 'medium';
+        console.log('🎯 Player win rate 40-70%, setting AI to medium');
+      } else {
+        console.log('🎯 Player win rate < 40%, keeping AI on easy');
+      }
+    } else {
+      console.log('🎯 New player, starting with easy AI');
+    }
+    
+    // Start game FIRST, then change page
+    const { startGame } = useChess.getState();
+    startGame('ai', difficulty);
+    
+    // Then navigate to game page
     setCurrentPage('game');
     setShowLanding(false);
-    // Directly start an AI Easy game when Play Now is clicked
-    setTimeout(() => {
-      const { gamePhase, startGame } = useChess.getState();
-      if (gamePhase === 'menu') {
-        console.log('🎮 Auto-starting AI Easy game from Play Now button');
-        startGame('ai', 'easy');
-      }
-    }, 100);
   };
   
   // Listen for hash changes to handle navigation
@@ -167,15 +187,35 @@ function App() {
       const hash = window.location.hash.slice(1); // Remove the '#'
       console.log('🔄 Hash changed to:', hash);
       if (hash === 'game') {
-        setCurrentPage('game');
-        // Auto-start game when navigating to #game
-        setTimeout(() => {
-          const { gamePhase, startGame } = useChess.getState();
-          if (gamePhase === 'menu') {
-            console.log('🎮 Auto-starting game from hash navigation');
-            startGame('ai', 'easy');
+        // Auto-start adaptive AI game BEFORE changing page
+        const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+        const winRate = playerStats.winRate || 0;
+        const gamesPlayed = playerStats.gamesPlayed || 0;
+        
+        let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
+        if (gamesPlayed >= 3) {
+          if (winRate > 0.7) {
+            difficulty = 'hard';
+            console.log('🎯 Hash navigation: Setting AI to hard (win rate > 70%)');
+          } else if (winRate > 0.4) {
+            difficulty = 'medium';
+            console.log('🎯 Hash navigation: Setting AI to medium (win rate 40-70%)');
+          } else {
+            console.log('🎯 Hash navigation: Keeping AI on easy (win rate < 40%)');
           }
-        }, 100);
+        } else {
+          console.log('🎯 Hash navigation: New player, starting with easy AI');
+        }
+        
+        const { startGame, gamePhase } = useChess.getState();
+        console.log('🎮 Current game phase:', gamePhase);
+        
+        // Start the game immediately
+        startGame('ai', difficulty);
+        console.log('🎮 Game started with difficulty:', difficulty);
+        
+        // Then change page
+        setCurrentPage('game');
       } else if (hash === 'multiplayer') {
         setCurrentPage('multiplayer');
       } else if (hash === 'multiplayer-game') {

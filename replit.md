@@ -19,6 +19,8 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 
 ## Recent Features Added (August 2025)
 - **AI Chat in Multiplayer Games** (August 11, 2025): Integrated AI commentary system for online multiplayer games. Features three distinct AI personalities (Coach Magnus, Viktor the Bold, Merlin the Wise) that provide contextual commentary during matches. The AI comments on moves, offers encouragement, and adds engaging dialogue to make online games feel more lively even when opponents aren't chatting. Uses OpenAI GPT-4o when API key is available, falls back to personality templates otherwise.
+- **Interactive AI Chat System** (August 11, 2025): Enhanced AI chat to be conversational - now responds to player messages with context-aware replies. Supports greetings, questions, game comments, and help requests. Reduced idle message frequency to 60 seconds to avoid spam.
+- **Adaptive AI Difficulty** (August 11, 2025): Implemented skill-based matchmaking for AI opponents. System tracks player win rate across games and automatically adjusts AI difficulty - Easy for win rate < 40%, Medium for 40-70%, Hard for > 70%. Added "Adaptive AI" button in main menu showing current matching status. Play Now button now starts games with adaptive difficulty based on player performance.
 
 # Recent Issues Resolved (August 2025)
 - **Multiplayer Online Play Buttons** (August 11, 2025): Fixed critical multiplayer connection issues preventing online play buttons from functioning. Resolved database storage errors (missing getUserById/updateUser methods), enabled guest user connections without login requirement, and updated button logic to check connection status. All online play features now work for both authenticated and guest users.

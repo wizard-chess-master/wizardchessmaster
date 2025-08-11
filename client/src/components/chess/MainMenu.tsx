@@ -158,6 +158,45 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             <CardContent>
               <div className="game-mode-buttons">
                 <Button
+                  className="medieval-btn mode-button adaptive-ai-button"
+                  onClick={(e) => {
+                    console.log('🎮 Adaptive AI button clicked');
+                    // Get adaptive difficulty
+                    const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+                    const winRate = playerStats.winRate || 0;
+                    const gamesPlayed = playerStats.gamesPlayed || 0;
+                    
+                    let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
+                    if (gamesPlayed >= 3) {
+                      if (winRate > 0.7) {
+                        difficulty = 'hard';
+                      } else if (winRate > 0.4) {
+                        difficulty = 'medium';
+                      }
+                    }
+                    
+                    console.log(`🎯 Starting adaptive AI (${difficulty}) based on ${(winRate * 100).toFixed(0)}% win rate`);
+                    startGame('ai', difficulty);
+                  }}
+                >
+                  <div className="mode-content">
+                    <span>🎯 Adaptive AI</span>
+                    <Badge variant="secondary" className="adaptive-badge">
+                      {(() => {
+                        const stats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+                        if (!stats.gamesPlayed || stats.gamesPlayed < 3) {
+                          return 'Learning Your Style';
+                        }
+                        const winRate = stats.winRate || 0;
+                        if (winRate > 0.7) return 'Challenging You';
+                        if (winRate > 0.4) return 'Matched to You';
+                        return 'Supporting You';
+                      })()}
+                    </Badge>
+                  </div>
+                </Button>
+                
+                <Button
                   className="medieval-btn mode-button"
                   onClick={(e) => {
                     console.log('🎮 Easy AI button clicked');

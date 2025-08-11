@@ -388,6 +388,27 @@ export const useChess = create<ChessStore>()(
           // Record for wizard assistant
           recordGamePerformance(playerWon, newState.moveHistory.length, gameTime);
           
+          // Update player stats for adaptive difficulty
+          const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+          const gamesPlayed = (playerStats.gamesPlayed || 0) + 1;
+          const wins = (playerStats.wins || 0) + (playerWon ? 1 : 0);
+          const losses = (playerStats.losses || 0) + (!playerWon && newState.winner === 'black' ? 1 : 0);
+          const draws = (playerStats.draws || 0) + (!newState.winner ? 1 : 0);
+          const winRate = gamesPlayed > 0 ? wins / gamesPlayed : 0;
+          
+          const updatedStats = {
+            gamesPlayed,
+            wins,
+            losses,
+            draws,
+            winRate,
+            lastDifficulty: state.aiDifficulty,
+            lastGameDate: new Date().toISOString()
+          };
+          
+          localStorage.setItem('playerStats', JSON.stringify(updatedStats));
+          console.log('📊 Player stats updated:', updatedStats);
+          
           // Generate post-game hint from wizard
           if (isActive) {
             const hintContext = playerWon 
