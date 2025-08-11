@@ -70,9 +70,12 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   }, [adminRefresh]);
 
   const refreshLearningStats = () => {
-    const stats = aiLearning.getLearningStats();
-    setLearningStats(stats);
-    console.log('🔄 AI learning stats refreshed:', stats);
+    // Only run expensive AI learning stats in development mode to save resources
+    if (import.meta.env.DEV) {
+      const stats = aiLearning.getLearningStats();
+      setLearningStats(stats);
+      console.log('🔄 AI learning stats refreshed:', stats);
+    }
   };
 
   useEffect(() => {

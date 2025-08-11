@@ -74,23 +74,22 @@ if (typeof window !== 'undefined') {
   // Initialize theme music on page load
   window.addEventListener('load', initializeThemeMusic);
   
-  // Audio logging - disabled in production mode as requested
-  if (import.meta.env.DEV) {
+  // Audio logging - disabled to prevent performance issues
+  if (import.meta.env.DEV && false) { // Disabled due to performance concerns
     // Comprehensive audio state logging only in development
     const logAudioState = () => {
-      console.log('Audio check at', new Date().toLocaleTimeString(), ':', Array.from(document.querySelectorAll('audio')).map(a => a.src));
-      console.log('Audio sources:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+      console.log('Audio check:', Array.from(document.querySelectorAll('audio')).map(a => a.src));
       // Simplified AudioContext check as requested
       try {
-        console.log('Context:', new AudioContext().state || 'Available');
+        console.log('Context:', 'Available');
       } catch (e) {
         console.log('Context:', 'Available');
       }
     };
     
-    // Log on page load and periodically - only in development
-    logAudioState();
-    setInterval(logAudioState, 5000); // Log every 5 seconds for debugging
+    // Disabled periodic logging to prevent console spam
+    // logAudioState();
+    // setInterval(logAudioState, 5000); // Disabled - was causing performance issues
     
     // Add game start event listener for specific logging - only in development
     window.addEventListener('gamestart', () => {

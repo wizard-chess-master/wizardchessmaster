@@ -393,12 +393,12 @@ export const useAIDifficultyProgression = create<AIDifficultyProgressionStore>()
             }
           });
           
-          // If no difficulty history exists, initialize with rich data
-          if (!data.difficultyHistory || data.difficultyHistory.length === 0) {
+          // Only initialize with rich data in development mode to prevent resource waste
+          if (import.meta.env.DEV && (!data.difficultyHistory || data.difficultyHistory.length === 0)) {
             get().initializeRichProgressionData();
           }
-        } else {
-          // No stored data - initialize with rich progression data
+        } else if (import.meta.env.DEV) {
+          // Only initialize expensive sample data in development
           get().initializeRichProgressionData();
         }
       } catch (error) {
@@ -467,5 +467,7 @@ export const useAIDifficultyProgression = create<AIDifficultyProgressionStore>()
 
 
 
-// Load data on initialization
-useAIDifficultyProgression.getState().loadProgressionData();
+// Load data on initialization - only in development mode to prevent resource waste
+if (import.meta.env.DEV) {
+  useAIDifficultyProgression.getState().loadProgressionData();
+}

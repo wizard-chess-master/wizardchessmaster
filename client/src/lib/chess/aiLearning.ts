@@ -44,25 +44,43 @@ export class AILearningSystem {
   private maxPositionalPatterns = 10000; // Increased for large training datasets
 
   constructor() {
-    this.learningData = this.loadLearningData();
+    // Only load expensive learning data in development to prevent resource waste
+    if (import.meta.env.DEV) {
+      this.learningData = this.loadLearningData();
+    } else {
+      // In production, use minimal learning data
+      this.learningData = {
+        gamesPlayed: 0,
+        movePatterns: new Map(),
+        positionalPatterns: new Map(),
+        recentGames: [],
+        winRateVsHuman: 0,
+        winRateVsAI: 0,
+        preferredStrategies: []
+      };
+    }
   }
 
   // Analyze a completed game and extract learning patterns
   analyzeGame(gameStateOrResult: GameState | any, aiColor?: 'white' | 'black', opponentType?: 'human' | 'ai'): void {
-    console.log(`🔍 DEBUG: Starting game analysis...`);
-    console.log(`🔍 Input type:`, typeof gameStateOrResult);
-    console.log(`🔍 Has gameMode:`, !!gameStateOrResult.gameMode);
-    console.log(`🔍 Has winner:`, gameStateOrResult.winner !== undefined);
+    // Reduced logging for performance - only log in development mode
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Starting game analysis...`);
+    }
     
     // Handle different input formats for mass training compatibility
     if (gameStateOrResult.gameMode && gameStateOrResult.winner !== undefined) {
-      // This is a simplified game result from mass training
-      console.log(`🔍 DEBUG: Analyzing as simplified game result (mass training)`);
+      // This is a simplified game result from mass training - reduced logging
+      if (import.meta.env.DEV) {
+        console.log(`🔍 DEBUG: Analyzing as simplified game result (mass training)`);
+      }
       this.analyzeSimpleGameResult(gameStateOrResult);
       return;
     }
     
-    console.log(`🔍 DEBUG: Analyzing as full GameState`);
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Analyzing as full GameState`);
+    }
     // Original GameState analysis
     const gameState = gameStateOrResult as GameState;
     const gamePattern: GamePattern = {
@@ -75,19 +93,23 @@ export class AILearningSystem {
       timestamp: Date.now()
     };
 
-    console.log(`🔍 DEBUG: Game pattern created:`, {
-      id: gamePattern.id,
-      outcome: gamePattern.outcome,
-      aiColor: gamePattern.aiColor,
-      opponentType: gamePattern.opponentType,
-      gameLength: gamePattern.gameLength
-    });
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Game pattern created:`, {
+        id: gamePattern.id,
+        outcome: gamePattern.outcome,
+        aiColor: gamePattern.aiColor,
+        opponentType: gamePattern.opponentType,
+        gameLength: gamePattern.gameLength
+      });
+    }
 
     // Add to recent games
     this.learningData.recentGames.push(gamePattern);
     if (this.learningData.recentGames.length > this.maxGameHistory) {
       const removed = this.learningData.recentGames.shift();
-      console.log(`🔍 DEBUG: Removed old game from recent history:`, removed?.id);
+      if (import.meta.env.DEV) {
+        console.log(`🔍 DEBUG: Removed old game from recent history:`, removed?.id);
+      }
     }
 
     // Update move patterns
@@ -104,19 +126,26 @@ export class AILearningSystem {
 
     // Increment games played BEFORE saving
     this.learningData.gamesPlayed++;
-    console.log(`🔍 DEBUG: Incremented total games to: ${this.learningData.gamesPlayed}`);
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Incremented total games to: ${this.learningData.gamesPlayed}`);
+    }
 
     // Save learning data
     this.saveLearningData();
 
-    console.log(`🧠 AI Learning: Analyzed ${opponentType} game, outcome: ${gamePattern.outcome}`);
-    console.log(`📊 Total games analyzed: ${this.learningData.gamesPlayed}`);
-    console.log(`🔍 DEBUG: Game analysis completed successfully`);
+    // Reduced logging in production for performance
+    if (import.meta.env.DEV) {
+      console.log(`🧠 AI Learning: Analyzed ${opponentType} game, outcome: ${gamePattern.outcome}`);
+      console.log(`📊 Total games analyzed: ${this.learningData.gamesPlayed}`);
+      console.log(`🔍 DEBUG: Game analysis completed successfully`);
+    }
   }
 
   // Analyze simplified game result from mass training
   private analyzeSimpleGameResult(gameResult: any): void {
-    console.log(`🔍 DEBUG: analyzeSimpleGameResult called with:`, gameResult);
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: analyzeSimpleGameResult called with:`, gameResult);
+    }
     
     const aiColor = Math.random() > 0.5 ? 'white' : 'black'; // Random since it's AI vs AI
     const opponentType = 'ai';
@@ -131,19 +160,23 @@ export class AILearningSystem {
       timestamp: gameResult.timestamp || Date.now()
     };
 
-    console.log(`🔍 DEBUG: Mass training game pattern:`, {
-      id: gamePattern.id,
-      outcome: gamePattern.outcome,
-      winner: gameResult.winner,
-      aiColor,
-      gameLength: gamePattern.gameLength
-    });
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Mass training game pattern:`, {
+        id: gamePattern.id,
+        outcome: gamePattern.outcome,
+        winner: gameResult.winner,
+        aiColor,
+        gameLength: gamePattern.gameLength
+      });
+    }
 
     // Add to recent games
     this.learningData.recentGames.push(gamePattern);
     if (this.learningData.recentGames.length > this.maxGameHistory) {
       const removed = this.learningData.recentGames.shift();
-      console.log(`🔍 DEBUG: Removed old mass training game:`, removed?.id);
+      if (import.meta.env.DEV) {
+        console.log(`🔍 DEBUG: Removed old mass training game:`, removed?.id);
+      }
     }
 
     // Generate synthetic move patterns for training games
@@ -157,14 +190,23 @@ export class AILearningSystem {
 
     // Increment games played BEFORE saving
     this.learningData.gamesPlayed++;
-    console.log(`🔍 DEBUG: Mass training - incremented total games to: ${this.learningData.gamesPlayed}`);
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Mass training - incremented total games to: ${this.learningData.gamesPlayed}`);
+    }
 
-    // Save learning data
-    this.saveLearningData();
+    // Save learning data (throttled for mass training)
+    if (this.learningData.gamesPlayed % 100 === 0 || this.learningData.gamesPlayed < 100) {
+      this.saveLearningData();
+    }
 
-    console.log(`🧠 AI Learning: Analyzed mass training game, outcome: ${gamePattern.outcome}`);
-    console.log(`📊 Total games analyzed: ${this.learningData.gamesPlayed}`);
-    console.log(`🔍 DEBUG: Mass training analysis completed`);
+    // Reduced logging for performance - only log every 1000 games or in development
+    if (import.meta.env.DEV || this.learningData.gamesPlayed % 1000 === 0) {
+      console.log(`🧠 AI Learning: Analyzed mass training game, outcome: ${gamePattern.outcome}`);
+      console.log(`📊 Total games analyzed: ${this.learningData.gamesPlayed}`);
+    }
+    if (import.meta.env.DEV) {
+      console.log(`🔍 DEBUG: Mass training analysis completed`);
+    }
   }
 
   // Generate synthetic learning patterns from training games
@@ -256,52 +298,54 @@ export class AILearningSystem {
     const humanGames = this.learningData.recentGames.filter(g => g.opponentType === 'human').length;
     const aiGames = this.learningData.recentGames.filter(g => g.opponentType === 'ai').length;
 
-    // Enhanced debugging information with data completeness check
-    console.log('🔍 DETAILED LEARNING STATS DEBUG:');
-    console.log(`  📈 Total games analyzed (lifetime): ${this.learningData.gamesPlayed}`);
-    console.log(`  📋 Recent games in memory: ${totalGames}`);
-    console.log(`  👤 Human games in recent: ${humanGames}`);
-    console.log(`  🤖 AI games in recent: ${aiGames}`);
-    console.log(`  💾 Move patterns learned: ${this.learningData.movePatterns.size}`);
-    console.log(`  🏁 Positional patterns: ${this.learningData.positionalPatterns.size}`);
-    console.log(`  🎯 Win rate vs Human: ${Math.round(this.learningData.winRateVsHuman)}%`);
-    console.log(`  🎯 Win rate vs AI: ${Math.round(this.learningData.winRateVsAI)}%`);
-    
-    // Data completeness warning
-    if (this.learningData.gamesPlayed > 0 && this.learningData.gamesPlayed < 50000) {
-      console.log(`  ⚠️  DATA INCOMPLETE: Only ${this.learningData.gamesPlayed} games recorded from larger training session!`);
-    } else if (this.learningData.gamesPlayed >= 50000) {
-      console.log(`  ✅ COMPLETE DATASET: ${this.learningData.gamesPlayed} games analyzed - full training captured!`);
-    }
-    
-    // Show recent games analysis
-    const recentGamesSample = this.learningData.recentGames.slice(-10);
-    console.log(`  📝 Last 10 games:`, recentGamesSample.map(g => ({
-      id: g.id.split('_')[0] + '...',
-      outcome: g.outcome,
-      opponent: g.opponentType,
-      length: g.gameLength,
-      timestamp: new Date(g.timestamp).toLocaleTimeString()
-    })));
+    // Only show detailed debug output in development mode
+    if (import.meta.env.DEV) {
+      console.log('🔍 DETAILED LEARNING STATS DEBUG:');
+      console.log(`  📈 Total games analyzed (lifetime): ${this.learningData.gamesPlayed}`);
+      console.log(`  📋 Recent games in memory: ${totalGames}`);
+      console.log(`  👤 Human games in recent: ${humanGames}`);
+      console.log(`  🤖 AI games in recent: ${aiGames}`);
+      console.log(`  💾 Move patterns learned: ${this.learningData.movePatterns.size}`);
+      console.log(`  🏁 Positional patterns: ${this.learningData.positionalPatterns.size}`);
+      console.log(`  🎯 Win rate vs Human: ${Math.round(this.learningData.winRateVsHuman)}%`);
+      console.log(`  🎯 Win rate vs AI: ${Math.round(this.learningData.winRateVsAI)}%`);
+      
+      // Data completeness warning
+      if (this.learningData.gamesPlayed > 0 && this.learningData.gamesPlayed < 50000) {
+        console.log(`  ⚠️  DATA INCOMPLETE: Only ${this.learningData.gamesPlayed} games recorded from larger training session!`);
+      } else if (this.learningData.gamesPlayed >= 50000) {
+        console.log(`  ✅ COMPLETE DATASET: ${this.learningData.gamesPlayed} games analyzed - full training captured!`);
+      }
+      
+      // Show recent games analysis
+      const recentGamesSample = this.learningData.recentGames.slice(-10);
+      console.log(`  📝 Last 10 games:`, recentGamesSample.map(g => ({
+        id: g.id.split('_')[0] + '...',
+        outcome: g.outcome,
+        opponent: g.opponentType,
+        length: g.gameLength,
+        timestamp: new Date(g.timestamp).toLocaleTimeString()
+      })));
 
-    // Check for any anomalies
-    if (this.learningData.gamesPlayed === 0) {
-      console.warn(`⚠️  WARNING: No games have been analyzed yet!`);
-    }
-    if (totalGames === 0 && this.learningData.gamesPlayed > 0) {
-      console.warn(`⚠️  WARNING: Games analyzed (${this.learningData.gamesPlayed}) but no recent games in memory!`);
-    }
-    if (this.learningData.movePatterns.size === 0 && this.learningData.gamesPlayed > 0) {
-      console.warn(`⚠️  WARNING: Games analyzed but no move patterns learned!`);
-    }
+      // Check for any anomalies
+      if (this.learningData.gamesPlayed === 0) {
+        console.warn(`⚠️  WARNING: No games have been analyzed yet!`);
+      }
+      if (totalGames === 0 && this.learningData.gamesPlayed > 0) {
+        console.warn(`⚠️  WARNING: Games analyzed (${this.learningData.gamesPlayed}) but no recent games in memory!`);
+      }
+      if (this.learningData.movePatterns.size === 0 && this.learningData.gamesPlayed > 0) {
+        console.warn(`⚠️  WARNING: Games analyzed but no move patterns learned!`);
+      }
 
-    console.log('📊 Learning Stats Debug:', {
-      totalAnalyzed: this.learningData.gamesPlayed,
-      recentGamesCount: totalGames,
-      humanGamesInRecent: humanGames,
-      aiGamesInRecent: aiGames,
-      recentGamesArray: this.learningData.recentGames.slice(-5) // Last 5 games for debugging
-    });
+      console.log('📊 Learning Stats Debug:', {
+        totalAnalyzed: this.learningData.gamesPlayed,
+        recentGamesCount: totalGames,
+        humanGamesInRecent: humanGames,
+        aiGamesInRecent: aiGames,
+        recentGamesArray: this.learningData.recentGames.slice(-5) // Last 5 games for debugging
+      });
+    }
 
     const stats = {
       totalGamesAnalyzed: this.learningData.gamesPlayed,
@@ -318,7 +362,11 @@ export class AILearningSystem {
       experiencePoints: this.getExperiencePoints()
     };
 
-    console.log('🔍 FINAL STATS OUTPUT:', stats);
+    // Only show final stats output in development
+    if (import.meta.env.DEV) {
+      console.log('🔍 FINAL STATS OUTPUT:', stats);
+    }
+    
     return stats;
   }
 
@@ -434,12 +482,16 @@ export class AILearningSystem {
     const humanGames = this.learningData.recentGames.filter(g => g.opponentType === 'human');
     const aiGames = this.learningData.recentGames.filter(g => g.opponentType === 'ai');
 
-    console.log('🔄 Updating win rates:', { humanGamesCount: humanGames.length, aiGamesCount: aiGames.length });
+    if (import.meta.env.DEV) {
+      console.log('🔄 Updating win rates:', { humanGamesCount: humanGames.length, aiGamesCount: aiGames.length });
+    }
 
     if (humanGames.length > 0) {
       const humanWins = humanGames.filter(g => g.outcome === 'win').length;
       this.learningData.winRateVsHuman = (humanWins / humanGames.length) * 100; // Convert to percentage
-      console.log(`📊 Win rate vs human: ${humanWins}/${humanGames.length} = ${this.learningData.winRateVsHuman.toFixed(1)}%`);
+      if (import.meta.env.DEV) {
+        console.log(`📊 Win rate vs human: ${humanWins}/${humanGames.length} = ${this.learningData.winRateVsHuman.toFixed(1)}%`);
+      }
     } else {
       this.learningData.winRateVsHuman = 0;
     }
@@ -461,7 +513,9 @@ export class AILearningSystem {
         this.learningData.winRateVsAI = Math.max(rawWinRate, 25 + Math.random() * 20); // 25-45%
       }
       
-      console.log(`📊 Win rate vs AI: ${aiWins}/${aiGames.length} = ${this.learningData.winRateVsAI.toFixed(1)}%`);
+      if (import.meta.env.DEV) {
+        console.log(`📊 Win rate vs AI: ${aiWins}/${aiGames.length} = ${this.learningData.winRateVsAI.toFixed(1)}%`);
+      }
     } else {
       this.learningData.winRateVsAI = 0;
     }
@@ -471,7 +525,9 @@ export class AILearningSystem {
     const allGames = this.learningData.recentGames;
     const strategyCount: { [key: string]: number } = {};
 
-    console.log('🎯 Analyzing strategies from', allGames.length, 'games');
+    if (import.meta.env.DEV) {
+      console.log('🎯 Analyzing strategies from', allGames.length, 'games');
+    }
 
     allGames.forEach(game => {
       const strategy = this.analyzeGameStrategy(game);
@@ -483,8 +539,10 @@ export class AILearningSystem {
       .slice(0, 5)
       .map(([strategy]) => strategy);
 
-    console.log('🎯 Strategy analysis:', strategyCount);
-    console.log('🎯 Preferred strategies:', this.learningData.preferredStrategies);
+    if (import.meta.env.DEV) {
+      console.log('🎯 Strategy analysis:', strategyCount);
+      console.log('🎯 Preferred strategies:', this.learningData.preferredStrategies);
+    }
   }
 
   private analyzeGameStrategy(game: GamePattern): string {
@@ -596,6 +654,9 @@ export class AILearningSystem {
   }
 
   private saveLearningData(): void {
+    // Only save learning data in development mode to prevent storage bloat
+    if (!import.meta.env.DEV) return;
+    
     try {
       const toSave = {
         ...this.learningData,
@@ -642,7 +703,9 @@ export class AILearningSystem {
       }
     });
     
-    console.log(`🎯 Updated move patterns: ${this.learningData.movePatterns.size} total patterns`);
+    if (import.meta.env.DEV) {
+      console.log(`🎯 Updated move patterns: ${this.learningData.movePatterns.size} total patterns`);
+    }
   }
 
   // Reset all learning data
@@ -657,7 +720,9 @@ export class AILearningSystem {
       preferredStrategies: []
     };
     this.saveLearningData();
-    console.log('🔄 AI learning data reset');
+    if (import.meta.env.DEV) {
+      console.log('🔄 AI learning data reset');
+    }
   }
 }
 
