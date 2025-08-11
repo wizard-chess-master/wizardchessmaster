@@ -53,6 +53,9 @@ class MultiplayerManager {
           console.log(`👤 Player joined: ${data.displayName} (Rating: ${data.rating})`);
           
           socket.emit('player:joined', { success: true });
+          
+          // Send current stats
+          this.broadcastServerStats();
         } catch (error) {
           console.error('Error handling player join:', error);
           socket.emit('player:joined', { success: false, error: 'Failed to join' });
@@ -203,9 +206,24 @@ class MultiplayerManager {
           }
           
           this.connectedPlayers.delete(socket.id);
+          console.log(`👤 Player left: ${player.displayName}`);
+          
+          // Broadcast updated stats
+          this.broadcastServerStats();
         }
       });
     });
+  }
+
+  private broadcastServerStats() {
+    const stats = {
+      onlinePlayers: this.connectedPlayers.size,
+      activeGames: this.activeGames.size,
+      queuedPlayers: this.matchmakingQueue.length,
+      serverTime: new Date().toISOString()
+    };
+    
+    this.io.emit('server:stats', stats);
   }
 
   private async attemptMatch(newPlayer: PlayerData) {

@@ -276,7 +276,7 @@ export class MemStorage implements IStorage {
   async getCampaignLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
     const entries: LeaderboardEntry[] = [];
 
-    for (const [userId, user] of this.users) {
+    for (const [userId, user] of Array.from(this.users)) {
       const stats = this.playerStats.get(userId);
       if (stats && stats.highestLevel > 0) {
         const score = (stats.highestLevel * 1000) + (stats.gamesWon * 100) - (stats.gamesPlayed * 10);
@@ -304,7 +304,7 @@ export class MemStorage implements IStorage {
   async getPvPLeaderboard(limit: number = 50): Promise<LeaderboardEntry[]> {
     const entries: LeaderboardEntry[] = [];
 
-    for (const [userId, user] of this.users) {
+    for (const [userId, user] of Array.from(this.users)) {
       const stats = this.playerStats.get(userId);
       if (stats && stats.gamesPlayed > 0) {
         const winRate = stats.gamesWon / stats.gamesPlayed;
@@ -388,6 +388,18 @@ export class DatabaseStorage implements IStorage {
       founderNumber: eligibility.founderNumber,
       subscriptionStatus: eligibility.eligible ? 'founder' : null
     }).returning();
+    return result[0];
+  }
+
+  async getUserById(id: number): Promise<User | undefined> {
+    return this.getUser(id);
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User | undefined> {
+    const result = await this.db.update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
     return result[0];
   }
 
@@ -521,7 +533,7 @@ export class DatabaseStorage implements IStorage {
     // For now, store stats in user save data as a JSON field
     // In production, you'd create a separate player_stats table
     const saveData = await this.getUserSaveData(userId);
-    const existingStats = saveData?.gameProgress?.playerStats || {
+    const existingStats = (saveData?.playerStats as any)?.playerStats || {
       gamesWon: 0,
       gamesPlayed: 0,
       totalGameTime: 0,
@@ -536,10 +548,13 @@ export class DatabaseStorage implements IStorage {
     };
 
     await this.createOrUpdateSaveData(userId, {
-      gameProgress: {
-        ...saveData?.gameProgress || {},
+      campaignProgress: saveData?.campaignProgress || {},
+      achievements: saveData?.achievements || {},
+      playerStats: {
+        ...(saveData?.playerStats as any) || {},
         playerStats: updatedStats
-      }
+      },
+      gameSettings: saveData?.gameSettings || {}
     });
   }
 
@@ -551,7 +566,7 @@ export class DatabaseStorage implements IStorage {
       displayName: users.displayName,
       isPremium: users.isPremium,
       lastSeen: users.lastSeen,
-      gameProgress: userSaveData.gameProgress
+      playerStats: userSaveData.playerStats
     })
     .from(users)
     .leftJoin(userSaveData, eq(users.id, userSaveData.userId));
@@ -559,7 +574,7 @@ export class DatabaseStorage implements IStorage {
     const entries: LeaderboardEntry[] = [];
 
     for (const user of allUsers) {
-      const stats = user.gameProgress?.playerStats;
+      const stats = (user.playerStats as any)?.playerStats;
       if (stats && stats.highestLevel > 0) {
         const score = (stats.highestLevel * 1000) + (stats.gamesWon * 100) - (stats.gamesPlayed * 10);
         entries.push({
@@ -591,7 +606,7 @@ export class DatabaseStorage implements IStorage {
       displayName: users.displayName,
       isPremium: users.isPremium,
       lastSeen: users.lastSeen,
-      gameProgress: userSaveData.gameProgress
+      playerStats: userSaveData.playerStats
     })
     .from(users)
     .leftJoin(userSaveData, eq(users.id, userSaveData.userId));
@@ -599,7 +614,7 @@ export class DatabaseStorage implements IStorage {
     const entries: LeaderboardEntry[] = [];
 
     for (const user of allUsers) {
-      const stats = user.gameProgress?.playerStats;
+      const stats = (user.playerStats as any)?.playerStats;
       if (stats && stats.gamesPlayed > 0) {
         const winRate = stats.gamesWon / stats.gamesPlayed;
         const score = (stats.gamesWon * 100) + (winRate * 1000) - (stats.averageGameTime || 0);

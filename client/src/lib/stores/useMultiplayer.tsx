@@ -99,10 +99,17 @@ export const useMultiplayer = create<MultiplayerState>((set, get) => ({
 
     console.log('🔌 Connecting to multiplayer server...');
     
-    const newSocket = io({
+    const newSocket = io('/', {
       transports: ['websocket', 'polling'],
       timeout: 10000,
-      forceNew: true
+      forceNew: true,
+      autoConnect: true,
+      auth: {
+        userId: playerData.userId,
+        username: playerData.username,
+        displayName: playerData.displayName,
+        rating: playerData.rating
+      }
     });
 
     // Connection events

@@ -12,6 +12,7 @@ export function MultiplayerHub() {
 
   useEffect(() => {
     if (isLoggedIn && user && !isConnected) {
+      console.log('🔌 Auto-connecting user to multiplayer:', user.username);
       // Auto-connect when user logs in
       connect({
         userId: user.id,
@@ -19,8 +20,11 @@ export function MultiplayerHub() {
         displayName: user.displayName,
         rating: 1200 // Default rating, should come from user data
       });
+    } else if (!isLoggedIn && isConnected) {
+      console.log('🔌 User logged out, disconnecting from multiplayer');
+      disconnect();
     }
-  }, [isLoggedIn, user, isConnected, connect]);
+  }, [isLoggedIn, user, isConnected, connect, disconnect]);
 
   useEffect(() => {
     // Cleanup on unmount

@@ -240,8 +240,7 @@ export function MultiplayerLobby() {
       <div className="container mx-auto px-4 py-8">
         {/* Quick Actions */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="border-green-200 bg-green-50 hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={handleQuickMatch}>
+          <Card className="border-green-200 bg-green-50 hover:shadow-lg transition-shadow">
             <CardHeader className="text-center">
               <Swords className="w-12 h-12 text-green-600 mx-auto mb-2" />
               <CardTitle className="text-green-900">Quick Match</CardTitle>
@@ -250,9 +249,17 @@ export function MultiplayerLobby() {
               <p className="text-green-800 mb-4">
                 Find an opponent instantly with similar skill level
               </p>
-              <Button className="bg-green-600 hover:bg-green-700 text-white w-full">
+              <Button 
+                onClick={handleQuickMatch}
+                disabled={!isConnected}
+                className={`w-full ${
+                  isConnected 
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                }`}
+              >
                 <Play className="w-4 h-4 mr-2" />
-                Play Now
+                {isConnected ? 'Play Now' : 'Connecting...'}
               </Button>
             </CardContent>
           </Card>
@@ -268,10 +275,15 @@ export function MultiplayerLobby() {
               </p>
               <Button 
                 onClick={() => setShowCreateRoom(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                disabled={!isConnected}
+                className={`w-full ${
+                  isConnected 
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                    : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                }`}
               >
                 <Crown className="w-4 h-4 mr-2" />
-                Create Room
+                {isConnected ? 'Create Room' : 'Connecting...'}
               </Button>
             </CardContent>
           </Card>
@@ -354,11 +366,16 @@ export function MultiplayerLobby() {
                     </div>
                     <Button
                       onClick={() => handleJoinRoom(room.id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      disabled={!isConnected}
+                      className={`${
+                        isConnected 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                      }`}
                       size="sm"
                     >
                       <Play className="w-4 h-4 mr-2" />
-                      Join Game
+                      {isConnected ? 'Join Game' : 'Connecting...'}
                     </Button>
                   </div>
                 </CardContent>
@@ -422,7 +439,12 @@ export function MultiplayerLobby() {
                   {player.status === 'online' && (
                     <Button
                       onClick={() => handleChallengePlayer(player.id)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white w-full"
+                      disabled={!isConnected}
+                      className={`w-full ${
+                        isConnected 
+                          ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                          : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                      }`}
                       size="sm"
                     >
                       <Swords className="w-4 h-4 mr-2" />
