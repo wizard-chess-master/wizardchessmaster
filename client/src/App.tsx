@@ -191,7 +191,7 @@ function App() {
     const handleHashChange = () => {
       const hash = window.location.hash.slice(1); // Remove the '#'
       console.log('🔄 Hash changed to:', hash);
-      if (hash === 'game') {
+      if (hash === 'game' || hash === 'play') {
         // Auto-start adaptive AI game BEFORE changing page
         const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
         const winRate = playerStats.winRate || 0;
