@@ -264,19 +264,21 @@ export function getValidMovesForPosition(gameState: GameState, position: Positio
   // Filter out moves that would put own king in check
   return possibleMoves.filter(movePos => {
     const testBoard = gameState.board.map(row => [...row]);
-    const originalPiece = testBoard[movePos.row][movePos.col];
+    const targetPiece = testBoard[movePos.row][movePos.col];
     
-    // Make the test move
-    testBoard[movePos.row][movePos.col] = piece;
-    if (piece.type !== 'wizard' || !isWizardAttack(position, movePos, testBoard)) {
+    // Make the test move correctly based on move type
+    if (piece.type === 'wizard' && targetPiece && targetPiece.color !== piece.color) {
+      // Wizard attack: Remove target but wizard stays in place
+      testBoard[movePos.row][movePos.col] = null;
+      // Wizard remains at original position, just mark as moved
+      testBoard[position.row][position.col] = { ...piece, hasMoved: true };
+    } else {
+      // Normal move or wizard teleport: Move piece to new position
+      testBoard[movePos.row][movePos.col] = piece;
       testBoard[position.row][position.col] = null;
     }
     
     const wouldBeInCheck = isKingInCheck(testBoard, piece.color);
-    
-    // Restore the board
-    testBoard[position.row][position.col] = piece;
-    testBoard[movePos.row][movePos.col] = originalPiece;
     
     return !wouldBeInCheck;
   });
