@@ -24,11 +24,11 @@ export class AmbientSoundManager {
   }
 
   /**
-   * Initialize ambient sounds (DISABLED - replaced by direct Theme-music2.mp3 implementation)
+   * Initialize ambient sounds (DISABLED - replaced by direct Theme-music1.mp3 implementation)
    */
   async initializeAmbientSounds(): Promise<void> {
-    // DISABLED: Conflicted with Theme-music2.mp3 - now using direct theme music implementation
-    console.log('🎵 Ambient sound system disabled - using Theme-music2.mp3 directly');
+    // DISABLED: Conflicted with Theme-music1.mp3 - now using direct theme music implementation
+    console.log('🎵 Ambient sound system disabled - using Theme-music1.mp3 directly');
     return;
   }
 

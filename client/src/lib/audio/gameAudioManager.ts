@@ -26,7 +26,7 @@ export type VoiceClip =
   | 'tutorial_welcome';
 
 export type MusicTrack = 
-  | never; // ALL MUSIC TRACKS REMOVED - ONLY Theme-music2.mp3 v=12 PERMITTED
+  | never; // ALL MUSIC TRACKS REMOVED - ONLY Theme-music1.mp3 v=12 PERMITTED
 
 export interface AudioSettings {
   masterVolume: number;
@@ -230,8 +230,40 @@ class GameAudioManager {
   }
 
   async onGameStart(): Promise<void> {
-    // Disabled to prevent audio conflicts with main audio manager
-    console.log('Game start event (audio handled by main system)');
+    console.log('🎮 URGENT: Game start triggered - comprehensive audio cleanup...');
+    
+    // URGENT: Comprehensive audio cleanup on game start as requested
+    try {
+      if (typeof AudioContext !== 'undefined') {
+        new AudioContext().close().then(() => {
+          console.log('✅ Game start: AudioContext closed');
+        }).catch(() => {
+          console.log('⚠️ Game start: AudioContext close failed or not needed');
+        });
+      }
+    } catch (e) {
+      console.log('⚠️ Game start: AudioContext not available or already closed');
+    }
+    
+    // Aggressive DOM audio cleanup with removal as specifically requested
+    const audioElements = document.querySelectorAll('audio');
+    console.log('Audio cleanup:', audioElements.length);
+    audioElements.forEach(a => { 
+      a.pause(); 
+      a.currentTime = 0;
+      a.remove(); // Force remove from DOM as requested
+    });
+    
+    // Exhaustive logging as urgently requested
+    console.log('Audio check at', new Date().toLocaleTimeString(), ':', Array.from(document.querySelectorAll('audio')).map(a => a.src));
+    try {
+      console.log('Context:', (new AudioContext()).state);
+    } catch (e) {
+      console.log('Context: Not Available');
+    }
+    
+    await this.playVoice('game_intro');
+    // Note: Music handled separately via direct Theme-music1.mp3 implementation
   }
 
   async onGreeting(): Promise<void> {
@@ -263,8 +295,8 @@ class GameAudioManager {
       { key: 'voice_level_complete', paths: ['/assets/voice-files/level_complete.mp3'] },
       { key: 'voice_tutorial_welcome', paths: ['/assets/voice-files/tutorial_welcome.mp3'] },
 
-      // Music - DISABLED: Using direct Theme-music2.mp3 implementation instead
-      // { key: 'music_theme_music', paths: ['/assets/music/Theme-music2.mp3'] }
+      // Music - DISABLED: Using direct Theme-music1.mp3 implementation instead
+      // { key: 'music_theme_music', paths: ['/assets/music/Theme-music1.mp3'] }
     ];
 
     const loadPromises = audioFiles.map(({ key, paths }) => 

@@ -1113,9 +1113,8 @@ export function ChessBoard() {
     }
     setParticles(prev => [...prev, ...clickParticles]);
     
-    // Play UI sound - DISABLED to prevent audio triggers
-    console.log('🔍 TESTING: ChessBoard playUISound disabled to prevent unwanted music');
-    // playUISound('click'); // DISABLED
+    // Play UI sound
+    playUISound('click');
     
     // Call original click handler
     handleCanvasClick(event);

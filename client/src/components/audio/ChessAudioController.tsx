@@ -14,19 +14,23 @@ export function ChessAudioController() {
   } = useChess();
   const { isMuted } = useAudio();
 
-  // Audio initialization completely disabled to prevent conflicts
+  // Initialize audio when component mounts
   useEffect(() => {
-    console.log('🎵 ChessAudioController: Audio initialization disabled (manual control only)');
+    const { initializeAudio } = useAudio.getState();
+    initializeAudio();
   }, []);
 
-  // Handle game phase changes (auto-music disabled to prevent conflicts)
+  // Handle game phase changes
   useEffect(() => {
     if (isMuted) return;
 
     switch (gamePhase) {
       case 'playing':
-        console.log('🎵 Game start - Music only via manual user control');
-        // All automatic music triggers disabled to prevent conflicts
+        if (moveHistory.length === 0) {
+          console.log('🎵 Game start - Theme-music1.mp3 handled by user controls only');
+          // REMOVED DOUBLE AUDIO TRIGGER - let user control theme music via buttons
+          // No automatic music on game start to prevent conflicts
+        }
         break;
       case 'ended':
         if (winner) {
@@ -44,7 +48,7 @@ export function ChessAudioController() {
     if (!lastMove) return;
 
     // Check for capture
-    if (lastMove.captured) {
+    if (lastMove.capturedPiece) {
       wizardChessAudio.onPieceCapture();
     } else {
       // Regular move sound
@@ -53,9 +57,9 @@ export function ChessAudioController() {
 
     // Check for wizard special moves
     if (lastMove.piece?.type === 'wizard') {
-      if (lastMove.isWizardTeleport) {
+      if (lastMove.isSpecialMove) {
         wizardChessAudio.onWizardTeleport();
-      } else if (lastMove.captured) {
+      } else if (lastMove.capturedPiece) {
         wizardChessAudio.onWizardAttack();
       }
     }

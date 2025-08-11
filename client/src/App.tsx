@@ -58,12 +58,14 @@ function App() {
   // Campaign reward celebration
   const { showCelebration, CelebrationComponent } = useCampaignRewardCelebration();
 
-  // Initialize monetization systems (audio disabled to prevent conflicts)
+  // Initialize audio and monetization systems
   useEffect(() => {
     const initSystems = async () => {
       try {
-        // Audio initialization disabled to prevent conflicts with ChessAudioController
-        console.log('🎵 Audio initialization skipped (manual control only)');
+        // Initialize audio system first
+        console.log('🎵 Initializing audio system...');
+        await initializeAudio();
+        console.log('✅ Audio system initialized');
         
         // Initialize monetization systems
         console.log('💳 Initializing monetization systems...');
@@ -77,7 +79,7 @@ function App() {
     };
     
     initSystems();
-  }, []);
+  }, [initializeAudio]);
 
   // Monitor game state for achievement tracking only
   useEffect(() => {

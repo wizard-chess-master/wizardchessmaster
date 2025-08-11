@@ -6,7 +6,6 @@ import { Badge } from '../ui/badge';
 import { ArrowLeft, BookOpen, Map, Play } from 'lucide-react';
 import { useCampaign } from '../../lib/stores/useCampaign';
 import { useChess } from '../../lib/stores/useChess';
-// Remove createInitialBoard import - using useChess reset instead
 import { CampaignMapView } from './CampaignMapView';
 import { StoryboardModal } from './StoryboardModal';
 import { CharacterDialogue } from './CharacterDialogue';
@@ -53,7 +52,7 @@ interface DialogueData {
 
 export function CampaignMode({ onBackToMenu }: CampaignModeProps) {
   const { levels, startCampaignLevel } = useCampaign();
-  // Removed startGame import - using direct state management to avoid audio triggers
+  const { startGame } = useChess();
   
   const [showStoryboard, setShowStoryboard] = useState(false);
   const [showDialogue, setShowDialogue] = useState(false);
@@ -135,31 +134,12 @@ export function CampaignMode({ onBackToMenu }: CampaignModeProps) {
     const level = levels.find(l => l.id === levelId);
     if (!level || !level.unlocked) return;
 
-    console.log('🎮 Campaign level selected:', levelId, 'No audio triggers');
-    console.log('🔍 TESTING: handleLevelSelect called with level:', levelId);
-    console.log('🔍 TESTING: Using resetGame and setState instead of startGame');
-    
-    // Add alert to verify this function is being called correctly
-    if (typeof window !== 'undefined') {
-      console.log('🔍 TESTING: About to call resetGame and setState - no startGame');
-    }
-    
     setSelectedLevel(level);
     startCampaignLevel(levelId);
     
-    // Start the campaign game with AI difficulty (audio completely bypassed)
+    // Start the campaign game with AI difficulty  
     const difficulty = level.aiStrength <= 2 ? 'easy' : level.aiStrength <= 4 ? 'medium' : 'hard';
-    
-    // Use chess store reset method to avoid audio triggers
-    const { resetGame } = useChess.getState();
-    resetGame();
-    
-    // Set game mode and difficulty without audio triggers
-    useChess.setState({
-      gameMode: 'ai',
-      aiDifficulty: difficulty,
-      gamePhase: 'playing'
-    });
+    startGame('ai', difficulty);
     
     // Return to game view
     onBackToMenu();

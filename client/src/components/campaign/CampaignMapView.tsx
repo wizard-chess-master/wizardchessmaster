@@ -67,17 +67,12 @@ export function CampaignMapView({ onLevelSelect, onShowStory }: CampaignMapViewP
   const handleLevelClick = (level: CampaignLevel) => {
     if (!level.unlocked) return;
     
-    console.log('🔍 TESTING: CampaignMapView handleLevelClick called for level:', level.id);
-    console.log('🔍 TESTING: About to call onLevelSelect - checking for audio triggers');
-    
     setSelectedLevel(level);
     
     // Show story if available
     if (level.storyContent?.preGameStory && !level.completed) {
-      console.log('🔍 TESTING: Calling onShowStory instead of onLevelSelect');
       onShowStory(level, 'pre-game');
     } else {
-      console.log('🔍 TESTING: Calling onLevelSelect - this should not trigger audio');
       onLevelSelect(level.id);
     }
   };

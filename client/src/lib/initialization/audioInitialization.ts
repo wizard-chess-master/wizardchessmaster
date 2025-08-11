@@ -11,11 +11,17 @@ export async function initializeAudioSystem(): Promise<void> {
   if (isInitialized) return;
 
   try {
-    // Disabled old audio manager to prevent conflicts with new system
-    console.log('✅ Audio System (legacy audio manager disabled)');
+    await gameAudioManager.initialize();
+    
+    // Play greeting on first load
+    setTimeout(() => {
+      gameAudioManager.onGreeting();
+    }, 1000);
+    
     isInitialized = true;
+    console.log('✅ Game Audio System initialized');
   } catch (error) {
-    console.warn('⚠️ Audio System initialization failed:', error);
+    console.warn('⚠️ Game Audio System initialization failed:', error);
   }
 }
 
