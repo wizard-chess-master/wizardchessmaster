@@ -52,8 +52,8 @@ class WizardChessAudioManager {
       hint_reveal: '/assets/sound-fx/hint_reveal.mp3',
     },
     music: {
-      // DISABLED - Using direct Theme-music1.mp3 implementation instead
-      // theme_music: '/assets/music/Theme-music1.mp3',
+      // DISABLED - Using direct Theme-music2.mp3 implementation instead
+      // theme_music: '/assets/music/Theme-music2.mp3',
     },
     voiceFiles: {
       greeting: '/assets/voice-files/greeting.mp3',
@@ -75,7 +75,7 @@ class WizardChessAudioManager {
       // Load sound effects
       await this.loadAudioGroup(this.config.soundEffects, this.soundEffects, 'Sound Effects');
       
-      // Legacy music loading DISABLED - using direct Theme-music1.mp3 implementation
+      // Legacy music loading DISABLED - using direct Theme-music2.mp3 implementation
       // await this.loadAudioGroup(this.config.music, this.music, 'Music');
       
       // Load voice files
@@ -228,7 +228,7 @@ class WizardChessAudioManager {
       this.themeMusic.pause();
       this.themeMusic.currentTime = 0;
       this.themeMusic = null;
-      console.log('🎼 Theme-music1.mp3 stopped');
+      console.log('🎼 Theme-music2.mp3 stopped');
     }
   }
 
@@ -335,7 +335,7 @@ class WizardChessAudioManager {
     
     this.stopMusic();
     
-    const theme = new Audio('/assets/music/Theme-music1.mp3');
+    const theme = new Audio('/assets/music/Theme-music2.mp3');
     theme.loop = true;
     theme.volume = 0.42;
     
@@ -413,7 +413,7 @@ class WizardChessAudioManager {
       console.log('🛑 Stopped current legacy music');
     }
     
-    console.log('✅ All audio sources stopped - ready for Theme-music1.mp3');
+    console.log('✅ All audio sources stopped - ready for Theme-music2.mp3');
     
     // COMPREHENSIVE AUDIO CLEANUP - Stop ALL audio elements in DOM
     this.stopAllDOMAudio();

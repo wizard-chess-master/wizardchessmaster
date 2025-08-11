@@ -26,7 +26,7 @@ export type VoiceClip =
   | 'tutorial_welcome';
 
 export type MusicTrack = 
-  | never; // ALL MUSIC TRACKS REMOVED - ONLY Theme-music1.mp3 v=12 PERMITTED
+  | never; // ALL MUSIC TRACKS REMOVED - ONLY Theme-music2.mp3 v=12 PERMITTED
 
 export interface AudioSettings {
   masterVolume: number;
@@ -263,8 +263,8 @@ class GameAudioManager {
       { key: 'voice_level_complete', paths: ['/assets/voice-files/level_complete.mp3'] },
       { key: 'voice_tutorial_welcome', paths: ['/assets/voice-files/tutorial_welcome.mp3'] },
 
-      // Music - DISABLED: Using direct Theme-music1.mp3 implementation instead
-      // { key: 'music_theme_music', paths: ['/assets/music/Theme-music1.mp3'] }
+      // Music - DISABLED: Using direct Theme-music2.mp3 implementation instead
+      // { key: 'music_theme_music', paths: ['/assets/music/Theme-music2.mp3'] }
     ];
 
     const loadPromises = audioFiles.map(({ key, paths }) => 

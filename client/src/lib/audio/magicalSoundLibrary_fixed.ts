@@ -132,7 +132,7 @@ const MAGICAL_SOUND_DATA: Record<MagicalSoundEffect, string> = {
   'error_chime': '/sounds/hit.mp3',
   'success_chime': '/sounds/success.mp3',
   
-  // AMBIENT SOUNDS (COMPLETELY REMOVED - ONLY Theme-music1.mp3 allowed)
+  // AMBIENT SOUNDS (COMPLETELY REMOVED - ONLY Theme-music2.mp3 allowed)
   // ALL OLD MUSIC REFERENCES PURGED - ONLY THEME-MUSIC1.MP3 V=12 PERMITTED
   'crystal_hum': '/sounds/success.mp3', // No music - UI sound only
   'mystical_wind': '/sounds/success.mp3', // No music - UI sound only  

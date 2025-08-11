@@ -6,6 +6,7 @@ import { Badge } from '../ui/badge';
 import { ArrowLeft, BookOpen, Map, Play } from 'lucide-react';
 import { useCampaign } from '../../lib/stores/useCampaign';
 import { useChess } from '../../lib/stores/useChess';
+// Remove createInitialBoard import - using useChess reset instead
 import { CampaignMapView } from './CampaignMapView';
 import { StoryboardModal } from './StoryboardModal';
 import { CharacterDialogue } from './CharacterDialogue';
@@ -134,12 +135,24 @@ export function CampaignMode({ onBackToMenu }: CampaignModeProps) {
     const level = levels.find(l => l.id === levelId);
     if (!level || !level.unlocked) return;
 
+    console.log('🎮 Campaign level selected:', levelId, 'No audio triggers');
+    
     setSelectedLevel(level);
     startCampaignLevel(levelId);
     
-    // Start the campaign game with AI difficulty  
+    // Start the campaign game with AI difficulty (audio completely bypassed)
     const difficulty = level.aiStrength <= 2 ? 'easy' : level.aiStrength <= 4 ? 'medium' : 'hard';
-    startGame('ai', difficulty);
+    
+    // Use chess store reset method to avoid audio triggers
+    const { resetGame } = useChess.getState();
+    resetGame();
+    
+    // Set game mode and difficulty without audio triggers
+    useChess.setState({
+      gameMode: 'ai',
+      aiDifficulty: difficulty,
+      gamePhase: 'playing'
+    });
     
     // Return to game view
     onBackToMenu();
