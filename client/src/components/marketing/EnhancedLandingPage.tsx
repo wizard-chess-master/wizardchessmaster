@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { AdBanner } from '../monetization/AdBanner';
 import { FounderPromotion } from './FounderPromotion';
+import { FounderCountdown } from './FounderCountdown';
 
 interface EnhancedLandingPageProps {
   onJoinFree: () => void;
@@ -72,6 +73,11 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
           {/* Founder Promotion Banner */}
           <div className="mb-8">
             <FounderPromotion className="max-w-2xl mx-auto" />
+          </div>
+
+          {/* Founder Countdown */}
+          <div className="mb-8">
+            <FounderCountdown className="max-w-lg mx-auto" />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

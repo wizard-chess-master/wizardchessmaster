@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { EnhancedLandingPage } from './EnhancedLandingPage';
+import { FounderLandingPage } from './FounderLandingPage';
 import { JoinFreeForm } from './JoinFreeForm';
 import { ChessStrategyPage, AIChessTrainingPage, OnlineChessTournamentPage } from './SEOPages';
 import { useAuth } from '../../lib/stores/useAuth';
 
 interface MarketingRouterProps {
-  currentPage: 'landing' | 'strategy' | 'ai-training' | 'tournaments';
+  currentPage: 'landing' | 'founder' | 'strategy' | 'ai-training' | 'tournaments';
   onNavigate: (page: string) => void;
   onStartGame: () => void;
 }
@@ -47,6 +48,8 @@ export function MarketingRouter({ currentPage, onNavigate, onStartGame }: Market
 
   const renderCurrentPage = () => {
     switch (currentPage) {
+      case 'founder':
+        return <FounderLandingPage />;
       case 'strategy':
         return <ChessStrategyPage />;
       case 'ai-training':

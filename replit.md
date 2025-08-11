@@ -1,67 +1,6 @@
 # Overview
 
-**Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression.
-
-## Recent Changes
-
-**FOUNDER MEMBER PROGRAM IMPLEMENTATION (August 11, 2025)**:
-- Complete founder member system for first 1000 users with lifetime premium access
-- Database schema updated with `isFounderMember` and `founderNumber` fields
-- Founder status automatically granted during registration with premium benefits
-- FounderPromotion component displays real-time spots remaining and benefits
-- FounderWelcome modal celebrates new founder members with special recognition
-- Founder API routes (`/api/founder/status`) track program eligibility and progress
-- Enhanced authentication manager with founder status checking methods
-- README updated with prominent founder program promotion section
-- Strategic network effects approach: premium functionality for early adopters builds active user base
-
-**ENHANCED FRONT PAGE DESIGN (August 11, 2025)**:
-- Created comprehensive image-ready landing page with optimized containers
-- Added "Made with Replit" promotional badge for community visibility
-- Prepared professional README.md for Replit Gallery submission
-- Built responsive image containers ready for 1920x1080 hero backgrounds, 800x800 chess previews, and feature screenshots
-- Implemented IMAGE_SPECIFICATIONS.md guide with exact dimensions and formats for maximum visual impact
-- Enhanced landing page includes statistics showcase, player testimonials, and conversion-optimized CTAs
-- All image containers use WebP optimization and lazy loading for performance
-- Ready for image attachments to be directly uploaded and automatically integrated
-
-**CRITICAL PERFORMANCE FIX (August 11, 2025)**:
-- Resolved major resource consumption issues in production environment
-- Disabled AI learning system's expensive 50,000+ game processing in production mode
-- Prevented mass training data auto-initialization from consuming CPU/memory resources
-- Switched all detailed AI logging to development-only mode
-- Blocked unnecessary localStorage operations in production
-- Application now runs efficiently without wasteful background processing
-
-**Previous Updates (August 10, 2025)**:
-- **Campaign Storyboard System**: Complete visual story experience implementation
-  - StoryboardModal with scene progression, character introductions, and background images
-  - CampaignMapView with interactive level nodes, connected paths, and star ratings
-  - CharacterDialogue system with personality-based conversations and dialogue choices
-  - Enhanced CampaignMode integration with story triggers and character interactions
-  - Responsive dialog positioning that adapts to screen boundaries
-- **Contextual Hint Overlay for New Players**: Complete implementation of intelligent hint system
-  - Smart triggers based on game state (first move, piece selection, check warnings, wizard moves, endgame)
-  - Dismissible overlay system with priority levels and anti-repetition logic
-  - Experience level tracking (auto-graduates to experienced after 5 games)
-  - Settings integration for hint preferences and reset functionality
-  - Quick hint button component for instant tips
-  - LocalStorage persistence for dismissed hints and user preferences
-- **Password Recovery System**: Complete password recovery implementation with secure token-based reset functionality
-- **System Stability**: All major API routing issues resolved, comprehensive testing completed
-- **Development Premium Access**: Added debug endpoint to grant premium access for testing multiplayer features
-- **Button Functionality Resolved**: Fixed Join Free button and navigation buttons that were not responding to clicks
-- **Console Error Management**: Enhanced error handling for AdSense sizing issues and audio DOMExceptions
-
-Key capabilities include:
-- A unique 10x10 board with custom wizard pieces.
-- AI opponents with adjustable difficulty, including advanced minimax AI and neural network learning.
-- Enhanced campaign mode with story unlocks and board variants.
-- Streamlined single-tier monetization with a subscription model, A/B price testing, and freemium conversion optimization.
-- Comprehensive leaderboards for campaign and PvP modes.
-- A fully immersive medieval fantasy visual overhaul, including custom assets, UI, and animations.
-- Complete user authentication system with secure registration, login, and session management.
-- Cloud save functionality for premium members enabling cross-device progress synchronization, with local backup for all registered users.
+**Wizard Chess Master** is a full-stack TypeScript application featuring a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. The project aims to provide an engaging and visually immersive chess experience with robust monetization and cloud save functionality for premium members, offering seamless cross-device progression. Key capabilities include a unique 10x10 board with custom wizard pieces, AI opponents with adjustable difficulty (including advanced minimax AI and neural network learning), an enhanced campaign mode with story unlocks and board variants, and streamlined single-tier monetization with a subscription model. It also features comprehensive leaderboards for campaign and PvP modes, a fully immersive medieval fantasy visual overhaul, a complete user authentication system, and cloud save functionality for premium members with local backup for all registered users.
 
 # User Preferences
 
@@ -105,31 +44,32 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 - **Comprehensive Leaderboard System**: Tracks campaign progress and PvP ratings with visual rankings, advanced statistics, and real-time updates.
 - **Achievement Celebration Microinteractions**: Multi-layered celebration system with screen shake, particle bursts, confetti, fireworks, and haptic feedback.
 - **Improved Settings Dialog**: Enhanced text visibility and contrast with clear organization.
+- **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated with premium status indicators.
+- **Mobile-Friendly Responsive Design**: Comprehensive device detection with optimized experiences for mobile, tablet, and desktop, including mobile-specific board sizing, touch-optimized controls, and performance optimizations.
+- **Enhanced Premium Comparison Modal**: Completely revamped free vs premium page with tabbed interface, social proof testimonials, limited-time discount offers, animated visual elements, and conversion-optimized pricing presentation.
 
 ## Technical Implementations
 - **Castling System**: Implemented with king moving 3 squares and proper validation.
 - **Enhanced Campaign Mode**: 12 progressive levels with story content, board variants, premium level locks, and a comprehensive rewards system.
 - **Streamlined Monetization System**: Single $5/month subscription with A/B price testing, advanced freemium limitations, and strategic upgrade prompts.
-- **Admin Security System**: Environment-based control and session authentication for admin features (Mass AI Training, Reset AI Training, View AI Learning Stats).
+- **Admin Security System**: Environment-based control and session authentication for admin features.
 - **Enhanced Animation System**: Particle effects for captures, magical sparkles for wizard moves, smooth canvas animations, click effects, and visual feedback for special moves.
 - **Production Deployment Configuration**: Comprehensive deployment fixes including proper host binding, environment variable configuration, and Replit.toml setup for Autoscale.
 - **Comprehensive System Initialization**: Coordinated initialization of all enhanced features with parallel loading and event management.
 - **Advanced Hint Modal System**: Replaced technical alerts with immersive medieval-themed modals featuring 60 total hint variations and anti-repetition logic.
 - **Personalized Hint Learning Algorithm**: Machine learning system that tracks user interactions with hints, analyzes patterns, and adapts hint selection based on learned preferences.
 - **Floating Mentor Notifications**: Enhanced AI mentor system with floating notifications featuring real-time feedback, text-to-speech, and auto-hide functionality.
-- **Comprehensive User Authentication System**: Complete authentication implementation with bcrypt password hashing, session management, user registration/login/logout flows, and secure session-based authentication. Features user profile management and premium status tracking.
+- **Comprehensive User Authentication System**: Complete authentication implementation with bcrypt password hashing, session management, user registration/login/logout flows, and secure session-based authentication, including user profile management and premium status tracking.
 - **Cloud Save & Backup System**: Premium members get cloud save functionality for cross-device progress synchronization; all registered users can create local backups. Features automatic save detection and manual sync controls.
-- **Enhanced Main Menu Integration**: Authentication status display, login/register dialogs, cloud save access, and user profile management integrated into the main menu with premium status indicators.
 - **Upgraded Leaderboard System**: Migration from manual name entry to authenticated player data with PostgreSQL database integration, comprehensive API routes, player statistics tracking, and server synchronization for registered users.
-- **Mobile-Friendly Responsive Design**: Comprehensive device detection with optimized experiences for mobile, tablet, and desktop, including mobile-specific board sizing, touch-optimized controls, and performance optimizations.
-- **Comprehensive SEO & Marketing Website**: Full-featured landing page with compelling CTAs, chess strategy content pages, AI training guides, tournament information, and blog articles targeting profitable keywords like "chess strategy," "AI training," and "online chess."
-- **Strategic AdSense Integration**: Full AdSense integration with verified publisher ID `ca-pub-4938312134119004`, complete ad placements throughout (header, content, sidebar, footer, mobile) with revenue optimization and proper ad sizing for maximum monetization potential.
-- **Marketing Content Infrastructure**: SEO-optimized pages with meta tags, structured data markup, sitemap.xml, robots.txt, and compelling join-free forms designed for high conversion rates and organic traffic attraction.
-- **Global Navigation System**: Seamless navigation between marketing pages and game interface with responsive design, ensuring users can easily access strategy guides, training content, and premium features.
-- **Comprehensive Tournament System**: Multi-tiered tournament structure featuring free tournaments (badge rewards, premium time prizes) and premium-exclusive tournaments (special titles, avatars, exclusive badges) designed to maintain competitive integrity without cash incentives that could encourage cheating.
-- **Enhanced Premium Comparison Modal**: Completely revamped free vs premium page with tabbed interface, social proof testimonials, limited-time discount offers, animated visual elements, and conversion-optimized pricing presentation designed to maximize subscription conversions.
-- **Contextual Hint Overlay System**: Intelligent new player guidance system with game state awareness, featuring automatic hint triggers, dismissible overlays, experience tracking, and personalized learning preferences integrated throughout the game interface.
+- **Comprehensive SEO & Marketing Website**: Full-featured landing page with compelling CTAs, chess strategy content pages, AI training guides, tournament information, and blog articles targeting profitable keywords.
+- **Strategic AdSense Integration**: Full AdSense integration with verified publisher ID `ca-pub-4938312134119004`, complete ad placements throughout for revenue optimization.
+- **Marketing Content Infrastructure**: SEO-optimized pages with meta tags, structured data markup, sitemap.xml, robots.txt, and compelling join-free forms for high conversion rates.
+- **Global Navigation System**: Seamless navigation between marketing pages and game interface with responsive design.
+- **Comprehensive Tournament System**: Multi-tiered tournament structure featuring free tournaments (badge rewards, premium time prizes) and premium-exclusive tournaments (special titles, avatars, exclusive badges).
+- **Contextual Hint Overlay System**: Intelligent new player guidance system with game state awareness, featuring automatic hint triggers, dismissible overlays, experience tracking, and personalized learning preferences.
 - **Campaign Storyboard System**: Immersive visual story experience featuring StoryboardModal with scene progression, CampaignMapView with interactive level progression, CharacterDialogue system with personality-based conversations, and enhanced campaign mode with story triggers and character interactions.
+- **Founder Member Program**: System for the first 1000 users with lifetime premium access, including database schema updates, automatic granting during registration, a FounderPromotion component, FounderWelcome modal, API routes for status and analytics, enhanced authentication, a dedicated landing page, countdown, social proof, and analytics dashboard.
 
 # External Dependencies
 
@@ -162,3 +102,4 @@ Preferred workflow: Focus on substantial features over trivial UI issues. Avoid 
 
 ## Monetization Integration
 - **Stripe**: Secure payment processing for subscriptions.
+- **Google AdSense**: Advertising platform for monetization.
