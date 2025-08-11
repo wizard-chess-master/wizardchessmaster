@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../lib/stores/useAuth';
 import { useMultiplayer } from '../../lib/stores/useMultiplayer';
+import { useChess } from '../../lib/stores/useChess';
 import { AdBanner } from '../monetization/AdBanner';
 import { LoginDialog } from '../auth/LoginDialog';
 
@@ -246,12 +247,38 @@ export function MultiplayerLobby() {
         // After showing the message, start AI game
         setTimeout(() => {
           console.log('🎮 Starting AI game from multiplayer quick match');
+          
+          // Get player's skill level for adaptive difficulty
+          const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+          const winRate = playerStats.winRate || 0;
+          const gamesPlayed = playerStats.gamesPlayed || 0;
+          
+          let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
+          if (gamesPlayed >= 3) {
+            if (winRate > 0.7) {
+              difficulty = 'hard';
+              console.log('🎯 Adaptive AI: Setting to hard (win rate > 70%)');
+            } else if (winRate > 0.4) {
+              difficulty = 'medium';
+              console.log('🎯 Adaptive AI: Setting to medium (win rate 40-70%)');
+            } else {
+              console.log('🎯 Adaptive AI: Keeping on easy (win rate < 40%)');
+            }
+          } else {
+            console.log('🎯 Adaptive AI: New player, starting with easy');
+          }
+          
           // Disconnect from multiplayer to avoid conflicts
           const { disconnect } = useMultiplayer.getState();
           disconnect();
-          // Set hash to start AI game
-          window.location.hash = '#play';
-          // Hash change handler will automatically start the game with adaptive difficulty
+          
+          // Start the game directly
+          const { startGame } = useChess.getState();
+          startGame('ai', difficulty);
+          console.log('✅ AI game started with adaptive difficulty:', difficulty);
+          
+          // Navigate to game page
+          window.location.hash = '#game';
         }, 2000);
       }
     }, 5000);
