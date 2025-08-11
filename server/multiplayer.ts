@@ -37,6 +37,9 @@ class MultiplayerManager {
   private setupSocketHandlers() {
     this.io.on('connection', (socket) => {
       console.log(`🔌 Client connected: ${socket.id}`);
+      
+      // Send immediate confirmation
+      socket.emit('connection:confirmed', { socketId: socket.id, timestamp: Date.now() });
 
       socket.on('player:join', async (data: { userId: number; username: string; displayName: string; rating: number }) => {
         try {
@@ -62,7 +65,8 @@ class MultiplayerManager {
         }
       });
 
-      socket.on('matchmaking:join', async (data: { timeControl?: number }) => {
+      socket.on('matchmaking:find-opponent', async (data: { gameMode?: string; timeControl?: string; ratingRange?: number }) => {
+        console.log('🎯 Matchmaking request received:', data);
         const player = this.connectedPlayers.get(socket.id);
         if (!player) {
           socket.emit('matchmaking:error', { message: 'Player not authenticated' });
@@ -78,7 +82,7 @@ class MultiplayerManager {
               username: player.username,
               displayName: player.displayName,
               rating: player.rating,
-              timeControl: data.timeControl || 600, // 10 minutes default
+              timeControl: parseInt(data.timeControl?.split('+')[0] || '10') * 60, // Convert "10+0" to 600 seconds
               status: 'waiting'
             });
           } catch (dbError) {

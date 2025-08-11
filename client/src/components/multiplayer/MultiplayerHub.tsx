@@ -11,20 +11,28 @@ export function MultiplayerHub() {
   const [showMatchmaking, setShowMatchmaking] = useState(false);
 
   useEffect(() => {
-    if (isLoggedIn && user && !isConnected) {
-      console.log('🔌 Auto-connecting user to multiplayer:', user.username);
-      // Auto-connect when user logs in
-      connect({
-        userId: user.id,
-        username: user.username,
-        displayName: user.displayName,
-        rating: 1200 // Default rating, should come from user data
-      });
-    } else if (!isLoggedIn && isConnected) {
-      console.log('🔌 User logged out, disconnecting from multiplayer');
-      disconnect();
+    if (!isConnected) {
+      if (isLoggedIn && user) {
+        console.log('🔌 Auto-connecting authenticated user to multiplayer:', user.username);
+        // Auto-connect when user logs in
+        connect({
+          userId: user.id,
+          username: user.username,
+          displayName: user.displayName,
+          rating: 1200 // Default rating, should come from user data
+        });
+      } else {
+        console.log('🔌 Auto-connecting guest user to multiplayer');
+        // Connect as guest user
+        connect({
+          userId: Math.floor(Math.random() * 1000000), // Random guest ID
+          username: `Guest${Math.floor(Math.random() * 10000)}`,
+          displayName: `Guest Player`,
+          rating: 1200
+        });
+      }
     }
-  }, [isLoggedIn, user, isConnected, connect, disconnect]);
+  }, [isLoggedIn, user, isConnected, connect]);
 
   useEffect(() => {
     // Cleanup on unmount

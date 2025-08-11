@@ -118,7 +118,12 @@ export const useMultiplayer = create<MultiplayerState>((set, get) => ({
       set({ socket: newSocket, isConnected: true, connectionError: null });
       
       // Join as player
+      console.log('👤 Joining as player:', playerData);
       newSocket.emit('player:join', playerData);
+    });
+
+    newSocket.on('connection:confirmed', (data) => {
+      console.log('✅ Connection confirmed by server:', data);
     });
 
     newSocket.on('disconnect', () => {

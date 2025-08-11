@@ -127,8 +127,9 @@ export function MultiplayerLobby() {
   }, [socket, isConnected]);
 
   const handleCreateRoom = () => {
-    if (!socket || !isLoggedIn) return;
+    if (!socket || !isConnected) return;
 
+    console.log('🏠 Creating game room...');
     const roomData = {
       gameMode: selectedGameMode,
       timeControl: selectedTimeControl,
@@ -140,13 +141,15 @@ export function MultiplayerLobby() {
   };
 
   const handleJoinRoom = (roomId: string) => {
-    if (!socket || !isLoggedIn) return;
+    if (!socket || !isConnected) return;
+    console.log('🎮 Joining room:', roomId);
     socket.emit('lobby:join-room', { roomId });
   };
 
   const handleQuickMatch = () => {
-    if (!socket || !isLoggedIn) return;
+    if (!socket || !isConnected) return;
     
+    console.log('🎯 Starting quick match...');
     socket.emit('matchmaking:find-opponent', {
       gameMode: 'casual',
       timeControl: '10+0',
@@ -155,8 +158,9 @@ export function MultiplayerLobby() {
   };
 
   const handleChallengePlayer = (playerId: string) => {
-    if (!socket || !isLoggedIn) return;
+    if (!socket || !isConnected) return;
     
+    console.log('⚔️ Challenging player:', playerId);
     socket.emit('lobby:challenge-player', {
       challengedPlayerId: playerId,
       gameMode: selectedGameMode,
