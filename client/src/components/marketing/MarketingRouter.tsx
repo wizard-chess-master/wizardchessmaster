@@ -27,12 +27,7 @@ export function MarketingRouter({ currentPage, onNavigate, onStartGame }: Market
   }) => {
     setIsRegistering(true);
     try {
-      const success = await register(
-        formData.username,
-        formData.email,
-        formData.password,
-        formData.displayName
-      );
+      const success = await register(formData);
       
       if (success) {
         setShowJoinForm(false);
