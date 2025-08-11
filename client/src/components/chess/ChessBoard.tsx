@@ -532,9 +532,18 @@ export function ChessBoard() {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     
-    // Use the same squareSize that's used for rendering the board
-    const col = Math.floor(x / squareSize);
-    const row = Math.floor(y / squareSize);
+    // Account for canvas scaling: canvas internal size vs display size
+    // The canvas has internal resolution of canvasSize but is displayed at effectiveBoardSize
+    const scaleX = canvasSize / rect.width;
+    const scaleY = canvasSize / rect.height;
+    
+    // Convert click coordinates to canvas internal coordinates
+    const canvasX = x * scaleX;
+    const canvasY = y * scaleY;
+    
+    // Now calculate the square using the canvas's internal coordinate system
+    const col = Math.floor(canvasX / squareSize);
+    const row = Math.floor(canvasY / squareSize);
     
     console.log('🎯 Click coordinates DEBUG:', { 
       clientX: event.clientX,
@@ -544,6 +553,13 @@ export function ChessBoard() {
       relativeX: x,
       relativeY: y,
       canvasSize,
+      effectiveBoardSize,
+      rectWidth: rect.width,
+      rectHeight: rect.height,
+      scaleX,
+      scaleY,
+      canvasX,
+      canvasY,
       squareSizeUsed: squareSize,
       calculatedRow: row,
       calculatedCol: col,
