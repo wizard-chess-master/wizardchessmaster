@@ -158,19 +158,19 @@ export function SimpleMultiplayerLayout({
 
         {/* Chess Board - Center */}
         <div className="lg:col-span-6">
-          <div className="flex justify-center" style={{ maxWidth: '100%', overflow: 'hidden' }}>
+          <div className="flex justify-center">
             <div 
-              className="bg-white rounded-lg shadow-sm border border-blue-200 p-2"
+              className="bg-white rounded-lg shadow-sm border border-blue-200 p-4"
               style={{ 
                 position: 'relative', 
                 zIndex: 1,
                 isolation: 'isolate',
-                maxWidth: '600px',
+                maxWidth: '650px',
                 width: '100%',
-                overflow: 'hidden'
+                overflow: 'visible'
               }}
             >
-              <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
+              <div style={{ transform: 'scale(0.72)', transformOrigin: 'center center' }}>
                 <ChessBoard />
               </div>
             </div>
