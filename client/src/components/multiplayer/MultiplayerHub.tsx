@@ -49,9 +49,13 @@ export function MultiplayerHub() {
 
   // Show active game if one exists
   if (currentGame) {
+    console.log('🎮 Rendering MultiplayerGame with game data:', currentGame);
     return (
       <MultiplayerGame 
-        onBackToLobby={() => setShowMatchmaking(false)}
+        onBackToLobby={() => {
+          useMultiplayer.getState().setCurrentGame(null);
+          window.location.hash = '#multiplayer';
+        }}
       />
     );
   }

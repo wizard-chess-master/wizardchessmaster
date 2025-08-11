@@ -147,7 +147,10 @@ export function MultiplayerLobby() {
       useMultiplayer.getState().setCurrentGame(gameInfo as any);
       
       // Navigate to multiplayer game
-      window.location.hash = '#multiplayer-game';
+      console.log('🔄 Navigating to multiplayer game...');
+      setTimeout(() => {
+        window.location.hash = '#multiplayer-game';
+      }, 100);
     });
 
     socket.on('room:joined', (response: { success: boolean; gameId: string; message: string }) => {
@@ -166,7 +169,10 @@ export function MultiplayerLobby() {
         useMultiplayer.getState().setCurrentGame(gameInfo as any);
         
         // Navigate to game
-        window.location.hash = '#multiplayer-game';
+        console.log('🔄 Navigating to multiplayer game...');
+        setTimeout(() => {
+          window.location.hash = '#multiplayer-game';
+        }, 100);
       }
     });
 
