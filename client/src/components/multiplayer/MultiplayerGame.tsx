@@ -25,7 +25,7 @@ interface MultiplayerGameProps {
 export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
   const { currentGame, makeMove, resignGame } = useMultiplayer();
   const { board, currentPlayer, gamePhase } = useChess();
-  const { playSound } = useAudio();
+  const { playPieceMovementSound } = useAudio();
   const [chatMessages, setChatMessages] = useState<Array<{id: string, player: string, message: string, timestamp: Date}>>([]);
   const [newMessage, setNewMessage] = useState('');
   const [showChat, setShowChat] = useState(false);
@@ -59,19 +59,21 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
     );
   }
 
-  const handleMove = (move: any) => {
+  const handleMove = (from: string, to: string) => {
+    console.log('🎮 Multiplayer move attempt:', { from, to });
+    
     // Send move to server
     if (currentGame) {
       makeMove(currentGame.gameId, {
-        from: move.from,
-        to: move.to,
-        board: board,
-        currentPlayer: currentPlayer
+        from,
+        to,
+        board,
+        currentPlayer
       });
     }
 
-    if (audioEnabled) {
-      playSound('move_clack');
+    if (audioEnabled && playPieceMovementSound) {
+      playPieceMovementSound();
     }
   };
 
@@ -108,7 +110,7 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
       {/* Game Header */}
-      <div className="bg-white shadow-sm border-b border-blue-200 px-4 py-3">
+      <div className="bg-white shadow-sm border-b border-blue-200 px-4 py-2 relative z-10">
         <div className="container mx-auto flex justify-between items-center">
           <div className="flex items-center gap-4">
             <Button 
@@ -239,8 +241,10 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
           </div>
 
           {/* Chess Board */}
-          <div className="lg:col-span-2">
-            <ChessBoard />
+          <div className="lg:col-span-2 relative z-0">
+            <div className="flex justify-center">
+              <ChessBoard />
+            </div>
           </div>
 
           {/* Chat Panel (if shown) */}
