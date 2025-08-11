@@ -12,6 +12,8 @@ export const users = pgTable("users", {
   subscriptionId: text("subscription_id"),
   subscriptionStatus: text("subscription_status"), // active, canceled, past_due
   subscriptionEndsAt: timestamp("subscription_ends_at"),
+  isFounderMember: boolean("is_founder_member").notNull().default(false), // First 1000 users
+  founderNumber: integer("founder_number"), // Their position in the first 1000
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastSeen: timestamp("last_seen").defaultNow().notNull(),
 });

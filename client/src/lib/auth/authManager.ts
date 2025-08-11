@@ -184,6 +184,16 @@ class AuthManager {
     return this.currentUser?.isPremium || false;
   }
 
+  // Check if user is a founder member
+  isFounder(): boolean {
+    return this.currentUser?.isFounderMember || false;
+  }
+
+  // Get founder number if user is a founder
+  getFounderNumber(): number | null {
+    return this.currentUser?.founderNumber || null;
+  }
+
   // Get user's subscription status
   getSubscriptionStatus(): string | null {
     return this.currentUser?.subscriptionStatus || null;

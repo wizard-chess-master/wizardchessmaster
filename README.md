@@ -6,6 +6,23 @@
 
 🌐 **Live App**: [wizardchessmaster.com](https://wizardchessmaster.com)
 
+## 👑 LIMITED TIME: Founder Member Program
+
+**Join the first 1000 players and unlock lifetime premium access for FREE!**
+
+🎉 **Founder Member Benefits:**
+- ✨ Full premium functionality - forever free
+- 🏆 Exclusive "Founder" badge and recognition  
+- 🎖️ Access to founder-only tournaments
+- ☁️ Cloud save & cross-device sync
+- 🤖 Unlimited AI training sessions
+- 📈 Advanced analytics and progress tracking
+- 💬 Priority customer support
+
+**Only available to the first 1000 registrations.** After that, premium features require subscription.
+
+[🚀 **Claim Your Founder Status - Join Now**](https://wizardchessmaster.com)
+
 ## ✨ Features
 
 ### 🎮 Unique Gameplay

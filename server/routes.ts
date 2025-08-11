@@ -10,6 +10,7 @@ import campaignRoutes from "./routes/campaign";
 import usersRoutes from "./routes/users";
 import { multiplayerRouter } from "./routes/multiplayer";
 import chessRoutes from "./routes/chess";
+import founderRoutes from "./routes/founder";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
@@ -43,6 +44,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register chess routes
   app.use('/api/chess', chessRoutes);
+  
+  // Register founder routes
+  app.use('/api/founder', founderRoutes);
 
   const httpServer = createServer(app);
   

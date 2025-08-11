@@ -16,11 +16,17 @@ import {
   Sparkles
 } from 'lucide-react';
 import { AdBanner } from '../monetization/AdBanner';
+import { FounderWelcome } from '../auth/FounderWelcome';
 
 interface JoinFreeFormProps {
   onSubmit: (formData: { username: string; email: string; password: string; displayName: string }) => void;
   onClose: () => void;
   isLoading?: boolean;
+}
+
+interface FounderMember {
+  isFounderMember: boolean;
+  founderNumber?: number;
 }
 
 export function JoinFreeForm({ onSubmit, onClose, isLoading = false }: JoinFreeFormProps) {
@@ -30,10 +36,30 @@ export function JoinFreeForm({ onSubmit, onClose, isLoading = false }: JoinFreeF
     password: '',
     displayName: ''
   });
+  const [showFounderWelcome, setShowFounderWelcome] = useState(false);
+  const [founderData, setFounderData] = useState<FounderMember | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      const result = await onSubmit(formData);
+      
+      // Check if user became a founder member
+      if (result && result.user && result.user.isFounderMember) {
+        setFounderData({
+          isFounderMember: true,
+          founderNumber: result.user.founderNumber
+        });
+        setShowFounderWelcome(true);
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+    }
+  };
+
+  const handleFounderContinue = () => {
+    setShowFounderWelcome(false);
+    onClose();
   };
 
   return (
@@ -250,6 +276,14 @@ export function JoinFreeForm({ onSubmit, onClose, isLoading = false }: JoinFreeF
           </div>
         </div>
       </div>
+      
+      {/* Founder Welcome Modal */}
+      {showFounderWelcome && founderData?.founderNumber && (
+        <FounderWelcome 
+          founderNumber={founderData.founderNumber}
+          onContinue={handleFounderContinue}
+        />
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/neon-http';
 import { neon } from '@neondatabase/serverless';
-import { eq, and, gt } from 'drizzle-orm';
+import { eq, and, gt, count } from 'drizzle-orm';
 import { users, userSaveData, passwordResetTokens, type User, type InsertUser, type UserSaveData, type InsertUserSaveData, type PasswordResetToken } from "@shared/schema";
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
@@ -57,6 +57,10 @@ export interface IStorage {
   validatePasswordResetToken(token: string): Promise<User | null>;
   resetPassword(token: string, newPassword: string): Promise<boolean>;
   
+  // Founder program methods
+  getTotalUserCount(): Promise<number>;
+  checkFounderEligibility(): Promise<{ eligible: boolean; founderNumber?: number }>;
+  
   // Leaderboard methods
   updatePlayerStats(userId: number, stats: {
     gamesWon?: number;
@@ -109,14 +113,21 @@ export class MemStorage implements IStorage {
   async createUser(insertUser: InsertUser): Promise<User> {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
     const id = this.currentId++;
+    
+    // Check founder eligibility
+    const currentUserCount = this.users.size;
+    const isFounder = currentUserCount < 1000;
+    
     const user: User = { 
       ...insertUser, 
       id,
       password: hashedPassword,
-      isPremium: false,
+      isPremium: isFounder, // First 1000 users get premium automatically
+      isFounderMember: isFounder,
+      founderNumber: isFounder ? currentUserCount + 1 : null,
       subscriptionId: null,
-      subscriptionStatus: null,
-      subscriptionEndsAt: null,
+      subscriptionStatus: isFounder ? 'founder' : null,
+      subscriptionEndsAt: null, // Founder premium never expires
       createdAt: new Date(),
       lastSeen: new Date()
     };
@@ -326,6 +337,18 @@ export class MemStorage implements IStorage {
     const entry = leaderboard.find(e => e.id === userId);
     return entry ? entry.rank || null : null;
   }
+
+  async getTotalUserCount(): Promise<number> {
+    return this.users.size;
+  }
+
+  async checkFounderEligibility(): Promise<{ eligible: boolean; founderNumber?: number }> {
+    const currentCount = this.users.size;
+    return {
+      eligible: currentCount < 1000,
+      founderNumber: currentCount < 1000 ? currentCount + 1 : undefined
+    };
+  }
 }
 
 // Database-powered storage for production
@@ -353,9 +376,17 @@ export class DatabaseStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
+    
+    // Check founder eligibility
+    const eligibility = await this.checkFounderEligibility();
+    
     const result = await this.db.insert(users).values({
       ...insertUser,
-      password: hashedPassword
+      password: hashedPassword,
+      isPremium: eligibility.eligible, // First 1000 users get premium automatically
+      isFounderMember: eligibility.eligible,
+      founderNumber: eligibility.founderNumber,
+      subscriptionStatus: eligibility.eligible ? 'founder' : null
     }).returning();
     return result[0];
   }
@@ -599,6 +630,19 @@ export class DatabaseStorage implements IStorage {
     
     const entry = leaderboard.find(e => e.id === userId);
     return entry ? entry.rank || null : null;
+  }
+
+  async getTotalUserCount(): Promise<number> {
+    const result = await this.db.select({ count: count() }).from(users);
+    return result[0].count;
+  }
+
+  async checkFounderEligibility(): Promise<{ eligible: boolean; founderNumber?: number }> {
+    const currentCount = await this.getTotalUserCount();
+    return {
+      eligible: currentCount < 1000,
+      founderNumber: currentCount < 1000 ? currentCount + 1 : undefined
+    };
   }
 }
 

@@ -18,6 +18,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { AdBanner } from '../monetization/AdBanner';
+import { FounderPromotion } from './FounderPromotion';
 
 interface EnhancedLandingPageProps {
   onJoinFree: () => void;
@@ -67,6 +68,11 @@ export function EnhancedLandingPage({ onJoinFree, onPlayNow }: EnhancedLandingPa
             Experience the ultimate 10x10 chess adventure with magical wizards, intelligent AI opponents, 
             and medieval fantasy gameplay. Join thousands of players mastering strategic wizard battles.
           </p>
+
+          {/* Founder Promotion Banner */}
+          <div className="mb-8">
+            <FounderPromotion className="max-w-2xl mx-auto" />
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button 
