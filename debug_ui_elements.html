@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UI Elements Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .debug-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .found { color: green; }
+        .missing { color: red; }
+        .element-info { margin: 10px 0; padding: 10px; background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h1>Premium UI Elements Debug</h1>
+    
+    <div class="debug-section">
+        <h2>Element Search Results</h2>
+        <div id="results"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h2>Console Logs</h2>
+        <div id="console-output"></div>
+    </div>
+
+    <script>
+        function addLog(message, type = 'info') {
+            const output = document.getElementById('console-output');
+            const div = document.createElement('div');
+            div.textContent = `${new Date().toLocaleTimeString()}: ${message}`;
+            div.className = type;
+            output.appendChild(div);
+        }
+        
+        function searchForElements() {
+            const results = document.getElementById('results');
+            results.innerHTML = '';
+            
+            addLog('Starting element search...');
+            
+            // Search for premium elements
+            const elementsToFind = [
+                { selector: '[data-testid="premium-crown"]', name: 'Premium Crown' },
+                { selector: '[data-testid="premium-badge"]', name: 'Premium Badge' },
+                { selector: '[data-testid="upgrade-button"]', name: 'Upgrade Button' },
+                { selector: 'button:contains("Upgrade to Premium")', name: 'Upgrade Text Button' },
+                { selector: '.text-amber-800', name: 'Premium Member Text' },
+                { selector: '[data-icon="crown"]', name: 'Crown Icons' }
+            ];
+            
+            elementsToFind.forEach(item => {
+                let elements;
+                try {
+                    if (item.selector.includes(':contains(')) {
+                        // Handle contains selector manually
+                        const text = item.selector.match(/contains\("([^"]+)"\)/)[1];
+                        elements = Array.from(document.querySelectorAll('button')).filter(btn => 
+                            btn.textContent.includes(text)
+                        );
+                    } else {
+                        elements = document.querySelectorAll(item.selector);
+                    }
+                } catch (e) {
+                    elements = [];
+                }
+                
+                const div = document.createElement('div');
+                div.className = 'element-info';
+                
+                if (elements.length > 0) {
+                    div.innerHTML = `<span class="found">✅ Found ${elements.length} ${item.name}</span>`;
+                    addLog(`Found ${elements.length} ${item.name}`, 'found');
+                    
+                    Array.from(elements).forEach((el, index) => {
+                        const info = document.createElement('div');
+                        info.innerHTML = `&nbsp;&nbsp;${index + 1}. Visible: ${el.offsetParent !== null}, Text: "${el.textContent.trim()}"`;
+                        div.appendChild(info);
+                    });
+                } else {
+                    div.innerHTML = `<span class="missing">❌ Missing: ${item.name}</span>`;
+                    addLog(`Missing: ${item.name}`, 'missing');
+                }
+                
+                results.appendChild(div);
+            });
+            
+            // Check for user info
+            const welcomeText = document.querySelector('.text-green-700');
+            if (welcomeText) {
+                const div = document.createElement('div');
+                div.className = 'element-info';
+                div.innerHTML = `<span class="found">✅ Welcome text found:</span> "${welcomeText.textContent}"`;
+                results.appendChild(div);
+                addLog(`Welcome text: ${welcomeText.textContent}`, 'found');
+            }
+            
+            addLog('Element search completed');
+        }
+        
+        // Search immediately and then every 2 seconds
+        searchForElements();
+        setInterval(searchForElements, 2000);
+        
+        // Listen for premium status events
+        window.addEventListener('premium-status-updated', (event) => {
+            addLog(`Premium status event received: ${JSON.stringify(event.detail)}`, 'found');
+            setTimeout(searchForElements, 100);
+        });
+        
+        addLog('Debug page loaded and monitoring started');
+    </script>
+</body>
+</html>

@@ -145,7 +145,15 @@ export const useAuth = create<AuthState & AuthActions>((set, get) => {
     },
 
     isPremium: () => {
-      return authManager.isPremium();
+      const state = get();
+      const authPremium = authManager.isPremium();
+      console.log('🔍 useAuth isPremium check:', {
+        stateUser: state.user?.username,
+        stateUserPremium: state.user?.isPremium,
+        authManagerPremium: authPremium,
+        finalResult: state.user?.isPremium || authPremium
+      });
+      return state.user?.isPremium || authPremium;
     }
   };
 });

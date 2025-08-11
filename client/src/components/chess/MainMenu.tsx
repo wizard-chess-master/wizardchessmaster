@@ -51,6 +51,13 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
         subscriptionStatus: user.subscriptionStatus,
         authStorePremium: isPremium()
       });
+      console.log('🔍 MainMenu: Rendering conditions:', {
+        isLoggedIn,
+        userExists: !!user,
+        userIsPremium: user?.isPremium,
+        shouldShowUpgrade: !user?.isPremium,
+        shouldShowPremiumBadge: !!user?.isPremium
+      });
     }
     
     // Listen for premium status updates
@@ -65,7 +72,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
     return () => {
       window.removeEventListener('premium-status-updated', handlePremiumUpdate as EventListener);
     };
-  }, [user, isPremium]);
+  }, [user, isPremium, isLoggedIn]);
   const [isTraining, setIsTraining] = useState(false);
   const [learningStats, setLearningStats] = useState<any>(null);
   const [showStatsDialog, setShowStatsDialog] = useState(false);
