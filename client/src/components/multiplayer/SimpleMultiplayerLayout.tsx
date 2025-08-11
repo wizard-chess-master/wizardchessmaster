@@ -159,7 +159,14 @@ export function SimpleMultiplayerLayout({
         {/* Chess Board - Center */}
         <div className="lg:col-span-6">
           <div className="flex justify-center">
-            <div className="bg-white rounded-lg shadow-sm border border-blue-200 p-4">
+            <div 
+              className="bg-white rounded-lg shadow-sm border border-blue-200 p-4"
+              style={{ 
+                position: 'relative', 
+                zIndex: 10,
+                isolation: 'isolate'
+              }}
+            >
               <ChessBoard />
             </div>
           </div>

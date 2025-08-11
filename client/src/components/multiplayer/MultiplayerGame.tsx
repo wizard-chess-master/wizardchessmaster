@@ -5,8 +5,8 @@ import { useMultiplayer } from '../../lib/stores/useMultiplayer';
 import { useAudio } from '../../lib/stores/useAudio';
 
 export function MultiplayerGame() {
-  const { disconnect, currentGame } = useMultiplayer();
-  const { gamePhase, startGame } = useChess();
+  const { disconnect, currentGame, setCurrentGame } = useMultiplayer();
+  const { gamePhase, startGame, resetGame } = useChess();
   const { playPieceMovementSound } = useAudio();
   
   const [showChat, setShowChat] = useState(false);
@@ -18,6 +18,14 @@ export function MultiplayerGame() {
   }>>([]);
   const [newMessage, setNewMessage] = useState('');
 
+  // Add multiplayer-active class to body
+  useEffect(() => {
+    document.body.classList.add('multiplayer-active');
+    return () => {
+      document.body.classList.remove('multiplayer-active');
+    };
+  }, []);
+
   // Initialize game when component loads
   useEffect(() => {
     if (currentGame && gamePhase === 'menu') {
@@ -27,7 +35,8 @@ export function MultiplayerGame() {
   }, [currentGame, gamePhase, startGame]);
 
   const handleLeaveRoom = () => {
-    disconnect();
+    resetGame();
+    setCurrentGame(null);
     window.location.hash = '#multiplayer';
   };
 
@@ -49,14 +58,16 @@ export function MultiplayerGame() {
   };
 
   return (
-    <SimpleMultiplayerLayout
-      onLeaveRoom={handleLeaveRoom}
-      onToggleChat={handleToggleChat}
-      showChat={showChat}
-      chatMessages={chatMessages}
-      newMessage={newMessage}
-      setNewMessage={setNewMessage}
-      sendChatMessage={sendChatMessage}
-    />
+    <div className="multiplayer-game-wrapper" style={{ position: 'relative', zIndex: 1 }}>
+      <SimpleMultiplayerLayout
+        onLeaveRoom={handleLeaveRoom}
+        onToggleChat={handleToggleChat}
+        showChat={showChat}
+        chatMessages={chatMessages}
+        newMessage={newMessage}
+        setNewMessage={setNewMessage}
+        sendChatMessage={sendChatMessage}
+      />
+    </div>
   );
 }

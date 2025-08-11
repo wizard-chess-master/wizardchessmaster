@@ -50,17 +50,7 @@ export function MultiplayerHub() {
   // Show active game if one exists
   if (currentGame) {
     console.log('🎮 Rendering MultiplayerGame with game data:', currentGame);
-    return (
-      <MultiplayerGame 
-        onBackToLobby={() => {
-          // Reset game state when going back to lobby
-          const { resetGame } = useChess.getState();
-          resetGame();
-          useMultiplayer.getState().setCurrentGame(null);
-          window.location.hash = '#multiplayer';
-        }}
-      />
-    );
+    return <MultiplayerGame />;
   }
 
   return (

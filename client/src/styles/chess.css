@@ -324,19 +324,17 @@
 }
 
 /* Modal and Dialog Z-index Management */
-[data-state="open"][data-radix-dialog-overlay] {
+/* Dialog styles - only apply when NOT in multiplayer */
+body:not(.multiplayer-active) [data-state="open"][data-radix-dialog-overlay] {
   z-index: 100 !important;
   position: fixed !important;
   inset: 0;
   background: rgba(0, 0, 0, 0.8);
 }
 
-[data-state="open"][data-radix-dialog-content] {
+body:not(.multiplayer-active) [data-state="open"][data-radix-dialog-content] {
   z-index: 101 !important;
   position: fixed !important;
-  left: 50% !important;
-  top: 50% !important;
-  transform: translate(-50%, -50%) !important;
   left: 50% !important;
   top: 50% !important;
   transform: translate(-50%, -50%) !important;
@@ -360,10 +358,52 @@ body:has([data-state="open"][data-radix-dialog-overlay]) {
 }
 
 /* Enhanced Modal Behavior */
-.medieval-dialog {
+/* Medieval dialog - only apply when NOT in multiplayer */
+body:not(.multiplayer-active) .medieval-dialog {
   position: fixed !important;
   z-index: 999 !important;
   isolation: isolate;
+}
+
+/* Multiplayer-specific styles to ensure chess board is clickable */
+body.multiplayer-active .chess-board-container {
+  position: relative !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+}
+
+body.multiplayer-active .chess-canvas {
+  position: relative !important;
+  z-index: 10 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+body.multiplayer-active canvas {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Hide all overlays in multiplayer */
+body.multiplayer-active .contextual-hint-overlay,
+body.multiplayer-active .hint-overlay,
+body.multiplayer-active .medieval-dialog,
+body.multiplayer-active [data-radix-dialog-overlay],
+body.multiplayer-active [data-radix-dialog-content] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Ensure no fixed elements interfere in multiplayer */
+body.multiplayer-active [style*="position: fixed"],
+body.multiplayer-active [style*="position:fixed"] {
+  pointer-events: none !important;
+}
+
+/* Exception for the actual chess board */
+body.multiplayer-active .chess-board-container *,
+body.multiplayer-active .multiplayer-game-wrapper * {
+  pointer-events: auto !important;
 }
 
 .difficulty-metric-card {
