@@ -532,15 +532,37 @@ export function ChessBoard() {
     const x = event.clientX - rect.left;
     const y = event.clientY - rect.top;
     
-    const col = Math.floor(x / squareSize);
-    const row = Math.floor(y / squareSize);
+    // Use the effective square size which accounts for mobile/desktop differences
+    const actualSquareSize = effectiveBoardSize / 10;
+    const col = Math.floor(x / actualSquareSize);
+    const row = Math.floor(y / actualSquareSize);
     
-    console.log('🎯 Click coordinates:', { 
-      canvas: { x, y },
-      grid: { row, col },
-      squareSize,
+    console.log('🎯 Click coordinates DEBUG:', { 
+      clientX: event.clientX,
+      clientY: event.clientY,
+      rectLeft: rect.left,
+      rectTop: rect.top,
+      relativeX: x,
+      relativeY: y,
+      effectiveBoardSize,
+      actualSquareSize,
+      calculatedRow: row,
+      calculatedCol: col,
+      squareSizeUsed: squareSize,
       piece: board[row]?.[col]
     });
+    
+    // Additional debug: show what's in nearby squares
+    if (row >= 0 && row < 10 && col >= 0 && col < 10) {
+      console.log('📍 Nearby pieces:');
+      for (let r = Math.max(0, row - 1); r <= Math.min(9, row + 1); r++) {
+        for (let c = Math.max(0, col - 1); c <= Math.min(9, col + 1); c++) {
+          if (board[r][c]) {
+            console.log(`  [${r},${c}]: ${board[r][c].type} (${board[r][c].color})`);
+          }
+        }
+      }
+    }
     
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
       console.log('✅ Valid square clicked:', { row, col });
