@@ -239,7 +239,7 @@ export function SimpleMultiplayerLayout({
 
         {/* Chat - Right Side (Always Visible) */}
         <div className="lg:col-span-3">
-          {(
+          {showChat ? (
             <Card className="border-blue-200 h-[700px] flex flex-col">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm text-blue-900 flex items-center gap-2">
@@ -289,7 +289,7 @@ export function SimpleMultiplayerLayout({
                 </div>
               </CardContent>
             </Card>
-          ) || (
+          ) : (
             /* Empty State when Chat is Hidden */
             <Card className="border-blue-200 h-[700px] flex flex-col">
               <CardHeader className="pb-3">
