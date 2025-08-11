@@ -61,6 +61,7 @@ interface MultiplayerState {
   // Actions
   connect: (playerData: { userId: number; username: string; displayName: string; rating: number }) => void;
   disconnect: () => void;
+  setCurrentGame: (game: OnlineGame | null) => void;
   joinMatchmaking: (timeControl?: number) => void;
   leaveMatchmaking: () => void;
   makeMove: (gameId: string, move: any) => void;
@@ -219,6 +220,11 @@ export const useMultiplayer = create<MultiplayerState>((set, get) => ({
         matchmaking: { inQueue: false, status: 'idle' }
       });
     }
+  },
+
+  setCurrentGame: (game) => {
+    console.log('🎮 Setting current game:', game);
+    set({ currentGame: game });
   },
   
   joinMatchmaking: (timeControl = 600) => {

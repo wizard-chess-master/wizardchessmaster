@@ -24,7 +24,7 @@ interface MultiplayerGameProps {
 
 export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
   const { currentGame, makeMove, resignGame } = useMultiplayer();
-  const { board, currentPlayer, gamePhase, makeMove: makeLocalMove } = useChess();
+  const { board, currentPlayer, gamePhase } = useChess();
   const { playSound } = useAudio();
   const [chatMessages, setChatMessages] = useState<Array<{id: string, player: string, message: string, timestamp: Date}>>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -60,16 +60,15 @@ export function MultiplayerGame({ onBackToLobby }: MultiplayerGameProps) {
   }
 
   const handleMove = (move: any) => {
-    // Make move locally first for immediate feedback
-    makeLocalMove(move.from, move.to);
-    
     // Send move to server
-    makeMove(currentGame.gameId, {
-      from: move.from,
-      to: move.to,
-      board: board,
-      currentPlayer: currentPlayer
-    });
+    if (currentGame) {
+      makeMove(currentGame.gameId, {
+        from: move.from,
+        to: move.to,
+        board: board,
+        currentPlayer: currentPlayer
+      });
+    }
 
     if (audioEnabled) {
       playSound('move_clack');

@@ -50,7 +50,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'reset-password' | BlogPageType>('game');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'multiplayer-game' | 'reset-password' | BlogPageType>('game');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -168,6 +168,8 @@ function App() {
         }, 100);
       } else if (hash === 'multiplayer') {
         setCurrentPage('multiplayer');
+      } else if (hash === 'multiplayer-game') {
+        setCurrentPage('multiplayer-game');
       } else if (hash === 'reset-password' || window.location.pathname === '/reset-password') {
         setCurrentPage('reset-password');
       } else if (hash) {
@@ -232,6 +234,10 @@ function App() {
           )}
           
           {currentPage === 'multiplayer' && (
+            <MultiplayerHub />
+          )}
+
+          {currentPage === 'multiplayer-game' && (
             <MultiplayerHub />
           )}
 

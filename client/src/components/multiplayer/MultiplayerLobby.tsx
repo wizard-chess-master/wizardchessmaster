@@ -134,6 +134,18 @@ export function MultiplayerLobby() {
 
     socket.on('game:started', (gameData: any) => {
       console.log('🎮 Game started:', gameData);
+      // Store game data and navigate
+      const gameInfo = {
+        gameId: gameData.gameId,
+        roomId: gameData.roomId,
+        players: gameData.players || [],
+        status: 'playing' as const,
+        gameState: null
+      };
+      
+      // Update multiplayer store with game data  
+      useMultiplayer.getState().setCurrentGame(gameInfo as any);
+      
       // Navigate to multiplayer game
       window.location.hash = '#multiplayer-game';
     });
@@ -141,6 +153,18 @@ export function MultiplayerLobby() {
     socket.on('room:joined', (response: { success: boolean; gameId: string; message: string }) => {
       console.log('🎮 Room joined successfully:', response);
       if (response.success) {
+        // Store game data
+        const gameInfo = {
+          gameId: response.gameId,
+          roomId: 'unknown',
+          players: [],
+          status: 'playing' as const,
+          gameState: null
+        };
+        
+        // Update multiplayer store with game data
+        useMultiplayer.getState().setCurrentGame(gameInfo as any);
+        
         // Navigate to game
         window.location.hash = '#multiplayer-game';
       }
