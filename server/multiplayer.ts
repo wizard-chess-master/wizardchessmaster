@@ -41,6 +41,11 @@ class MultiplayerManager {
       // Send immediate confirmation
       socket.emit('connection:confirmed', { socketId: socket.id, timestamp: Date.now() });
 
+      // Debug: Log all incoming events
+      socket.onAny((eventName, ...args) => {
+        console.log(`📨 Event received: ${eventName}`, args.length > 0 ? args[0] : '');
+      });
+
       socket.on('player:join', async (data: { userId: number; username: string; displayName: string; rating: number }) => {
         try {
           const playerData: PlayerData = {
