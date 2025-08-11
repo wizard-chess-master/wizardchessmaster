@@ -19,7 +19,8 @@ export class MultiplayerAIChat {
     this.currentPersonality = aiPersonalities[personalityId] || aiPersonalities.coach;
     
     // Initialize OpenAI if API key is available
-    const apiKey = process.env.OPENAI_API_KEY || (window as any).OPENAI_API_KEY;
+    // Check for API key in window object (browser environment)
+    const apiKey = (window as any).OPENAI_API_KEY || import.meta.env.VITE_OPENAI_API_KEY;
     if (apiKey) {
       this.openai = new OpenAI({ 
         apiKey,
