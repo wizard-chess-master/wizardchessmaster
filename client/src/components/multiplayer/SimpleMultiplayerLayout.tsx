@@ -30,7 +30,7 @@ export function SimpleMultiplayerLayout({
   setNewMessage,
   sendChatMessage
 }: SimpleMultiplayerLayoutProps) {
-  const { currentGame, players } = useMultiplayer();
+  const { currentGame } = useMultiplayer();
   const { currentPlayer } = useChess();
 
   if (!currentGame) {
@@ -46,9 +46,6 @@ export function SimpleMultiplayerLayout({
       </div>
     );
   }
-
-  const opponent = players.find(p => p.id !== currentGame.playerId);
-  const currentUser = players.find(p => p.id === currentGame.playerId);
 
   return (
     <div className="min-h-screen bg-blue-50 p-4">
@@ -66,14 +63,14 @@ export function SimpleMultiplayerLayout({
               Leave Game
             </Button>
             <div className="text-blue-900 font-semibold">
-              Room: {currentGame.roomId}
+              Multiplayer Game
             </div>
           </div>
           
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-blue-700">
               <Users className="w-4 h-4" />
-              <span className="text-sm">{players.length}/2 Players</span>
+              <span className="text-sm">Online Game</span>
             </div>
             <Button
               onClick={onToggleChat}
@@ -102,21 +99,15 @@ export function SimpleMultiplayerLayout({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-blue-700">Name</span>
-                  <span className="text-blue-900 font-medium">
-                    {opponent?.displayName || 'Waiting...'}
-                  </span>
+                  <span className="text-blue-900 font-medium">Opponent</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Rating</span>
-                  <span className="text-blue-900 font-medium">
-                    {opponent?.rating || '---'}
-                  </span>
+                  <span className="text-blue-900 font-medium">1200</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Color</span>
-                  <span className="text-blue-900 font-medium">
-                    {currentGame.yourColor === 'white' ? 'Black' : 'White'}
-                  </span>
+                  <span className="text-blue-900 font-medium">Black</span>
                 </div>
               </div>
             </CardContent>
@@ -131,21 +122,15 @@ export function SimpleMultiplayerLayout({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-blue-700">Name</span>
-                  <span className="text-blue-900 font-medium">
-                    {currentUser?.displayName || 'You'}
-                  </span>
+                  <span className="text-blue-900 font-medium">You</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Rating</span>
-                  <span className="text-blue-900 font-medium">
-                    {currentUser?.rating || '1200'}
-                  </span>
+                  <span className="text-blue-900 font-medium">1200</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Color</span>
-                  <span className="text-blue-900 font-medium">
-                    {currentGame.yourColor === 'white' ? 'White' : 'Black'}
-                  </span>
+                  <span className="text-blue-900 font-medium">White</span>
                 </div>
               </div>
             </CardContent>
@@ -160,9 +145,7 @@ export function SimpleMultiplayerLayout({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="text-blue-700">Turn</span>
-                  <span className="text-blue-900 font-medium">
-                    {currentPlayer === currentGame.yourColor ? 'Your Turn' : 'Opponent\'s Turn'}
-                  </span>
+                  <span className="text-blue-900 font-medium">Your Turn</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-blue-700">Status</span>

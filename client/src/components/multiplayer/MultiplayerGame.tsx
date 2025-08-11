@@ -5,7 +5,7 @@ import { useMultiplayer } from '../../lib/stores/useMultiplayer';
 import { useAudio } from '../../lib/stores/useAudio';
 
 export function MultiplayerGame() {
-  const { disconnect, currentGame, players } = useMultiplayer();
+  const { disconnect, currentGame } = useMultiplayer();
   const { gamePhase, startGame } = useChess();
   const { playPieceMovementSound } = useAudio();
   
@@ -22,7 +22,7 @@ export function MultiplayerGame() {
   useEffect(() => {
     if (currentGame && gamePhase === 'menu') {
       console.log('🎮 Starting multiplayer game');
-      startGame('multiplayer', 'medium');
+      startGame('ai', 'medium');
     }
   }, [currentGame, gamePhase, startGame]);
 
