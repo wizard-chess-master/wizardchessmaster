@@ -368,15 +368,17 @@ body:not(.multiplayer-active) .medieval-dialog {
 /* Multiplayer-specific styles to ensure chess board is clickable */
 body.multiplayer-active .chess-board-container {
   position: relative !important;
-  z-index: 10 !important;
+  z-index: 1 !important;
   pointer-events: auto !important;
+  max-width: 100% !important;
 }
 
 body.multiplayer-active .chess-canvas {
   position: relative !important;
-  z-index: 10 !important;
+  z-index: 1 !important;
   pointer-events: auto !important;
   cursor: pointer !important;
+  max-width: 100% !important;
 }
 
 body.multiplayer-active canvas {

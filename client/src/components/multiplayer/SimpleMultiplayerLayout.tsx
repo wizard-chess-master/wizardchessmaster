@@ -86,7 +86,7 @@ export function SimpleMultiplayerLayout({
       </div>
 
       {/* Main Game Area - Simple Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Player Info - Left Side */}
         <div className="lg:col-span-3 space-y-4">
@@ -158,16 +158,21 @@ export function SimpleMultiplayerLayout({
 
         {/* Chess Board - Center */}
         <div className="lg:col-span-6">
-          <div className="flex justify-center">
+          <div className="flex justify-center" style={{ maxWidth: '100%', overflow: 'hidden' }}>
             <div 
-              className="bg-white rounded-lg shadow-sm border border-blue-200 p-4"
+              className="bg-white rounded-lg shadow-sm border border-blue-200 p-2"
               style={{ 
                 position: 'relative', 
-                zIndex: 10,
-                isolation: 'isolate'
+                zIndex: 1,
+                isolation: 'isolate',
+                maxWidth: '600px',
+                width: '100%',
+                overflow: 'hidden'
               }}
             >
-              <ChessBoard />
+              <div style={{ transform: 'scale(0.75)', transformOrigin: 'center' }}>
+                <ChessBoard />
+              </div>
             </div>
           </div>
         </div>
