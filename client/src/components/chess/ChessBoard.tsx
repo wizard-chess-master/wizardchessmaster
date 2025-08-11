@@ -571,8 +571,9 @@ export function ChessBoard() {
       console.log('📍 Nearby pieces:');
       for (let r = Math.max(0, row - 1); r <= Math.min(9, row + 1); r++) {
         for (let c = Math.max(0, col - 1); c <= Math.min(9, col + 1); c++) {
-          if (board[r][c]) {
-            console.log(`  [${r},${c}]: ${board[r][c].type} (${board[r][c].color})`);
+          const piece = board[r][c];
+          if (piece) {
+            console.log(`  [${r},${c}]: ${piece.type} (${piece.color})`);
           }
         }
       }
