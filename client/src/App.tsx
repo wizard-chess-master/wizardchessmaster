@@ -17,6 +17,7 @@ import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
 import { BlogRouter, BlogPageType } from "./components/blog";
 import { ContextualHintOverlay } from "./components/hints/ContextualHintOverlay";
+import { useMultiplayer } from "./lib/stores/useMultiplayer";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
 import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
@@ -44,6 +45,7 @@ import "./debug";
 
 function App() {
   const { gamePhase, ...gameState } = useChess();
+  const { isConnected: isMultiplayerConnected } = useMultiplayer();
   const { initializeAudio } = useAudio();
   const { updateProgress } = useAchievements();
   const { showDiagnostics, setShowDiagnostics } = useDiagnostics();
@@ -284,8 +286,8 @@ function App() {
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
           <>
-            {/* Contextual Hint Overlay for New Players */}
-            <ContextualHintOverlay />
+            {/* Contextual Hint Overlay for New Players - but not in multiplayer */}
+            {!isMultiplayerConnected && <ContextualHintOverlay />}
             
             <MobileGameLayout
               onSettings={() => setShowSettings(true)}
