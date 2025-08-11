@@ -3,15 +3,13 @@ import { Crown, Zap } from 'lucide-react';
 
 interface AnimatedHeroBannerProps {
   backgroundImage?: string; // Path to background image (1920x1080)
-  backgroundVideo?: string; // Path to background MP4 video (1920x1080)
   chessBoardImage?: string; // Path to transparent chess board PNG (800x800)
   className?: string;
   children?: React.ReactNode;
 }
 
 export function AnimatedHeroBanner({ 
-  backgroundImage,
-  backgroundVideo, 
+  backgroundImage, 
   chessBoardImage, 
   className = "", 
   children 
@@ -28,28 +26,9 @@ export function AnimatedHeroBanner({
     <div className={`relative overflow-hidden ${className}`}>
       {/* Animated Background Layer */}
       <div className="absolute inset-0 -z-20">
-        {backgroundVideo ? (
-          <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-            preload="metadata"
-            className="w-full h-full object-cover transform transition-transform duration-3000 ease-out"
-            style={{ 
-              transform: isLoaded ? 'scale(1.05)' : 'scale(1)',
-            }}
-            onLoadStart={() => console.log('Video loading started')}
-            onCanPlay={() => console.log('Video can play')}
-            onError={(e) => console.error('Video error:', e)}
-          >
-            <source src={backgroundVideo} type="video/mp4" />
-            {/* Fallback for browsers that don't support video */}
-            <div className="w-full h-full bg-gradient-to-br from-amber-900/40 via-purple-900/30 to-amber-800/40 animate-gradient-shift" />
-          </video>
-        ) : backgroundImage ? (
+        {backgroundImage ? (
           <div 
-            className="w-full h-full bg-cover bg-center bg-no-repeat transform transition-transform duration-3000 ease-out"
+            className="w-full h-full bg-cover bg-center bg-no-repeat transform transition-transform duration-[3000ms] ease-out"
             style={{ 
               backgroundImage: `url(${backgroundImage})`,
               transform: isLoaded ? 'scale(1.05)' : 'scale(1)',
@@ -61,7 +40,7 @@ export function AnimatedHeroBanner({
         )}
         
         {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       {/* Floating Particles Effect */}
@@ -80,9 +59,14 @@ export function AnimatedHeroBanner({
         ))}
       </div>
 
-      {/* Animated Chess Board Layer - Behind Content */}
+      {/* Content Area */}
+      <div className="relative z-10">
+        {children}
+      </div>
+
+      {/* Animated Chess Board Layer */}
       {chessBoardImage ? (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <div 
             className={`transition-all duration-2000 ease-out ${
               isLoaded 
@@ -93,15 +77,13 @@ export function AnimatedHeroBanner({
             <img 
               src={chessBoardImage}
               alt="Wizard Chess Board"
-              className="w-[500px] h-[500px] object-contain animate-gentle-float animate-chess-glow hero-chess-board"
-              onLoad={() => console.log('Chess board image loaded')}
-              onError={() => console.error('Chess board image failed to load')}
+              className="w-96 h-96 md:w-[500px] md:h-[500px] object-contain animate-gentle-float"
             />
           </div>
         </div>
       ) : (
         // Fallback animated chess elements
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-5">
           <div className={`grid grid-cols-2 gap-8 transition-all duration-2000 ease-out ${
             isLoaded ? 'opacity-40 transform translate-y-0' : 'opacity-0 transform translate-y-8'
           }`}>
@@ -115,11 +97,6 @@ export function AnimatedHeroBanner({
           </div>
         </div>
       )}
-
-      {/* Content Area - Above Chess Board */}
-      <div className="relative z-10">
-        {children}
-      </div>
 
       {/* Floating UI Accent Elements */}
       <div className={`absolute top-8 right-8 transition-all duration-1500 ease-out ${

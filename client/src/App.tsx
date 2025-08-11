@@ -13,7 +13,7 @@ import { AuthProvider } from "./components/auth/AuthProvider";
 import { ResponsiveLayout } from "./components/layout/ResponsiveLayout";
 import { MobileGameLayout } from "./components/mobile/MobileGameLayout";
 import { MarketingRouter } from "./components/marketing/MarketingRouter";
-import { EnhancedLandingPage } from "./components/marketing/EnhancedLandingPage";
+import { LandingPage } from "./components/marketing/LandingPage";
 import { BlogPost } from "./components/blog/BlogPost";
 import { BlogRouter, BlogPageType } from "./components/blog";
 import { ContextualHintOverlay } from "./components/hints/ContextualHintOverlay";
@@ -50,7 +50,7 @@ function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [showAchievements, setShowAchievements] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
-  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'reset-password' | BlogPageType>('landing');
+  const [currentPage, setCurrentPage] = useState<'game' | 'landing' | 'strategy' | 'ai-training' | 'tournaments' | 'blog' | 'multiplayer' | 'reset-password' | BlogPageType>('game');
   const [showLanding, setShowLanding] = useState(true);
 
   const { selectedPieceSet, selectedBoardTheme, setSelectedPieceSet, setSelectedBoardTheme } = useGameSettings();
@@ -200,7 +200,7 @@ function App() {
           />
           
           {currentPage === 'landing' && (
-            <EnhancedLandingPage 
+            <LandingPage 
               onJoinFree={() => {
                 console.log('🆓 Join Free button clicked - starting game directly');
                 handleStartGame();
