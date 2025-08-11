@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageCircle, Clock, Users, ArrowLeft } from 'lucide-react';
+import { MessageCircle, Clock, Users, ArrowLeft, Maximize2, Minimize2 } from 'lucide-react';
 import { ChessBoard } from '../chess/ChessBoard';
 import { useMultiplayer } from '../../lib/stores/useMultiplayer';
 import { useChess } from '../../lib/stores/useChess';
@@ -32,6 +32,7 @@ export function SimpleMultiplayerLayout({
 }: SimpleMultiplayerLayoutProps) {
   const { currentGame } = useMultiplayer();
   const { currentPlayer } = useChess();
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   if (!currentGame) {
     return (
@@ -47,6 +48,56 @@ export function SimpleMultiplayerLayout({
     );
   }
 
+  // Full screen layout
+  if (isFullScreen) {
+    return (
+      <div className="min-h-screen bg-blue-50 p-2 flex flex-col">
+        {/* Minimal Top Bar in Full Screen */}
+        <div className="bg-white rounded-lg shadow-sm border border-blue-200 p-2 mb-2 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={onLeaveRoom}
+              variant="outline"
+              size="sm"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </Button>
+            <span className="text-sm text-blue-900 font-medium">
+              Turn: {currentPlayer === 'white' ? 'White' : 'Black'}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setIsFullScreen(false)}
+              variant="outline"
+              size="sm"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+            >
+              <Minimize2 className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+        
+        {/* Full Screen Chess Board */}
+        <div className="flex-1 flex items-center justify-center">
+          <div 
+            className="bg-white rounded-lg shadow-sm border border-blue-200 p-4"
+            style={{ 
+              position: 'relative',
+              zIndex: 1,
+              isolation: 'isolate'
+            }}
+          >
+            <ChessBoard />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Normal layout
   return (
     <div className="min-h-screen bg-blue-50 p-4">
       {/* Simple Top Bar */}
@@ -68,6 +119,15 @@ export function SimpleMultiplayerLayout({
           </div>
           
           <div className="flex items-center gap-4">
+            <Button
+              onClick={() => setIsFullScreen(true)}
+              variant="outline"
+              size="sm"
+              className="border-blue-300 text-blue-700 hover:bg-blue-50"
+              title="Full Screen Mode"
+            >
+              <Maximize2 className="w-4 h-4" />
+            </Button>
             <div className="flex items-center gap-2 text-blue-700">
               <Users className="w-4 h-4" />
               <span className="text-sm">Online Game</span>
