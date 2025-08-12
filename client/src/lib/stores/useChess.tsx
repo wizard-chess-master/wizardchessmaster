@@ -13,6 +13,7 @@ import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
+import { useDynamicAIMentor } from "./useDynamicAIMentor";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -356,16 +357,14 @@ export const useChess = create<ChessStore>()(
       // Trigger Dynamic AI Mentor analysis (non-blocking)
       setTimeout(() => {
         try {
-          import('./useDynamicAIMentor').then(({ useDynamicAIMentor }) => {
-            const mentorState = useDynamicAIMentor.getState();
-            console.log('🧙‍♂️ Checking mentor state:', { isActive: mentorState.isActive });
-            if (mentorState.isActive) {
-              console.log('🧙‍♂️ Triggering mentor analysis for move:', move);
-              mentorState.analyzeCurrentMove(newState, move);
-            }
-          });
+          const mentorState = useDynamicAIMentor.getState();
+          console.log('🧙‍♂️ Checking mentor state:', { isActive: mentorState.isActive });
+          if (mentorState.isActive) {
+            console.log('🧙‍♂️ Triggering mentor analysis for move:', move);
+            mentorState.analyzeCurrentMove(newState, move);
+          }
         } catch (error) {
-          console.log('🧙‍♂️ Mentor system not available:', error);
+          console.log('🧙‍♂️ Mentor system error:', error);
         }
       }, 100); // Small delay to ensure state is updated
 
