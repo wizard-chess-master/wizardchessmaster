@@ -510,8 +510,34 @@ export function MultiplayerLobby() {
                       const { disconnect } = useMultiplayer.getState();
                       disconnect();
                       
-                      // Navigate to game page - the hash handler will start the AI game
-                      console.log('🎮 Navigating to game page for AI play');
+                      // Get player's skill level for adaptive difficulty
+                      const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+                      const winRate = playerStats.winRate || 0;
+                      const gamesPlayed = playerStats.gamesPlayed || 0;
+                      
+                      let difficulty: 'easy' | 'medium' | 'hard' = 'medium';
+                      if (gamesPlayed >= 3) {
+                        if (winRate > 0.7) {
+                          difficulty = 'hard';
+                          console.log('🎯 Adaptive AI: Setting to hard (win rate > 70%)');
+                        } else if (winRate > 0.4) {
+                          difficulty = 'medium';
+                          console.log('🎯 Adaptive AI: Setting to medium (win rate 40-70%)');
+                        } else {
+                          difficulty = 'easy';
+                          console.log('🎯 Adaptive AI: Setting to easy (win rate < 40%)');
+                        }
+                      } else {
+                        console.log('🎯 Adaptive AI: New player, starting with medium');
+                      }
+                      
+                      // Start the game directly AND navigate
+                      const { startGame } = useChess.getState();
+                      startGame('ai', difficulty);
+                      console.log('✅ AI game started with adaptive difficulty:', difficulty);
+                      
+                      // Navigate to game page
+                      console.log('🎮 Navigating to game page');
                       window.location.hash = '#game';
                     }}
                     className="bg-purple-600 hover:bg-purple-700 text-white"
