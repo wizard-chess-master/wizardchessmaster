@@ -232,7 +232,13 @@ function AppContent() {
           <GlobalNavigation 
             currentPage={currentPage}
             onNavigate={handleNavigate}
-            onStartGame={handleStartGame}
+            onStartGame={() => {
+              // Just navigate to game page and show menu
+              setCurrentPage('game');
+              // Ensure we're in menu phase
+              const { resetGame } = useChess.getState();
+              resetGame();
+            }}
           />
           
           {currentPage === 'landing' && (
