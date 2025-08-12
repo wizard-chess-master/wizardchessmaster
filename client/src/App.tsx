@@ -27,6 +27,8 @@ import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
 import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
 import { DeploymentPanel } from "./components/debug/DeploymentPanel";
+import { PerformanceOverlay } from "./components/performance/PerformanceOverlay";
+import { initializePerformance } from "./lib/performance";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -66,11 +68,15 @@ function AppContent() {
   // Campaign reward celebration
   const { showCelebration, CelebrationComponent } = useCampaignRewardCelebration();
 
-  // Initialize audio and monetization systems
+  // Initialize audio, performance, and monetization systems
   useEffect(() => {
     const initSystems = async () => {
       try {
-        // Initialize audio system first
+        // Initialize performance optimizations
+        console.log('⚡ Initializing performance optimizations...');
+        initializePerformance();
+        
+        // Initialize audio system
         console.log('🎵 Initializing audio system...');
         await initializeAudio();
         console.log('✅ Audio system initialized');
@@ -288,6 +294,7 @@ function AppContent() {
 
 
           <PremiumTestButton email="tokingteepee@gmail.com" />
+          <PerformanceOverlay position="bottom-right" />
         </div>
       </AuthProvider>
     );
