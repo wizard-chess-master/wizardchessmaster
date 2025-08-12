@@ -2,9 +2,17 @@ import { GameState, ChessMove, Position, AIDifficulty, PieceColor, ChessPiece } 
 import { getPossibleMoves } from './pieceMovement';
 import { isKingInCheck, makeMove } from './gameEngine';
 import { aiLearning } from './aiLearning';
+import { EnhancedAIPlayer } from '../ai/enhancedAIPlayer';
 
-export function getAIMove(gameState: GameState): ChessMove | null {
+export async function getAIMove(gameState: GameState): Promise<ChessMove | null> {
   const aiColor = gameState.currentPlayer;
+  
+  // Use enhanced AI for advanced difficulty levels
+  if (['advanced', 'expert', 'master'].includes(gameState.aiDifficulty)) {
+    const enhancedAI = new EnhancedAIPlayer(gameState.aiDifficulty as any);
+    return await enhancedAI.getBestMove(gameState);
+  }
+  
   const allMoves = getAllPossibleMoves(gameState, aiColor);
   
   if (allMoves.length === 0) {
@@ -59,6 +67,11 @@ export function getAIMove(gameState: GameState): ChessMove | null {
     case 'medium':
       return getBasicStrategyMove(gameState, aiColor, movesToConsider);
     case 'hard':
+      return getAdvancedStrategyMove(gameState, aiColor, movesToConsider);
+    case 'advanced':
+    case 'expert':
+    case 'master':
+      // Should not reach here, handled by enhanced AI above
       return getAdvancedStrategyMove(gameState, aiColor, movesToConsider);
     default:
       return getRandomMove(gameState, aiColor, movesToConsider);
@@ -660,7 +673,7 @@ function calculateCoordinationBonus(gameState: GameState, position: Position, my
   return coordinationScore;
 }
 
-function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove[] {
+export function getAllPossibleMoves(gameState: GameState, color: PieceColor): ChessMove[] {
   const moves: ChessMove[] = [];
   
   for (let row = 0; row < 10; row++) {

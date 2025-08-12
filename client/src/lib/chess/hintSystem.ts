@@ -19,11 +19,11 @@ class ChessHintSystem {
   /**
    * Generate a hint for the current position
    */
-  generateHint(
+  async generateHint(
     board: (ChessPiece | null)[][],
     currentPlayer: 'white' | 'black',
     moveHistory: ChessMove[]
-  ): HintInfo | null {
+  ): Promise<HintInfo | null> {
     try {
       console.log('🎯 Generating hint for', currentPlayer);
 
@@ -44,7 +44,7 @@ class ChessHintSystem {
       };
 
       // Use AI player to find the best move
-      const bestMove = getAIMove(gameState);
+      const bestMove = await getAIMove(gameState);
       
       if (!bestMove) {
         console.log('❌ No valid moves found for hint');

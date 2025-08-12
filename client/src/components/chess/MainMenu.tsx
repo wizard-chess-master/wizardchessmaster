@@ -231,7 +231,33 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 >
                   <div className="mode-content">
                     <span>🏰 Player vs AI - Hard</span>
-                    <Badge variant="secondary">Expert</Badge>
+                    <Badge variant="secondary">Advanced</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="medieval-btn mode-button"
+                  onClick={(e) => {
+                    console.log('🎮 Expert AI button clicked');
+                    startGame('ai', 'expert');
+                  }}
+                >
+                  <div className="mode-content">
+                    <span>⚔️ Player vs AI - Expert</span>
+                    <Badge variant="secondary">Professional</Badge>
+                  </div>
+                </Button>
+                
+                <Button
+                  className="medieval-btn mode-button"
+                  onClick={(e) => {
+                    console.log('🎮 Master AI button clicked');
+                    startGame('ai', 'master');
+                  }}
+                >
+                  <div className="mode-content">
+                    <span>👑 Player vs AI - Master</span>
+                    <Badge variant="secondary">Grandmaster</Badge>
                   </div>
                 </Button>
                 
