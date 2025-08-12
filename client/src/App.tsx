@@ -42,8 +42,9 @@ import "@fontsource/inter";
 import "./styles/chess.css";
 import "./styles/animations.css";
 import "./debug";
+import ErrorBoundary from "./components/ErrorBoundary";
 
-function App() {
+function AppContent() {
   const { gamePhase, ...gameState } = useChess();
   const { isConnected: isMultiplayerConnected } = useMultiplayer();
   const { initializeAudio } = useAudio();
@@ -419,6 +420,32 @@ function App() {
       </div>
       </AuthProvider>
     </ResponsiveLayout>
+  );
+}
+
+// Main App component wrapped with ErrorBoundary
+function App() {
+  return (
+    <ErrorBoundary
+      onError={(error, errorInfo) => {
+        console.error('App-level error:', error, errorInfo);
+        // Log to server in production
+        if (process.env.NODE_ENV === 'production') {
+          fetch('/api/log/error', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: error.message,
+              stack: error.stack,
+              componentStack: errorInfo.componentStack,
+              timestamp: new Date().toISOString(),
+            }),
+          }).catch(err => console.error('Failed to log error:', err));
+        }
+      }}
+    >
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 

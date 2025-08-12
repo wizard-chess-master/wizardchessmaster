@@ -4,6 +4,7 @@ import { getDB } from './storage';
 import { onlineGames, matchmakingQueue, users } from '../shared/schema';
 import { eq, and, or } from 'drizzle-orm';
 import { GameStateManager, detectDesyncIndicators } from '../shared/gameStateSync';
+import logger from './utils/logger';
 
 interface PlayerData {
   userId: number;
