@@ -7,7 +7,7 @@ import { MainMenu } from "./components/chess/MainMenu";
 import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
 import { BoardControls } from "./components/chess/BoardControls";
-import { SettingsDialog } from "./components/chess/SettingsDialog";
+import { GameSettingsDialog } from "./components/settings/GameSettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { ResponsiveLayout } from "./components/layout/ResponsiveLayout";
@@ -413,7 +413,7 @@ function AppContent() {
           </>
         )}
 
-        <SettingsDialog 
+        <GameSettingsDialog 
           isOpen={showSettings} 
           onClose={() => setShowSettings(false)} 
         />
