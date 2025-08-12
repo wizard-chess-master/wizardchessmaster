@@ -216,17 +216,20 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       // Select initial strategy
       get().selectOptimalStrategy();
       
-      // Add welcome feedback
-      get().addFeedback({
-        id: `welcome-${Date.now()}`,
-        type: 'encouragement',
-        message: 'Greetings, young apprentice! I am Merlin the Wise. I shall guide your chess journey with ancient wisdom and magical insights.',
-        priority: 'medium',
-        timestamp: Date.now(),
-        context: {
-          learningPoint: 'Mentor system activated'
-        }
-      });
+      // Add welcome feedback without immediate speech
+      // Delay feedback to avoid immediate speech synthesis on activation
+      setTimeout(() => {
+        get().addFeedback({
+          id: `welcome-${Date.now()}`,
+          type: 'encouragement',
+          message: 'Greetings, young apprentice! I am Merlin the Wise. I shall guide your chess journey with ancient wisdom and magical insights.',
+          priority: 'medium',
+          timestamp: Date.now(),
+          context: {
+            learningPoint: 'Mentor system activated'
+          }
+        });
+      }, 500); // Small delay to prevent immediate speech
     },
 
     activateMentor: () => {

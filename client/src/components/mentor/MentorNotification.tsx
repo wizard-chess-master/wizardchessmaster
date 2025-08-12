@@ -38,8 +38,13 @@ export function MentorNotification() {
       }
       
       if ('speechSynthesis' in window) {
-        // Cancel any ongoing speech to prevent overlapping
-        speechSynthesis.cancel();
+        // Wrap in try-catch to handle any DOMException
+        try {
+          // Cancel any ongoing speech to prevent overlapping
+          speechSynthesis.cancel();
+        } catch (e) {
+          console.log('Speech synthesis cancel error (safe to ignore):', e);
+        }
         
         // Longer delay to ensure clean start
         setTimeout(() => {
@@ -89,9 +94,13 @@ export function MentorNotification() {
               console.log('Speech completed');
             };
             
-            // Speak with additional checks
-            if (!speechSynthesis.speaking && !speechSynthesis.pending) {
-              speechSynthesis.speak(utterance);
+            // Speak with additional checks and error handling
+            try {
+              if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+                speechSynthesis.speak(utterance);
+              }
+            } catch (speakError) {
+              console.log('Speech synthesis speak error (safe to ignore):', speakError);
             }
           };
           
