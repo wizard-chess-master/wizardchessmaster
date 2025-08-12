@@ -9,12 +9,13 @@ export function AITrainingPanel() {
   const [isTraining, setIsTraining] = useState(false);
   const [progress, setProgress] = useState<TrainingProgress | null>(null);
   const [results, setResults] = useState<any>(null);
+  const [statusMessage, setStatusMessage] = useState<string>('');
 
   const runTraining = useCallback(async (gameCount: number) => {
-    console.log(`🚀 Starting training with ${gameCount} games...`);
     setIsTraining(true);
     setProgress(null);
     setResults(null);
+    setStatusMessage(`🚀 Starting ${gameCount.toLocaleString()} game training session...`);
 
     // Show initial progress immediately
     setProgress({
@@ -25,20 +26,30 @@ export function AITrainingPanel() {
       strategiesLearned: 0
     });
 
+    // Add a small delay to show the UI has responded
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
       const trainingResults = await massTraining.runMassTraining(
         gameCount,
         (progressUpdate) => {
-          console.log(`📊 Progress: ${progressUpdate.gamesCompleted}/${progressUpdate.totalGames}`);
           setProgress(progressUpdate);
+          // Update status message with estimated time
+          const percentComplete = (progressUpdate.gamesCompleted / progressUpdate.totalGames) * 100;
+          const gamesPerSecond = progressUpdate.gamesCompleted > 0 ? progressUpdate.gamesCompleted / 10 : 0;
+          const remainingGames = progressUpdate.totalGames - progressUpdate.gamesCompleted;
+          const estimatedSeconds = gamesPerSecond > 0 ? remainingGames / gamesPerSecond : 0;
+          const estimatedMinutes = Math.ceil(estimatedSeconds / 60);
+          
+          if (progressUpdate.gamesCompleted % 100 === 0) {
+            setStatusMessage(`🎮 Training in progress... ${percentComplete.toFixed(1)}% complete. Est. ${estimatedMinutes} min remaining.`);
+          }
         }
       );
       setResults(trainingResults);
-      console.log('🎯 Training completed:', trainingResults);
-      alert(`✅ Training complete! Trained ${gameCount} games successfully.`);
+      setStatusMessage(`✅ Training complete! ${gameCount.toLocaleString()} games finished.`);
     } catch (error) {
-      console.error('❌ Training failed:', error);
-      alert(`❌ Training failed: ${error}`);
+      setStatusMessage(`❌ Training failed: ${error}`);
     } finally {
       setIsTraining(false);
     }
@@ -60,6 +71,17 @@ export function AITrainingPanel() {
         <div className="text-sm text-muted-foreground">
           Train the AI by having it play against itself. More games = smarter AI!
         </div>
+
+        {/* Status Message */}
+        {statusMessage && (
+          <div className={`p-3 rounded-lg text-sm font-semibold ${
+            statusMessage.includes('✅') ? 'bg-green-100 text-green-800' :
+            statusMessage.includes('❌') ? 'bg-red-100 text-red-800' :
+            'bg-blue-100 text-blue-800'
+          }`}>
+            {statusMessage}
+          </div>
+        )}
 
         {!isTraining && !results && (
           <div className="grid grid-cols-2 gap-2">
