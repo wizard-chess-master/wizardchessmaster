@@ -10,8 +10,9 @@ import { openingBook } from './openingBook';
 import { EnhancedEvaluator } from './enhancedEvaluation';
 import { tacticalAnalyzer } from './tacticalPatterns';
 import { aiLearning } from '../chess/aiLearning';
+import { getDifficultyConfig } from '../chess/difficultyMapping';
 
-export type EnhancedDifficulty = AIDifficulty | 'expert' | 'master';
+export type EnhancedDifficulty = AIDifficulty;
 
 interface SearchResult {
   move: ChessMove | null;
@@ -34,32 +35,12 @@ export class EnhancedAIPlayer {
     this.difficulty = difficulty;
     this.evaluator = new EnhancedEvaluator(difficulty as any);
     
-    // Set search parameters based on difficulty - significantly strengthen Master
-    switch (difficulty) {
-      case 'easy':
-        this.maxDepth = 2;
-        this.maxTime = 100;
-        break;
-      case 'medium':
-        this.maxDepth = 3;
-        this.maxTime = 500;
-        break;
-      case 'hard':
-        this.maxDepth = 4;
-        this.maxTime = 1000;
-        break;
-      case 'expert':
-        this.maxDepth = 6;
-        this.maxTime = 3000;
-        break;
-      case 'master':
-        this.maxDepth = 8;  // Increased from 6 to 8 for deeper analysis
-        this.maxTime = 5000; // Increased from 3000 to 5000 for more thinking time
-        break;
-      default:
-        this.maxDepth = 3;
-        this.maxTime = 500;
-    }
+    // Get difficulty configuration from the new mapping system
+    const config = getDifficultyConfig(difficulty);
+    this.maxDepth = config.searchDepth;
+    this.maxTime = config.thinkingTime;
+    
+    console.log(`🧠 AI initialized with ${config.name} - Depth: ${this.maxDepth}, Time: ${this.maxTime}ms`);
   }
   
   /**

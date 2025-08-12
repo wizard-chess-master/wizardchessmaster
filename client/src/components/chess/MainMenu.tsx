@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Badge } from '../ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '../ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Settings, Sword, Users, Zap, Brain, BarChart3, X, Home, Trophy, Award, Crown, User, Cloud, LogOut, LogIn } from 'lucide-react';
 import { Wand2 } from 'lucide-react';
 import { aiTrainer } from '../../lib/chess/aiTraining';
@@ -15,6 +16,9 @@ import { AdBanner } from '../monetization/AdBanner';
 import { MassTrainingDialog } from './MassTrainingDialog';
 import { CampaignDialog } from './CampaignDialog';
 import { CampaignMode } from '../campaign/CampaignMode';
+import { AITrainingPanel } from './AITrainingPanel';
+import { getDifficultyDisplayName } from '../../lib/chess/difficultyMapping';
+import type { AIDifficulty } from '../../lib/chess/types';
 // MULTIPLAYER DISABLED: import { OnlineMultiplayerDialog } from './OnlineMultiplayerDialog';
 import { LeaderboardDialog } from './LeaderboardDialog';
 import { LoginDialog } from '../auth/LoginDialog';
@@ -82,6 +86,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const [showTestPanel, setShowTestPanel] = useState(false);
   const [showCampaignMode, setShowCampaignMode] = useState(false);
   const { showComparison, openComparison, closeComparison } = usePremiumComparison();
+  const [selectedDifficulty, setSelectedDifficulty] = useState<AIDifficulty>('level10');
 
 
   // Debug admin state on every render
@@ -196,70 +201,38 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   </div>
                 </Button>
                 
-                <Button
-                  className="medieval-btn mode-button"
-                  onClick={(e) => {
-                    console.log('🎮 Easy AI button clicked');
-                    startGame('ai', 'easy');
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>⚡ Player vs AI - Easy</span>
-                    <Badge variant="secondary">Beginner</Badge>
-                  </div>
-                </Button>
-                
-                <Button
-                  className="medieval-btn mode-button"
-                  onClick={(e) => {
-                    console.log('🎮 Medium AI button clicked');
-                    startGame('ai', 'medium');
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>🪄 Player vs AI - Medium</span>
-                    <Badge variant="secondary">Intermediate</Badge>
-                  </div>
-                </Button>
-                
-                <Button
-                  className="medieval-btn mode-button"
-                  onClick={(e) => {
-                    console.log('🎮 Hard AI button clicked');
-                    startGame('ai', 'hard');
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>🏰 Player vs AI - Hard</span>
-                    <Badge variant="secondary">Advanced</Badge>
-                  </div>
-                </Button>
-                
-                <Button
-                  className="medieval-btn mode-button"
-                  onClick={(e) => {
-                    console.log('🎮 Expert AI button clicked');
-                    startGame('ai', 'expert');
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>⚔️ Player vs AI - Expert</span>
-                    <Badge variant="secondary">Professional</Badge>
-                  </div>
-                </Button>
-                
-                <Button
-                  className="medieval-btn mode-button"
-                  onClick={(e) => {
-                    console.log('🎮 Master AI button clicked');
-                    startGame('ai', 'master');
-                  }}
-                >
-                  <div className="mode-content">
-                    <span>👑 Player vs AI - Master</span>
-                    <Badge variant="secondary">Grandmaster</Badge>
-                  </div>
-                </Button>
+                {/* AI Difficulty Selector with 20 Levels */}
+                <div className="space-y-2 p-3 bg-gray-50 rounded-lg">
+                  <label className="text-sm font-semibold text-gray-700">Select AI Difficulty</label>
+                  <Select value={selectedDifficulty} onValueChange={(value) => setSelectedDifficulty(value as AIDifficulty)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose difficulty level" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-64 overflow-y-auto">
+                      {/* All 20 campaign difficulty levels */}
+                      {Array.from({ length: 20 }, (_, i) => {
+                        const level = `level${i + 1}` as AIDifficulty;
+                        return (
+                          <SelectItem key={level} value={level}>
+                            {getDifficultyDisplayName(level)}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    className="medieval-btn mode-button w-full"
+                    onClick={() => {
+                      console.log(`🎮 Starting AI game with ${selectedDifficulty}`);
+                      startGame('ai', selectedDifficulty);
+                    }}
+                  >
+                    <div className="mode-content">
+                      <span>⚔️ Play vs AI</span>
+                      <Badge variant="secondary">Start Battle</Badge>
+                    </div>
+                  </Button>
+                </div>
                 
                 <Button
                   className="medieval-btn mode-button"
@@ -391,6 +364,9 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
               </div>
             </CardContent>
           </Card>
+
+          {/* AI Training Panel */}
+          <AITrainingPanel />
         </div>
 
         <div className="menu-footer">

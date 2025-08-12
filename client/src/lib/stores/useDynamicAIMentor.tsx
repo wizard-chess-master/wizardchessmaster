@@ -264,6 +264,12 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
         console.log('🧙‍♂️ Mentor not active, skipping analysis');
         return;
       }
+      
+      // Only analyze player (white) moves - AI coach helps the player, not the AI
+      if (move.piece.color !== 'white') {
+        console.log('🧙‍♂️ Skipping black (AI) move - coach only analyzes player moves');
+        return;
+      }
 
       console.log('🧙‍♂️ Starting move analysis:', {
         piece: move.piece.type,
@@ -274,7 +280,7 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       });
 
       // Count only white (player) moves for feedback frequency
-      const playerMoves = gameState.moveHistory.filter((m, i) => i % 2 === 0).length + 1;
+      const playerMoves = Math.ceil((gameState.moveHistory.length + 1) / 2);
       console.log('🧙‍♂️ Move counting:', {
         totalMoves: gameState.moveHistory.length,
         playerMoves: playerMoves,
@@ -320,12 +326,15 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       // Game phase assessment
       const phase = get().assessGamePhase(gameState);
       
-      // Generate contextual feedback
+      // Generate contextual feedback with more specific chess advice
       const feedback = get().generateContextualFeedback(gameState, moveQuality);
       console.log('🧙‍♂️ Generated feedback:', feedback);
       console.log('🧙‍♂️ Adding feedback to display...');
       get().addFeedback(feedback);
       console.log('🧙‍♂️ Current feedback count:', get().currentFeedback.length);
+      
+      // Update last feedback time to prevent spam
+      set({ lastFeedbackTime: Date.now() });
       
       // Update analytics
       get().updatePerformanceAnalytics(gameState);
