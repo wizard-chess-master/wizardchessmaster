@@ -26,6 +26,7 @@ import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
 import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
 import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
+import { DeploymentPanel } from "./components/debug/DeploymentPanel";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -424,6 +425,7 @@ function AppContent() {
         <PerformanceDashboard />
         <StabilityTestPanel />
         <BrowserCompatibilityPanel />
+        <DeploymentPanel />
         </div>
       </div>
       </AuthProvider>
