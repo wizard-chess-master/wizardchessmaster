@@ -110,7 +110,7 @@ export function ContextualHintOverlay({
   // Load dismissed hints from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('wizard-chess-dismissed-hints');
-    const dismissedSet = saved ? new Set(JSON.parse(saved)) : new Set();
+    const dismissedSet = saved ? new Set<string>(JSON.parse(saved)) : new Set<string>();
     
     // Also check if user has seen welcome before
     const hasSeenWelcome = localStorage.getItem('wizard-chess-seen-welcome') === 'true';
@@ -148,6 +148,22 @@ export function ContextualHintOverlay({
       triggerHint('gameStart');
     }
   }, [gamePhase]);
+  
+  // Auto-dismiss hint after 30 seconds to prevent stuck overlays
+  useEffect(() => {
+    if (activeHint) {
+      const timeout = setTimeout(() => {
+        setActiveHint(null);
+        const newDismissed = new Set(dismissedHints);
+        newDismissed.add(activeHint.id);
+        setDismissedHints(newDismissed);
+        saveDismissedHints(newDismissed);
+        onHintDismiss?.(activeHint.id);
+      }, 30000); // 30 seconds
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [activeHint, dismissedHints, onHintDismiss]);
 
   useEffect(() => {
     if (selectedPosition && moveHistory.length === 0) {
@@ -213,9 +229,11 @@ export function ContextualHintOverlay({
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="fixed inset-0 z-50 pointer-events-none"
+        onClick={() => dismissHint(activeHint.id)} // Allow clicking backdrop to dismiss
       >
-        {/* Backdrop */}
-        <div className="absolute inset-0 bg-black/20 pointer-events-auto" />
+        {/* Backdrop - click to dismiss */}
+        <div className="absolute inset-0 bg-black/20 pointer-events-auto" 
+             onClick={() => dismissHint(activeHint.id)} />
         
         {/* Hint Card */}
         <motion.div
