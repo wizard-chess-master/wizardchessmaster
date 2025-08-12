@@ -87,6 +87,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
   const [showCampaignMode, setShowCampaignMode] = useState(false);
   const { showComparison, openComparison, closeComparison } = usePremiumComparison();
   const [selectedDifficulty, setSelectedDifficulty] = useState<AIDifficulty>('level10');
+  const [showTrainingDialog, setShowTrainingDialog] = useState(false);
 
 
   // Debug admin state on every render
@@ -129,6 +130,20 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
 
   return (
     <div className="main-menu flex flex-col items-center justify-center min-h-screen">
+      {/* AI Training Dialog */}
+      <Dialog open={showTrainingDialog} onOpenChange={setShowTrainingDialog}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Brain className="w-6 h-6" />
+              AI Training Center
+            </DialogTitle>
+            <DialogClose />
+          </DialogHeader>
+          <AITrainingPanel />
+        </DialogContent>
+      </Dialog>
+
       {/* Top Menu Ad Banner */}
       <AdBanner 
         containerId="menu-top-banner"
@@ -247,15 +262,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   </div>
                 </Button>
                 
-                {/* AI Training Button - Make it prominent */}
+                {/* AI Training Button - Opens Dialog */}
                 <Button
                   className="medieval-btn mode-button bg-purple-600 hover:bg-purple-700 text-white"
-                  onClick={() => {
-                    const element = document.getElementById('ai-training-panel');
-                    if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                  }}
+                  onClick={() => setShowTrainingDialog(true)}
                 >
                   <div className="mode-content">
                     <span>🧠 AI Training Center</span>
@@ -380,10 +390,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </CardContent>
           </Card>
 
-          {/* AI Training Panel - Now with ID for scrolling */}
-          <div id="ai-training-panel">
-            <AITrainingPanel />
-          </div>
+
         </div>
 
         <div className="menu-footer">
