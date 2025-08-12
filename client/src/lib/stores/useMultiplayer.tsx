@@ -27,6 +27,9 @@ interface OnlineGame {
   timeControl: number;
   yourTime: number;
   opponentTime: number;
+  lastChecksum?: string;
+  lastSyncTime?: number;
+  syncErrors?: number;
 }
 
 interface MatchmakingStatus {
@@ -142,11 +145,12 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
         console.log('✅ Successfully reconnected!');
         set({ isConnected: true, connectionError: null, reconnectAttempts: 0 });
         
-        // Send reconnect event with current game state
+        // Send reconnect event with current game state and checksum
         const currentGame = get().currentGame;
         newSocket.emit('player:reconnect', {
           ...playerData,
-          lastGameId: currentGame?.gameId
+          lastGameId: currentGame?.gameId,
+          lastChecksum: currentGame?.lastChecksum
         });
       },
       onReconnectFailed: () => {
@@ -169,9 +173,11 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
       const attempts = get().reconnectAttempts;
       if (attempts > 0) {
         // This is a reconnection
+        const currentGame = get().currentGame;
         newSocket.emit('player:reconnect', {
           ...playerData,
-          lastGameId: get().currentGame?.gameId
+          lastGameId: currentGame?.gameId,
+          lastChecksum: currentGame?.lastChecksum
         });
       } else {
         // Initial connection
@@ -229,6 +235,67 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
           }
         });
       }
+    });
+
+    // Enhanced state recovery handlers
+    newSocket.on('game:state-recovered', (data: {
+      gameId: string;
+      gameState: any;
+      checksum: string;
+      currentTurn: 'white' | 'black';
+      player1Time: number;
+      player2Time: number;
+    }) => {
+      console.log('🔄 Game state recovered with checksum:', data.checksum);
+      const currentGame = get().currentGame;
+      if (currentGame && currentGame.gameId === data.gameId) {
+        set({
+          currentGame: {
+            ...currentGame,
+            gameState: data.gameState,
+            lastChecksum: data.checksum,
+            lastSyncTime: Date.now(),
+            syncErrors: 0,
+            yourTime: currentGame.yourColor === 'white' ? data.player1Time : data.player2Time,
+            opponentTime: currentGame.yourColor === 'white' ? data.player2Time : data.player1Time
+          }
+        });
+      }
+    });
+
+    // Handle state sync requirements
+    newSocket.on('game:state-sync-required', (data: {
+      serverChecksum: string;
+      clientChecksum: string;
+    }) => {
+      console.warn('⚠️ State desync detected', { server: data.serverChecksum, client: data.clientChecksum });
+      const currentGame = get().currentGame;
+      if (currentGame) {
+        // Increment sync error counter
+        set({
+          currentGame: {
+            ...currentGame,
+            syncErrors: (currentGame.syncErrors || 0) + 1
+          }
+        });
+        
+        // Request full state sync from server
+        newSocket.emit('game:request-full-sync', {
+          gameId: currentGame.gameId
+        });
+      }
+    });
+
+    // Handle reconnection success
+    newSocket.on('reconnection:success', (data: {
+      message: string;
+      timestamp: number;
+    }) => {
+      console.log('✅ Reconnection confirmed:', data.message);
+      set({ 
+        connectionError: null,
+        reconnectAttempts: 0
+      });
     });
 
     // Matchmaking events
