@@ -11,21 +11,34 @@ export function AITrainingPanel() {
   const [results, setResults] = useState<any>(null);
 
   const runTraining = useCallback(async (gameCount: number) => {
+    console.log(`🚀 Starting training with ${gameCount} games...`);
     setIsTraining(true);
     setProgress(null);
     setResults(null);
+
+    // Show initial progress immediately
+    setProgress({
+      gamesCompleted: 0,
+      totalGames: gameCount,
+      currentWinRate: { white: 0, black: 0, draw: 0 },
+      avgGameLength: 0,
+      strategiesLearned: 0
+    });
 
     try {
       const trainingResults = await massTraining.runMassTraining(
         gameCount,
         (progressUpdate) => {
+          console.log(`📊 Progress: ${progressUpdate.gamesCompleted}/${progressUpdate.totalGames}`);
           setProgress(progressUpdate);
         }
       );
       setResults(trainingResults);
       console.log('🎯 Training completed:', trainingResults);
+      alert(`✅ Training complete! Trained ${gameCount} games successfully.`);
     } catch (error) {
-      console.error('Training failed:', error);
+      console.error('❌ Training failed:', error);
+      alert(`❌ Training failed: ${error}`);
     } finally {
       setIsTraining(false);
     }
