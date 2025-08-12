@@ -222,11 +222,11 @@ export function ContextualHintOverlay({
   // TEMPORARY: Disable all hint overlays to prevent flashing issues
   return null;
   
-  /* DISABLED DUE TO OVERLAY ISSUES
+  /* DISABLED DUE TO OVERLAY ISSUES - Component code commented out */
+  /*
   if (!showHints || !isNewPlayer || !activeHint) {
     return null;
   }
-  */
 
   return (
     <AnimatePresence>
@@ -237,11 +237,9 @@ export function ContextualHintOverlay({
         className="fixed inset-0 z-50 pointer-events-none"
         onClick={() => dismissHint(activeHint.id)} // Allow clicking backdrop to dismiss
       >
-        {/* Backdrop - click to dismiss */}
         <div className="absolute inset-0 bg-black/20 pointer-events-auto" 
              onClick={() => dismissHint(activeHint.id)} />
         
-        {/* Hint Card */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -298,7 +296,6 @@ export function ContextualHintOverlay({
                 </Button>
               </div>
               
-              {/* Priority indicator */}
               <div className="mt-3 flex items-center gap-2">
                 <div className={`w-2 h-2 rounded-full ${
                   activeHint.priority === 'high' ? 'bg-red-400' :
@@ -312,7 +309,6 @@ export function ContextualHintOverlay({
           </Card>
         </motion.div>
         
-        {/* Pulsing indicator for highlighted areas */}
         {activeHint.id === 'piece-selection' && (
           <motion.div
             initial={{ scale: 0 }}
@@ -326,6 +322,7 @@ export function ContextualHintOverlay({
       </motion.div>
     </AnimatePresence>
   );
+  */
 }
 
 // Hint settings component for user preferences
