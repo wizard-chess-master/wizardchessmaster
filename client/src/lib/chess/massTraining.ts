@@ -42,6 +42,9 @@ export class MassAITraining {
       const batchStart = batch * batchSize;
       const batchEnd = Math.min((batch + 1) * batchSize, gameCount);
       
+      // Yield control back to browser every batch to prevent freezing
+      await new Promise(resolve => setTimeout(resolve, 0));
+      
       // Process batch of games
       for (let gameIndex = batchStart; gameIndex < batchEnd; gameIndex++) {
         const gameResult = await this.playTrainingGame();

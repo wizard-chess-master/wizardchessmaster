@@ -88,6 +88,7 @@ export function AITrainingPanel() {
             <Button 
               onClick={() => runTraining(100)}
               className="medieval-btn"
+              disabled={isTraining}
             >
               <Zap className="w-4 h-4 mr-2" />
               Quick Train (100 games)
@@ -95,6 +96,7 @@ export function AITrainingPanel() {
             <Button 
               onClick={() => runTraining(1000)}
               className="medieval-btn"
+              disabled={isTraining}
             >
               <Brain className="w-4 h-4 mr-2" />
               Standard (1,000 games)
@@ -103,6 +105,7 @@ export function AITrainingPanel() {
               onClick={() => runTraining(10000)}
               className="medieval-btn"
               variant="outline"
+              disabled={isTraining}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Intensive (10,000 games)
@@ -110,6 +113,7 @@ export function AITrainingPanel() {
             <Button 
               onClick={() => runTraining(50000)}
               className="medieval-btn bg-purple-600 hover:bg-purple-700"
+              disabled={isTraining}
             >
               <Brain className="w-4 h-4 mr-2" />
               Master Training (50,000 games)
