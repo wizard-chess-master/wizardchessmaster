@@ -28,6 +28,9 @@ interface GameSettingsDialogProps {
 export function GameSettingsDialog({ isOpen, onClose }: GameSettingsDialogProps) {
   const { isMuted, volume, toggleMute, setVolume } = useAudio();
   const { isActive: coachActive, activateMentor, deactivateMentor } = useDynamicAIMentor();
+  const [coachVoiceEnabled, setCoachVoiceEnabled] = React.useState(() => {
+    return localStorage.getItem('coachVoiceEnabled') !== 'false';
+  });
   
   const handleVolumeChange = (values: number[]) => {
     const newVolume = values[0];
@@ -40,6 +43,13 @@ export function GameSettingsDialog({ isOpen, onClose }: GameSettingsDialogProps)
     } else {
       activateMentor();
     }
+  };
+  
+  const toggleCoachVoice = () => {
+    const newState = !coachVoiceEnabled;
+    setCoachVoiceEnabled(newState);
+    localStorage.setItem('coachVoiceEnabled', String(newState));
+    // This setting will be checked by the mentor when it speaks
   };
   
   const testSound = () => {
@@ -182,8 +192,8 @@ export function GameSettingsDialog({ isOpen, onClose }: GameSettingsDialogProps)
                       </div>
                       <Switch
                         id="coach-voice"
-                        checked={!isMuted}
-                        disabled={isMuted}
+                        checked={coachVoiceEnabled}
+                        onCheckedChange={toggleCoachVoice}
                       />
                     </div>
                     

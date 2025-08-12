@@ -31,6 +31,12 @@ export function MentorNotification() {
 
   const speakFeedback = (message: string) => {
     try {
+      // Check if coach voice is enabled in settings
+      const coachVoiceEnabled = localStorage.getItem('coachVoiceEnabled') !== 'false';
+      if (!coachVoiceEnabled) {
+        return; // Don't speak if coach voice is disabled
+      }
+      
       if ('speechSynthesis' in window) {
         // Cancel any ongoing speech to prevent overlapping
         speechSynthesis.cancel();

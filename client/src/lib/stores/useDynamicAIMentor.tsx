@@ -262,7 +262,7 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
         move.isWizardAttack || 
         move.isCastling || // Important strategic moves
         move.captured?.type === 'queen' || // Queen captures
-        gameState.isCheck || // Check situations
+        gameState.isInCheck || // Check situations
         Math.random() < 0.15 // 15% chance for random feedback
       );
 
