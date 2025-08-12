@@ -3,7 +3,7 @@
 
 import OpenAI from 'openai';
 import { aiPersonalities, getAIComment, getRandomMessage, type AIPersonality } from './aiChatPersonalities';
-import type { ChessMove, Piece } from '../chess/types';
+import type { ChessMove, ChessPiece } from '../chess/types';
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const MODEL = 'gpt-4o';
@@ -49,7 +49,7 @@ export class MultiplayerAIChat {
   // Analyze a move and generate appropriate commentary
   async analyzeMove(
     move: ChessMove,
-    boardState: (Piece | null)[][],
+    boardState: (ChessPiece | null)[][],
     currentPlayer: 'white' | 'black'
   ): Promise<string> {
     this.moveCount++;
@@ -83,14 +83,19 @@ export class MultiplayerAIChat {
       }
     }
     
-    // If OpenAI is available and it's a significant move, get smart commentary
-    if (this.useOpenAI && this.openai && (moveType === 'check' || moveType === 'capture' || Math.random() < 0.3)) {
+    // Reduce AI commentary frequency - only comment on significant moves or randomly (15% chance)
+    if (this.useOpenAI && this.openai && (moveType === 'check' || moveType === 'capture' || moveType === 'castle' || Math.random() < 0.15)) {
       try {
         const smartComment = await this.getSmartCommentary(move, boardState, moveType);
         if (smartComment) return smartComment;
       } catch (error) {
         console.log('🤖 Falling back to template comments');
       }
+    }
+    
+    // Skip commentary for neutral moves more often to reduce frequency
+    if (moveType === 'neutral' && Math.random() < 0.7) {
+      return '';
     }
     
     // Use personality templates
@@ -100,8 +105,8 @@ export class MultiplayerAIChat {
   // Get idle chatter when no moves for a while (less frequently)
   getIdleComment(): string {
     const now = Date.now();
-    // Only send idle comments every 60 seconds, and avoid repetition
-    if (now - this.lastIdleCommentTime > 60000 && now - this.lastMoveTime > 30000) {
+    // Only send idle comments every 120 seconds (2 minutes), and avoid repetition
+    if (now - this.lastIdleCommentTime > 120000 && now - this.lastMoveTime > 45000) {
       this.lastIdleCommentTime = now;
       const messages = this.currentPersonality.idleChatter.filter(
         msg => !this.recentMessages.includes(msg)
@@ -233,7 +238,7 @@ export class MultiplayerAIChat {
   // Use OpenAI for more sophisticated commentary
   private async getSmartCommentary(
     move: ChessMove,
-    boardState: (Piece | null)[][],
+    boardState: (ChessPiece | null)[][],
     moveType: string
   ): Promise<string | null> {
     if (!this.openai) return null;
@@ -269,7 +274,7 @@ export class MultiplayerAIChat {
   }
   
   // Helper: Check if king is in check
-  private isCheck(board: (Piece | null)[][], kingColor: 'white' | 'black'): boolean {
+  private isCheck(board: (ChessPiece | null)[][], kingColor: 'white' | 'black'): boolean {
     // Simplified check detection
     // In a real implementation, this would check all enemy pieces' valid moves
     return false; // Placeholder

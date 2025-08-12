@@ -77,11 +77,12 @@ export const aiPersonalities: Record<string, AIPersonality> = {
       "Endgame technique will decide this match."
     ],
     idleChatter: [
-      "Take your time. Good moves require thought.",
-      "Chess is 99% tactics, as they say!",
-      "Remember to look for your opponent's threats too.",
-      "Every piece should have a purpose.",
-      "Control the center, control the game!"
+      "Remember - in 10x10 chess, controlling those extra ranks is crucial.",
+      "The wizards change everything! They can teleport anywhere within 2 squares.",
+      "Wizard attacks go through pieces - perfect for surprise tactics.",
+      "Double the board size means double the tactical possibilities!",
+      "Those corner wizards can be devastating if left unchecked.",
+      "The extended board creates fascinating new opening patterns."
     ],
     encouragement: [
       "You're doing great! Keep it up!",
@@ -150,11 +151,11 @@ export const aiPersonalities: Record<string, AIPersonality> = {
       "The climax of our duel!"
     ],
     idleChatter: [
-      "The clock is ticking...",
-      "Analyzing your options?",
-      "The tension is building!",
-      "Every second counts!",
-      "Show me what you've got!"
+      "Wizard chess demands bold tactics and strategic foresight!",
+      "Remember - those wizards can strike from unexpected angles!",
+      "The larger board creates more opportunities for brilliant combinations.",
+      "Every wizard placement could be the key to victory!",
+      "Use those teleport abilities to surprise your opponent!"
     ],
     encouragement: [
       "Come on, show me your best!",
@@ -223,11 +224,11 @@ export const aiPersonalities: Record<string, AIPersonality> = {
       "The ultimate spell shall be cast!"
     ],
     idleChatter: [
-      "The stars are aligning...",
-      "I consult the ancient texts...",
-      "The chess crystals are glowing...",
-      "Mystical energies swirl around the board...",
-      "The prophecy unfolds..."
+      "The wizard pieces hold ancient magical powers beyond mortal understanding...",
+      "I sense the mystical energy of the teleportation magic around the board...",
+      "The cosmic chess forces whisper secrets of the 10x10 realm...",
+      "Beware - wizard attacks pierce through all earthly obstacles!",
+      "The expanded board reveals pathways to new magical possibilities..."
     ],
     encouragement: [
       "Channel your inner chess wizard!",

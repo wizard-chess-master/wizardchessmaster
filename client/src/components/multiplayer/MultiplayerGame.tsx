@@ -83,7 +83,7 @@ export function MultiplayerGame() {
           isAI: true
         }]);
       }
-    }, 65000); // Check every 65 seconds (but AI will only comment if 60s have passed since last comment)
+    }, 125000); // Check every 125 seconds (but AI will only comment if 120s have passed since last comment)
     
     return () => clearInterval(idleTimer);
   }, [chatMessages.length]);
