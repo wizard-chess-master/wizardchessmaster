@@ -192,43 +192,8 @@ function App() {
       const hash = window.location.hash.slice(1); // Remove the '#'
       console.log('🔄 Hash changed to:', hash);
       if (hash === 'game' || hash === 'play') {
-        const { gamePhase } = useChess.getState();
-        console.log('🎮 Current game phase:', gamePhase);
-        
-        // If already in a game, just navigate to the game page
-        if (gamePhase === 'playing' || gamePhase === 'ended') {
-          console.log('📍 Already in a game, just navigating to game page');
-          setCurrentPage('game');
-        } else {
-          // Auto-start adaptive AI game BEFORE changing page
-          const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
-          const winRate = playerStats.winRate || 0;
-          const gamesPlayed = playerStats.gamesPlayed || 0;
-          
-          let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
-          if (gamesPlayed >= 3) {
-            if (winRate > 0.7) {
-              difficulty = 'hard';
-              console.log('🎯 Hash navigation: Setting AI to hard (win rate > 70%)');
-            } else if (winRate > 0.4) {
-              difficulty = 'medium';
-              console.log('🎯 Hash navigation: Setting AI to medium (win rate 40-70%)');
-            } else {
-              console.log('🎯 Hash navigation: Keeping AI on easy (win rate < 40%)');
-            }
-          } else {
-            console.log('🎯 Hash navigation: New player, starting with easy AI');
-          }
-          
-          const { startGame } = useChess.getState();
-          
-          // Start the game immediately
-          startGame('ai', difficulty);
-          console.log('🎮 Game started with difficulty:', difficulty);
-          
-          // Then change page
-          setCurrentPage('game');
-        }
+        // Simply navigate to game page
+        setCurrentPage('game');
       } else if (hash === 'multiplayer') {
         setCurrentPage('multiplayer');
       } else if (hash === 'multiplayer-game') {

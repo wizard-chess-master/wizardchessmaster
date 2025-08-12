@@ -504,55 +504,19 @@ export function MultiplayerLobby() {
                   </Button>
                   <Button 
                     onClick={() => {
-                      console.log('🤖 Playing against AI from no games available');
-                      alert('Starting AI game...'); // Temporary alert to confirm button works
-                      
-                      // Disconnect from multiplayer to avoid conflicts
+                      // Disconnect from multiplayer
                       const { disconnect } = useMultiplayer.getState();
                       disconnect();
-                      console.log('📡 Disconnected from multiplayer');
                       
-                      // Get player's skill level for adaptive difficulty
-                      const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
-                      const winRate = playerStats.winRate || 0;
-                      const gamesPlayed = playerStats.gamesPlayed || 0;
+                      // Reset game first to ensure clean state
+                      const { resetGame, startGame } = useChess.getState();
+                      resetGame();
                       
-                      let difficulty: 'easy' | 'medium' | 'hard' = 'medium';
-                      if (gamesPlayed >= 3) {
-                        if (winRate > 0.7) {
-                          difficulty = 'hard';
-                          console.log('🎯 Adaptive AI: Setting to hard (win rate > 70%)');
-                        } else if (winRate > 0.4) {
-                          difficulty = 'medium';
-                          console.log('🎯 Adaptive AI: Setting to medium (win rate 40-70%)');
-                        } else {
-                          difficulty = 'easy';
-                          console.log('🎯 Adaptive AI: Setting to easy (win rate < 40%)');
-                        }
-                      } else {
-                        console.log('🎯 Adaptive AI: New player, starting with medium');
-                      }
-                      
-                      // Start the game directly AND navigate
-                      const { startGame, gamePhase: beforePhase } = useChess.getState();
-                      console.log('📊 Game phase BEFORE start:', beforePhase);
-                      
-                      startGame('ai', difficulty);
-                      
-                      const { gamePhase: afterPhase } = useChess.getState();
-                      console.log('📊 Game phase AFTER start:', afterPhase);
-                      console.log('✅ AI game started with adaptive difficulty:', difficulty);
-                      
-                      // Navigate to game page
-                      console.log('🎮 Navigating to game page');
-                      window.location.hash = '#game';
-                      
-                      // Extra check after navigation
+                      // Start AI game with medium difficulty
                       setTimeout(() => {
-                        const { gamePhase: finalPhase } = useChess.getState();
-                        console.log('📊 Game phase AFTER navigation:', finalPhase);
-                        console.log('🌐 Current URL hash:', window.location.hash);
-                      }, 100);
+                        startGame('ai', 'medium');
+                        window.location.hash = '#game';
+                      }, 50);
                     }}
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
