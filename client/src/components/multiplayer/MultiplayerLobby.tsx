@@ -505,10 +505,12 @@ export function MultiplayerLobby() {
                   <Button 
                     onClick={() => {
                       console.log('🤖 Playing against AI from no games available');
+                      alert('Starting AI game...'); // Temporary alert to confirm button works
                       
                       // Disconnect from multiplayer to avoid conflicts
                       const { disconnect } = useMultiplayer.getState();
                       disconnect();
+                      console.log('📡 Disconnected from multiplayer');
                       
                       // Get player's skill level for adaptive difficulty
                       const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
@@ -532,13 +534,25 @@ export function MultiplayerLobby() {
                       }
                       
                       // Start the game directly AND navigate
-                      const { startGame } = useChess.getState();
+                      const { startGame, gamePhase: beforePhase } = useChess.getState();
+                      console.log('📊 Game phase BEFORE start:', beforePhase);
+                      
                       startGame('ai', difficulty);
+                      
+                      const { gamePhase: afterPhase } = useChess.getState();
+                      console.log('📊 Game phase AFTER start:', afterPhase);
                       console.log('✅ AI game started with adaptive difficulty:', difficulty);
                       
                       // Navigate to game page
                       console.log('🎮 Navigating to game page');
                       window.location.hash = '#game';
+                      
+                      // Extra check after navigation
+                      setTimeout(() => {
+                        const { gamePhase: finalPhase } = useChess.getState();
+                        console.log('📊 Game phase AFTER navigation:', finalPhase);
+                        console.log('🌐 Current URL hash:', window.location.hash);
+                      }, 100);
                     }}
                     className="bg-purple-600 hover:bg-purple-700 text-white"
                   >
