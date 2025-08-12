@@ -63,7 +63,8 @@ export function DeploymentPanelV2() {
     // Bundle size check
     const scripts = document.querySelectorAll('script[src]');
     let totalSize = 0;
-    for (const script of scripts) {
+    const scriptArray = Array.from(scripts);
+    for (const script of scriptArray) {
       try {
         const response = await fetch((script as HTMLScriptElement).src);
         const size = response.headers.get('content-length');
