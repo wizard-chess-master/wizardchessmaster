@@ -169,9 +169,9 @@ export function GameSettingsDialog({ isOpen, onClose }: GameSettingsDialogProps)
               {/* Coach Toggle */}
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
-                  <Label htmlFor="coach-enabled">Enable AI Coach</Label>
+                  <Label htmlFor="coach-enabled">{coachActive ? 'AI Coach Active' : 'Enable AI Coach'}</Label>
                   <p className="text-xs text-muted-foreground">
-                    Get helpful tips and analysis during gameplay
+                    {coachActive ? 'Coach is providing guidance' : 'Get helpful tips and analysis during gameplay'}
                   </p>
                 </div>
                 <Switch
