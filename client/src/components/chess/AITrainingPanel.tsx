@@ -10,11 +10,13 @@ export function AITrainingPanel() {
   const [progress, setProgress] = useState<TrainingProgress | null>(null);
   const [results, setResults] = useState<any>(null);
   const [statusMessage, setStatusMessage] = useState<string>('');
+  const [trainingStartTime, setTrainingStartTime] = useState<number>(0);
 
   const runTraining = useCallback(async (gameCount: number) => {
     setIsTraining(true);
     setProgress(null);
     setResults(null);
+    setTrainingStartTime(Date.now());
     setStatusMessage(`🚀 Starting ${gameCount.toLocaleString()} game training session...`);
 
     // Show initial progress immediately
@@ -147,6 +149,7 @@ export function AITrainingPanel() {
             <div className="text-xs text-muted-foreground">
               Avg game length: {Math.round(progress.avgGameLength)} moves
               • Strategies learned: {progress.strategiesLearned}
+              • Games/sec: {((progress.gamesCompleted / ((Date.now() - trainingStartTime) / 1000)) || 0).toFixed(1)}
             </div>
           </div>
         )}

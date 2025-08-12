@@ -276,7 +276,7 @@ export class MassAITraining {
     return centerSquares.some(([r, c]) => r === move.to.row && c === move.to.col);
   }
 
-  // Get all valid moves as ChessMove objects for training
+  // Get all valid moves as ChessMove objects for training (with proper legality checking)
   private getAllValidMovesForTraining(board: (ChessPiece | null)[][], color: PieceColor): ChessMove[] {
     const moves: ChessMove[] = [];
     
@@ -285,19 +285,35 @@ export class MassAITraining {
         const piece = board[row][col];
         if (piece && piece.color === color) {
           const from = { row, col };
-          const validPositions = getPossibleMoves(board, from, piece);
+          const possiblePositions = getPossibleMoves(board, from, piece);
           
-          for (const to of validPositions) {
+          // Filter out illegal moves that would put king in check
+          for (const to of possiblePositions) {
             const captured = board[to.row][to.col];
             const isWizardAttack = piece.type === 'wizard' && captured !== null;
             
-            moves.push({
-              from,
-              to,
-              piece,
-              captured: captured || undefined,
-              isWizardAttack
-            });
+            // Test if move is legal (doesn't leave king in check)
+            const testBoard = board.map(r => [...r]);
+            
+            if (isWizardAttack) {
+              // Wizard attack: remove target but wizard stays
+              testBoard[to.row][to.col] = null;
+            } else {
+              // Normal move
+              testBoard[to.row][to.col] = piece;
+              testBoard[from.row][from.col] = null;
+            }
+            
+            // Check if this move would leave our king in check
+            if (!isKingInCheck(testBoard, color)) {
+              moves.push({
+                from,
+                to,
+                piece,
+                captured: captured || undefined,
+                isWizardAttack
+              });
+            }
           }
         }
       }
