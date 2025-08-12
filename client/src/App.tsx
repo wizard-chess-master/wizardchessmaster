@@ -294,7 +294,16 @@ function AppContent() {
           <GlobalNavigation 
             currentPage={currentPage}
             onNavigate={handleNavigate}
-            onStartGame={() => setCurrentPage('game')}
+            onStartGame={() => {
+              // Just navigate to game page, don't start a game
+              setCurrentPage('game');
+              // Make sure we're in menu phase when navigating to game
+              const { resetGame } = useChess.getState();
+              const { gamePhase } = useChess.getState();
+              if (gamePhase !== 'menu') {
+                resetGame();
+              }
+            }}
           />
 
         <div className="game-container">
