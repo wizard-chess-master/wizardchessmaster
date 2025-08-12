@@ -247,6 +247,21 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   </div>
                 </Button>
                 
+                {/* AI Training Button - Make it prominent */}
+                <Button
+                  className="medieval-btn mode-button bg-purple-600 hover:bg-purple-700 text-white"
+                  onClick={() => {
+                    const element = document.getElementById('ai-training-panel');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }}
+                >
+                  <div className="mode-content">
+                    <span>🧠 AI Training Center</span>
+                    <Badge variant="secondary" className="bg-yellow-500 text-black">Train 50,000 Games!</Badge>
+                  </div>
+                </Button>
 
                 <Button
                   className="medieval-btn mode-button"
@@ -365,8 +380,10 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
             </CardContent>
           </Card>
 
-          {/* AI Training Panel */}
-          <AITrainingPanel />
+          {/* AI Training Panel - Now with ID for scrolling */}
+          <div id="ai-training-panel">
+            <AITrainingPanel />
+          </div>
         </div>
 
         <div className="menu-footer">
