@@ -43,18 +43,18 @@ export {
  * Initialize all performance optimizations
  */
 export function initializePerformance(): void {
-  // Import instances for initialization
-  const { performanceOptimizer } = require('./performanceOptimizer');
-  const { lazyLoader } = require('./lazyLoader');
+  // Import instances directly
+  import('./performanceOptimizer').then(({ performanceOptimizer }) => {
+    performanceOptimizer.initialize();
+  });
   
-  // Initialize performance optimizer
-  performanceOptimizer.initialize();
-  
-  // Start observing images for lazy loading
-  lazyLoader.observeImages();
-  
-  // Start observing components
-  lazyLoader.observeComponents();
+  import('./lazyLoader').then(({ lazyLoader }) => {
+    // Start observing images for lazy loading
+    lazyLoader.observeImages();
+    
+    // Start observing components
+    lazyLoader.observeComponents();
+  });
   
   console.log('⚡ Performance optimizations initialized');
 }
