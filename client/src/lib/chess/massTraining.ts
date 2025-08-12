@@ -109,13 +109,17 @@ export class MassAITraining {
 
   // Play a single training game
   private async playTrainingGame(): Promise<TrainingGameResult> {
+    // Randomly select difficulty levels to train (level1-level20)
+    const whiteLevel = `level${Math.floor(Math.random() * 20) + 1}`;
+    const blackLevel = `level${Math.floor(Math.random() * 20) + 1}`;
+    
     let gameState: GameState = {
       board: Array(10).fill(null).map(() => Array(10).fill(null)),
       currentPlayer: 'white',
       gamePhase: 'active' as GamePhase,
       winner: null,
       moveHistory: [],
-      aiDifficulty: 'easy', // Use easy AI for fast training
+      aiDifficulty: whiteLevel as any, // Train with varying difficulty levels
       gameMode: 'ai-vs-ai',
       selectedPosition: null,
       validMoves: [],
@@ -142,8 +146,12 @@ export class MassAITraining {
         break;
       }
       
-      // Pick a semi-random move with basic evaluation (much faster than full AI)
-      const move = this.selectTrainingMove(validMoves, gameState);
+      // Use different selection strategies based on the current player's difficulty level
+      const currentLevel = currentColor === 'white' ? whiteLevel : blackLevel;
+      const levelNum = parseInt(currentLevel.replace('level', ''));
+      
+      // Higher levels use smarter move selection
+      const move = this.selectTrainingMoveByLevel(validMoves, gameState, levelNum);
       
       if (!move) {
         // No legal moves - game over
@@ -288,48 +296,108 @@ export class MassAITraining {
     return moves;
   }
 
-  // Fast move selection for training (much simpler than full AI)
-  private selectTrainingMove(validMoves: ChessMove[], gameState: GameState): ChessMove {
-    // Simple scoring: captures > checks > center control > random
+  // Select moves based on difficulty level for proper training
+  private selectTrainingMoveByLevel(validMoves: ChessMove[], gameState: GameState, level: number): ChessMove {
+    // Level 1-5: Random with basic preferences
+    // Level 6-10: Moderate strategy
+    // Level 11-15: Advanced tactics
+    // Level 16-20: Expert play
+    
     let bestMoves: ChessMove[] = [];
     let bestScore = -Infinity;
     
     for (const move of validMoves) {
-      let score = Math.random() * 10; // Base random score
+      let score = 0;
       
-      // Prioritize captures
+      // Base randomness decreases with level
+      const randomFactor = Math.max(0, 20 - level);
+      score += Math.random() * randomFactor;
+      
+      // Capture evaluation (more important at higher levels)
       if (move.captured) {
-        score += 50;
+        const captureValue = this.getPieceValue(move.captured.type);
+        score += captureValue * (1 + level / 10);
       }
       
-      // Prioritize wizard attacks
-      if (move.isWizardAttack) {
-        score += 40;
+      // Wizard attacks (strategic at mid-high levels)
+      if (move.isWizardAttack && level >= 8) {
+        score += 40 + level * 2;
       }
       
-      // Prioritize center control
+      // Center control (important at all levels, more at higher)
       if (this.isCenterControlMove(move)) {
-        score += 20;
+        score += 10 + level;
       }
       
-      // Avoid moving the same piece repeatedly
-      if (gameState.moveHistory.length > 0) {
+      // Piece development (important at mid levels)
+      if (level >= 5 && level <= 15 && this.isDevelopmentMove(move)) {
+        score += 15 + level / 2;
+      }
+      
+      // King safety (critical at high levels)
+      if (level >= 12) {
+        const kingSafetyScore = this.evaluateKingSafety(gameState, move);
+        score += kingSafetyScore * (level / 5);
+      }
+      
+      // Avoid repetition (smarter at higher levels)
+      if (gameState.moveHistory.length > 0 && level >= 7) {
         const lastMove = gameState.moveHistory[gameState.moveHistory.length - 1];
         if (lastMove && lastMove.to.row === move.from.row && lastMove.to.col === move.from.col) {
-          score -= 10;
+          score -= 10 + level;
         }
       }
       
       if (score > bestScore) {
         bestScore = score;
         bestMoves = [move];
-      } else if (score === bestScore) {
+      } else if (Math.abs(score - bestScore) < 0.1) {
         bestMoves.push(move);
       }
     }
     
-    // Pick randomly from best moves
+    // At higher levels, pick the absolute best; at lower levels, allow some randomness
+    if (level >= 15 && bestMoves.length > 1) {
+      // Re-evaluate best moves more carefully
+      return bestMoves[0];
+    }
+    
     return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+  }
+  
+  // Helper: Get piece value for capture evaluation
+  private getPieceValue(pieceType: string): number {
+    const values: Record<string, number> = {
+      'pawn': 10,
+      'knight': 30,
+      'bishop': 30,
+      'rook': 50,
+      'queen': 90,
+      'wizard': 70,
+      'king': 1000
+    };
+    return values[pieceType] || 0;
+  }
+  
+  // Helper: Evaluate king safety after a move
+  private evaluateKingSafety(gameState: GameState, move: ChessMove): number {
+    // Simple king safety: penalize moves that expose the king
+    if (move.piece.type === 'king') {
+      return -5; // Moving king is often risky
+    }
+    
+    // Reward castling moves
+    if (move.piece.type === 'king' && Math.abs(move.from.col - move.to.col) === 3) {
+      return 25; // Castling is good for king safety
+    }
+    
+    return 0;
+  }
+
+  // Fast move selection for training (kept for compatibility)
+  private selectTrainingMove(validMoves: ChessMove[], gameState: GameState): ChessMove {
+    // Default to level 10 (medium difficulty)
+    return this.selectTrainingMoveByLevel(validMoves, gameState, 10);
   }
 
   // Check if move develops a piece
