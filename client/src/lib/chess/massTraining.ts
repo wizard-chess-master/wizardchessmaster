@@ -135,7 +135,7 @@ export class MassAITraining {
     const moves: ChessMove[] = [];
     const moveAnalysis: MoveAnalysis[] = [];
     let moveCount = 0;
-    const maxMoves = 100; // Prevent infinite games
+    const maxMoves = 200; // Increased to allow games to reach natural conclusion
     
     while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
@@ -143,6 +143,16 @@ export class MassAITraining {
       // Get all valid moves for training
       const validMoves = this.getAllValidMovesForTraining(gameState.board, currentColor);
       if (validMoves.length === 0) {
+        // No valid moves - check for checkmate or stalemate
+        if (isKingInCheck(gameState.board, currentColor)) {
+          // Checkmate - opponent wins
+          gameState.gamePhase = 'ended' as GamePhase;
+          gameState.winner = currentColor === 'white' ? 'black' : 'white';
+        } else {
+          // Stalemate - draw
+          gameState.gamePhase = 'ended' as GamePhase;
+          gameState.winner = null;
+        }
         break;
       }
       

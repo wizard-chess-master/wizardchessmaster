@@ -159,11 +159,26 @@ export function AITrainingPanel() {
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>Total Games: {results.totalGames}</div>
               <div>Time: {(results.completionTime / 1000 / 60).toFixed(1)} min</div>
-              <div>White Wins: {results.whiteWins}</div>
-              <div>Black Wins: {results.blackWins}</div>
-              <div>Draws: {results.draws}</div>
+              <div>White Wins: {results.whiteWins} ({((results.whiteWins / results.totalGames) * 100).toFixed(1)}%)</div>
+              <div>Black Wins: {results.blackWins} ({((results.blackWins / results.totalGames) * 100).toFixed(1)}%)</div>
+              <div>Draws: {results.draws} ({((results.draws / results.totalGames) * 100).toFixed(1)}%)</div>
               <div>Strategies: {results.strategiesLearned}</div>
             </div>
+            
+            {/* Win rate analysis */}
+            <div className="mt-2 p-2 bg-amber-50 rounded text-xs">
+              <div className="font-semibold mb-1">Training Quality Analysis:</div>
+              {results.draws / results.totalGames > 0.8 && (
+                <div className="text-amber-700">⚠️ High draw rate ({((results.draws / results.totalGames) * 100).toFixed(1)}%) - Games may be ending too early</div>
+              )}
+              {Math.abs(results.whiteWins - results.blackWins) / results.totalGames > 0.2 && (
+                <div className="text-amber-700">⚠️ Color imbalance detected - White: {((results.whiteWins / results.totalGames) * 100).toFixed(1)}% vs Black: {((results.blackWins / results.totalGames) * 100).toFixed(1)}%</div>
+              )}
+              {results.draws / results.totalGames < 0.8 && Math.abs(results.whiteWins - results.blackWins) / results.totalGames < 0.2 && (
+                <div className="text-green-700">✓ Balanced training results - AI learning effectively</div>
+              )}
+            </div>
+            
             <div className="text-xs text-green-700">
               AI has been improved! The learning has been saved.
             </div>
