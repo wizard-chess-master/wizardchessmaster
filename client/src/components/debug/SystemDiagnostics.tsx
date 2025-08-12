@@ -138,9 +138,10 @@ export const SystemDiagnostics: React.FC = () => {
     return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
   };
 
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
+  // Show in all environments for debugging
+  // if (process.env.NODE_ENV !== 'development') {
+  //   return null;
+  // }
 
   return (
     <div className="fixed bottom-4 right-4 z-50">

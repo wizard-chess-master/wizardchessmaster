@@ -117,10 +117,11 @@ export const PerformanceDashboard: React.FC = () => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-4 left-4 z-50 bg-purple-600 text-white p-3 rounded-lg shadow-lg hover:bg-purple-700 transition-colors"
+        className="fixed bottom-4 left-4 z-50 bg-purple-600 text-white p-3 rounded-lg shadow-lg hover:bg-purple-700 transition-colors flex items-center justify-center"
         title="Performance Dashboard"
+        style={{ width: '48px', height: '48px' }}
       >
-        <BarChart3 className="w-5 h-5" />
+        <BarChart3 className="w-6 h-6" />
       </button>
 
       {/* Dashboard Modal */}
