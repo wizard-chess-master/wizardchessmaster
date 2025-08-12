@@ -132,6 +132,17 @@ export class MassAITraining {
     this.initializeBoard(gameState.board);
     gameState.gameMode = 'ai-vs-ai';
     
+    // Debug: Check if board was initialized properly
+    let pieceCount = 0;
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        if (gameState.board[row][col]) pieceCount++;
+      }
+    }
+    if (pieceCount === 0) {
+      console.error('❌ Board not initialized! No pieces found!');
+    }
+    
     const moves: ChessMove[] = [];
     const moveAnalysis: MoveAnalysis[] = [];
     let moveCount = 0;
@@ -142,16 +153,24 @@ export class MassAITraining {
       
       // Get all valid moves for training
       const validMoves = this.getAllValidMovesForTraining(gameState.board, currentColor);
+      
+      // Debug log for first few moves
+      if (moveCount < 3 && validMoves.length === 0) {
+        console.log(`⚠️ No valid moves on move ${moveCount} for ${currentColor}`);
+      }
+      
       if (validMoves.length === 0) {
-        // No valid moves - check for checkmate or stalemate
+        // No moves available - check for checkmate or stalemate
         if (isKingInCheck(gameState.board, currentColor)) {
           // Checkmate - opponent wins
           gameState.gamePhase = 'ended' as GamePhase;
           gameState.winner = currentColor === 'white' ? 'black' : 'white';
+          gameState.isCheckmate = true;
         } else {
           // Stalemate - draw
           gameState.gamePhase = 'ended' as GamePhase;
           gameState.winner = null;
+          gameState.isStalemate = true;
         }
         break;
       }
@@ -160,25 +179,51 @@ export class MassAITraining {
       const currentLevel = currentColor === 'white' ? whiteLevel : blackLevel;
       const levelNum = parseInt(currentLevel.replace('level', ''));
       
-      // Higher levels use smarter move selection
-      const move = this.selectTrainingMoveByLevel(validMoves, gameState, levelNum);
+      // Try to make a legal move
+      let moveMade = false;
+      let attempts = 0;
+      const maxAttempts = Math.min(10, validMoves.length);
       
-      if (!move) {
-        // No legal moves - game over
-        break;
+      while (!moveMade && attempts < maxAttempts) {
+        // Select a move based on difficulty level
+        const move = this.selectTrainingMoveByLevel(validMoves, gameState, levelNum);
+        
+        if (!move) break;
+        
+        // Analyze move before making it
+        const analysis = this.analyzeMoveType(gameState, move);
+        
+        // Try to make the move
+        try {
+          // Use skipRepetitionCheck flag for training to avoid early draws
+          gameState = makeMove(gameState, move, true);
+          moves.push(move);
+          moveAnalysis.push(analysis);
+          moveCount++;
+          moveMade = true;
+        } catch (error) {
+          // Move was illegal, remove it from valid moves and try another
+          const moveIndex = validMoves.indexOf(move);
+          if (moveIndex > -1) {
+            validMoves.splice(moveIndex, 1);
+          }
+          attempts++;
+        }
       }
       
-      // Analyze move before making it
-      const analysis = this.analyzeMoveType(gameState, move);
-      moveAnalysis.push(analysis);
-      
-      // Make the move
-      try {
-        gameState = makeMove(gameState, move);
-        moves.push(move);
-        moveCount++;
-      } catch (error) {
-        console.error('❌ Move failed:', error, 'Move:', move);
+      if (!moveMade) {
+        // Couldn't make any legal move - game ends
+        if (isKingInCheck(gameState.board, currentColor)) {
+          // Checkmate
+          gameState.gamePhase = 'ended' as GamePhase;
+          gameState.winner = currentColor === 'white' ? 'black' : 'white';
+          gameState.isCheckmate = true;
+        } else {
+          // Stalemate
+          gameState.gamePhase = 'ended' as GamePhase;
+          gameState.winner = null;
+          gameState.isStalemate = true;
+        }
         break;
       }
       
@@ -195,10 +240,15 @@ export class MassAITraining {
       }
     }
     
-    // Force draw if too many moves
+    // Force draw if too many moves (50-move rule)
     if (moveCount >= maxMoves && gameState.gamePhase === ('active' as GamePhase)) {
       gameState.gamePhase = 'ended' as GamePhase;
       gameState.winner = null;
+    }
+    
+    // Debug log for very short games
+    if (moveCount < 10 && gameState.winner === null) {
+      console.log(`⚠️ Short draw game: ${moveCount} moves, final phase: ${gameState.gamePhase}`);
     }
     
     // Calculate game statistics
@@ -276,7 +326,7 @@ export class MassAITraining {
     return centerSquares.some(([r, c]) => r === move.to.row && c === move.to.col);
   }
 
-  // Get all valid moves as ChessMove objects for training (with proper legality checking)
+  // Get all valid moves as ChessMove objects for training
   private getAllValidMovesForTraining(board: (ChessPiece | null)[][], color: PieceColor): ChessMove[] {
     const moves: ChessMove[] = [];
     
@@ -287,33 +337,19 @@ export class MassAITraining {
           const from = { row, col };
           const possiblePositions = getPossibleMoves(board, from, piece);
           
-          // Filter out illegal moves that would put king in check
           for (const to of possiblePositions) {
             const captured = board[to.row][to.col];
             const isWizardAttack = piece.type === 'wizard' && captured !== null;
             
-            // Test if move is legal (doesn't leave king in check)
-            const testBoard = board.map(r => [...r]);
-            
-            if (isWizardAttack) {
-              // Wizard attack: remove target but wizard stays
-              testBoard[to.row][to.col] = null;
-            } else {
-              // Normal move
-              testBoard[to.row][to.col] = piece;
-              testBoard[from.row][from.col] = null;
-            }
-            
-            // Check if this move would leave our king in check
-            if (!isKingInCheck(testBoard, color)) {
-              moves.push({
-                from,
-                to,
-                piece,
-                captured: captured || undefined,
-                isWizardAttack
-              });
-            }
+            // For training, we'll use simpler validation - just add all possible moves
+            // The makeMove function will handle legality checking
+            moves.push({
+              from,
+              to,
+              piece,
+              captured: captured || undefined,
+              isWizardAttack
+            });
           }
         }
       }
