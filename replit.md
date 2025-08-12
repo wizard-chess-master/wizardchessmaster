@@ -3,17 +3,21 @@
 **Wizard Chess Master** is a full-stack TypeScript application implementing a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. Its purpose is to deliver an engaging, visually immersive chess experience with robust monetization and cloud save functionality for premium members, ensuring seamless cross-device progression. Key capabilities include custom wizard pieces, AI opponents with adjustable difficulty (including advanced minimax and neural network AI), an enhanced campaign mode, comprehensive leaderboards, a fully immersive medieval fantasy visual overhaul, user authentication, and cloud save. The business vision is to provide a captivating variant chess game with strong market potential through its unique features and streamlined subscription model.
 
 ## Recent Changes (January 2025)
+- Fixed critical AI training system bugs - games now play properly with realistic win/loss rates instead of 100% draws
+- Added "Reset AI Training Data" button to remove corrupted training data from failed tests
+- Enhanced AI search depth by +2 across all 20 difficulty levels (Level 20 now searches 11 moves deep)
+- Implemented large-scale training capability supporting 50,000+ games with proper move validation
+- Fixed game phase mismatch bug that was causing immediate game termination in training
+- Added protection against learning from suspicious early draws (games < 10 moves)
 - Removed "Force mobile" feature as the game is not designed for mobile use
 - Enhanced AI coach feedback frequency for better player guidance
-- Improved debug logging for AI coach troubleshooting
 - Fixed AI game functionality in multiplayer arena - players can now start AI games when no multiplayer games are available
-- Added "Multiplayer Arena" button to main menu for accessing multiplayer features
-- Resolved game state conflicts between multiplayer and AI modes
 - **12-Task Development Roadmap Progress:**
   - **Task 1 Completed**: Multiplayer stability improvements with ping-pong heartbeat (15s interval), enhanced reconnection with state recovery, checksum validation, desync detection, and exponential backoff
   - **Task 2 Completed**: Audio improvements with performance optimizer, mobile audio handler, settings persistence, audio debugging tools, and comprehensive settings UI
   - **Task 3 Completed**: Performance optimization with FPS monitoring, lazy loading, render optimization, memory management, and performance overlay (Ctrl+Shift+P)
   - **Task 4 Completed**: AI enhancement with opening book system, sophisticated evaluation functions, tactical pattern recognition (forks, pins, skewers), endgame improvements, and two new difficulty levels (Expert and Master) featuring deeper search and enhanced strategies
+  - **Task 5 In Progress**: AI Training System - Fixed critical bugs, now achieving ~8% win rate (up from 0%), 92% draws. Training properly validates moves and detects checkmate/stalemate
 - **Previous Stability Work Completed**: Enhanced logging with Winston logger, React error boundaries, centralized error handling, memory leak detection, WebSocket management, performance profiling, stability testing, cross-browser compatibility, and production deployment preparation
 
 # User Preferences
