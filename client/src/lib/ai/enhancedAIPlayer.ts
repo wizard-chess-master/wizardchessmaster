@@ -34,7 +34,7 @@ export class EnhancedAIPlayer {
     this.difficulty = difficulty;
     this.evaluator = new EnhancedEvaluator(difficulty as any);
     
-    // Set search parameters based on difficulty
+    // Set search parameters based on difficulty - significantly strengthen Master
     switch (difficulty) {
       case 'easy':
         this.maxDepth = 2;
@@ -49,12 +49,12 @@ export class EnhancedAIPlayer {
         this.maxTime = 1000;
         break;
       case 'expert':
-        this.maxDepth = 5;
-        this.maxTime = 2000;
-        break;
-      case 'master':
         this.maxDepth = 6;
         this.maxTime = 3000;
+        break;
+      case 'master':
+        this.maxDepth = 8;  // Increased from 6 to 8 for deeper analysis
+        this.maxTime = 5000; // Increased from 3000 to 5000 for more thinking time
         break;
       default:
         this.maxDepth = 3;
@@ -92,19 +92,21 @@ export class EnhancedAIPlayer {
       }
     }
     
-    // Step 2: Check for immediate tactical opportunities
+    // Step 2: Check for immediate tactical opportunities (enhanced for Master)
     if (this.difficulty !== 'easy' && this.difficulty !== 'medium') {
       const tactics = tacticalAnalyzer.findTacticalPatterns(gameState, color);
       if (tactics.length > 0) {
         const bestTactic = tactics[0]; // Already sorted by value
-        if (bestTactic.value >= 300) { // Significant tactical opportunity
+        // Master difficulty is more aggressive with tactics
+        const tacticThreshold = this.difficulty === 'master' ? 200 : 300;
+        if (bestTactic.value >= tacticThreshold) { // Lower threshold for Master
           const allMoves = getAllPossibleMoves(gameState, color);
           const tacticMove = allMoves.find(m => 
             m.from.row === bestTactic.attacker.row &&
             m.from.col === bestTactic.attacker.col
           );
           if (tacticMove) {
-            console.log(`⚔️ Tactical pattern found: ${bestTactic.description}`);
+            console.log(`⚔️ Master tactical pattern: ${bestTactic.description} (value: ${bestTactic.value})`);
             return tacticMove;
           }
         }
@@ -223,7 +225,14 @@ export class EnhancedAIPlayer {
     }
     
     const currentColor = gameState.currentPlayer;
-    const moves = getAllPossibleMoves(gameState, currentColor);
+    let moves = getAllPossibleMoves(gameState, currentColor);
+    
+    // Enhanced move ordering for Master difficulty
+    if (this.difficulty === 'master') {
+      moves = this.orderMovesAdvanced(moves, gameState, currentColor);
+    } else {
+      moves = this.orderMoves(moves, gameState);
+    }
     
     // No legal moves
     if (moves.length === 0) {
@@ -302,6 +311,117 @@ export class EnhancedAIPlayer {
       
       return centerA - centerB;
     });
+  }
+  
+  /**
+   * Advanced move ordering for Master difficulty - much more sophisticated
+   */
+  private orderMovesAdvanced(moves: ChessMove[], gameState: GameState, color: PieceColor): ChessMove[] {
+    // Score each move for ordering
+    const scoredMoves = moves.map(move => {
+      let score = 0;
+      const newState = makeMove(gameState, move, true);
+      
+      // 1. Checkmate is best (highest priority)
+      if (newState.isCheckmate && newState.winner === color) {
+        score += 50000;
+      }
+      
+      // 2. Checks are good
+      if (newState.isInCheck) {
+        score += 900;
+      }
+      
+      // 3. Capture value - MVV-LVA (Most Valuable Victim - Least Valuable Attacker)
+      if (move.captured) {
+        const captureValue = this.getPieceValue(move.captured.type);
+        const attackerValue = this.getPieceValue(move.piece.type);
+        score += captureValue * 10 - attackerValue; // Favor capturing with less valuable pieces
+      }
+      
+      // 4. Promotions
+      if (move.promotion) {
+        score += 800;
+      }
+      
+      // 5. Tactical patterns (forks, pins, skewers)
+      const tactics = tacticalAnalyzer.findTacticalPatterns(gameState, color);
+      const isTactical = tactics.some(t => 
+        t.attacker.row === move.from.row && 
+        t.attacker.col === move.from.col
+      );
+      if (isTactical) {
+        score += 600;
+      }
+      
+      // 6. Development moves in opening
+      const moveNumber = Math.floor(gameState.moveHistory.length / 2) + 1;
+      if (moveNumber < 10) {
+        // Knights and bishops to center
+        if ((move.piece.type === 'knight' || move.piece.type === 'bishop') && !move.piece.hasMoved) {
+          const centerDistance = Math.abs(move.to.row - 4.5) + Math.abs(move.to.col - 4.5);
+          score += 100 - centerDistance * 10;
+        }
+        // Castle early
+        if (move.isCastling) {
+          score += 400;
+        }
+      }
+      
+      // 7. King safety (penalize exposing king)
+      if (move.piece.type === 'king' && moveNumber < 20) {
+        const centerDistance = Math.abs(move.to.row - 4.5) + Math.abs(move.to.col - 4.5);
+        score -= centerDistance * 20; // Penalize king moving to center in middle game
+      }
+      
+      // 8. Wizard special moves
+      if (move.piece.type === 'wizard') {
+        if (move.isWizardTeleport) {
+          score += 150; // Teleportation can be surprising
+        }
+        if (move.isWizardAttack) {
+          score += 200; // Ranged attacks are powerful
+        }
+      }
+      
+      // 9. Control of key squares
+      const keySquares = [
+        {row: 4, col: 4}, {row: 4, col: 5},
+        {row: 5, col: 4}, {row: 5, col: 5}
+      ];
+      if (keySquares.some(sq => sq.row === move.to.row && sq.col === move.to.col)) {
+        score += 50;
+      }
+      
+      // 10. History heuristic - moves that caused cutoffs before
+      // (simplified version without actual history table)
+      if (this.transpositionTable.has(this.hashBoard(newState))) {
+        score += 30;
+      }
+      
+      return { move, score };
+    });
+    
+    // Sort by score descending
+    scoredMoves.sort((a, b) => b.score - a.score);
+    
+    return scoredMoves.map(sm => sm.move);
+  }
+  
+  /**
+   * Get piece value for MVV-LVA
+   */
+  private getPieceValue(type: string): number {
+    switch(type) {
+      case 'pawn': return 100;
+      case 'knight': return 320;
+      case 'bishop': return 330;
+      case 'rook': return 500;
+      case 'wizard': return 400;
+      case 'queen': return 900;
+      case 'king': return 20000;
+      default: return 0;
+    }
   }
   
   /**
