@@ -47,6 +47,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register founder routes
   app.use('/api/founder', founderRoutes);
+  
+  // Register error logging routes
+  const { default: errorLogRoutes } = await import('./routes/errorLogRoutes');
+  app.use(errorLogRoutes);
 
   const httpServer = createServer(app);
   

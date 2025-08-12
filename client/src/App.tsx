@@ -22,6 +22,7 @@ import { GlobalNavigation } from "./components/layout/GlobalNavigation";
 import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
 import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
 import { PremiumTestButton } from "./components/debug/PremiumTestButton";
+import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -416,6 +417,7 @@ function AppContent() {
         <CelebrationComponent />
         
         <PremiumTestButton email="tokingteepee@gmail.com" />
+        <SystemDiagnostics />
         </div>
       </div>
       </AuthProvider>
