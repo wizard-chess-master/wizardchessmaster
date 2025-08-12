@@ -259,16 +259,19 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   </div>
                 </Button>
 
-                {/* MULTIPLAYER TEMPORARILY DISABLED - Will be re-enabled later
-                <OnlineMultiplayerDialog>
-                  <Button className="medieval-btn mode-button">
-                    <div className="mode-content">
-                      <span>🌐 Online Multiplayer</span>
-                      <Badge variant="secondary">Player vs Player</Badge>
-                    </div>
-                  </Button>
-                </OnlineMultiplayerDialog>
-                */}
+                {/* Temporary access to multiplayer area for testing */}
+                <Button 
+                  className="medieval-btn mode-button"
+                  onClick={() => {
+                    console.log('🌐 Navigating to multiplayer area');
+                    window.location.hash = '#multiplayer';
+                  }}
+                >
+                  <div className="mode-content">
+                    <span>🌐 Multiplayer Arena</span>
+                    <Badge variant="secondary">Play vs AI Available</Badge>
+                  </div>
+                </Button>
 
 
                 
