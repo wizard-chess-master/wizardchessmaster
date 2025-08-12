@@ -35,7 +35,7 @@ export class MassAITraining {
     };
 
     let totalGameLength = 0;
-    const batchSize = 10; // Smaller batches to prevent blocking
+    const batchSize = 5; // Even smaller batches for smoother UI
     
     // Add delay between batches to prevent UI freezing
     for (let batch = 0; batch < Math.ceil(gameCount / batchSize); batch++) {
@@ -43,10 +43,15 @@ export class MassAITraining {
       const batchEnd = Math.min((batch + 1) * batchSize, gameCount);
       
       // Yield control back to browser every batch to prevent freezing
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise(resolve => setTimeout(resolve, 1));
       
       // Process batch of games
       for (let gameIndex = batchStart; gameIndex < batchEnd; gameIndex++) {
+        // Add another yield point for very long training sessions
+        if (gameIndex % 50 === 0 && gameIndex > 0) {
+          await new Promise(resolve => setTimeout(resolve, 1));
+        }
+        
         const gameResult = await this.playTrainingGame();
         
         // Update results
@@ -110,7 +115,7 @@ export class MassAITraining {
       gamePhase: 'active' as GamePhase,
       winner: null,
       moveHistory: [],
-      aiDifficulty: 'hard',
+      aiDifficulty: 'easy', // Use easy AI for fast training
       gameMode: 'ai-vs-ai',
       selectedPosition: null,
       validMoves: [],
@@ -130,7 +135,15 @@ export class MassAITraining {
     
     while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
-      const move = aiManager.getBestMove(gameState, currentColor);
+      
+      // Use a simplified, faster move selection for training
+      const validMoves = getAllValidMovesFromBoard(gameState.board, currentColor);
+      if (validMoves.length === 0) {
+        break;
+      }
+      
+      // Pick a semi-random move with basic evaluation (much faster than full AI)
+      const move = this.selectTrainingMove(validMoves, gameState);
       
       if (!move) {
         // No legal moves - game over
@@ -243,6 +256,50 @@ export class MassAITraining {
   private isCenterControlMove(move: ChessMove): boolean {
     const centerSquares = [[4, 4], [4, 5], [5, 4], [5, 5]];
     return centerSquares.some(([r, c]) => r === move.to.row && c === move.to.col);
+  }
+
+  // Fast move selection for training (much simpler than full AI)
+  private selectTrainingMove(validMoves: ChessMove[], gameState: GameState): ChessMove {
+    // Simple scoring: captures > checks > center control > random
+    let bestMoves: ChessMove[] = [];
+    let bestScore = -Infinity;
+    
+    for (const move of validMoves) {
+      let score = Math.random() * 10; // Base random score
+      
+      // Prioritize captures
+      if (move.captured) {
+        score += 50;
+      }
+      
+      // Prioritize wizard attacks
+      if (move.isWizardAttack) {
+        score += 40;
+      }
+      
+      // Prioritize center control
+      if (this.isCenterControlMove(move)) {
+        score += 20;
+      }
+      
+      // Avoid moving the same piece repeatedly
+      if (gameState.moveHistory.length > 0) {
+        const lastMove = gameState.moveHistory[gameState.moveHistory.length - 1];
+        if (lastMove && lastMove.to.row === move.from.row && lastMove.to.col === move.from.col) {
+          score -= 10;
+        }
+      }
+      
+      if (score > bestScore) {
+        bestScore = score;
+        bestMoves = [move];
+      } else if (score === bestScore) {
+        bestMoves.push(move);
+      }
+    }
+    
+    // Pick randomly from best moves
+    return bestMoves[Math.floor(Math.random() * bestMoves.length)];
   }
 
   // Check if move develops a piece
