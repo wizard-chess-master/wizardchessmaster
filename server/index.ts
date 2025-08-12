@@ -12,15 +12,42 @@ import path from "path";
 
 const app = express();
 
-// Apply compression middleware early
+// Apply compression middleware first (before any responses)
 app.use(compression(compressionOptions));
 
-// Apply security headers to ALL responses
+// Apply security and cache headers to ALL responses
 app.use((req, res, next) => {
-  // Call both security and cache middleware
-  securityHeaders(req, res, () => {
-    cacheControl(req, res, next);
-  });
+  // Apply security headers
+  try {
+    // CSP headers
+    res.setHeader('Content-Security-Policy', [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://pagead2.googlesyndication.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https://*.stripe.com https://googleads.g.doubleclick.net",
+      "connect-src 'self' ws: wss: https://api.stripe.com https://api.openai.com https://googleads.g.doubleclick.net",
+      "frame-src 'self' https://js.stripe.com https://googleads.g.doubleclick.net"
+    ].join('; '));
+    
+    // Security headers
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    
+    // Cache headers for static assets
+    if (req.path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    } else if (req.path.match(/\.(mp3|ogg|wav)$/)) {
+      res.setHeader('Cache-Control', 'public, max-age=604800');
+    }
+  } catch (error) {
+    console.error('Error setting headers:', error);
+  }
+  
+  next();
 });
 
 // Configure session middleware for authentication

@@ -25,6 +25,7 @@ import { PremiumTestButton } from "./components/debug/PremiumTestButton";
 import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
 import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
 import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
+import { StabilityTestPanelV2 } from "./components/debug/StabilityTestPanelV2";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
 import { DeploymentPanel } from "./components/debug/DeploymentPanel";
 import { DebugTestRunner } from "./components/debug/DebugTestRunner";
@@ -449,7 +450,7 @@ function AppContent() {
         <PremiumTestButton email="tokingteepee@gmail.com" />
         <SystemDiagnostics />
         <PerformanceDashboard />
-        <StabilityTestPanel />
+        <StabilityTestPanelV2 />
         <BrowserCompatibilityPanel />
         <DeploymentPanel />
         <DebugTestRunner />
