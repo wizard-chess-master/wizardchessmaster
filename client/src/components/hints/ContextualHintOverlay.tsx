@@ -110,9 +110,15 @@ export function ContextualHintOverlay({
   // Load dismissed hints from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('wizard-chess-dismissed-hints');
-    if (saved) {
-      setDismissedHints(new Set(JSON.parse(saved)));
+    const dismissedSet = saved ? new Set(JSON.parse(saved)) : new Set();
+    
+    // Also check if user has seen welcome before
+    const hasSeenWelcome = localStorage.getItem('wizard-chess-seen-welcome') === 'true';
+    if (hasSeenWelcome) {
+      dismissedSet.add('welcome');
     }
+    
+    setDismissedHints(dismissedSet);
   }, []);
 
   // Save dismissed hints to localStorage
