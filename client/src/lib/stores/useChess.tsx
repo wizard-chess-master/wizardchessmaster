@@ -358,10 +358,21 @@ export const useChess = create<ChessStore>()(
       setTimeout(() => {
         try {
           const mentorState = useDynamicAIMentor.getState();
-          console.log('🧙‍♂️ Checking mentor state:', { isActive: mentorState.isActive });
+          console.log('🧙‍♂️ Checking mentor state:', { 
+            isActive: mentorState.isActive,
+            currentFeedback: mentorState.currentFeedback.length,
+            sessionStartTime: mentorState.sessionStartTime
+          });
           if (mentorState.isActive) {
-            console.log('🧙‍♂️ Triggering mentor analysis for move:', move);
+            console.log('🧙‍♂️ Triggering mentor analysis for move:', {
+              from: move.from,
+              to: move.to,
+              piece: move.piece.type,
+              color: move.piece.color
+            });
             mentorState.analyzeCurrentMove(newState, move);
+          } else {
+            console.log('🧙‍♂️ Mentor not active, skipping analysis');
           }
         } catch (error) {
           console.log('🧙‍♂️ Mentor system error:', error);

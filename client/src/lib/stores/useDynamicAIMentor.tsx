@@ -168,8 +168,8 @@ const COACHING_STRATEGIES: CoachingStrategy[] = [
 // Create the Dynamic AI Mentor store
 export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
   subscribeWithSelector((set, get) => ({
-    // Initial state
-    isActive: true, // Start active by default
+    // Initial state - persist across sessions
+    isActive: localStorage.getItem('mentorActive') !== 'false', // Default to active unless explicitly disabled
     currentFeedback: [],
     analytics: {
       currentGameScore: 50,
@@ -233,13 +233,21 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
     },
 
     activateMentor: () => {
+      console.log('🧙‍♂️ Activating AI Mentor...');
       set({ isActive: true });
+      localStorage.setItem('mentorActive', 'true');
       get().initializeMentor();
-      console.log('🧙‍♂️ AI Mentor activated');
+      const state = get();
+      console.log('🧙‍♂️ AI Mentor activated:', {
+        isActive: state.isActive,
+        strategy: state.currentStrategy?.name,
+        feedbackCount: state.currentFeedback.length
+      });
     },
 
     deactivateMentor: () => {
       set({ isActive: false });
+      localStorage.setItem('mentorActive', 'false');
       console.log('🧙‍♂️ AI Mentor deactivated');
     },
 
@@ -670,6 +678,17 @@ useDynamicAIMentor.subscribe(
     }
   }
 );
+
+// Initialize mentor on load if it was previously active
+if (typeof window !== 'undefined') {
+  const wasActive = localStorage.getItem('mentorActive') !== 'false';
+  if (wasActive) {
+    console.log('🧙‍♂️ Restoring mentor state from previous session');
+    setTimeout(() => {
+      useDynamicAIMentor.getState().initializeMentor();
+    }, 1000); // Delay to ensure everything is loaded
+  }
+}
 
 // Export the store for global access
 if (typeof window !== 'undefined') {
