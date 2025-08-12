@@ -62,6 +62,13 @@ export const useChess = create<ChessStore>()(
     aiThinkingMessage: '',
 
     startGame: (mode: GameMode, aiDifficulty: AIDifficulty = 'medium') => {
+      // Initialize AI mentor for new game
+      const mentorState = useDynamicAIMentor.getState();
+      if (mentorState.isActive) {
+        console.log('🧙‍♂️ Initializing AI mentor for new game');
+        mentorState.initializeMentor();
+      }
+      
       const newBoard = createInitialBoard();
       console.log('🎮 Starting new game:', { mode, aiDifficulty });
       console.log('📋 Initial board created:', newBoard);

@@ -273,30 +273,36 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
         moveHistoryLength: gameState.moveHistory.length
       });
 
+      // Count only white (player) moves for feedback frequency
+      const playerMoves = gameState.moveHistory.filter((m, i) => i % 2 === 0).length + 1;
+      console.log('🧙‍♂️ Move counting:', {
+        totalMoves: gameState.moveHistory.length,
+        playerMoves: playerMoves,
+        currentMoveColor: move.piece.color
+      });
+      
       // Provide feedback more frequently to ensure coach is working
-      const moveNumber = gameState.moveHistory.length;
       const shouldProvideFeedback = (
-        moveNumber === 1 || // First move
-        moveNumber === 3 || // Early game
-        moveNumber === 5 || // Opening
-        moveNumber === 10 || // Opening transition
-        moveNumber === 20 || // Middle game start
-        moveNumber === 40 || // Late middle game
-        moveNumber % 8 === 0 || // Every 8 moves
+        playerMoves === 1 || // First move
+        playerMoves === 2 || // Second move  
+        playerMoves === 3 || // Third move
+        playerMoves === 5 || // Fifth move
+        playerMoves === 10 || // Tenth move
+        playerMoves % 5 === 0 || // Every 5 player moves
         move.isWizardTeleport || // Special wizard moves
         move.isWizardAttack || 
         move.isCastling || // Important strategic moves
         move.captured || // Any capture
         gameState.isInCheck || // Check situations
-        Math.random() < 0.35 // 35% chance for random feedback (increased from 15%)
+        Math.random() < 0.4 // 40% chance for random feedback
       );
 
       if (!shouldProvideFeedback) {
-        console.log('🧙‍♂️ Skipping feedback for move', moveNumber, 'of', gameState.moveHistory.length);
+        console.log('🧙‍♂️ Skipping feedback for player move', playerMoves);
         return;
       }
       
-      console.log('🧙‍♂️ PROVIDING FEEDBACK for move', moveNumber);
+      console.log('🧙‍♂️ PROVIDING FEEDBACK for player move', playerMoves, 'total moves:', gameState.moveHistory.length);
 
       // Calculate move quality based on various factors
       let moveQuality = 50; // Base score
