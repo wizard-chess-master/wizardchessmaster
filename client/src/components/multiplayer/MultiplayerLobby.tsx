@@ -246,15 +246,17 @@ export function MultiplayerLobby() {
         
         // After showing the message, start AI game
         setTimeout(() => {
-          console.log('🎮 Starting AI game from multiplayer quick match');
-          
-          // Disconnect from multiplayer to avoid conflicts
+          // Disconnect from multiplayer
           const { disconnect } = useMultiplayer.getState();
           disconnect();
           
-          // Navigate to game page - the hash handler will start the AI game
-          console.log('🎮 Navigating to game page for AI play');
-          window.location.hash = '#game';
+          // Reset and start AI game
+          const { resetGame, startGame } = useChess.getState();
+          resetGame();
+          setTimeout(() => {
+            startGame('ai', 'medium');
+            window.location.hash = '#game';
+          }, 50);
         }, 2000);
       }
     }, 5000);
