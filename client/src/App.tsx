@@ -341,6 +341,8 @@ function AppContent() {
               onMenu={() => {
                 const { resetGame } = useChess.getState();
                 resetGame();
+                setCurrentPage('landing');
+                window.location.hash = '';
               }}
             >
             <div className="desktop-game-layout hidden md:block min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
