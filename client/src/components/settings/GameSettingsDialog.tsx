@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Switch } from '../ui/switch';
 import { Slider } from '../ui/slider';
@@ -13,7 +13,8 @@ import {
   Brain,
   Music,
   Gamepad2,
-  Settings
+  Settings,
+  X
 } from 'lucide-react';
 import { useAudio } from '../../lib/stores/useAudio';
 import { useDynamicAIMentor } from '../../lib/stores/useDynamicAIMentor';
@@ -47,12 +48,15 @@ export function GameSettingsDialog({ isOpen, onClose }: GameSettingsDialogProps)
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto bg-white dark:bg-gray-800">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
+          <DialogTitle className="flex items-center gap-2 text-gray-900 dark:text-gray-100">
             <Settings className="w-5 h-5" />
             Game Settings
           </DialogTitle>
+          <DialogDescription>
+            Configure your game audio and AI coach preferences
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
