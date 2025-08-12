@@ -250,6 +250,27 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
 
       console.log('🧙‍♂️ Analyzing move:', move, 'Game state:', gameState);
 
+      // Only provide feedback occasionally to avoid over-commenting
+      const moveNumber = gameState.moveHistory.length;
+      const shouldProvideFeedback = (
+        moveNumber === 1 || // First move
+        moveNumber === 10 || // Opening transition
+        moveNumber === 20 || // Middle game start
+        moveNumber === 40 || // Late middle game
+        moveNumber % 15 === 0 || // Every 15 moves
+        move.isWizardTeleport || // Special wizard moves
+        move.isWizardAttack || 
+        move.isCastling || // Important strategic moves
+        move.captured?.type === 'queen' || // Queen captures
+        gameState.isCheck || // Check situations
+        Math.random() < 0.15 // 15% chance for random feedback
+      );
+
+      if (!shouldProvideFeedback) {
+        console.log('🧙‍♂️ Skipping feedback for move', moveNumber);
+        return;
+      }
+
       // Calculate move quality based on various factors
       let moveQuality = 50; // Base score
       
