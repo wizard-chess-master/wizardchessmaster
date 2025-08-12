@@ -153,7 +153,7 @@ class EnhancedSfxManager {
       { id: 'piece_wizard_move', category: 'pieces', file: '/audio/sfx/pieces/wizard_teleport.mp3', volume: 0.9, priority: 'high' },
       
       // Capture sounds
-      { id: 'piece_capture', category: 'pieces', file: '/audio/sfx/pieces/piece_capture.mp3', volume: 0.8, priority: 'high' },
+      { id: 'piece_capture', category: 'pieces', file: '/assets/sound-fx/capture_zap.mp3', volume: 0.8, priority: 'high' },
       { id: 'piece_capture_dramatic', category: 'pieces', file: '/audio/sfx/pieces/dramatic_capture.mp3', volume: 0.9, priority: 'high' },
       
       // UI sounds

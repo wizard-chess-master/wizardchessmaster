@@ -310,12 +310,12 @@ class EnhancedAudioManager {
     const sounds = [
       '/sounds/success.mp3',
       '/sounds/hit.mp3',
-      '/assets/sound-fx/piece_move.mp3',
-      '/assets/sound-fx/piece_capture.mp3',
-      '/assets/sound-fx/check_warning.mp3',
-      '/assets/sound-fx/checkmate_victory.mp3',
+      '/assets/sound-fx/move_clack.mp3',     // Fixed: was piece_move.mp3
+      '/assets/sound-fx/capture_zap.mp3',     // Fixed: was piece_capture.mp3
+      '/assets/sound-fx/check_alert.mp3',     // Fixed: was check_warning.mp3
+      '/assets/sound-fx/checkmate.mp3',       // Fixed: was checkmate_victory.mp3
       '/assets/sound-fx/button_click.mp3',
-      '/assets/sound-fx/game_start_fanfare.mp3'
+      '/assets/sound-fx/level_start.mp3'      // Fixed: was game_start_fanfare.mp3
     ];
     
     console.log('📦 Preloading game sounds...');
