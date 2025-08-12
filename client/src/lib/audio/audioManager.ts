@@ -330,38 +330,12 @@ class WizardChessAudioManager {
     this.playVoice('game_intro');
   }
 
-  // Dynamic Playlist Music Implementation
+  // Direct Theme Music Implementation as requested
   async playThemeMusic(): Promise<void> {
     if (this.muted) return;
     
-    console.log('🎵 Starting dynamic playlist music system...');
-    
-    try {
-      // Import playlist manager
-      const { musicPlaylistManager } = await import('./musicPlaylistManager');
-      
-      // Stop any existing audio
-      this.stopAllAudio();
-      
-      // Set playlist volume and mute state
-      musicPlaylistManager.setVolume(0.42);
-      musicPlaylistManager.setMuted(this.muted);
-      
-      // Start playlist
-      await musicPlaylistManager.play();
-      
-      console.log('🎵 Dynamic playlist system started');
-    } catch (error) {
-      console.error('❌ Playlist system failed, falling back to single theme music:', error);
-      
-      // Fallback to single theme music
-      this.playFallbackThemeMusic();
-    }
-  }
-
-  // Fallback for single theme music if playlist fails
-  private async playFallbackThemeMusic(): Promise<void> {
-    console.log('🎵 FALLBACK: Starting single theme music...');
+    console.log('🎵 ELIMINATE old music - Starting direct Theme-music2.mp3 implementation...');
+    console.log('🎵 FORCE Dynamic cache busting with Date.now() parameter added');
     
     // Clear all music variables pre-init
     if ((window as any).gameAudioManager) {

@@ -340,11 +340,8 @@ function App() {
               const hasSeenWelcome = localStorage.getItem('wizard-chess-seen-welcome') === 'true';
               const isNewPlayer = gamesPlayed <= 2 && !hasSeenWelcome;
               
-              console.log('🐛 DEBUG: isNewPlayer calculation:', { gamesPlayed, hasSeenWelcome, isNewPlayer });
-              
               // Don't render if player has seen welcome or played too many games
               if (!isNewPlayer) {
-                console.log('🚫 Not showing hints - player is not new or has seen welcome');
                 return null;
               }
               
@@ -352,10 +349,8 @@ function App() {
                 isNewPlayer={true}
                 showHints={true}
                 onHintDismiss={(hintId) => {
-                  console.log('🎯 Hint dismissed:', hintId);
                   if (hintId === 'welcome') {
                     localStorage.setItem('wizard-chess-seen-welcome', 'true');
-                    console.log('✅ Marked welcome as seen in localStorage');
                   }
                 }}
               />;
