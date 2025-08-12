@@ -123,6 +123,32 @@ export function AITrainingPanel() {
           </div>
         )}
 
+        {/* Reset Neural Weights Button */}
+        {!isTraining && (
+          <div className="flex justify-center mt-4">
+            <Button
+              onClick={() => {
+                // Reset neural weights to remove skewed data
+                localStorage.removeItem('fantasy-chess-neural-weights');
+                const defaultWeights = {
+                  materialWeight: 1.0,
+                  positionWeight: 0.3,
+                  kingSafetyWeight: 0.2,
+                  mobilityWeight: 0.1
+                };
+                localStorage.setItem('fantasy-chess-neural-weights', JSON.stringify(defaultWeights));
+                setStatusMessage('✅ Neural weights reset! Skewed data from failed tests removed.');
+                setResults(null);
+              }}
+              disabled={isTraining}
+              variant="outline"
+              className="border-red-500 text-red-600 hover:bg-red-50"
+            >
+              🧹 Reset AI Training Data
+            </Button>
+          </div>
+        )}
+
         {isTraining && progress && (
           <div className="space-y-3">
             <div className="flex justify-between text-sm">

@@ -376,6 +376,12 @@ export class AdvancedAIPlayer {
   public learnFromGame(gameData: GameAnalysisData): void {
     const outcome = gameData.winner === 'white' ? 1 : gameData.winner === 'black' ? -1 : 0;
     
+    // Skip learning from draws that ended too early (likely corrupted data)
+    if (outcome === 0 && gameData.gameLength < 10) {
+      console.log('⚠️ Skipping learning from suspicious early draw');
+      return;
+    }
+    
     // Update neural weights based on game outcome
     const learningRate = 0.01;
     
