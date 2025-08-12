@@ -1,6 +1,6 @@
-import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase } from './types';
-import { makeMove, isKingInCheck } from './gameEngine';
-import { getAllValidMoves as getAllValidMovesFromBoard } from './pieceMovement';
+import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase, Position } from './types';
+import { makeMove, isKingInCheck, isValidMove } from './gameEngine';
+import { getAllValidMoves as getAllValidPositions } from './pieceMovement';
 import { advancedAI, aiManager, GameAnalysisData, StrategyPattern } from './advancedAI';
 
 // Mass training system for 10000-game self-play
@@ -136,8 +136,8 @@ export class MassAITraining {
     while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
       
-      // Use a simplified, faster move selection for training
-      const validMoves = getAllValidMovesFromBoard(gameState.board, currentColor);
+      // Get all valid moves for training
+      const validMoves = this.getAllValidMovesForTraining(gameState.board, currentColor);
       if (validMoves.length === 0) {
         break;
       }
@@ -256,6 +256,36 @@ export class MassAITraining {
   private isCenterControlMove(move: ChessMove): boolean {
     const centerSquares = [[4, 4], [4, 5], [5, 4], [5, 5]];
     return centerSquares.some(([r, c]) => r === move.to.row && c === move.to.col);
+  }
+
+  // Get all valid moves as ChessMove objects for training
+  private getAllValidMovesForTraining(board: (ChessPiece | null)[][], color: PieceColor): ChessMove[] {
+    const moves: ChessMove[] = [];
+    
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const piece = board[row][col];
+        if (piece && piece.color === color) {
+          const from = { row, col };
+          const validPositions = getAllValidPositions(board, from);
+          
+          for (const to of validPositions) {
+            const captured = board[to.row][to.col];
+            const isWizardAttack = piece.type === 'wizard' && captured !== null;
+            
+            moves.push({
+              from,
+              to,
+              piece,
+              captured,
+              isWizardAttack
+            });
+          }
+        }
+      }
+    }
+    
+    return moves;
   }
 
   // Fast move selection for training (much simpler than full AI)
