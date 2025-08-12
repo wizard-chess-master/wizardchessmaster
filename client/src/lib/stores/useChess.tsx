@@ -355,27 +355,34 @@ export const useChess = create<ChessStore>()(
       }
       
       // Trigger Dynamic AI Mentor analysis (non-blocking)
+      console.log('🧙‍♂️ About to check mentor for move');
       setTimeout(() => {
         try {
+          console.log('🧙‍♂️ Getting mentor state...');
           const mentorState = useDynamicAIMentor.getState();
-          console.log('🧙‍♂️ Checking mentor state:', { 
+          console.log('🧙‍♂️ Mentor state retrieved:', { 
             isActive: mentorState.isActive,
             currentFeedback: mentorState.currentFeedback.length,
-            sessionStartTime: mentorState.sessionStartTime
+            sessionStartTime: mentorState.sessionStartTime,
+            hasAnalyzeFunction: typeof mentorState.analyzeCurrentMove === 'function'
           });
+          
           if (mentorState.isActive) {
-            console.log('🧙‍♂️ Triggering mentor analysis for move:', {
+            console.log('🧙‍♂️ Mentor is active! Triggering analysis for move:', {
               from: move.from,
               to: move.to,
               piece: move.piece.type,
-              color: move.piece.color
+              color: move.piece.color,
+              isWizardMove: move.isWizardTeleport || move.isWizardAttack,
+              captured: move.captured?.type
             });
             mentorState.analyzeCurrentMove(newState, move);
+            console.log('🧙‍♂️ Analysis call completed');
           } else {
             console.log('🧙‍♂️ Mentor not active, skipping analysis');
           }
         } catch (error) {
-          console.log('🧙‍♂️ Mentor system error:', error);
+          console.error('🧙‍♂️ Mentor system error:', error);
         }
       }, 100); // Small delay to ensure state is updated
 

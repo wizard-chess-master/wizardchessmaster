@@ -3,6 +3,9 @@
 **Wizard Chess Master** is a full-stack TypeScript application implementing a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. Its purpose is to deliver an engaging, visually immersive chess experience with robust monetization and cloud save functionality for premium members, ensuring seamless cross-device progression. Key capabilities include custom wizard pieces, AI opponents with adjustable difficulty (including advanced minimax and neural network AI), an enhanced campaign mode, comprehensive leaderboards, a fully immersive medieval fantasy visual overhaul, user authentication, and cloud save. The business vision is to provide a captivating variant chess game with strong market potential through its unique features and streamlined subscription model.
 
 ## Recent Changes (January 2025)
+- Removed "Force mobile" feature as the game is not designed for mobile use
+- Enhanced AI coach feedback frequency for better player guidance
+- Improved debug logging for AI coach troubleshooting
 - Fixed AI game functionality in multiplayer arena - players can now start AI games when no multiplayer games are available
 - Added "Multiplayer Arena" button to main menu for accessing multiplayer features
 - Resolved game state conflicts between multiplayer and AI modes

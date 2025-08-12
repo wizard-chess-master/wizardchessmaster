@@ -12,11 +12,14 @@ export function MentorNotification() {
 
   // Show latest feedback in persistent panel
   useEffect(() => {
+    console.log('📜 MentorNotification: currentFeedback updated:', currentFeedback.length, 'items');
     if (currentFeedback.length > 0) {
       const latestFeedback = currentFeedback[currentFeedback.length - 1];
+      console.log('📜 Latest feedback:', latestFeedback.message);
       
       // Only show if it's a new feedback (not already visible)
       if (!visibleFeedback || latestFeedback.id !== visibleFeedback.id) {
+        console.log('📜 Displaying new feedback');
         setVisibleFeedback(latestFeedback);
 
         // Play voice narration if enabled with longer delay for stability
@@ -148,6 +151,7 @@ export function MentorNotification() {
   };
 
   if (!visibleFeedback) {
+    console.log('📜 MentorNotification: No visible feedback to display');
     return (
       <div className="text-purple-200 text-sm text-center py-4">
         <p>No messages yet. Start playing to receive guidance!</p>
@@ -155,6 +159,7 @@ export function MentorNotification() {
     );
   }
 
+  console.log('📜 MentorNotification: Rendering feedback:', visibleFeedback.message);
   return (
     <div className="space-y-2">
       <div className="bg-purple-800/50 border border-purple-400 rounded-md p-3">

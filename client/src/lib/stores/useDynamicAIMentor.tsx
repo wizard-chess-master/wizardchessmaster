@@ -253,34 +253,50 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
 
     // Real-time move analysis
     analyzeCurrentMove: (gameState: GameState, move: ChessMove) => {
+      console.log('🧙‍♂️ analyzeCurrentMove called');
       const state = get();
+      console.log('🧙‍♂️ Current mentor state in analysis:', {
+        isActive: state.isActive,
+        feedbackCount: state.currentFeedback.length
+      });
+      
       if (!state.isActive) {
         console.log('🧙‍♂️ Mentor not active, skipping analysis');
         return;
       }
 
-      console.log('🧙‍♂️ Analyzing move:', move, 'Game state:', gameState);
+      console.log('🧙‍♂️ Starting move analysis:', {
+        piece: move.piece.type,
+        from: move.from,
+        to: move.to,
+        captured: move.captured?.type,
+        moveHistoryLength: gameState.moveHistory.length
+      });
 
-      // Only provide feedback occasionally to avoid over-commenting
+      // Provide feedback more frequently to ensure coach is working
       const moveNumber = gameState.moveHistory.length;
       const shouldProvideFeedback = (
         moveNumber === 1 || // First move
+        moveNumber === 3 || // Early game
+        moveNumber === 5 || // Opening
         moveNumber === 10 || // Opening transition
         moveNumber === 20 || // Middle game start
         moveNumber === 40 || // Late middle game
-        moveNumber % 15 === 0 || // Every 15 moves
+        moveNumber % 8 === 0 || // Every 8 moves
         move.isWizardTeleport || // Special wizard moves
         move.isWizardAttack || 
         move.isCastling || // Important strategic moves
-        move.captured?.type === 'queen' || // Queen captures
+        move.captured || // Any capture
         gameState.isInCheck || // Check situations
-        Math.random() < 0.15 // 15% chance for random feedback
+        Math.random() < 0.35 // 35% chance for random feedback (increased from 15%)
       );
 
       if (!shouldProvideFeedback) {
-        console.log('🧙‍♂️ Skipping feedback for move', moveNumber);
+        console.log('🧙‍♂️ Skipping feedback for move', moveNumber, 'of', gameState.moveHistory.length);
         return;
       }
+      
+      console.log('🧙‍♂️ PROVIDING FEEDBACK for move', moveNumber);
 
       // Calculate move quality based on various factors
       let moveQuality = 50; // Base score
@@ -301,7 +317,9 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       // Generate contextual feedback
       const feedback = get().generateContextualFeedback(gameState, moveQuality);
       console.log('🧙‍♂️ Generated feedback:', feedback);
+      console.log('🧙‍♂️ Adding feedback to display...');
       get().addFeedback(feedback);
+      console.log('🧙‍♂️ Current feedback count:', get().currentFeedback.length);
       
       // Update analytics
       get().updatePerformanceAnalytics(gameState);
