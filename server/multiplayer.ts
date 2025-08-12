@@ -28,22 +28,121 @@ class MultiplayerManager {
   private connectedPlayers: Map<string, PlayerData> = new Map();
   private activeGames: Map<string, GameData> = new Map();
   private matchmakingQueue: PlayerData[] = [];
+  private playerHeartbeats: Map<string, NodeJS.Timeout> = new Map();
+  private HEARTBEAT_INTERVAL = 15000; // 15 seconds
+  private HEARTBEAT_TIMEOUT = 30000; // 30 seconds disconnect timeout
 
   constructor(io: SocketServer) {
     this.io = io;
     this.setupSocketHandlers();
+    this.startHeartbeatMonitor();
+  }
+
+  private startHeartbeatMonitor() {
+    // Check all connections every 10 seconds
+    setInterval(() => {
+      this.io.emit('ping');
+    }, this.HEARTBEAT_INTERVAL);
+  }
+
+  private setupHeartbeat(socket: any) {
+    // Clear any existing timeout
+    this.resetHeartbeatTimeout(socket.id);
+    
+    // Set up timeout that will disconnect if no pong received
+    const timeout = setTimeout(() => {
+      console.log(`💔 Heartbeat timeout for ${socket.id} - disconnecting`);
+      socket.disconnect();
+    }, this.HEARTBEAT_TIMEOUT);
+    
+    this.playerHeartbeats.set(socket.id, timeout);
+  }
+
+  private resetHeartbeatTimeout(socketId: string) {
+    const existingTimeout = this.playerHeartbeats.get(socketId);
+    if (existingTimeout) {
+      clearTimeout(existingTimeout);
+    }
+  }
+
+  private isPlayerReconnected(userId: number): boolean {
+    // Check if player has reconnected with a new socket
+    for (const [_, player] of this.connectedPlayers) {
+      if (player.userId === userId) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private setupSocketHandlers() {
     this.io.on('connection', (socket) => {
       console.log(`🔌 Client connected: ${socket.id}`);
       
-      // Send immediate confirmation
-      socket.emit('connection:confirmed', { socketId: socket.id, timestamp: Date.now() });
+      // Send immediate confirmation with reconnection support
+      socket.emit('connection:confirmed', { 
+        socketId: socket.id, 
+        timestamp: Date.now(),
+        heartbeatInterval: this.HEARTBEAT_INTERVAL 
+      });
 
-      // Debug: Log all incoming events
+      // Setup heartbeat for this connection
+      this.setupHeartbeat(socket);
+
+      // Debug: Log all incoming events except pong
       socket.onAny((eventName, ...args) => {
-        console.log(`📨 Event received: ${eventName}`, args.length > 0 ? args[0] : '');
+        if (eventName !== 'pong') {
+          console.log(`📨 Event received: ${eventName}`, args.length > 0 ? args[0] : '');
+        }
+      });
+
+      // Handle pong responses
+      socket.on('pong', () => {
+        this.resetHeartbeatTimeout(socket.id);
+      });
+
+      // Handle reconnection with state recovery
+      socket.on('player:reconnect', async (data: { 
+        userId: number; 
+        username: string; 
+        displayName: string; 
+        rating: number;
+        lastGameId?: string;
+      }) => {
+        console.log(`🔄 Player reconnecting: ${data.displayName}`);
+        
+        const playerData: PlayerData = {
+          ...data,
+          socketId: socket.id
+        };
+        
+        // Update socket ID for reconnected player
+        this.connectedPlayers.set(socket.id, playerData);
+        
+        // Rejoin personal room
+        socket.join(`user:${data.userId}`);
+        
+        // Check if player was in a game
+        if (data.lastGameId && this.activeGames.has(data.lastGameId)) {
+          const game = this.activeGames.get(data.lastGameId);
+          socket.join(data.lastGameId);
+          
+          // Send current game state
+          socket.emit('game:restored', {
+            gameId: data.lastGameId,
+            gameState: game?.gameState,
+            currentTurn: game?.currentTurn,
+            player1Time: game?.player1Time,
+            player2Time: game?.player2Time
+          });
+        }
+        
+        socket.emit('player:reconnected', { 
+          success: true,
+          message: 'Successfully reconnected'
+        });
+        
+        this.broadcastServerStats();
       });
 
       socket.on('player:join', async (data: { userId: number; username: string; displayName: string; rating: number }) => {
@@ -279,28 +378,41 @@ class MultiplayerManager {
         await this.handleGameEnd(data.gameId, socket.id, 'resign');
       });
 
-      socket.on('disconnect', () => {
-        console.log(`🔌 Client disconnected: ${socket.id}`);
+      socket.on('disconnect', (reason) => {
+        console.log(`🔌 Client disconnected: ${socket.id}, reason: ${reason}`);
+        
+        // Clear heartbeat timeout
+        const heartbeatTimeout = this.playerHeartbeats.get(socket.id);
+        if (heartbeatTimeout) {
+          clearTimeout(heartbeatTimeout);
+          this.playerHeartbeats.delete(socket.id);
+        }
         
         const player = this.connectedPlayers.get(socket.id);
         if (player) {
-          // Remove from matchmaking queue
-          this.matchmakingQueue = this.matchmakingQueue.filter(p => p.socketId !== socket.id);
-          
-          // Clean up database queue entry only if database is available
-          try {
-            const db = getDB();
-            db.delete(matchmakingQueue).where(eq(matchmakingQueue.userId, player.userId)).catch(console.error);
-          } catch (error) {
-            // Database not available, skip database cleanup
-            console.log('⚠️ Skipping database cleanup - database not available');
-          }
-          
-          this.connectedPlayers.delete(socket.id);
-          console.log(`👤 Player left: ${player.displayName}`);
-          
-          // Broadcast updated stats
-          this.broadcastServerStats();
+          // Don't immediately remove player data - they might reconnect
+          setTimeout(() => {
+            // Check if player reconnected with a new socket
+            if (!this.isPlayerReconnected(player.userId)) {
+              // Remove from matchmaking queue
+              this.matchmakingQueue = this.matchmakingQueue.filter(p => p.socketId !== socket.id);
+              
+              // Clean up database queue entry only if database is available
+              try {
+                const db = getDB();
+                db.delete(matchmakingQueue).where(eq(matchmakingQueue.userId, player.userId)).catch(console.error);
+              } catch (error) {
+                // Database not available, skip database cleanup
+                console.log('⚠️ Skipping database cleanup - database not available');
+              }
+              
+              this.connectedPlayers.delete(socket.id);
+              console.log(`👤 Player left: ${player.displayName}`);
+              
+              // Broadcast updated stats
+              this.broadcastServerStats();
+            }
+          }, 5000); // Give 5 seconds for reconnection
         }
       });
     });

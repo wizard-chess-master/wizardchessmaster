@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { io, Socket } from 'socket.io-client';
+import { SocketReconnectionManager } from '../utils/socketReconnection';
 
 interface OnlinePlayer {
   userId: number;
@@ -40,6 +41,8 @@ interface MultiplayerState {
   socket: Socket | null;
   isConnected: boolean;
   connectionError: string | null;
+  reconnectionManager: SocketReconnectionManager | null;
+  reconnectAttempts: number;
   
   // Player data
   currentPlayer: OnlinePlayer | null;
@@ -82,6 +85,8 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
   socket: null,
   isConnected: false,
   connectionError: null,
+  reconnectionManager: null,
+  reconnectAttempts: 0,
   currentPlayer: null,
   onlinePlayers: [],
   matchmaking: {
@@ -93,10 +98,15 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
 
   // 🔌 Connection management
   connect: (playerData) => {
-    const { socket } = get();
+    const { socket, reconnectionManager } = get();
     if (socket?.connected) {
       console.log('🔌 Already connected to multiplayer server');
       return;
+    }
+
+    // Clean up old reconnection manager if exists
+    if (reconnectionManager) {
+      reconnectionManager.destroy();
     }
 
     console.log('🔌 Connecting to multiplayer server...');
@@ -106,6 +116,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
       timeout: 10000,
       forceNew: true,
       autoConnect: true,
+      reconnection: false, // We handle reconnection manually
       auth: {
         userId: playerData.userId,
         username: playerData.username,
@@ -114,23 +125,70 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
       }
     });
 
+    // Create reconnection manager
+    const manager = new SocketReconnectionManager(newSocket, {
+      maxRetries: 10,
+      initialDelay: 1000,
+      maxDelay: 30000,
+      backoffMultiplier: 1.5,
+      onReconnecting: (attempt) => {
+        console.log(`🔄 Reconnecting... Attempt ${attempt}/10`);
+        set({ 
+          connectionError: `Reconnecting... Attempt ${attempt}/10`,
+          reconnectAttempts: attempt 
+        });
+      },
+      onReconnected: () => {
+        console.log('✅ Successfully reconnected!');
+        set({ isConnected: true, connectionError: null, reconnectAttempts: 0 });
+        
+        // Send reconnect event with current game state
+        const currentGame = get().currentGame;
+        newSocket.emit('player:reconnect', {
+          ...playerData,
+          lastGameId: currentGame?.gameId
+        });
+      },
+      onReconnectFailed: () => {
+        console.error('❌ Failed to reconnect after max attempts');
+        set({ 
+          connectionError: 'Failed to reconnect. Please refresh the page.',
+          isConnected: false 
+        });
+      }
+    });
+
+    set({ reconnectionManager: manager });
+
     // Connection events
     newSocket.on('connect', () => {
       console.log('🎮 Connected to multiplayer server');
       set({ socket: newSocket, isConnected: true, connectionError: null });
       
-      // Join as player
-      console.log('👤 Joining as player:', playerData);
-      newSocket.emit('player:join', playerData);
+      // Check if this is a reconnection
+      const attempts = get().reconnectAttempts;
+      if (attempts > 0) {
+        // This is a reconnection
+        newSocket.emit('player:reconnect', {
+          ...playerData,
+          lastGameId: get().currentGame?.gameId
+        });
+      } else {
+        // Initial connection
+        console.log('👤 Joining as player:', playerData);
+        newSocket.emit('player:join', playerData);
+      }
     });
 
     newSocket.on('connection:confirmed', (data) => {
       console.log('✅ Connection confirmed by server:', data);
     });
 
-    newSocket.on('disconnect', () => {
-      console.log('🔌 Disconnected from multiplayer server');
+    newSocket.on('disconnect', (reason) => {
+      console.log('🔌 Disconnected from multiplayer server:', reason);
       set({ isConnected: false });
+      
+      // Reconnection manager will handle reconnection
     });
 
     newSocket.on('connect_error', (error) => {
@@ -146,6 +204,30 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
       } else {
         console.error('❌ Failed to join:', response.error);
         set({ connectionError: response.error });
+      }
+    });
+
+    // Reconnection events
+    newSocket.on('player:reconnected', (response) => {
+      if (response.success) {
+        console.log('✅ Player reconnected successfully');
+        set({ currentPlayer: { ...playerData, status: 'online' } });
+      }
+    });
+
+    newSocket.on('game:restored', (gameData) => {
+      console.log('🎮 Game state restored after reconnection:', gameData);
+      // Update current game state with restored data
+      const currentGame = get().currentGame;
+      if (currentGame && currentGame.gameId === gameData.gameId) {
+        set({
+          currentGame: {
+            ...currentGame,
+            gameState: gameData.gameState,
+            yourTime: gameData.player1Time,
+            opponentTime: gameData.player2Time
+          }
+        });
       }
     });
 
@@ -209,16 +291,24 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
   },
 
   disconnect: () => {
-    const { socket } = get();
+    const { socket, reconnectionManager } = get();
     if (socket) {
       console.log('🔌 Disconnecting from multiplayer server');
+      
+      // Clean up reconnection manager
+      if (reconnectionManager) {
+        reconnectionManager.destroy();
+      }
+      
       socket.disconnect();
       set({ 
         socket: null, 
         isConnected: false, 
         currentPlayer: null,
         currentGame: null,
-        matchmaking: { inQueue: false, status: 'idle' }
+        matchmaking: { inQueue: false, status: 'idle' },
+        reconnectionManager: null,
+        reconnectAttempts: 0
       });
     }
   },
