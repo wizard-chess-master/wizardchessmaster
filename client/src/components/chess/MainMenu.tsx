@@ -205,15 +205,15 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                 <div className="space-y-2 p-3 bg-gray-50 rounded-lg">
                   <label className="text-sm font-semibold text-gray-700">Select AI Difficulty</label>
                   <Select value={selectedDifficulty} onValueChange={(value) => setSelectedDifficulty(value as AIDifficulty)}>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full bg-white border-gray-300">
                       <SelectValue placeholder="Choose difficulty level" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-64 overflow-y-auto">
+                    <SelectContent className="max-h-64 overflow-y-auto bg-white border border-gray-200 shadow-lg">
                       {/* All 20 campaign difficulty levels */}
                       {Array.from({ length: 20 }, (_, i) => {
                         const level = `level${i + 1}` as AIDifficulty;
                         return (
-                          <SelectItem key={level} value={level}>
+                          <SelectItem key={level} value={level} className="hover:bg-gray-100">
                             {getDifficultyDisplayName(level)}
                           </SelectItem>
                         );
