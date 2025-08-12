@@ -27,6 +27,7 @@ import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
 import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
 import { DeploymentPanel } from "./components/debug/DeploymentPanel";
+import { DebugTestRunner } from "./components/debug/DebugTestRunner";
 import { PerformanceOverlay } from "./components/performance/PerformanceOverlay";
 import { initializePerformance } from "./lib/performance";
 
@@ -333,7 +334,6 @@ function AppContent() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
-          <GameErrorBoundary>
           <>
             {/* Contextual Hint Overlay for New Players - but not in multiplayer */}
             {!isMultiplayerConnected && (() => {
@@ -412,7 +412,6 @@ function AppContent() {
             {/* Mobile game layout is handled by MobileGameLayout wrapper */}
             {gamePhase === 'ended' && <GameOverDialog />}
           </MobileGameLayout>
-          </GameErrorBoundary>
           </>
         )}
 
@@ -452,6 +451,7 @@ function AppContent() {
         <StabilityTestPanel />
         <BrowserCompatibilityPanel />
         <DeploymentPanel />
+        <DebugTestRunner />
         </ErrorBoundary>
         </div>
       </div>
