@@ -24,6 +24,7 @@ import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
 import { PremiumTestButton } from "./components/debug/PremiumTestButton";
 import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
 import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
+import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -420,6 +421,7 @@ function AppContent() {
         <PremiumTestButton email="tokingteepee@gmail.com" />
         <SystemDiagnostics />
         <PerformanceDashboard />
+        <StabilityTestPanel />
         </div>
       </div>
       </AuthProvider>
