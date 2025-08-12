@@ -333,20 +333,33 @@ function App() {
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
           <>
             {/* Contextual Hint Overlay for New Players - but not in multiplayer */}
-            {!isMultiplayerConnected && <ContextualHintOverlay 
-              isNewPlayer={(() => {
-                const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
-                const gamesPlayed = playerStats.gamesPlayed || 0;
-                const hasSeenWelcome = localStorage.getItem('wizard-chess-seen-welcome') === 'true';
-                return gamesPlayed <= 2 && !hasSeenWelcome; // Only show to players with 2 or fewer games and haven't seen welcome
-              })()}
-              showHints={true}
-              onHintDismiss={(hintId) => {
-                if (hintId === 'welcome') {
-                  localStorage.setItem('wizard-chess-seen-welcome', 'true');
-                }
-              }}
-            />}
+            {!isMultiplayerConnected && (() => {
+              // Calculate once per render cycle
+              const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+              const gamesPlayed = playerStats.gamesPlayed || 0;
+              const hasSeenWelcome = localStorage.getItem('wizard-chess-seen-welcome') === 'true';
+              const isNewPlayer = gamesPlayed <= 2 && !hasSeenWelcome;
+              
+              console.log('🐛 DEBUG: isNewPlayer calculation:', { gamesPlayed, hasSeenWelcome, isNewPlayer });
+              
+              // Don't render if player has seen welcome or played too many games
+              if (!isNewPlayer) {
+                console.log('🚫 Not showing hints - player is not new or has seen welcome');
+                return null;
+              }
+              
+              return <ContextualHintOverlay 
+                isNewPlayer={true}
+                showHints={true}
+                onHintDismiss={(hintId) => {
+                  console.log('🎯 Hint dismissed:', hintId);
+                  if (hintId === 'welcome') {
+                    localStorage.setItem('wizard-chess-seen-welcome', 'true');
+                    console.log('✅ Marked welcome as seen in localStorage');
+                  }
+                }}
+              />;
+            })()}
             
             <MobileGameLayout
               onSettings={() => setShowSettings(true)}

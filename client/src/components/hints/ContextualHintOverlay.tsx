@@ -197,6 +197,7 @@ export function ContextualHintOverlay({
   };
 
   if (!showHints || !isNewPlayer || !activeHint) {
+    console.log('🚫 ContextualHintOverlay not rendering:', { showHints, isNewPlayer, activeHint: !!activeHint });
     return null;
   }
 
