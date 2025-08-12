@@ -107,9 +107,10 @@ export const PerformanceDashboard: React.FC = () => {
     return `${(bytes / 1024 / 1024).toFixed(1)}MB`;
   };
 
-  if (process.env.NODE_ENV !== 'development') {
-    return null;
-  }
+  // Show dashboard in all environments for debugging purposes
+  // if (process.env.NODE_ENV !== 'development') {
+  //   return null;
+  // }
 
   return (
     <>
