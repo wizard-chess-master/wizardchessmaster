@@ -15,11 +15,13 @@ const app = express();
 // Apply compression middleware early
 app.use(compression(compressionOptions));
 
-// Apply security headers
-app.use(securityHeaders);
-
-// Apply cache control for static assets
-app.use(cacheControl);
+// Apply security headers to ALL responses
+app.use((req, res, next) => {
+  // Call both security and cache middleware
+  securityHeaders(req, res, () => {
+    cacheControl(req, res, next);
+  });
+});
 
 // Configure session middleware for authentication
 app.use(session({

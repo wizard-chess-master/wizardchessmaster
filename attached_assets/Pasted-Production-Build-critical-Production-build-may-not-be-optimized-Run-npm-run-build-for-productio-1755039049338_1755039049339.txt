@@ -1,0 +1,151 @@
+Production Build
+[critical]
+Production build may not be optimized
+
+→ Run npm run build for production
+
+Source Maps
+[medium]
+Source maps properly hidden
+
+Bundle Size
+[low]
+Total bundle size: 0.59 MB
+
+
+security
+(4/5 passed)
+HTTPS
+[critical]
+Site is served over HTTPS
+
+Content Security Policy
+[high]
+No CSP headers found
+
+→ Add Content Security Policy headers
+
+API Key Exposure
+[critical]
+No exposed API keys detected
+
+Authentication
+[high]
+Authentication system active
+
+Secure Cookies
+[medium]
+Cookies configured securely
+
+
+performance
+(0/4 passed)
+Lazy Loading
+[low]
+No lazy loading detected
+
+→ Add loading="lazy" to images
+
+Caching Headers
+[medium]
+No caching headers found
+
+→ Configure Cache-Control headers
+
+Asset Compression
+[medium]
+Assets may not be compressed
+
+→ Enable gzip/brotli compression
+
+Page Load Time
+[medium]
+Page loaded in 14.04 seconds
+
+→ Optimize assets and reduce initial load
+
+
+configuration
+(7/13 passed)
+Environment Variables
+[high]
+Environment variables configured
+
+Error Boundaries
+[medium]
+Error boundaries configured
+
+API Endpoints
+[medium]
+3/3 API endpoints responding
+
+Robots.txt
+[low]
+Robots.txt configured
+
+Dependencies
+[medium]
+Dependency audit recommended
+
+→ Run npm audit to check for vulnerabilities
+
+Database Connection
+[critical]
+Database connected
+
+Database Backups
+[high]
+Database backup strategy not verified
+
+→ Ensure regular database backups are configured
+
+Image Assets
+[low]
+All images loaded
+
+Favicon
+[low]
+No favicon found
+
+→ Add favicon for branding
+
+Error Logging
+[medium]
+No error logging detected
+
+→ Implement error logging service
+
+Promise Rejection Handling
+[medium]
+Unhandled promise rejections
+
+→ Add unhandledrejection handler
+
+Analytics
+[low]
+No analytics detected
+
+→ Add analytics for user insights
+
+Performance Monitoring
+[low]
+Performance API available
+
+
+compatibility
+(2/2 passed)
+Debug Test Runner
+Run All Tests
+Export Report
+Multiplayer
+Audio
+AI
+All
+No test results yet. Click "Run All Tests" to start.
+Performance Profiler
+Re-analyze
+Export Report
+Performance Score
+70
+Page Load Time
+-0.00s
