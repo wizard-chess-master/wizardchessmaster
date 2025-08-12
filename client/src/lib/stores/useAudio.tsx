@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { wizardChessAudio } from '../audio/audioManager';
+import { enhancedAudioManager } from '../audio/enhancedAudioManager';
+import { audioSettings } from '../audio/audioSettings';
+import { mobileAudioHandler } from '../audio/mobileAudioHandler';
 
 interface AudioState {
   isMuted: boolean;
@@ -80,9 +83,38 @@ export const useAudio = create<AudioState>((set, get) => ({
     console.log('Context:', typeof AudioContext !== 'undefined' ? 'Available' : 'Not Available');
     
     console.log('🎵 Initializing Wizard Chess Audio System...');
-    await wizardChessAudio.initialize();
-    set({ initialized: true });
-    console.log('✅ Wizard Chess Audio System initialized');
+    
+    try {
+      // Initialize both audio systems
+      await Promise.all([
+        wizardChessAudio.initialize(),
+        enhancedAudioManager.initialize()
+      ]);
+      
+      // Preload critical sounds
+      await enhancedAudioManager.preloadGameSounds();
+      
+      // Setup audio settings listener
+      audioSettings.addListener((settings) => {
+        set({ 
+          isMuted: settings.masterVolume === 0,
+          volume: settings.masterVolume
+        });
+      });
+      
+      // Setup mobile audio listener
+      mobileAudioHandler.addListener((state) => {
+        if (!state.isUnlocked) {
+          console.log('📱 Waiting for user interaction to unlock audio');
+        }
+      });
+      
+      set({ initialized: true });
+      console.log('✅ Enhanced Audio System initialized');
+    } catch (error) {
+      console.error('❌ Failed to initialize audio:', error);
+      set({ initialized: false });
+    }
   },
 
   playBackgroundMusic: () => {
