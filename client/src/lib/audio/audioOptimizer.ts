@@ -40,8 +40,8 @@ class AudioOptimizer {
   private criticalSounds = [
     '/sounds/success.mp3',
     '/sounds/hit.mp3',
-    '/assets/sound-fx/piece_move.mp3',
-    '/assets/sound-fx/piece_capture.mp3',
+    '/assets/sound-fx/move_clack.mp3',
+    '/assets/sound-fx/capture_zap.mp3',
     '/assets/sound-fx/button_click.mp3'
   ];
 
