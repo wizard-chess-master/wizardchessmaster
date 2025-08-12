@@ -2,13 +2,24 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { MultiplayerManager } from "./multiplayer";
 import { serverLogger } from "./utils/serverLogger";
+import { securityHeaders, cacheControl, compressionOptions } from "./middleware/security";
 import path from "path";
 
 const app = express();
+
+// Apply compression middleware early
+app.use(compression(compressionOptions));
+
+// Apply security headers
+app.use(securityHeaders);
+
+// Apply cache control for static assets
+app.use(cacheControl);
 
 // Configure session middleware for authentication
 app.use(session({

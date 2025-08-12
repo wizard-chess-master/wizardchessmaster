@@ -28,6 +28,7 @@ import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
 import { DeploymentPanel } from "./components/debug/DeploymentPanel";
 import { DebugTestRunner } from "./components/debug/DebugTestRunner";
+import { PerformanceProfilerPanel } from "./components/performance/PerformanceProfilerPanel";
 import { PerformanceOverlay } from "./components/performance/PerformanceOverlay";
 import { initializePerformance } from "./lib/performance";
 
@@ -452,6 +453,7 @@ function AppContent() {
         <BrowserCompatibilityPanel />
         <DeploymentPanel />
         <DebugTestRunner />
+        <PerformanceProfilerPanel />
         </ErrorBoundary>
         </div>
       </div>

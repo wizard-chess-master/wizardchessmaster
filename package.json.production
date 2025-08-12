@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "build:production": "NODE_ENV=production vite build --config vite.config.production.ts",
+    "build:analyze": "ANALYZE=true npm run build:production",
+    "preview:production": "vite preview --config vite.config.production.ts",
+    "optimize:images": "find client/public -type f \\( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' \\) -exec convert {} -quality 85 {} \\;",
+    "audit:fix": "npm audit fix",
+    "bundle:report": "npx vite-bundle-visualizer"
+  }
+}
