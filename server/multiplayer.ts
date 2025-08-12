@@ -3,6 +3,7 @@ import { Server as HttpServer } from 'http';
 import { getDB } from './storage';
 import { onlineGames, matchmakingQueue, users } from '../shared/schema';
 import { eq, and, or } from 'drizzle-orm';
+import { GameStateManager, detectDesyncIndicators } from '../shared/gameStateSync';
 
 interface PlayerData {
   userId: number;
@@ -21,6 +22,9 @@ interface GameData {
   timeControl?: number;
   player1Time?: number;
   player2Time?: number;
+  stateManager: GameStateManager;
+  lastChecksum?: string;
+  lastSyncTime?: number;
 }
 
 class MultiplayerManager {
@@ -31,6 +35,8 @@ class MultiplayerManager {
   private playerHeartbeats: Map<string, NodeJS.Timeout> = new Map();
   private HEARTBEAT_INTERVAL = 15000; // 15 seconds
   private HEARTBEAT_TIMEOUT = 30000; // 30 seconds disconnect timeout
+  private STATE_SYNC_INTERVAL = 5000; // Sync state every 5 seconds
+  private stateSyncTimers: Map<string, NodeJS.Timeout> = new Map();
 
   constructor(io: SocketServer) {
     this.io = io;
@@ -317,7 +323,12 @@ class MultiplayerManager {
         }
       });
 
-      socket.on('game:move', async (data: { gameId: string; move: any }) => {
+      socket.on('game:move', async (data: { 
+        gameId: string; 
+        move: any;
+        checksum?: string;
+        sequenceNumber?: number;
+      }) => {
         const player = this.connectedPlayers.get(socket.id);
         if (!player) return;
 
@@ -343,9 +354,32 @@ class MultiplayerManager {
         }
 
         try {
+          // Validate checksum if provided
+          if (data.checksum && game.stateManager) {
+            const currentChecksum = game.stateManager.generateChecksum(game.gameState);
+            if (data.checksum !== currentChecksum) {
+              console.warn(`⚠️ Checksum mismatch! Client: ${data.checksum}, Server: ${currentChecksum}`);
+              
+              // Send state sync to resolve desync
+              this.sendStateSync(game, data.gameId);
+              return;
+            }
+          }
+
           // Update game state
           game.gameState = data.move.gameState;
           game.currentTurn = game.currentTurn === 'white' ? 'black' : 'white';
+          
+          // Create state snapshot if state manager exists
+          let checksum = '';
+          let sequenceNumber = 0;
+          if (game.stateManager) {
+            const snapshot = game.stateManager.createSnapshot(game.gameState);
+            checksum = snapshot.checksum;
+            sequenceNumber = snapshot.sequenceNumber;
+            game.lastChecksum = checksum;
+            game.lastSyncTime = Date.now();
+          }
           
           // Update database (if available)
           try {
@@ -361,16 +395,49 @@ class MultiplayerManager {
             console.log('⚠️ Skipping database game state update - database not available');
           }
 
-          // Broadcast move to both players
+          // Broadcast move to both players with checksum
           this.io.to(`game:${data.gameId}`).emit('game:move', {
             move: data.move,
             gameState: game.gameState,
-            currentTurn: game.currentTurn
+            currentTurn: game.currentTurn,
+            checksum,
+            sequenceNumber
           });
 
         } catch (error) {
           console.error('Error handling game move:', error);
           socket.emit('game:error', { message: 'Failed to process move' });
+        }
+      });
+
+      // Handle state sync requests
+      socket.on('game:request-sync', async (data: { gameId: string }) => {
+        const game = this.activeGames.get(data.gameId);
+        if (game) {
+          this.sendStateSync(game, data.gameId);
+        }
+      });
+
+      // Handle state validation
+      socket.on('game:validate-state', async (data: { 
+        gameId: string; 
+        checksum: string;
+      }) => {
+        const game = this.activeGames.get(data.gameId);
+        if (!game || !game.stateManager) return;
+
+        const serverChecksum = game.stateManager.generateChecksum(game.gameState);
+        const isValid = serverChecksum === data.checksum;
+
+        socket.emit('game:validation-result', {
+          isValid,
+          serverChecksum,
+          clientChecksum: data.checksum
+        });
+
+        if (!isValid) {
+          console.warn(`⚠️ State validation failed for game ${data.gameId}`);
+          this.sendStateSync(game, data.gameId);
         }
       });
 
@@ -463,7 +530,9 @@ class MultiplayerManager {
       currentTurn: 'white',
       timeControl: 600, // 10 minutes
       player1Time: 600,
-      player2Time: 600
+      player2Time: 600,
+      stateManager: new GameStateManager(),
+      lastSyncTime: Date.now()
     };
 
     this.activeGames.set(gameId, gameData);
@@ -502,6 +571,9 @@ class MultiplayerManager {
       // Join both players to game room
       this.io.sockets.sockets.get(player1.socketId)?.join(`game:${gameId}`);
       this.io.sockets.sockets.get(player2.socketId)?.join(`game:${gameId}`);
+
+      // Start state sync timer for this game
+      this.startStateSyncTimer(gameId);
 
       // Notify both players
       this.io.to(player1.socketId).emit('game:matched', {
@@ -562,6 +634,13 @@ class MultiplayerManager {
         winner,
         reason: reason || 'game_over'
       });
+
+      // Clean up state sync timer
+      const syncTimer = this.stateSyncTimers.get(gameId);
+      if (syncTimer) {
+        clearInterval(syncTimer);
+        this.stateSyncTimers.delete(gameId);
+      }
 
       // Clean up
       this.activeGames.delete(gameId);
@@ -631,6 +710,50 @@ class MultiplayerManager {
   private estimateWaitTime(): number {
     // Simple estimation based on queue length
     return Math.max(5, this.matchmakingQueue.length * 10);
+  }
+
+  private sendStateSync(game: GameData, gameId: string) {
+    if (!game.stateManager) return;
+    
+    const snapshot = game.stateManager.createSnapshot(game.gameState);
+    
+    // Send authoritative state to all players in the game
+    this.io.to(`game:${gameId}`).emit('game:state-sync', {
+      gameState: game.gameState,
+      currentTurn: game.currentTurn,
+      checksum: snapshot.checksum,
+      sequenceNumber: snapshot.sequenceNumber,
+      timestamp: snapshot.timestamp
+    });
+    
+    console.log(`📋 State sync sent for game ${gameId} - Checksum: ${snapshot.checksum}`);
+  }
+
+  private startStateSyncTimer(gameId: string) {
+    // Clear existing timer if any
+    const existingTimer = this.stateSyncTimers.get(gameId);
+    if (existingTimer) {
+      clearInterval(existingTimer);
+    }
+    
+    // Start periodic state sync
+    const timer = setInterval(() => {
+      const game = this.activeGames.get(gameId);
+      if (!game) {
+        clearInterval(timer);
+        this.stateSyncTimers.delete(gameId);
+        return;
+      }
+      
+      // Check if sync is needed
+      const timeSinceLastSync = Date.now() - (game.lastSyncTime || 0);
+      if (timeSinceLastSync > this.STATE_SYNC_INTERVAL) {
+        this.sendStateSync(game, gameId);
+        game.lastSyncTime = Date.now();
+      }
+    }, this.STATE_SYNC_INTERVAL);
+    
+    this.stateSyncTimers.set(gameId, timer);
   }
 
   // Public methods for HTTP endpoints
