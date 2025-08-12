@@ -1,6 +1,6 @@
 import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase, Position } from './types';
-import { makeMove, isKingInCheck, isValidMove } from './gameEngine';
-import { getAllValidMoves as getAllValidPositions } from './pieceMovement';
+import { makeMove, isKingInCheck } from './gameEngine';
+import { getPossibleMoves } from './pieceMovement';
 import { advancedAI, aiManager, GameAnalysisData, StrategyPattern } from './advancedAI';
 
 // Mass training system for 10000-game self-play
@@ -219,7 +219,7 @@ export class MassAITraining {
 
   // Analyze move type for strategy learning
   private analyzeMoveType(gameState: GameState, move: ChessMove): MoveAnalysis {
-    const validMoves = getAllValidMovesFromBoard(gameState.board, gameState.currentPlayer).length;
+    const validMoves = this.getAllValidMovesForTraining(gameState.board, gameState.currentPlayer).length;
     
     let type: 'tactical' | 'strategic' | 'positional' = 'positional';
     
@@ -267,7 +267,7 @@ export class MassAITraining {
         const piece = board[row][col];
         if (piece && piece.color === color) {
           const from = { row, col };
-          const validPositions = getAllValidPositions(board, from);
+          const validPositions = getPossibleMoves(board, from, piece);
           
           for (const to of validPositions) {
             const captured = board[to.row][to.col];
@@ -277,7 +277,7 @@ export class MassAITraining {
               from,
               to,
               piece,
-              captured,
+              captured: captured || undefined,
               isWizardAttack
             });
           }
