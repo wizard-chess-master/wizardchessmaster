@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome Popup Fix Test</title>
+</head>
+<body>
+    <h1>Welcome Popup Fix Test</h1>
+    <p>Use these commands in the browser console to test the welcome popup fix:</p>
+    
+    <h2>Reset to New Player (will show welcome popup):</h2>
+    <code>
+        localStorage.removeItem('wizard-chess-seen-welcome');<br>
+        localStorage.setItem('playerStats', JSON.stringify({gamesPlayed: 0}));<br>
+        location.reload();
+    </code>
+    
+    <h2>Simulate Experienced Player (won't show welcome popup):</h2>
+    <code>
+        localStorage.setItem('playerStats', JSON.stringify({gamesPlayed: 5}));<br>
+        location.reload();
+    </code>
+    
+    <h2>Check if welcome was seen:</h2>
+    <code>
+        console.log('Seen welcome:', localStorage.getItem('wizard-chess-seen-welcome'));<br>
+        console.log('Games played:', JSON.parse(localStorage.getItem('playerStats') || '{}').gamesPlayed);
+    </code>
+    
+    <h2>Expected Behavior:</h2>
+    <ul>
+        <li>Welcome popup shows only for players with ≤2 games AND haven't seen welcome</li>
+        <li>Tutorial welcome audio plays when popup appears</li>
+        <li>Once dismissed, localStorage stores 'wizard-chess-seen-welcome': 'true'</li>
+        <li>Popup never shows again after being dismissed</li>
+        <li>No more looping on page refresh</li>
+    </ul>
+</body>
+</html>

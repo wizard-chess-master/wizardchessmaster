@@ -4,6 +4,7 @@ import { X, Lightbulb, Target, Crown, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useChess } from '@/lib/stores/useChess';
+import { useAudio } from '@/lib/stores/useAudio';
 
 interface HintContent {
   id: string;
@@ -103,6 +104,8 @@ export function ContextualHintOverlay({
     currentPlayer,
     moveHistory 
   } = useChess();
+  
+  const { playGameEvent } = useAudio();
 
   // Load dismissed hints from localStorage
   useEffect(() => {
@@ -125,6 +128,10 @@ export function ContextualHintOverlay({
     if (hint && !activeHint) {
       setTimeout(() => {
         setActiveHint(hint);
+        // Play audio for welcome hint
+        if (hint.id === 'welcome') {
+          playGameEvent('tutorial_welcome');
+        }
       }, hint.delay || 0);
     }
   };

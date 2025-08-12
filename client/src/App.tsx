@@ -333,7 +333,20 @@ function App() {
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
           <>
             {/* Contextual Hint Overlay for New Players - but not in multiplayer */}
-            {!isMultiplayerConnected && <ContextualHintOverlay />}
+            {!isMultiplayerConnected && <ContextualHintOverlay 
+              isNewPlayer={(() => {
+                const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+                const gamesPlayed = playerStats.gamesPlayed || 0;
+                const hasSeenWelcome = localStorage.getItem('wizard-chess-seen-welcome') === 'true';
+                return gamesPlayed <= 2 && !hasSeenWelcome; // Only show to players with 2 or fewer games and haven't seen welcome
+              })()}
+              showHints={true}
+              onHintDismiss={(hintId) => {
+                if (hintId === 'welcome') {
+                  localStorage.setItem('wizard-chess-seen-welcome', 'true');
+                }
+              }}
+            />}
             
             <MobileGameLayout
               onSettings={() => setShowSettings(true)}
