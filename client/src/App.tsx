@@ -49,7 +49,7 @@ import "@fontsource/inter";
 import "./styles/chess.css";
 import "./styles/animations.css";
 import "./debug";
-import ErrorBoundary from "./components/ErrorBoundary";
+import { ErrorBoundary, GameErrorBoundary, MultiplayerErrorBoundary } from "./components/ErrorBoundary";
 
 function AppContent() {
   const { gamePhase, ...gameState } = useChess();
@@ -320,6 +320,7 @@ function AppContent() {
           />
 
         <div className="game-container">
+        <ErrorBoundary>
         {/* Immersive Audio Controller - manages 3D spatial audio for chess game */}
         <ChessAudioController />
         
@@ -332,6 +333,7 @@ function AppContent() {
         )}
         
         {(gamePhase === 'playing' || gamePhase === 'ended') && (
+          <GameErrorBoundary>
           <>
             {/* Contextual Hint Overlay for New Players - but not in multiplayer */}
             {!isMultiplayerConnected && (() => {
@@ -410,6 +412,7 @@ function AppContent() {
             {/* Mobile game layout is handled by MobileGameLayout wrapper */}
             {gamePhase === 'ended' && <GameOverDialog />}
           </MobileGameLayout>
+          </GameErrorBoundary>
           </>
         )}
 
@@ -449,6 +452,7 @@ function AppContent() {
         <StabilityTestPanel />
         <BrowserCompatibilityPanel />
         <DeploymentPanel />
+        </ErrorBoundary>
         </div>
       </div>
       </AuthProvider>

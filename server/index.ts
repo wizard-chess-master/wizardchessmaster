@@ -5,6 +5,7 @@ import { Server as SocketIOServer } from "socket.io";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { MultiplayerManager } from "./multiplayer";
+import { serverLogger } from "./utils/serverLogger";
 import path from "path";
 
 const app = express();
@@ -29,6 +30,9 @@ app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
 // Standard JSON middleware for other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Add request logging middleware
+app.use(serverLogger.requestLogger());
 
 app.use((req, res, next) => {
   const start = Date.now();

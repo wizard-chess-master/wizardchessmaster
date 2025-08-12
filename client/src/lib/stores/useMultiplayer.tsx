@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { io, Socket } from 'socket.io-client';
 import { SocketReconnectionManager } from '../utils/socketReconnection';
+import { logMultiplayerEvent, logMultiplayerError } from '../utils/logIntegration';
 
 interface OnlinePlayer {
   userId: number;
@@ -113,6 +114,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
     }
 
     console.log('🔌 Connecting to multiplayer server...');
+    logMultiplayerEvent('Connecting to server', playerData);
     
     const newSocket = io('/', {
       transports: ['websocket', 'polling'],
@@ -143,6 +145,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
       },
       onReconnected: () => {
         console.log('✅ Successfully reconnected!');
+        logMultiplayerEvent('Reconnected successfully', { attempt });
         set({ isConnected: true, connectionError: null, reconnectAttempts: 0 });
         
         // Send reconnect event with current game state and checksum
@@ -155,6 +158,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
       },
       onReconnectFailed: () => {
         console.error('❌ Failed to reconnect after max attempts');
+        logMultiplayerError(new Error('Reconnection failed after max attempts'));
         set({ 
           connectionError: 'Failed to reconnect. Please refresh the page.',
           isConnected: false 
@@ -167,6 +171,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
     // Connection events
     newSocket.on('connect', () => {
       console.log('🎮 Connected to multiplayer server');
+      logMultiplayerEvent('Connected to server');
       set({ socket: newSocket, isConnected: true, connectionError: null });
       
       // Check if this is a reconnection
@@ -192,6 +197,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
 
     newSocket.on('disconnect', (reason) => {
       console.log('🔌 Disconnected from multiplayer server:', reason);
+      logMultiplayerEvent('Disconnected from server', { reason });
       set({ isConnected: false });
       
       // Reconnection manager will handle reconnection
@@ -199,6 +205,7 @@ const multiplayerStore = create<MultiplayerState>((set, get) => ({
 
     newSocket.on('connect_error', (error) => {
       console.error('❌ Connection error:', error);
+      logMultiplayerError(error, { type: 'connection_error' });
       set({ connectionError: error.message, isConnected: false });
     });
 
