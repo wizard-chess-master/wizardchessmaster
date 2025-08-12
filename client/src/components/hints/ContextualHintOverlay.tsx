@@ -144,9 +144,10 @@ export function ContextualHintOverlay({
 
   // Monitor game state for hint triggers
   useEffect(() => {
-    if (gamePhase === 'playing' && moveHistory.length === 0) {
-      triggerHint('gameStart');
-    }
+    // DISABLED: Welcome hint causing overlay issues
+    // if (gamePhase === 'playing' && moveHistory.length === 0) {
+    //   triggerHint('gameStart');
+    // }
   }, [gamePhase]);
   
   // Auto-dismiss hint after 30 seconds to prevent stuck overlays
@@ -218,9 +219,14 @@ export function ContextualHintOverlay({
     setActiveHint(null);
   };
 
+  // TEMPORARY: Disable all hint overlays to prevent flashing issues
+  return null;
+  
+  /* DISABLED DUE TO OVERLAY ISSUES
   if (!showHints || !isNewPlayer || !activeHint) {
     return null;
   }
+  */
 
   return (
     <AnimatePresence>
