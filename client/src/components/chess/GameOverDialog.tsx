@@ -80,7 +80,7 @@ export function GameOverDialog() {
 
   return (
     <Dialog open>
-      <DialogContent className="game-over-dialog" aria-describedby="game-over-description">
+      <DialogContent className="game-over-dialog max-w-2xl w-full" aria-describedby="game-over-description">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 justify-center text-2xl">
             {getResultIcon()}

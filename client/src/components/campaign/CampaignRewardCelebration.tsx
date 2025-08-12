@@ -51,7 +51,7 @@ export function CampaignRewardCelebration({ isOpen, onClose, rewardData }: Campa
               stiffness: 200,
               duration: 0.8 
             }}
-            className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 rounded-xl shadow-2xl border-4 border-amber-300 p-8 max-w-md mx-4 text-center relative overflow-hidden"
+            className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 rounded-xl shadow-2xl border-4 border-amber-300 p-8 max-w-2xl mx-4 text-center relative overflow-hidden min-h-[400px]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Background sparkles */}

@@ -301,6 +301,14 @@
     margin: 0.5rem;
   }
   
+  .settings-dialog,
+  .game-over-dialog {
+    max-width: 95vw;
+    margin: 1rem;
+    padding: 1rem;
+    min-height: auto;
+  }
+  
   .rank-icon {
     width: 28px;
     height: 28px;
@@ -990,9 +998,10 @@ body.multiplayer-active .multiplayer-game-wrapper * {
 /* Dialog Styles */
 .settings-dialog,
 .game-over-dialog {
-  max-width: 600px;
-  max-height: 80vh;
+  max-width: 768px;
+  max-height: 85vh;
   overflow-y: auto;
+  min-height: 300px;
 }
 
 .settings-content {

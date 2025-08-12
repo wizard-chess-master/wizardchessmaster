@@ -137,7 +137,7 @@ export function EnhancedAchievementNotification({
                   bounce: 0.6,
                   rotate: { duration: 0.2, delay: 0.8 }
                 }}
-                className="fixed top-4 left-4 right-4 z-[110] w-full max-w-md mx-auto sm:left-auto sm:right-4 sm:w-96"
+                className="fixed top-4 left-4 right-4 z-[110] w-full max-w-lg mx-auto sm:left-auto sm:right-4 sm:w-96"
               >
                 <Card className={`medieval-panel achievement-notification ${config.color} border-2 ${config.glow} overflow-hidden relative`}>
                   {/* Animated Border Glow */}
