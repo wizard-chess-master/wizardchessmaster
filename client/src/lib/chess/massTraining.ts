@@ -116,7 +116,7 @@ export class MassAITraining {
     let gameState: GameState = {
       board: Array(10).fill(null).map(() => Array(10).fill(null)),
       currentPlayer: 'white',
-      gamePhase: 'active' as GamePhase,
+      gamePhase: 'playing' as GamePhase,  // Fixed: Use 'playing' not 'active'
       winner: null,
       moveHistory: [],
       aiDifficulty: whiteLevel as any, // Train with varying difficulty levels
@@ -148,7 +148,7 @@ export class MassAITraining {
     let moveCount = 0;
     const maxMoves = 200; // Increased to allow games to reach natural conclusion
     
-    while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
+    while (gameState.gamePhase === 'playing' && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
       
       // Get all valid moves for training
@@ -241,7 +241,7 @@ export class MassAITraining {
     }
     
     // Force draw if too many moves (50-move rule)
-    if (moveCount >= maxMoves && gameState.gamePhase === ('active' as GamePhase)) {
+    if (moveCount >= maxMoves && gameState.gamePhase === 'playing') {
       gameState.gamePhase = 'ended' as GamePhase;
       gameState.winner = null;
     }
