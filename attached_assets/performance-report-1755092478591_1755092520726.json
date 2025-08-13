@@ -1,0 +1,13 @@
+{
+  "measures": [],
+  "renderMetrics": [],
+  "networkMetrics": {
+    "requestCount": 162,
+    "totalDataTransferred": 8776648,
+    "averageLatency": 270.17592592588005,
+    "failedRequests": 0,
+    "slowRequests": 4
+  },
+  "averageFPS": 58.93333333333333,
+  "memoryUsage": 35186881
+}
