@@ -5,10 +5,37 @@ import { Button } from '../ui/button';
 import { Card, CardContent } from '../ui/card';
 import { X, Volume2, VolumeX } from 'lucide-react';
 
+// Global test function for debugging speech synthesis
+if (typeof window !== 'undefined') {
+  (window as any).testAICoachSpeech = () => {
+    console.log('🎤 Testing AI Coach Speech Synthesis...');
+    
+    if (!('speechSynthesis' in window)) {
+      console.error('❌ Speech synthesis not supported in this browser');
+      return false;
+    }
+    
+    const testMessage = "Testing AI coach voice. If you hear this, speech synthesis is working.";
+    const utterance = new SpeechSynthesisUtterance(testMessage);
+    
+    utterance.onstart = () => console.log('✅ Speech started');
+    utterance.onend = () => console.log('✅ Speech completed');
+    utterance.onerror = (e) => console.error('❌ Speech error:', e);
+    
+    speechSynthesis.cancel(); // Clear any pending speech
+    speechSynthesis.speak(utterance);
+    
+    console.log('Available voices:', speechSynthesis.getVoices().map(v => `${v.name} (${v.lang})`));
+    return true;
+  };
+}
+
 export function MentorNotification() {
   const { currentFeedback } = useDynamicAIMentor();
   const [visibleFeedback, setVisibleFeedback] = useState<MentorFeedback | null>(null);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(true);
+  const [speechFailed, setSpeechFailed] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   // Show latest feedback in persistent panel
   useEffect(() => {
@@ -18,6 +45,7 @@ export function MentorNotification() {
       // Only show if it's a new feedback (not already visible)
       if (!visibleFeedback || latestFeedback.id !== visibleFeedback.id) {
         setVisibleFeedback(latestFeedback);
+        setSpeechFailed(false); // Reset speech failure state for new message
 
         // Play voice narration if enabled with longer delay for stability
         if (isVoiceEnabled) {
@@ -91,14 +119,19 @@ export function MentorNotification() {
             utterance.onerror = (event) => {
               console.error('❌ AI Coach speech error:', event.error || 'Unknown error');
               console.error('Error details:', event);
+              setSpeechFailed(true);
+              setIsSpeaking(false);
             };
             
             utterance.onstart = () => {
               console.log('🎤 AI Coach started speaking');
+              setIsSpeaking(true);
+              setSpeechFailed(false);
             };
             
             utterance.onend = () => {
               console.log('✅ AI Coach finished speaking');
+              setIsSpeaking(false);
             };
             
             // Speak with additional checks
@@ -180,7 +213,16 @@ export function MentorNotification() {
       <div className="bg-purple-800/50 border border-purple-400 rounded-md p-3">
         <div className="flex items-start gap-2 mb-2">
           <div className="text-lg">{getFeedbackIcon(visibleFeedback.type)}</div>
-          <div className="text-xs text-purple-300 capitalize">{visibleFeedback.type}</div>
+          <div className="text-xs text-purple-300 capitalize flex items-center gap-1">
+            {visibleFeedback.type}
+            {/* Speech status indicators */}
+            {isVoiceEnabled && isSpeaking && (
+              <span className="text-green-400 animate-pulse" title="Speaking...">●</span>
+            )}
+            {isVoiceEnabled && speechFailed && (
+              <span className="text-yellow-400" title="Speech unavailable">⚠️</span>
+            )}
+          </div>
         </div>
         <p className="text-sm text-purple-100 leading-relaxed">
           {visibleFeedback.message}
@@ -188,6 +230,12 @@ export function MentorNotification() {
         {visibleFeedback.context?.learningPoint && (
           <div className="text-xs mt-2 text-purple-200 opacity-75">
             💡 {visibleFeedback.context.learningPoint}
+          </div>
+        )}
+        {/* Show fallback message if speech failed */}
+        {isVoiceEnabled && speechFailed && (
+          <div className="text-xs mt-2 text-yellow-400">
+            ⚠️ Voice unavailable - displaying text only
           </div>
         )}
         <div className="text-xs text-purple-300 mt-2">
@@ -204,6 +252,7 @@ export function MentorNotification() {
               speechSynthesis.cancel();
             }
             setIsVoiceEnabled(!isVoiceEnabled);
+            setSpeechFailed(false); // Reset speech failure when toggling
           }}
           className="h-6 px-2 text-purple-300 hover:text-purple-100 hover:bg-purple-700/50"
           title={isVoiceEnabled ? "Disable voice" : "Enable voice"}
@@ -219,6 +268,8 @@ export function MentorNotification() {
               speechSynthesis.cancel();
             }
             setVisibleFeedback(null);
+            setSpeechFailed(false);
+            setIsSpeaking(false);
           }}
           className="h-6 px-2 text-purple-300 hover:text-purple-100 hover:bg-purple-700/50"
         >
