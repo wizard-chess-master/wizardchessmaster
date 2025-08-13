@@ -18,6 +18,7 @@
 - **AI Training COMPLETE (Aug 13 2025)**: Successfully achieved 2550 ELO at 100k games - All 5 phases complete, Grandmaster-level AI achieved, memory maintained under 750MB throughout, transfer learning optimization successful
 - **UI Cleanup Complete (Aug 13 2025)**: Removed all upgrade banners and promotional ads - AdBanner components commented out in App.tsx, GlobalNavigation.tsx, GameUI.tsx; fallback promotional ads disabled in adManager.ts for clean gaming experience
 - **Wizard Attack Mechanics Fixed (Aug 13 2025)**: Wizard now properly executes magical attacks with enhanced visual effects - purple beam animation from wizard to target, sparkles along beam path, impact explosion at target. Wizard performs a subtle magical gesture during attack for visual distinction between teleport and attack moves
+- **Self-Play Training System Implemented (Aug 13 2025)**: Complete self-play training script with corrected wizard mechanics - 100k+ game loop capability, batch size 256 (64×4), checkpoint saves every 5k games, wizard move statistics logging, browser console access via runSelfPlay(100000)
 
 # User Preferences
 
