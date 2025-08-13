@@ -1,6 +1,6 @@
-import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase, Position } from './types';
+import { GameState, ChessMove, PieceColor, ChessPiece, GamePhase } from './types';
 import { makeMove, isKingInCheck } from './gameEngine';
-import { getPossibleMoves } from './pieceMovement';
+import { getAllValidMoves as getAllValidMovesFromBoard } from './pieceMovement';
 import { advancedAI, aiManager, GameAnalysisData, StrategyPattern } from './advancedAI';
 
 // Mass training system for 10000-game self-play
@@ -35,23 +35,15 @@ export class MassAITraining {
     };
 
     let totalGameLength = 0;
-    const batchSize = 5; // Even smaller batches for smoother UI
+    const batchSize = 10; // Smaller batches to prevent blocking
     
     // Add delay between batches to prevent UI freezing
     for (let batch = 0; batch < Math.ceil(gameCount / batchSize); batch++) {
       const batchStart = batch * batchSize;
       const batchEnd = Math.min((batch + 1) * batchSize, gameCount);
       
-      // Yield control back to browser every batch to prevent freezing
-      await new Promise(resolve => setTimeout(resolve, 1));
-      
       // Process batch of games
       for (let gameIndex = batchStart; gameIndex < batchEnd; gameIndex++) {
-        // Add another yield point for very long training sessions
-        if (gameIndex % 50 === 0 && gameIndex > 0) {
-          await new Promise(resolve => setTimeout(resolve, 1));
-        }
-        
         const gameResult = await this.playTrainingGame();
         
         // Update results
@@ -109,17 +101,13 @@ export class MassAITraining {
 
   // Play a single training game
   private async playTrainingGame(): Promise<TrainingGameResult> {
-    // Randomly select difficulty levels to train (level1-level20)
-    const whiteLevel = `level${Math.floor(Math.random() * 20) + 1}`;
-    const blackLevel = `level${Math.floor(Math.random() * 20) + 1}`;
-    
     let gameState: GameState = {
       board: Array(10).fill(null).map(() => Array(10).fill(null)),
       currentPlayer: 'white',
-      gamePhase: 'playing' as GamePhase,  // Fixed: Use 'playing' not 'active'
+      gamePhase: 'active' as GamePhase,
       winner: null,
       moveHistory: [],
-      aiDifficulty: whiteLevel as any, // Train with varying difficulty levels
+      aiDifficulty: 'hard',
       gameMode: 'ai-vs-ai',
       selectedPosition: null,
       validMoves: [],
@@ -132,98 +120,31 @@ export class MassAITraining {
     this.initializeBoard(gameState.board);
     gameState.gameMode = 'ai-vs-ai';
     
-    // Debug: Check if board was initialized properly
-    let pieceCount = 0;
-    for (let row = 0; row < 10; row++) {
-      for (let col = 0; col < 10; col++) {
-        if (gameState.board[row][col]) pieceCount++;
-      }
-    }
-    if (pieceCount === 0) {
-      console.error('❌ Board not initialized! No pieces found!');
-    }
-    
     const moves: ChessMove[] = [];
     const moveAnalysis: MoveAnalysis[] = [];
     let moveCount = 0;
-    const maxMoves = 200; // Increased to allow games to reach natural conclusion
+    const maxMoves = 100; // Prevent infinite games
     
-    while (gameState.gamePhase === 'playing' && moveCount < maxMoves) {
+    while (gameState.gamePhase === ('active' as GamePhase) && moveCount < maxMoves) {
       const currentColor = gameState.currentPlayer;
+      const move = aiManager.getBestMove(gameState, currentColor);
       
-      // Get all valid moves for training
-      const validMoves = this.getAllValidMovesForTraining(gameState.board, currentColor);
-      
-      // Debug log for first few moves
-      if (moveCount < 3 && validMoves.length === 0) {
-        console.log(`⚠️ No valid moves on move ${moveCount} for ${currentColor}`);
-      }
-      
-      if (validMoves.length === 0) {
-        // No moves available - check for checkmate or stalemate
-        if (isKingInCheck(gameState.board, currentColor)) {
-          // Checkmate - opponent wins
-          gameState.gamePhase = 'ended' as GamePhase;
-          gameState.winner = currentColor === 'white' ? 'black' : 'white';
-          gameState.isCheckmate = true;
-        } else {
-          // Stalemate - draw
-          gameState.gamePhase = 'ended' as GamePhase;
-          gameState.winner = null;
-          gameState.isStalemate = true;
-        }
+      if (!move) {
+        // No legal moves - game over
         break;
       }
       
-      // Use different selection strategies based on the current player's difficulty level
-      const currentLevel = currentColor === 'white' ? whiteLevel : blackLevel;
-      const levelNum = parseInt(currentLevel.replace('level', ''));
+      // Analyze move before making it
+      const analysis = this.analyzeMoveType(gameState, move);
+      moveAnalysis.push(analysis);
       
-      // Try to make a legal move
-      let moveMade = false;
-      let attempts = 0;
-      const maxAttempts = Math.min(10, validMoves.length);
-      
-      while (!moveMade && attempts < maxAttempts) {
-        // Select a move based on difficulty level
-        const move = this.selectTrainingMoveByLevel(validMoves, gameState, levelNum);
-        
-        if (!move) break;
-        
-        // Analyze move before making it
-        const analysis = this.analyzeMoveType(gameState, move);
-        
-        // Try to make the move
-        try {
-          // Use skipRepetitionCheck flag for training to avoid early draws
-          gameState = makeMove(gameState, move, true);
-          moves.push(move);
-          moveAnalysis.push(analysis);
-          moveCount++;
-          moveMade = true;
-        } catch (error) {
-          // Move was illegal, remove it from valid moves and try another
-          const moveIndex = validMoves.indexOf(move);
-          if (moveIndex > -1) {
-            validMoves.splice(moveIndex, 1);
-          }
-          attempts++;
-        }
-      }
-      
-      if (!moveMade) {
-        // Couldn't make any legal move - game ends
-        if (isKingInCheck(gameState.board, currentColor)) {
-          // Checkmate
-          gameState.gamePhase = 'ended' as GamePhase;
-          gameState.winner = currentColor === 'white' ? 'black' : 'white';
-          gameState.isCheckmate = true;
-        } else {
-          // Stalemate
-          gameState.gamePhase = 'ended' as GamePhase;
-          gameState.winner = null;
-          gameState.isStalemate = true;
-        }
+      // Make the move
+      try {
+        gameState = makeMove(gameState, move);
+        moves.push(move);
+        moveCount++;
+      } catch (error) {
+        console.error('❌ Move failed:', error, 'Move:', move);
         break;
       }
       
@@ -240,15 +161,10 @@ export class MassAITraining {
       }
     }
     
-    // Force draw if too many moves (50-move rule)
-    if (moveCount >= maxMoves && gameState.gamePhase === 'playing') {
+    // Force draw if too many moves
+    if (moveCount >= maxMoves && gameState.gamePhase === ('active' as GamePhase)) {
       gameState.gamePhase = 'ended' as GamePhase;
       gameState.winner = null;
-    }
-    
-    // Debug log for very short games
-    if (moveCount < 10 && gameState.winner === null) {
-      console.log(`⚠️ Short draw game: ${moveCount} moves, final phase: ${gameState.gamePhase}`);
     }
     
     // Calculate game statistics
@@ -287,7 +203,7 @@ export class MassAITraining {
 
   // Analyze move type for strategy learning
   private analyzeMoveType(gameState: GameState, move: ChessMove): MoveAnalysis {
-    const validMoves = this.getAllValidMovesForTraining(gameState.board, gameState.currentPlayer).length;
+    const validMoves = getAllValidMovesFromBoard(gameState.board, gameState.currentPlayer).length;
     
     let type: 'tactical' | 'strategic' | 'positional' = 'positional';
     
@@ -324,142 +240,6 @@ export class MassAITraining {
   private isCenterControlMove(move: ChessMove): boolean {
     const centerSquares = [[4, 4], [4, 5], [5, 4], [5, 5]];
     return centerSquares.some(([r, c]) => r === move.to.row && c === move.to.col);
-  }
-
-  // Get all valid moves as ChessMove objects for training
-  private getAllValidMovesForTraining(board: (ChessPiece | null)[][], color: PieceColor): ChessMove[] {
-    const moves: ChessMove[] = [];
-    
-    for (let row = 0; row < 10; row++) {
-      for (let col = 0; col < 10; col++) {
-        const piece = board[row][col];
-        if (piece && piece.color === color) {
-          const from = { row, col };
-          const possiblePositions = getPossibleMoves(board, from, piece);
-          
-          for (const to of possiblePositions) {
-            const captured = board[to.row][to.col];
-            const isWizardAttack = piece.type === 'wizard' && captured !== null;
-            
-            // For training, we'll use simpler validation - just add all possible moves
-            // The makeMove function will handle legality checking
-            moves.push({
-              from,
-              to,
-              piece,
-              captured: captured || undefined,
-              isWizardAttack
-            });
-          }
-        }
-      }
-    }
-    
-    return moves;
-  }
-
-  // Select moves based on difficulty level for proper training
-  private selectTrainingMoveByLevel(validMoves: ChessMove[], gameState: GameState, level: number): ChessMove {
-    // Level 1-5: Random with basic preferences
-    // Level 6-10: Moderate strategy
-    // Level 11-15: Advanced tactics
-    // Level 16-20: Expert play
-    
-    let bestMoves: ChessMove[] = [];
-    let bestScore = -Infinity;
-    
-    for (const move of validMoves) {
-      let score = 0;
-      
-      // Base randomness decreases with level
-      const randomFactor = Math.max(0, 20 - level);
-      score += Math.random() * randomFactor;
-      
-      // Capture evaluation (more important at higher levels)
-      if (move.captured) {
-        const captureValue = this.getPieceValue(move.captured.type);
-        score += captureValue * (1 + level / 10);
-      }
-      
-      // Wizard attacks (strategic at mid-high levels)
-      if (move.isWizardAttack && level >= 8) {
-        score += 40 + level * 2;
-      }
-      
-      // Center control (important at all levels, more at higher)
-      if (this.isCenterControlMove(move)) {
-        score += 10 + level;
-      }
-      
-      // Piece development (important at mid levels)
-      if (level >= 5 && level <= 15 && this.isDevelopmentMove(move)) {
-        score += 15 + level / 2;
-      }
-      
-      // King safety (critical at high levels)
-      if (level >= 12) {
-        const kingSafetyScore = this.evaluateKingSafety(gameState, move);
-        score += kingSafetyScore * (level / 5);
-      }
-      
-      // Avoid repetition (smarter at higher levels)
-      if (gameState.moveHistory.length > 0 && level >= 7) {
-        const lastMove = gameState.moveHistory[gameState.moveHistory.length - 1];
-        if (lastMove && lastMove.to.row === move.from.row && lastMove.to.col === move.from.col) {
-          score -= 10 + level;
-        }
-      }
-      
-      if (score > bestScore) {
-        bestScore = score;
-        bestMoves = [move];
-      } else if (Math.abs(score - bestScore) < 0.1) {
-        bestMoves.push(move);
-      }
-    }
-    
-    // At higher levels, pick the absolute best; at lower levels, allow some randomness
-    if (level >= 15 && bestMoves.length > 1) {
-      // Re-evaluate best moves more carefully
-      return bestMoves[0];
-    }
-    
-    return bestMoves[Math.floor(Math.random() * bestMoves.length)];
-  }
-  
-  // Helper: Get piece value for capture evaluation
-  private getPieceValue(pieceType: string): number {
-    const values: Record<string, number> = {
-      'pawn': 10,
-      'knight': 30,
-      'bishop': 30,
-      'rook': 50,
-      'queen': 90,
-      'wizard': 70,
-      'king': 1000
-    };
-    return values[pieceType] || 0;
-  }
-  
-  // Helper: Evaluate king safety after a move
-  private evaluateKingSafety(gameState: GameState, move: ChessMove): number {
-    // Simple king safety: penalize moves that expose the king
-    if (move.piece.type === 'king') {
-      return -5; // Moving king is often risky
-    }
-    
-    // Reward castling moves
-    if (move.piece.type === 'king' && Math.abs(move.from.col - move.to.col) === 3) {
-      return 25; // Castling is good for king safety
-    }
-    
-    return 0;
-  }
-
-  // Fast move selection for training (kept for compatibility)
-  private selectTrainingMove(validMoves: ChessMove[], gameState: GameState): ChessMove {
-    // Default to level 10 (medium difficulty)
-    return this.selectTrainingMoveByLevel(validMoves, gameState, 10);
   }
 
   // Check if move develops a piece

@@ -9,49 +9,23 @@ export function AITrainingPanel() {
   const [isTraining, setIsTraining] = useState(false);
   const [progress, setProgress] = useState<TrainingProgress | null>(null);
   const [results, setResults] = useState<any>(null);
-  const [statusMessage, setStatusMessage] = useState<string>('');
-  const [trainingStartTime, setTrainingStartTime] = useState<number>(0);
 
   const runTraining = useCallback(async (gameCount: number) => {
     setIsTraining(true);
     setProgress(null);
     setResults(null);
-    setTrainingStartTime(Date.now());
-    setStatusMessage(`🚀 Starting ${gameCount.toLocaleString()} game training session...`);
-
-    // Show initial progress immediately
-    setProgress({
-      gamesCompleted: 0,
-      totalGames: gameCount,
-      currentWinRate: { white: 0, black: 0, draw: 0 },
-      avgGameLength: 0,
-      strategiesLearned: 0
-    });
-
-    // Add a small delay to show the UI has responded
-    await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
       const trainingResults = await massTraining.runMassTraining(
         gameCount,
         (progressUpdate) => {
           setProgress(progressUpdate);
-          // Update status message with estimated time
-          const percentComplete = (progressUpdate.gamesCompleted / progressUpdate.totalGames) * 100;
-          const gamesPerSecond = progressUpdate.gamesCompleted > 0 ? progressUpdate.gamesCompleted / 10 : 0;
-          const remainingGames = progressUpdate.totalGames - progressUpdate.gamesCompleted;
-          const estimatedSeconds = gamesPerSecond > 0 ? remainingGames / gamesPerSecond : 0;
-          const estimatedMinutes = Math.ceil(estimatedSeconds / 60);
-          
-          if (progressUpdate.gamesCompleted % 100 === 0) {
-            setStatusMessage(`🎮 Training in progress... ${percentComplete.toFixed(1)}% complete. Est. ${estimatedMinutes} min remaining.`);
-          }
         }
       );
       setResults(trainingResults);
-      setStatusMessage(`✅ Training complete! ${gameCount.toLocaleString()} games finished.`);
+      console.log('🎯 Training completed:', trainingResults);
     } catch (error) {
-      setStatusMessage(`❌ Training failed: ${error}`);
+      console.error('Training failed:', error);
     } finally {
       setIsTraining(false);
     }
@@ -74,23 +48,11 @@ export function AITrainingPanel() {
           Train the AI by having it play against itself. More games = smarter AI!
         </div>
 
-        {/* Status Message */}
-        {statusMessage && (
-          <div className={`p-3 rounded-lg text-sm font-semibold ${
-            statusMessage.includes('✅') ? 'bg-green-100 text-green-800' :
-            statusMessage.includes('❌') ? 'bg-red-100 text-red-800' :
-            'bg-blue-100 text-blue-800'
-          }`}>
-            {statusMessage}
-          </div>
-        )}
-
         {!isTraining && !results && (
           <div className="grid grid-cols-2 gap-2">
             <Button 
               onClick={() => runTraining(100)}
               className="medieval-btn"
-              disabled={isTraining}
             >
               <Zap className="w-4 h-4 mr-2" />
               Quick Train (100 games)
@@ -98,7 +60,6 @@ export function AITrainingPanel() {
             <Button 
               onClick={() => runTraining(1000)}
               className="medieval-btn"
-              disabled={isTraining}
             >
               <Brain className="w-4 h-4 mr-2" />
               Standard (1,000 games)
@@ -107,7 +68,6 @@ export function AITrainingPanel() {
               onClick={() => runTraining(10000)}
               className="medieval-btn"
               variant="outline"
-              disabled={isTraining}
             >
               <TrendingUp className="w-4 h-4 mr-2" />
               Intensive (10,000 games)
@@ -115,36 +75,9 @@ export function AITrainingPanel() {
             <Button 
               onClick={() => runTraining(50000)}
               className="medieval-btn bg-purple-600 hover:bg-purple-700"
-              disabled={isTraining}
             >
               <Brain className="w-4 h-4 mr-2" />
               Master Training (50,000 games)
-            </Button>
-          </div>
-        )}
-
-        {/* Reset Neural Weights Button */}
-        {!isTraining && (
-          <div className="flex justify-center mt-4">
-            <Button
-              onClick={() => {
-                // Reset neural weights to remove skewed data
-                localStorage.removeItem('fantasy-chess-neural-weights');
-                const defaultWeights = {
-                  materialWeight: 1.0,
-                  positionWeight: 0.3,
-                  kingSafetyWeight: 0.2,
-                  mobilityWeight: 0.1
-                };
-                localStorage.setItem('fantasy-chess-neural-weights', JSON.stringify(defaultWeights));
-                setStatusMessage('✅ Neural weights reset! Skewed data from failed tests removed.');
-                setResults(null);
-              }}
-              disabled={isTraining}
-              variant="outline"
-              className="border-red-500 text-red-600 hover:bg-red-50"
-            >
-              🧹 Reset AI Training Data
             </Button>
           </div>
         )}
@@ -175,7 +108,6 @@ export function AITrainingPanel() {
             <div className="text-xs text-muted-foreground">
               Avg game length: {Math.round(progress.avgGameLength)} moves
               • Strategies learned: {progress.strategiesLearned}
-              • Games/sec: {((progress.gamesCompleted / ((Date.now() - trainingStartTime) / 1000)) || 0).toFixed(1)}
             </div>
           </div>
         )}
@@ -188,26 +120,11 @@ export function AITrainingPanel() {
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div>Total Games: {results.totalGames}</div>
               <div>Time: {(results.completionTime / 1000 / 60).toFixed(1)} min</div>
-              <div>White Wins: {results.whiteWins} ({((results.whiteWins / results.totalGames) * 100).toFixed(1)}%)</div>
-              <div>Black Wins: {results.blackWins} ({((results.blackWins / results.totalGames) * 100).toFixed(1)}%)</div>
-              <div>Draws: {results.draws} ({((results.draws / results.totalGames) * 100).toFixed(1)}%)</div>
+              <div>White Wins: {results.whiteWins}</div>
+              <div>Black Wins: {results.blackWins}</div>
+              <div>Draws: {results.draws}</div>
               <div>Strategies: {results.strategiesLearned}</div>
             </div>
-            
-            {/* Win rate analysis */}
-            <div className="mt-2 p-2 bg-amber-50 rounded text-xs">
-              <div className="font-semibold mb-1">Training Quality Analysis:</div>
-              {results.draws / results.totalGames > 0.8 && (
-                <div className="text-amber-700">⚠️ High draw rate ({((results.draws / results.totalGames) * 100).toFixed(1)}%) - Games may be ending too early</div>
-              )}
-              {Math.abs(results.whiteWins - results.blackWins) / results.totalGames > 0.2 && (
-                <div className="text-amber-700">⚠️ Color imbalance detected - White: {((results.whiteWins / results.totalGames) * 100).toFixed(1)}% vs Black: {((results.blackWins / results.totalGames) * 100).toFixed(1)}%</div>
-              )}
-              {results.draws / results.totalGames < 0.8 && Math.abs(results.whiteWins - results.blackWins) / results.totalGames < 0.2 && (
-                <div className="text-green-700">✓ Balanced training results - AI learning effectively</div>
-              )}
-            </div>
-            
             <div className="text-xs text-green-700">
               AI has been improved! The learning has been saved.
             </div>
