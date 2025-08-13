@@ -390,19 +390,35 @@ export class TransferLearningSystem {
   }
 
   /**
-   * Create a smaller student model for distillation
+   * Create optimized student model with 358-889 node architecture
    */
   private createStudentModel(): tf.LayersModel {
     const input = tf.input({ shape: [1024] });
     
-    // Smaller architecture
+    // Optimized student architecture: 358-889 nodes
     let x = tf.layers.dense({
-      units: 128,
-      activation: 'relu'
+      units: 358,
+      activation: 'relu',
+      kernelInitializer: 'heNormal'
     }).apply(input) as tf.SymbolicTensor;
     
+    x = tf.layers.dropout({ rate: 0.2 }).apply(x) as tf.SymbolicTensor;
+    
     x = tf.layers.dense({
-      units: 64,
+      units: 889,
+      activation: 'relu',
+      kernelInitializer: 'heNormal'
+    }).apply(x) as tf.SymbolicTensor;
+    
+    x = tf.layers.dropout({ rate: 0.2 }).apply(x) as tf.SymbolicTensor;
+    
+    x = tf.layers.dense({
+      units: 256,
+      activation: 'relu'
+    }).apply(x) as tf.SymbolicTensor;
+    
+    x = tf.layers.dense({
+      units: 128,
       activation: 'relu'
     }).apply(x) as tf.SymbolicTensor;
     
