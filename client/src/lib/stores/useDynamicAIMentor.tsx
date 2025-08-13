@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
 import { useAIDifficultyProgression } from './useAIDifficultyProgression';
 import { GameState, ChessMove, PieceColor } from '../chess/types';
+import { aiCoach, GameContextTag } from '../ai/coach';
 
 // Enhanced mentor feedback types
 export interface MentorFeedback {
@@ -250,36 +251,35 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
 
       console.log('🧙‍♂️ Analyzing move:', move, 'Game state:', gameState);
 
-      // Calculate move quality based on various factors
-      let moveQuality = 50; // Base score
+      // Use enhanced AI coach with control tags
+      const enhancedFeedback = aiCoach.generateEnhancedFeedback(gameState, move);
       
-      // Analyze move type
-      if (move.captured) moveQuality += 15;
-      if (move.isWizardTeleport) moveQuality += 10;
-      if (move.isWizardAttack) moveQuality += 20;
-      if (move.isCastling) moveQuality += 12;
-      
-      // Add randomness for more dynamic feedback
-      moveQuality += Math.random() * 20 - 10;
-      moveQuality = Math.max(0, Math.min(100, moveQuality));
-      
-      // Game phase assessment
-      const phase = get().assessGamePhase(gameState);
-      
-      // Generate contextual feedback
-      const feedback = get().generateContextualFeedback(gameState, moveQuality);
-      console.log('🧙‍♂️ Generated feedback:', feedback);
-      get().addFeedback(feedback);
-      
-      // Update analytics
-      get().updatePerformanceAnalytics(gameState);
-      
-      console.log('🧙‍♂️ Move analyzed:', { 
-        moveQuality, 
-        phase, 
-        feedbackType: feedback.type,
-        message: feedback.message 
-      });
+      if (enhancedFeedback) {
+        // Convert enhanced feedback to mentor feedback format
+        const feedback: MentorFeedback = {
+          id: `feedback-${Date.now()}`,
+          type: enhancedFeedback.moveQualityTag === 'brilliant' || enhancedFeedback.moveQualityTag === 'excellent' ? 'celebration' :
+                enhancedFeedback.moveQualityTag === 'mistake' || enhancedFeedback.moveQualityTag === 'blunder' ? 'warning' :
+                enhancedFeedback.suggestionTags.length > 0 ? 'strategy' : 'analysis',
+          message: enhancedFeedback.message,
+          priority: enhancedFeedback.contextTags.includes(GameContextTag.CRITICAL_MOMENT) ? 'urgent' :
+                   enhancedFeedback.moveQualityTag === 'brilliant' ? 'high' :
+                   enhancedFeedback.moveQualityTag === 'blunder' ? 'high' : 'medium',
+          timestamp: Date.now(),
+          context: {
+            gamePhase: get().assessGamePhase(gameState),
+            playerPerformance: enhancedFeedback.confidence * 100,
+            learningPoint: enhancedFeedback.learningPoints?.[0]
+          }
+        };
+        
+        console.log('🧙‍♂️ Enhanced feedback with control tags:', enhancedFeedback);
+        console.log('🧙‍♂️ Generated feedback:', feedback);
+        get().addFeedback(feedback);
+        
+        // Update analytics
+        get().updatePerformanceAnalytics(gameState);
+      }
     },
 
     // Update performance analytics in real-time
