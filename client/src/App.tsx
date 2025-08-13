@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useAudio } from "./lib/stores/useAudio";
 import { useChess } from "./lib/stores/useChess";
 import { useAchievements } from "./lib/achievements/achievementSystem";
@@ -10,48 +10,42 @@ import { BoardControls } from "./components/chess/BoardControls";
 import { GameSettingsDialog } from "./components/settings/GameSettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AuthProvider } from "./components/auth/AuthProvider";
-import { BlogPageType } from "./components/blog";
+import { ResponsiveLayout } from "./components/layout/ResponsiveLayout";
+import { MobileGameLayout } from "./components/mobile/MobileGameLayout";
+import { MarketingRouter } from "./components/marketing/MarketingRouter";
+import { LandingPage } from "./components/marketing/LandingPage";
+import { BlogPost } from "./components/blog/BlogPost";
+import { BlogRouter, BlogPageType } from "./components/blog";
+import { ContextualHintOverlay } from "./components/hints/ContextualHintOverlay";
 import { useMultiplayer } from "./lib/stores/useMultiplayer";
 import { GlobalNavigation } from "./components/layout/GlobalNavigation";
-import { useDiagnostics } from "./lib/stores/useDiagnostics";
-import { useGameSettings } from "./stores/gameSettings";
+import { MultiplayerHub } from "./components/multiplayer/MultiplayerHub";
+import { ResetPasswordForm } from "./components/auth/ResetPasswordForm";
+import { PremiumTestButton } from "./components/debug/PremiumTestButton";
+import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
+import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
+import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
+import { StabilityTestPanelV2 } from "./components/debug/StabilityTestPanelV2";
+import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
+import { DeploymentPanel } from "./components/debug/DeploymentPanel";
+import { DeploymentPanelV2 } from "./components/debug/DeploymentPanelV2";
+import { DebugTestRunner } from "./components/debug/DebugTestRunner";
+import { PerformanceProfilerPanel } from "./components/performance/PerformanceProfilerPanel";
+import { PerformanceOverlay } from "./components/performance/PerformanceOverlay";
 import { initializePerformance } from "./lib/performance";
+
+import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
+import { AchievementPanel } from "./components/achievements/AchievementPanel";
+import { MentorIntegration } from "./components/mentor/MentorIntegration";
+import { MentorNotification } from "./components/mentor/MentorNotification";
+import { DiagnosticsPanel } from "./components/diagnostics/DiagnosticsPanel";
+import { useDiagnostics } from "./lib/stores/useDiagnostics";
+import { AdBanner } from "./components/monetization/AdBanner";
+import { RewardsScreen } from "./components/rewards/RewardsScreen";
+import { useGameSettings } from "./stores/gameSettings";
 import { initializeAds } from "./lib/monetization/adManager";
 import { initializePayments } from "./lib/monetization/paymentManager";
 import { useCampaignRewardCelebration } from "./components/campaign/CampaignRewardCelebration";
-
-// Lazy load heavy components
-const ResponsiveLayout = lazy(() => import("./components/layout/ResponsiveLayout").then(m => ({ default: m.ResponsiveLayout })));
-const MobileGameLayout = lazy(() => import("./components/mobile/MobileGameLayout").then(m => ({ default: m.MobileGameLayout })));
-const MarketingRouter = lazy(() => import("./components/marketing/MarketingRouter").then(m => ({ default: m.MarketingRouter })));
-const LandingPage = lazy(() => import("./components/marketing/LandingPage").then(m => ({ default: m.LandingPage })));
-const BlogPost = lazy(() => import("./components/blog/BlogPost").then(m => ({ default: m.BlogPost })));
-const BlogRouter = lazy(() => import("./components/blog").then(m => ({ default: m.BlogRouter })));
-const ContextualHintOverlay = lazy(() => import("./components/hints/ContextualHintOverlay").then(m => ({ default: m.ContextualHintOverlay })));
-const MultiplayerHub = lazy(() => import("./components/multiplayer/MultiplayerHub").then(m => ({ default: m.MultiplayerHub })));
-const ResetPasswordForm = lazy(() => import("./components/auth/ResetPasswordForm").then(m => ({ default: m.ResetPasswordForm })));
-
-// Lazy load debug components (only loaded in dev)
-const PremiumTestButton = lazy(() => import("./components/debug/PremiumTestButton").then(m => ({ default: m.PremiumTestButton })));
-const SystemDiagnostics = lazy(() => import("./components/debug/SystemDiagnostics").then(m => ({ default: m.SystemDiagnostics })));
-const PerformanceDashboard = lazy(() => import("./components/debug/PerformanceDashboard").then(m => ({ default: m.PerformanceDashboard })));
-const StabilityTestPanel = lazy(() => import("./components/debug/StabilityTestPanel").then(m => ({ default: m.StabilityTestPanel })));
-const StabilityTestPanelV2 = lazy(() => import("./components/debug/StabilityTestPanelV2").then(m => ({ default: m.StabilityTestPanelV2 })));
-const BrowserCompatibilityPanel = lazy(() => import("./components/debug/BrowserCompatibilityPanel").then(m => ({ default: m.BrowserCompatibilityPanel })));
-const DeploymentPanel = lazy(() => import("./components/debug/DeploymentPanel").then(m => ({ default: m.DeploymentPanel })));
-const DeploymentPanelV2 = lazy(() => import("./components/debug/DeploymentPanelV2").then(m => ({ default: m.DeploymentPanelV2 })));
-const DebugTestRunner = lazy(() => import("./components/debug/DebugTestRunner").then(m => ({ default: m.DebugTestRunner })));
-const PerformanceProfilerPanel = lazy(() => import("./components/performance/PerformanceProfilerPanel").then(m => ({ default: m.PerformanceProfilerPanel })));
-const PerformanceOverlay = lazy(() => import("./components/performance/PerformanceOverlay").then(m => ({ default: m.PerformanceOverlay })));
-
-// Lazy load achievement components
-const AchievementNotificationQueue = lazy(() => import("./components/achievements/AchievementNotification").then(m => ({ default: m.AchievementNotificationQueue })));
-const AchievementPanel = lazy(() => import("./components/achievements/AchievementPanel").then(m => ({ default: m.AchievementPanel })));
-const MentorIntegration = lazy(() => import("./components/mentor/MentorIntegration").then(m => ({ default: m.MentorIntegration })));
-const MentorNotification = lazy(() => import("./components/mentor/MentorNotification").then(m => ({ default: m.MentorNotification })));
-const DiagnosticsPanel = lazy(() => import("./components/diagnostics/DiagnosticsPanel").then(m => ({ default: m.DiagnosticsPanel })));
-const AdBanner = lazy(() => import("./components/monetization/AdBanner").then(m => ({ default: m.AdBanner })));
-const RewardsScreen = lazy(() => import("./components/rewards/RewardsScreen").then(m => ({ default: m.RewardsScreen })));
 
 import ChessAudioController from "./components/audio/ChessAudioController";
 
