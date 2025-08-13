@@ -1,0 +1,90 @@
+Objective
+Enhance Wizard Chess Master AI to be more challenging by training against human players, building on prior 50,000 AI-vs-AI games. Use React/TypeScript/Vite/Express/Socket.IO/PostgreSQL stack on Replit. Focus on data collection, neural net refinement, reinforcement learning, and adaptive strategies for 10x10 board with wizard pieces.
+Tasks
+1. Data Collection
+* Goal: Log human-AI game data (moves, outcomes) in PostgreSQL.
+* Steps:
+    * Create table for game logs (player ID, moves, result, timestamp).
+    * Ensure GDPR-compliant anonymization.
+    * Integrate with Express/Socket.IO for real-time logging.
+* Sample Code: // schema.sql
+* CREATE TABLE human_games (
+*   id SERIAL PRIMARY KEY,
+*   player_id UUID,
+*   moves JSONB,
+*   outcome VARCHAR(20),
+*   timestamp TIMESTAMPTZ DEFAULT NOW()
+* );
+* 
+* // server.ts
+* import { Socket } from 'socket.io';
+* socket.on('gameEnd', async (data: { playerId: string, moves: string[], outcome: string }) => {
+*   await db.query('INSERT INTO human_games (player_id, moves, outcome) VALUES ($1, $2, $3)', [
+*     data.playerId, JSON.stringify(data.moves), data.outcome
+*   ]);
+* });
+2. Neural Net Enhancement
+* Goal: Refine neural net for human-like strategies, emphasizing wizard abilities.
+* Steps:
+    * Use TensorFlow.js; add layers for teleportation/magical attack patterns.
+    * Train on human move patterns from logs.
+* Sample Code: import * as tf from '@tensorflow/tfjs';
+* 
+* const model = tf.sequential();
+* model.add(tf.layers.dense({ units: 128, activation: 'relu', inputShape: [100] })); // 10x10 board
+* model.add(tf.layers.dense({ units: 64, activation: 'relu' }));
+* model.add(tf.layers.dense({ units: 32, activation: 'softmax' })); // Move probabilities
+* model.compile({ optimizer: 'adam', loss: 'categoricalCrossentropy' });
+3. Reinforcement Learning
+* Goal: Train AI with human game rewards.
+* Steps:
+    * Implement Q-learning with rewards: +1 win, -1 loss, 0 draw.
+    * Add exploration (epsilon-greedy, 10% random moves).
+* Sample Code: const reward = (outcome: string) => outcome === 'win' ? 1 : outcome === 'loss' ? -1 : 0;
+* 
+* async function trainStep(gameData: { moves: string[], outcome: string }) {
+*   const state = encodeBoard(gameData.moves);
+*   const action = model.predict(state);
+*   const r = reward(gameData.outcome);
+*   // Update model with reward
+*   await model.fit(state, action, { epochs: 1, sampleWeight: r });
+* }
+4. Curriculum Training
+* Goal: Train progressively on human skill levels.
+* Steps:
+    * Segment logs by player win rates (amateur, intermediate, expert).
+    * Start with amateur moves; transfer to expert.
+* Sample Code: const segmentPlayers = async () => {
+*   const amateurs = await db.query('SELECT * FROM human_games WHERE win_rate < 0.4');
+*   const experts = await db.query('SELECT * FROM human_games WHERE win_rate > 0.7');
+*   // Train sequentially
+*   for (const game of amateurs) await trainStep(game);
+*   for (const game of experts) await trainStep(game);
+* };
+5. Training Scale
+* Goal: Train on 10,000+ human games.
+* Steps:
+    * Batch process games in Replit; save models to PostgreSQL or localStorage.
+    * Optimize memory with async processing.
+* Sample Code: async function batchTrain(games: any[], batchSize: number = 100) {
+*   for (let i = 0; i < games.length; i += batchSize) {
+*     const batch = games.slice(i, i + batchSize);
+*     await Promise.all(batch.map(trainStep));
+*     await model.save('localstorage://ai-model');
+*   }
+* }
+6. Evaluation
+* Goal: Ensure AI is fun/challenging.
+* Steps:
+    * Simulate vs human-like moves; compute ELO-like rating.
+    * Adjust difficulty if too hard/easy.
+* Sample Code: async function evaluateAI() {
+*   let elo = 1500;
+*   const testGames = await db.query('SELECT * FROM human_games LIMIT 100');
+*   for (const game of testGames) {
+*     const result = simulateGame(model, game.moves);
+*     elo += result === 'win' ? 20 : result === 'loss' ? -20 : 0;
+*   }
+*   console.log(`AI ELO: ${elo}`);
+* }
+

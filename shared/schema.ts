@@ -105,6 +105,47 @@ export const matchmakingQueue = pgTable("matchmaking_queue", {
   joinedAt: timestamp("joined_at").defaultNow().notNull(),
 });
 
+// Human-AI training games for AI enhancement
+export const humanAIGames = pgTable("human_ai_games", {
+  id: serial("id").primaryKey(),
+  playerId: integer("player_id").references(() => users.id),
+  sessionId: text("session_id").notNull(), // For anonymous players
+  playerColor: text("player_color").notNull(), // 'white' or 'black'
+  aiDifficulty: text("ai_difficulty").notNull(), // 'easy', 'medium', 'hard', 'advanced'
+  moves: jsonb("moves").notNull(), // Array of move objects with timestamps
+  boardStates: jsonb("board_states").notNull(), // Board state at each move
+  outcome: text("outcome").notNull(), // 'player_win', 'ai_win', 'draw', 'abandoned'
+  playerElo: integer("player_elo"), // Estimated player strength
+  gameTime: integer("game_time").notNull(), // Total game duration in seconds
+  moveCount: integer("move_count").notNull(),
+  wizardMovesUsed: integer("wizard_moves_used").notNull(), // Count of wizard special moves
+  blunders: integer("blunders"), // Number of blunders detected
+  mistakes: integer("mistakes"), // Number of mistakes detected  
+  accuracyScore: integer("accuracy_score"), // Overall move accuracy (0-100)
+  openingType: text("opening_type"), // Detected opening pattern
+  endgameType: text("endgame_type"), // Type of endgame reached
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
+
+// AI training metrics table
+export const aiTrainingMetrics = pgTable("ai_training_metrics", {
+  id: serial("id").primaryKey(),
+  modelVersion: text("model_version").notNull(),
+  trainingGames: integer("training_games").notNull(),
+  humanGames: integer("human_games").notNull(),
+  currentElo: integer("current_elo").notNull(),
+  winRate: integer("win_rate").notNull(), // Overall win rate as percentage
+  winRateVsAmateur: integer("win_rate_vs_amateur"), // Win rate vs players < 1200 ELO
+  winRateVsIntermediate: integer("win_rate_vs_intermediate"), // Win rate vs 1200-1800 ELO
+  winRateVsExpert: integer("win_rate_vs_expert"), // Win rate vs > 1800 ELO
+  avgMoveTime: integer("avg_move_time"), // Average thinking time in ms
+  wizardMoveAccuracy: integer("wizard_move_accuracy"), // Accuracy of wizard piece usage
+  modelWeights: jsonb("model_weights"), // Serialized neural network weights
+  trainingLoss: jsonb("training_loss"), // Loss values over training epochs
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   email: true,
@@ -137,6 +178,8 @@ export const insertCampaignLeaderboardSchema = createInsertSchema(campaignLeader
 export const insertPvpLeaderboardSchema = createInsertSchema(pvpLeaderboard);
 export const insertOnlineGameSchema = createInsertSchema(onlineGames);
 export const insertMatchmakingSchema = createInsertSchema(matchmakingQueue);
+export const insertHumanAIGameSchema = createInsertSchema(humanAIGames);
+export const insertAITrainingMetricsSchema = createInsertSchema(aiTrainingMetrics);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
@@ -150,3 +193,7 @@ export type CampaignLeaderboardEntry = typeof campaignLeaderboard.$inferSelect;
 export type PvpLeaderboardEntry = typeof pvpLeaderboard.$inferSelect;
 export type OnlineGame = typeof onlineGames.$inferSelect;
 export type MatchmakingEntry = typeof matchmakingQueue.$inferSelect;
+export type HumanAIGame = typeof humanAIGames.$inferSelect;
+export type AITrainingMetrics = typeof aiTrainingMetrics.$inferSelect;
+export type InsertHumanAIGame = z.infer<typeof insertHumanAIGameSchema>;
+export type InsertAITrainingMetrics = z.infer<typeof insertAITrainingMetricsSchema>;
