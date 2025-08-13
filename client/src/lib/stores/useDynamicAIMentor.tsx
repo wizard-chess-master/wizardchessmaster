@@ -249,7 +249,20 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
         return;
       }
 
-      console.log('🧙‍♂️ Analyzing move:', move, 'Game state:', gameState);
+      // Only provide feedback for human player moves (white in vs AI mode)
+      // Skip AI moves to avoid confusing hints about AI's actions
+      if (gameState.gameMode === 'ai' && move.piece.color === 'black') {
+        console.log('🧙‍♂️ Skipping AI move analysis - only analyzing player moves');
+        return;
+      }
+      
+      // Also skip in AI vs AI mode
+      if (gameState.gameMode === 'ai-vs-ai') {
+        console.log('🧙‍♂️ Skipping analysis in AI vs AI mode');
+        return;
+      }
+
+      console.log('🧙‍♂️ Analyzing player move:', move, 'Game state:', gameState);
 
       // Use enhanced AI coach with control tags
       const enhancedFeedback = aiCoach.generateEnhancedFeedback(gameState, move);

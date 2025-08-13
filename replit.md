@@ -5,6 +5,8 @@
 ## Recent Changes (August 2025)
 - **Audio System Fixed (Aug 13 2025)**: Fixed browser autoplay restrictions - added audio unlock mechanism on first user interaction, visual prompt for enabling sound, improved error handling with proper logging
 - **AI Coach Speech Fixed (Aug 13 2025)**: Enhanced speech synthesis with fallback UI - text always visible even if speech fails, status indicators for speaking/failed states, test function available via `testAICoachSpeech()` in console
+- **Game Over Dialog Fixed (Aug 13 2025)**: Fixed black background obscuring text in game over screen - added explicit medieval-themed colors (stone gradients, yellow accents) for better visibility in online multiplayer wins
+- **AI Coach Logic Fixed (Aug 13 2025)**: Fixed AI coach providing hints about AI moves - now only analyzes and provides feedback for human player moves, properly skips AI moves in vs AI mode
 - **AI Coach Enhancement Task 1 Complete (Aug 13 2025)**: Integrated control tag system - Leela-style move quality tags (brilliant/excellent/good/average/inaccuracy/mistake/blunder), suggestion tags for contextual advice, game context tags for position assessment, repetition detection to reduce redundancy, 1 comment per 5 moves frequency limit
 - **AI Coach Task 2 Complete (Aug 13 2025)**: Human data training - TensorFlow.js training module, PostgreSQL data fetching API, move encoding and preprocessing, control tags integration for training
 - **AI Coach Task 3 Complete (Aug 13 2025)**: Reinforcement Learning implementation - Reward model with TensorFlow.js, frequency limiting (1 comment per 5 moves), repetition penalty (-1 reward), relevance reward (+1 for contextual fit), dynamic commentary templates

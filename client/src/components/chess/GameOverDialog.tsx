@@ -80,9 +80,9 @@ export function GameOverDialog() {
 
   return (
     <Dialog open>
-      <DialogContent className="game-over-dialog max-w-2xl w-full" aria-describedby="game-over-description">
+      <DialogContent className="game-over-dialog max-w-2xl w-full bg-gradient-to-b from-stone-900 to-stone-800 text-white border-yellow-600/30" aria-describedby="game-over-description">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 justify-center text-2xl">
+          <DialogTitle className="flex items-center gap-3 justify-center text-2xl text-yellow-400">
             {getResultIcon()}
             Game Over!
           </DialogTitle>
@@ -90,44 +90,44 @@ export function GameOverDialog() {
         
         <div className="game-over-content">
           <div id="game-over-description" className="text-center mb-6">
-            <p className="text-lg mb-2">
+            <p className="text-lg mb-2 text-yellow-300">
               {getGameResult()}
             </p>
-            <p className="text-muted-foreground">
+            <p className="text-stone-300">
               {getResultDescription()}
             </p>
           </div>
 
           <div className="text-center mb-6">
-            <p className="text-lg font-medium mb-4">
+            <p className="text-lg font-medium mb-4 text-stone-200">
               Start new game or quit?
             </p>
           </div>
           
           {/* Game Stats */}
-          <Card className="mb-4">
+          <Card className="mb-4 bg-stone-800/50 border-yellow-600/20">
             <CardContent className="pt-4 text-center">
               <div className="game-stats">
                 <div className="stat-item">
-                  <span className="stat-label">Total Moves:</span>
-                  <Badge variant="outline">
+                  <span className="stat-label text-stone-300">Total Moves:</span>
+                  <Badge variant="outline" className="bg-yellow-600/20 text-yellow-300 border-yellow-600/30">
                     {Math.ceil(moveHistory.length / 2)}
                   </Badge>
                 </div>
                 
                 {gameMode === 'ai' && (
                   <div className="stat-item">
-                    <span className="stat-label">AI Difficulty:</span>
-                    <Badge variant="secondary">
+                    <span className="stat-label text-stone-300">AI Difficulty:</span>
+                    <Badge variant="secondary" className="bg-purple-600/20 text-purple-300 border-purple-600/30">
                       {aiDifficulty.charAt(0).toUpperCase() + aiDifficulty.slice(1)}
                     </Badge>
                   </div>
                 )}
                 
                 <div className="stat-item">
-                  <span className="stat-label">Game Mode:</span>
-                  <Badge variant="outline">
-                    {gameMode === 'ai' ? 'vs AI' : gameMode === 'ai-vs-ai' ? 'AI vs AI' : 'Local Multiplayer'}
+                  <span className="stat-label text-stone-300">Game Mode:</span>
+                  <Badge variant="outline" className="bg-blue-600/20 text-blue-300 border-blue-600/30">
+                    {gameMode === 'ai' ? 'vs AI' : gameMode === 'ai-vs-ai' ? 'AI vs AI' : gameMode === 'multiplayer' ? 'Online Match' : 'Local Multiplayer'}
                   </Badge>
                 </div>
               </div>
