@@ -182,7 +182,65 @@ export async function ensureModelInitialized(): Promise<void> {
   await initPromise;
 }
 
+// Test function to verify AI is working
+export async function testAIIntegration(): Promise<void> {
+  console.log('\n' + '='.repeat(70));
+  console.log('🧪 TESTING AI INTEGRATION (2550 ELO)');
+  console.log('='.repeat(70));
+  
+  try {
+    // Ensure model is initialized
+    await ensureModelInitialized();
+    
+    // Verify model is available
+    if (!deployedModel) {
+      throw new Error('Model not deployed');
+    }
+    
+    // Check if model is available globally
+    const globalAI = (window as any).wizardChessAI;
+    if (!globalAI) {
+      throw new Error('AI not available globally');
+    }
+    
+    console.log('✅ AI Model Status:');
+    console.log(`   - ELO Rating: ${globalAI.elo}`);
+    console.log(`   - Training Games: ${globalAI.trainingGames}`);
+    console.log(`   - Model Available: ${globalAI.model ? 'Yes' : 'No'}`);
+    console.log(`   - Functions Available: getBestMove=${typeof globalAI.getBestMove}, evaluatePosition=${typeof globalAI.evaluatePosition}`);
+    
+    // Test a simple position evaluation
+    const testState: any = {
+      board: Array(10).fill(null).map(() => Array(10).fill(null)),
+      currentPlayer: 'white',
+      gamePhase: 'playing',
+      aiDifficulty: 'hard'
+    };
+    
+    console.log('\n📊 Testing position evaluation...');
+    const evaluation = await globalAI.evaluatePosition(testState);
+    console.log(`   Position evaluation: ${evaluation}`);
+    
+    console.log('\n✅ AI INTEGRATION TEST PASSED');
+    console.log('   The 2550 ELO AI is ready for gameplay!');
+    console.log('='.repeat(70));
+    
+  } catch (error) {
+    console.error('❌ AI Integration Test Failed:', error);
+    console.log('='.repeat(70));
+  }
+}
+
 // Auto-deploy on module load
 if (typeof window !== 'undefined') {
-  ensureModelInitialized().catch(console.error);
+  ensureModelInitialized()
+    .then(() => {
+      // Run test after deployment
+      console.log('🎮 AI deployment complete, running integration test...');
+      return testAIIntegration();
+    })
+    .catch(console.error);
+  
+  // Make test function available globally
+  (window as any).testAI = testAIIntegration;
 }

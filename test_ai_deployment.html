@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Deployment Test - Wizard Chess Master</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: 'Monaco', monospace;
+            font-size: 14px;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 1px solid #4CAF50;
+        }
+        .error {
+            background: rgba(244, 67, 54, 0.3);
+            border: 1px solid #f44336;
+        }
+        .info {
+            background: rgba(33, 150, 243, 0.3);
+            border: 1px solid #2196F3;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+        #console-output {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Monaco', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-line;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎮 Wizard Chess Master - AI Deployment Test</h1>
+        
+        <div class="test-section">
+            <h2>AI Model Status (2550 ELO)</h2>
+            <div id="ai-status" class="status info">Checking AI deployment...</div>
+            <button onclick="testAI()">Run AI Test</button>
+            <button onclick="testAIMove()">Test AI Move</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>AdSense Integration</h2>
+            <div id="adsense-status" class="status info">Checking AdSense...</div>
+            <button onclick="testAdSense()">Test AdSense</button>
+            <button onclick="showFallbackAd()">Show Fallback Ad</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Game Integration</h2>
+            <button onclick="startHardGame()">Start Game (Hard Difficulty)</button>
+            <button onclick="window.location.href='/'">Go to Game</button>
+        </div>
+        
+        <div class="test-section">
+            <h2>Console Output</h2>
+            <div id="console-output"></div>
+        </div>
+    </div>
+    
+    <script>
+        const output = document.getElementById('console-output');
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        // Capture console output
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToOutput('LOG', args.join(' '));
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToOutput('ERROR', args.join(' '));
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToOutput('WARN', args.join(' '));
+        };
+        
+        function addToOutput(type, message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'ERROR' ? '#ff6b6b' : type === 'WARN' ? '#ffd93d' : '#6bcf7f';
+            output.innerHTML += `<span style="color: ${color}">[${timestamp}] ${type}:</span> ${message}\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        // Check AI status on load
+        window.addEventListener('load', async function() {
+            checkAIStatus();
+            checkAdSenseStatus();
+        });
+        
+        async function checkAIStatus() {
+            const statusEl = document.getElementById('ai-status');
+            try {
+                if (window.wizardChessAI) {
+                    statusEl.className = 'status success';
+                    statusEl.textContent = `✅ AI Deployed - ELO: ${window.wizardChessAI.elo} | Training: ${window.wizardChessAI.trainingGames} games`;
+                    addToOutput('SUCCESS', 'AI model is deployed and ready');
+                } else {
+                    statusEl.className = 'status error';
+                    statusEl.textContent = '❌ AI not deployed - waiting for initialization...';
+                    
+                    // Wait for AI to deploy
+                    setTimeout(checkAIStatus, 2000);
+                }
+            } catch (error) {
+                statusEl.className = 'status error';
+                statusEl.textContent = '❌ Error checking AI: ' + error.message;
+            }
+        }
+        
+        function checkAdSenseStatus() {
+            const statusEl = document.getElementById('adsense-status');
+            if (window.adsbygoogle) {
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ AdSense script loaded';
+            } else {
+                statusEl.className = 'status info';
+                statusEl.textContent = '⚠️ AdSense not loaded - fallback ads will be used';
+            }
+        }
+        
+        async function testAI() {
+            addToOutput('TEST', 'Running AI integration test...');
+            if (window.testAI) {
+                await window.testAI();
+            } else {
+                addToOutput('ERROR', 'Test function not available');
+            }
+        }
+        
+        async function testAIMove() {
+            addToOutput('TEST', 'Testing AI move calculation...');
+            try {
+                if (!window.wizardChessAI) {
+                    throw new Error('AI not deployed');
+                }
+                
+                // Create a simple game state
+                const testState = {
+                    board: Array(10).fill(null).map(() => Array(10).fill(null)),
+                    currentPlayer: 'white',
+                    gamePhase: 'playing',
+                    aiDifficulty: 'hard',
+                    moveHistory: []
+                };
+                
+                // Add some pieces for testing
+                testState.board[1][4] = { type: 'pawn', color: 'white', id: 'wp1', hasMoved: false };
+                testState.board[8][4] = { type: 'pawn', color: 'black', id: 'bp1', hasMoved: false };
+                
+                const move = await window.wizardChessAI.getBestMove(testState);
+                if (move) {
+                    addToOutput('SUCCESS', `AI selected move: ${JSON.stringify(move)}`);
+                } else {
+                    addToOutput('INFO', 'No valid moves available');
+                }
+            } catch (error) {
+                addToOutput('ERROR', 'Failed to test AI move: ' + error.message);
+            }
+        }
+        
+        function testAdSense() {
+            addToOutput('TEST', 'Testing AdSense integration...');
+            // This would typically trigger an ad display
+            addToOutput('INFO', 'AdSense test requires being on the actual game page');
+        }
+        
+        function showFallbackAd() {
+            addToOutput('TEST', 'Showing fallback ad...');
+            const container = document.createElement('div');
+            container.id = 'test-ad-container';
+            container.style.margin = '20px 0';
+            document.querySelector('.container').appendChild(container);
+            
+            // Simulate fallback ad
+            container.innerHTML = `
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 8px; padding: 20px; text-align: center;">
+                    <h3>Support Wizard Chess Master</h3>
+                    <p>Upgrade to Premium for an ad-free experience!</p>
+                    <button style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 5px;">
+                        Upgrade Now - $5/month
+                    </button>
+                </div>
+            `;
+            addToOutput('SUCCESS', 'Fallback ad displayed');
+        }
+        
+        function startHardGame() {
+            addToOutput('INFO', 'Redirecting to game with hard difficulty...');
+            window.location.href = '/#game?difficulty=hard';
+        }
+    </script>
+</body>
+</html>
