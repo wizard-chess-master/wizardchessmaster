@@ -69,10 +69,10 @@ export function GameUI({ onSettings }: GameUIProps) {
   return (
     <div className="game-ui w-full">
       {/* Mobile Top Ad Banner - Hidden on Desktop */}
-      <AdBanner 
+      {/* <AdBanner 
         className="mb-3 lg:hidden"
         style={{ maxWidth: '400px', width: '100%' }}
-      />
+      /> */}
 
       {/* Game Info Layout - Status and History */}
       <div className="game-info-grid grid grid-cols-1 md:grid-cols-3 gap-3 w-full">

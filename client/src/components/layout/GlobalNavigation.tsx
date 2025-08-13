@@ -134,9 +134,9 @@ export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: Globa
       </nav>
 
       {/* Header Ad Banner */}
-      <div className="bg-amber-50 border-b border-amber-200">
+      {/* <div className="bg-amber-50 border-b border-amber-200">
         <AdBanner containerId="global-header-banner" size="leaderboard" />
-      </div>
+      </div> */}
     </>
   );
 }

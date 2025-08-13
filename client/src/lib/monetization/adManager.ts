@@ -315,6 +315,7 @@ class GoogleAdSenseManager implements AdManager {
   }
 
   private showFallbackAd(containerId: string): void {
+    // Disabled - no promotional ads
     const container = document.getElementById(containerId);
     if (!container) return;
 
@@ -323,51 +324,8 @@ class GoogleAdSenseManager implements AdManager {
       container.removeChild(container.firstChild);
     }
 
-    // Create fallback dummy ad
-    const fallbackAd = document.createElement('div');
-    fallbackAd.style.cssText = `
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border-radius: 8px;
-      padding: 20px;
-      text-align: center;
-      color: white;
-      min-height: 100px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    `;
-
-    const title = document.createElement('h3');
-    title.textContent = 'Support Wizard Chess Master';
-    title.style.cssText = 'margin: 0 0 10px 0; font-size: 18px;';
-
-    const message = document.createElement('p');
-    message.textContent = 'Upgrade to Premium for an ad-free experience!';
-    message.style.cssText = 'margin: 0 0 15px 0; opacity: 0.9;';
-
-    const upgradeBtn = document.createElement('button');
-    upgradeBtn.textContent = 'Upgrade Now - $5/month';
-    upgradeBtn.style.cssText = `
-      background: white;
-      color: #667eea;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s;
-    `;
-    upgradeBtn.onmouseover = () => upgradeBtn.style.transform = 'scale(1.05)';
-    upgradeBtn.onmouseout = () => upgradeBtn.style.transform = 'scale(1)';
-    upgradeBtn.onclick = () => this.showUpgradePrompt();
-
-    fallbackAd.appendChild(title);
-    fallbackAd.appendChild(message);
-    fallbackAd.appendChild(upgradeBtn);
-    container.appendChild(fallbackAd);
-
-    console.log('📢 Showing fallback promotional ad');
+    // Don't show any fallback promotional content
+    console.log('🚫 Fallback promotional ad disabled');
   }
 
   showBannerAd(containerId: string): void {
