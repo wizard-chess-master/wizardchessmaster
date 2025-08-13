@@ -4,6 +4,7 @@
  */
 
 import { GameState, ChessMove } from '../chess/types';
+import { evaluateMove } from '../chess/aiPlayer';
 
 // Control tags for move quality (similar to Leela Chess Zero)
 export enum MoveQualityTag {
@@ -149,11 +150,53 @@ const SUGGESTION_TEMPLATES = {
   ]
 };
 
+// Simplified control tags interface as requested
+interface Tags {
+  moveQuality: number; // 0-1 scale
+  suggestion: string;
+}
+
 export class AICoachController {
   private recentCommentaryHistory: string[] = [];
   private moveCount: number = 0;
   private lastCommentaryMove: number = 0;
   private positionEvaluationCache: Map<string, number> = new Map();
+  
+  /**
+   * Add control tags using existing move evaluation
+   */
+  async addControlTags(state: GameState, move?: ChessMove): Promise<Tags> {
+    const tags: Tags = { moveQuality: 0, suggestion: '' };
+    
+    // Use existing evaluateMove from aiPlayer
+    if (move) {
+      const score = evaluateMove(state, move);
+      // Normalize score to 0-1 scale (assuming score range -100 to 100)
+      tags.moveQuality = Math.max(0, Math.min(1, (score + 100) / 200));
+      
+      // Generate contextual suggestions based on move quality
+      if (tags.moveQuality < 0.3) {
+        tags.suggestion = 'Consider defensive moves to protect your pieces';
+      } else if (tags.moveQuality < 0.5) {
+        tags.suggestion = 'Look for better piece coordination';
+      } else if (tags.moveQuality < 0.7) {
+        tags.suggestion = 'Good position, maintain pressure';
+      } else {
+        tags.suggestion = 'Excellent! Continue with tactical play';
+      }
+      
+      // Add specific suggestions based on game state
+      if (state.isInCheck) {
+        tags.suggestion = 'Improve king safety immediately';
+      } else if (this.hasWeakPawns(state)) {
+        tags.suggestion = 'Strengthen your pawn structure';
+      } else if (this.needsDevelopment(state)) {
+        tags.suggestion = 'Complete piece development';
+      }
+    }
+    
+    return tags;
+  }
   
   /**
    * Evaluate move quality using neural network-inspired scoring
@@ -169,8 +212,9 @@ export class AICoachController {
     if (engineEvaluation !== undefined) {
       quality = this.normalizeEngineEval(engineEvaluation);
     } else {
-      // Fallback heuristic evaluation
-      quality = this.heuristicMoveEvaluation(gameState, move);
+      // Use existing evaluateMove function
+      const score = evaluateMove(gameState, move);
+      quality = Math.max(0, Math.min(100, 50 + score / 2));
     }
     
     // Map quality score to control tag
@@ -503,7 +547,51 @@ export class AICoachController {
     
     return points;
   }
+  
+  // Helper methods for control tags
+  private hasWeakPawns(state: GameState): boolean {
+    // Check for isolated or backward pawns
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const piece = state.board[row][col];
+        if (piece?.type === 'pawn' && piece.color === state.currentPlayer) {
+          // Check if pawn is isolated (no friendly pawns on adjacent files)
+          const hasAdjacentPawn = 
+            (col > 0 && state.board[row][col - 1]?.type === 'pawn' && state.board[row][col - 1]?.color === piece.color) ||
+            (col < 9 && state.board[row][col + 1]?.type === 'pawn' && state.board[row][col + 1]?.color === piece.color);
+          
+          if (!hasAdjacentPawn) {
+            return true; // Found weak pawn
+          }
+        }
+      }
+    }
+    return false;
+  }
+  
+  private needsDevelopment(state: GameState): boolean {
+    // Check if pieces need development in opening
+    if (state.moveHistory.length > 15) return false; // Not in opening anymore
+    
+    const backRank = state.currentPlayer === 'white' ? 9 : 0;
+    let undevelopedPieces = 0;
+    
+    // Check knights and bishops on back rank
+    for (let col = 0; col < 10; col++) {
+      const piece = state.board[backRank][col];
+      if (piece && piece.color === state.currentPlayer) {
+        if (piece.type === 'knight' || piece.type === 'bishop') {
+          undevelopedPieces++;
+        }
+      }
+    }
+    
+    return undevelopedPieces >= 2; // Need development if 2+ pieces still on back rank
+  }
 }
 
 // Export singleton instance
 export const aiCoach = new AICoachController();
+
+// Export Tags interface for external use
+export type { Tags };

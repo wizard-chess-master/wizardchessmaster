@@ -286,7 +286,7 @@ function getAdvancedStrategyMove(gameState: GameState, color: PieceColor, preFil
   return bestMove;
 }
 
-function evaluateMove(gameState: GameState, move: ChessMove): number {
+export function evaluateMove(gameState: GameState, move: ChessMove): number {
   let score = 0;
   
   // Piece values (enhanced for more aggressive play)

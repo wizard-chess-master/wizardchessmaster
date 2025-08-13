@@ -76,6 +76,14 @@ import('./lib/ai/trainSelfPlay').then(module => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load trainSelfPlay:`, err);
 });
 
+// Add control tags test
+import('./lib/ai/testControlTags').then(module => {
+  (window as any).testControlTags = module.testControlTags;
+  console.log(`[${new Date().toISOString()}] ✅ testControlTags loaded`);
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load testControlTags:`, err);
+});
+
 // Add deployment AI
 import('./lib/ai/deployAI').then(module => {
   module.deployAI().then(() => {
