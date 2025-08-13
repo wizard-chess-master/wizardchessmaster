@@ -84,6 +84,24 @@ import('./lib/ai/testControlTags').then(module => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load testControlTags:`, err);
 });
 
+// Add human data training
+import('./lib/ai/trainHumanData').then(module => {
+  (window as any).trainOnHumanData = module.trainOnHumanData;
+  (window as any).testHumanTrainedModel = module.testHumanTrainedModel;
+  console.log(`[${new Date().toISOString()}] ✅ trainOnHumanData loaded`);
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load trainHumanData:`, err);
+});
+
+// Add training test
+import('./lib/ai/testTraining').then(module => {
+  (window as any).testTraining = module.testTraining;
+  console.log(`[${new Date().toISOString()}] ✅ testTraining loaded`);
+  console.log('💡 Run testTraining() to verify human data training setup');
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load testTraining:`, err);
+});
+
 // Add deployment AI
 import('./lib/ai/deployAI').then(module => {
   module.deployAI().then(() => {

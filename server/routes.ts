@@ -52,6 +52,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const { default: aiTrainingRoutes } = await import('./routes/aiTraining');
   app.use('/api/ai-training', aiTrainingRoutes);
   
+  // Register human data training routes
+  const { default: trainingRoutes } = await import('./routes/training');
+  app.use('/api/training', trainingRoutes);
+  
   // Register error logging routes
   const { default: errorLogRoutes } = await import('./routes/errorLogRoutes');
   app.use(errorLogRoutes);
