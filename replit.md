@@ -2,7 +2,9 @@
 
 **Wizard Chess Master** is a full-stack TypeScript application implementing a unique 10x10 chess variant with magical wizards, advanced AI opponents, and a rich medieval fantasy theme. Its purpose is to deliver an engaging, visually immersive chess experience with robust monetization and cloud save functionality for premium members, ensuring seamless cross-device progression. Key capabilities include custom wizard pieces, AI opponents with adjustable difficulty (including advanced minimax and neural network AI), an enhanced campaign mode, comprehensive leaderboards, a fully immersive medieval fantasy visual overhaul, user authentication, and cloud save. The business vision is to provide a captivating variant chess game with strong market potential through its unique features and streamlined subscription model.
 
-## Recent Changes (January 2025)
+## Recent Changes (August 2025)
+- **Audio System Fixed (Aug 13 2025)**: Fixed browser autoplay restrictions - added audio unlock mechanism on first user interaction, visual prompt for enabling sound, improved error handling with proper logging
+- **AI Coach Speech Fixed (Aug 13 2025)**: Enhanced speech synthesis with fallback UI - text always visible even if speech fails, status indicators for speaking/failed states, test function available via `testAICoachSpeech()` in console
 - **AI Coach Enhancement Task 1 Complete (Aug 13 2025)**: Integrated control tag system - Leela-style move quality tags (brilliant/excellent/good/average/inaccuracy/mistake/blunder), suggestion tags for contextual advice, game context tags for position assessment, repetition detection to reduce redundancy, 1 comment per 5 moves frequency limit
 - **AI Coach Task 2 Complete (Aug 13 2025)**: Human data training - TensorFlow.js training module, PostgreSQL data fetching API, move encoding and preprocessing, control tags integration for training
 - **AI Coach Task 3 Complete (Aug 13 2025)**: Reinforcement Learning implementation - Reward model with TensorFlow.js, frequency limiting (1 comment per 5 moves), repetition penalty (-1 reward), relevance reward (+1 for contextual fit), dynamic commentary templates
