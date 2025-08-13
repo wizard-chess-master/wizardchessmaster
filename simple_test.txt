@@ -1,0 +1,26 @@
+COPY AND PASTE THIS ENTIRE BLOCK INTO YOUR BROWSER CONSOLE:
+===========================================================
+
+// Direct AI Test - No functions needed
+console.log('Testing if AI functions are available...');
+console.log('testAIModel available:', typeof testAIModel);
+console.log('runSelfPlay available:', typeof runSelfPlay);
+console.log('startAITraining available:', typeof startAITraining);
+
+// If functions exist, run the test
+if (typeof testAIModel === 'function') {
+    console.log('Running AI test...');
+    testAIModel();
+} else {
+    console.log('AI test function not found. Trying alternative test...');
+    
+    // Alternative: Check if window.wizardChessAI exists
+    if (window.wizardChessAI) {
+        console.log('✅ AI Model is loaded!');
+        console.log('ELO Rating:', window.wizardChessAI.eloRating);
+        console.log('Training Games:', window.wizardChessAI.trainingGames);
+        console.log('AI is ready to use!');
+    } else {
+        console.log('❌ AI not loaded. Please refresh the page.');
+    }
+}
