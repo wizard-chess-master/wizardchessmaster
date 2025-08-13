@@ -1,0 +1,189 @@
+Search
+Time
+Deployment
+Source
+Log
+2025-08-12 06:28:53.89
+96a834b0
+User
+10:28:53 AM [express] GET /api/auth/session 200 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 06:28:54.01
+96a834b0
+User
+10:28:54 AM [express] GET /api/auth/session 304 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 06:28:54.56
+96a834b0
+User
+10:28:54 AM [express] GET /api/payments/config 200 in 0ms :: {"publishableKey":"pk_live_51RtTKcK5PQfY…
+2025-08-12 07:02:36.29
+96a834b0
+User
+11:02:36 AM [express] GET /api/auth/session 200 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 07:02:36.50
+96a834b0
+User
+11:02:36 AM [express] GET /api/auth/session 304 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 07:02:37.67
+96a834b0
+User
+11:02:37 AM [express] GET /api/payments/config 200 in 1ms :: {"publishableKey":"pk_live_51RtTKcK5PQfY…
+2025-08-12 07:38:08.43
+96a834b0
+User
+11:38:08 AM [express] GET /api/auth/session 200 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 08:06:08.49
+96a834b0
+User
+12:06:08 PM [express] GET /api/auth/session 304 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 08:06:08.59
+96a834b0
+User
+12:06:08 PM [express] GET /api/auth/session 304 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 08:06:11.98
+96a834b0
+User
+12:06:11 PM [express] GET /api/auth/session 304 in 0ms :: {"success":true,"user":{"id":6,"username":"…
+2025-08-12 08:06:12.24
+96a834b0
+User
+12:06:12 PM [express] GET /api/auth/session 304 in 1ms :: {"success":true,"user":{"id":6,"username":"…
+2025-08-12 08:06:17.96
+96a834b0
+User
+12:06:17 PM [express] GET /api/payments/config 304 in 1ms :: {"publishableKey":"pk_live_51RtTKcK5PQfY…
+2025-08-12 08:06:35.68
+96a834b0
+User
+🔌 Client connected: PhDsVvAgFhQ0N0o1AAAr
+2025-08-12 08:06:35.75
+96a834b0
+User
+📨 Event received: player:join {
+2025-08-12 08:06:35.75
+96a834b0
+User
+userId: 6,
+2025-08-12 08:06:35.75
+96a834b0
+User
+username: 'Teepee1111',
+2025-08-12 08:06:35.75
+96a834b0
+User
+displayName: 'Teepee420',
+2025-08-12 08:06:35.75
+96a834b0
+User
+rating: 1200
+2025-08-12 08:06:35.75
+96a834b0
+User
+}
+2025-08-12 08:06:35.75
+96a834b0
+User
+👤 Player joined: Teepee420 (Rating: 1200)
+2025-08-12 08:06:35.80
+96a834b0
+User
+📨 Event received: lobby:join
+2025-08-12 08:06:38.79
+96a834b0
+User
+📨 Event received: matchmaking:find-opponent { gameMode: 'casual', timeControl: '10+0', ratingRange: 200 }
+2025-08-12 08:06:38.79
+96a834b0
+User
+🎯 Matchmaking request received: { gameMode: 'casual', timeControl: '10+0', ratingRange: 200 }
+2025-08-12 08:06:39.36
+96a834b0
+User
+🎯 Player Teepee420 joined matchmaking queue
+2025-08-12 08:06:39.36
+96a834b0
+User
+🔍 No suitable opponent found for Teepee420
+2025-08-12 08:06:45.80
+96a834b0
+User
+🔌 Client disconnected: PhDsVvAgFhQ0N0o1AAAr
+2025-08-12 08:06:45.80
+96a834b0
+User
+👤 Player left: Teepee420
+2025-08-12 08:06:45.91
+96a834b0
+User
+12:06:45 PM [express] GET /api/auth/session 304 in 2ms :: {"success":true,"user":{"id":6,"username":"…
+2025-08-12 08:06:46.19
+96a834b0
+User
+🔌 Client connected: G6aHv6aSNuhaWOsuAAAt
+2025-08-12 08:06:46.27
+96a834b0
+User
+📨 Event received: player:join {
+2025-08-12 08:06:46.27
+96a834b0
+User
+userId: 6,
+2025-08-12 08:06:46.27
+96a834b0
+User
+username: 'Teepee1111',
+2025-08-12 08:06:46.27
+96a834b0
+User
+displayName: 'Teepee420',
+2025-08-12 08:06:46.27
+96a834b0
+User
+rating: 1200
+2025-08-12 08:06:46.27
+96a834b0
+User
+}
+2025-08-12 08:06:46.27
+96a834b0
+User
+👤 Player joined: Teepee420 (Rating: 1200)
+2025-08-12 08:07:07.29
+96a834b0
+User
+🔌 Client disconnected: G6aHv6aSNuhaWOsuAAAt
+2025-08-12 08:07:07.29
+96a834b0
+User
+👤 Player left: Teepee420
+2025-08-12 08:13:26.70
+96a834b0
+User
+12:13:26 PM [express] GET /api/auth/session 200 in 1ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 08:13:26.80
+96a834b0
+User
+12:13:26 PM [express] GET /api/auth/session 200 in 2ms :: {"success":true,"user":null,"isLoggedIn":fa…
+2025-08-12 09:26:34.93
+96a834b0
+System
+system: received signal terminated
+2025-08-12 09:29:21.76
+96a834b0
+System
+starting up user application
+2025-08-12 09:29:22.01
+96a834b0
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2025-08-12 09:29:23.79
+96a834b0
+User
+> rest-express@1.0.0 start
+2025-08-12 09:29:23.79
+96a834b0
+User
+> NODE_ENV=production node dist/index.js
+2025-08-12 09:29:25.23
+96a834b0
+User
+Warning: connect.session() MemoryStore is not
