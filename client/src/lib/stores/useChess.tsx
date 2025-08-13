@@ -13,6 +13,7 @@ import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
+import gameDataCollector from "../dataCollection/gameDataCollector";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -70,6 +71,20 @@ export const useChess = create<ChessStore>()(
       console.log('🔍 Test piece at row 8, col 4:', newBoard[8][4]);
       console.log('🔍 Test piece at row 7, col 4:', newBoard[7][4]);
       console.log('🔍 Test piece at row 6, col 4:', newBoard[6][4]);
+      
+      // Generate unique game ID for data collection
+      const gameId = `game_${Date.now()}_${Math.random().toString(36).substring(7)}`;
+      
+      // Start data collection for non-multiplayer games
+      if (mode === 'ai' && gameDataCollector.isConnected()) {
+        console.log('📊 Starting data collection for AI game');
+        gameDataCollector.startGameCollection(
+          gameId,
+          'white', // Human always plays white vs AI
+          'ai',
+          aiDifficulty
+        );
+      }
       
       set({
         board: newBoard,
@@ -331,6 +346,11 @@ export const useChess = create<ChessStore>()(
       const newState = makeMove(state, move);
       set(newState);
       
+      // 📊 Record move for data collection (AI games only)
+      if (state.gameMode === 'ai' && gameDataCollector.isCollectingData()) {
+        gameDataCollector.recordMove(move, newState);
+      }
+      
       // 🎮 CRITICAL: Send move to multiplayer server if in multiplayer mode
       if (state.gameMode === 'multiplayer') {
         try {
@@ -381,6 +401,13 @@ export const useChess = create<ChessStore>()(
       if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
         const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
         aiLearning.analyzeGame(newState, aiColor, 'human');
+        
+        // 📊 End data collection and save game data
+        if (gameDataCollector.isCollectingData()) {
+          const result = newState.winner === 'white' ? 'win' : 
+                        newState.winner === 'black' ? 'loss' : 'draw';
+          gameDataCollector.endGameCollection(result, newState.winner);
+        }
         
         // Update campaign progress if in campaign mode
         const { isInCampaign, currentLevelId, completeCampaignGame } = useCampaign.getState();
@@ -504,11 +531,23 @@ export const useChess = create<ChessStore>()(
 
           const newState = makeMove(state, aiMove);
           set(newState);
+          
+          // 📊 Record AI move for data collection
+          if (gameDataCollector.isCollectingData()) {
+            gameDataCollector.recordMove(aiMove, newState);
+          }
 
           // Analyze completed games for AI learning
           if (newState.gamePhase === 'ended' && state.gameMode === 'ai') {
             const aiColor: PieceColor = 'black'; // AI is always black in human vs AI mode
             aiLearning.analyzeGame(newState, aiColor, 'human');
+            
+            // 📊 End data collection when AI wins/draws
+            if (gameDataCollector.isCollectingData()) {
+              const result = newState.winner === 'white' ? 'win' : 
+                            newState.winner === 'black' ? 'loss' : 'draw';
+              gameDataCollector.endGameCollection(result, newState.winner);
+            }
           }
         }
       } catch (error) {

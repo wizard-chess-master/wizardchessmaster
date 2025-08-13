@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Collection Test - Game Simulation</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #00ff00;
+        }
+        .log {
+            padding: 5px;
+            margin: 5px 0;
+            border-left: 3px solid #00ff00;
+            padding-left: 10px;
+        }
+        .error {
+            color: #ff0000;
+            border-color: #ff0000;
+        }
+        .success {
+            color: #00ff00;
+            border-color: #00ff00;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: monospace;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Data Collection Test Suite</h1>
+    <div id="status"></div>
+    <div>
+        <button onclick="testDataCollection()">Run Test Game</button>
+        <button onclick="checkDatabase()">Check Database</button>
+        <button onclick="clearLogs()">Clear Logs</button>
+    </div>
+    <div id="logs"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        let socket;
+        
+        function log(message, type = 'log') {
+            const logsDiv = document.getElementById('logs');
+            const logEntry = document.createElement('div');
+            logEntry.className = `log ${type}`;
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(logEntry);
+            console.log(message);
+        }
+        
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            log('Logs cleared', 'success');
+        }
+        
+        function updateStatus(message) {
+            document.getElementById('status').innerHTML = `<h3>${message}</h3>`;
+        }
+        
+        function testDataCollection() {
+            log('🚀 Starting data collection test...', 'success');
+            
+            // Connect to Socket.IO
+            socket = io('/', {
+                path: '/socket.io/',
+                transports: ['websocket', 'polling']
+            });
+            
+            socket.on('connect', () => {
+                log('✅ Connected to Socket.IO server', 'success');
+                updateStatus('Connected - Running test game...');
+                
+                // Simulate a complete game
+                const gameId = `test_game_${Date.now()}`;
+                log(`📊 Starting game: ${gameId}`);
+                
+                // Start game
+                socket.emit('game:start', {
+                    gameId: gameId,
+                    playerColor: 'white',
+                    opponentType: 'ai',
+                    aiDifficulty: 'medium'
+                });
+                log('📤 Sent game:start event');
+                
+                // Simulate moves
+                const moves = [
+                    { from: {row: 8, col: 4}, to: {row: 6, col: 4}, piece: 'pawn' },
+                    { from: {row: 1, col: 4}, to: {row: 3, col: 4}, piece: 'pawn' },
+                    { from: {row: 9, col: 1}, to: {row: 7, col: 2}, piece: 'knight' },
+                    { from: {row: 0, col: 1}, to: {row: 2, col: 2}, piece: 'knight' },
+                    { from: {row: 9, col: 2}, to: {row: 8, col: 3}, piece: 'bishop' }
+                ];
+                
+                let moveCount = 0;
+                const moveInterval = setInterval(() => {
+                    if (moveCount < moves.length) {
+                        const move = moves[moveCount];
+                        socket.emit('game:move', {
+                            gameId: gameId,
+                            move: move,
+                            gameState: {
+                                board: 'simplified_board_state',
+                                currentPlayer: moveCount % 2 === 0 ? 'black' : 'white',
+                                isInCheck: false,
+                                moveCount: moveCount + 1
+                            }
+                        });
+                        log(`📤 Move ${moveCount + 1}: ${move.piece} from (${move.from.row},${move.from.col}) to (${move.to.row},${move.to.col})`);
+                        moveCount++;
+                    } else {
+                        clearInterval(moveInterval);
+                        
+                        // End game after moves
+                        setTimeout(() => {
+                            socket.emit('game:end', {
+                                gameId: gameId,
+                                result: 'win',
+                                winner: 'white',
+                                durationSeconds: 120
+                            });
+                            log('📤 Sent game:end event (White wins)');
+                            updateStatus('Test complete! Check server logs for confirmation.');
+                            
+                            setTimeout(() => {
+                                socket.disconnect();
+                                log('🔌 Disconnected from server', 'success');
+                                log('✅ Test completed successfully!', 'success');
+                            }, 1000);
+                        }, 1000);
+                    }
+                }, 500);
+            });
+            
+            socket.on('connect_error', (error) => {
+                log(`❌ Connection error: ${error.message}`, 'error');
+                updateStatus('Connection failed!');
+            });
+        }
+        
+        async function checkDatabase() {
+            log('🔍 Checking database for collected games...', 'success');
+            try {
+                // This would need a server endpoint to check the database
+                // For now, just log instruction
+                log('To check database, run this SQL in your database tool:', 'success');
+                log('SELECT * FROM human_games ORDER BY created_at DESC LIMIT 5;', 'log');
+                log('Or check server logs for "📊 Game ... saved to database" messages', 'log');
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-run test on load
+        window.onload = () => {
+            updateStatus('Ready to test data collection');
+            log('Test suite loaded. Click "Run Test Game" to start.', 'success');
+        };
+    </script>
+</body>
+</html>

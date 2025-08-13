@@ -5,6 +5,7 @@ import { Server as SocketIOServer } from "socket.io";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { MultiplayerManager } from "./multiplayer";
+import DataCollectionManager from "./dataCollection";
 import path from "path";
 
 const app = express();
@@ -84,8 +85,12 @@ app.use((req, res, next) => {
 
     // Initialize multiplayer manager with Socket.IO instance
     const multiplayerManager = new MultiplayerManager(io);
+    
+    // Initialize data collection manager for AI training
+    const dataCollectionManager = new DataCollectionManager(io);
 
     console.log('🔌 Socket.IO multiplayer system initialized');
+    console.log('📊 Data collection system initialized');
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
