@@ -154,41 +154,17 @@ function AppContent() {
   }, []);
 
   const handleStartGame = () => {
-    console.log('🎮 Play Now clicked - starting game directly');
+    console.log('🎮 Game button clicked - showing game menu');
     
-    // Get player's skill level from local storage or default to easy
-    const playerStats = JSON.parse(localStorage.getItem('playerStats') || '{}');
-    const winRate = playerStats.winRate || 0;
-    const gamesPlayed = playerStats.gamesPlayed || 0;
-    
-    // Determine AI difficulty based on player performance
-    let difficulty: 'easy' | 'medium' | 'hard' = 'easy';
-    if (gamesPlayed >= 3) {
-      if (winRate > 0.7) {
-        difficulty = 'hard';
-        console.log('🎯 Player win rate > 70%, setting AI to hard');
-      } else if (winRate > 0.4) {
-        difficulty = 'medium';
-        console.log('🎯 Player win rate 40-70%, setting AI to medium');
-      } else {
-        console.log('🎯 Player win rate < 40%, keeping AI on easy');
-      }
-    } else {
-      console.log('🎯 New player, starting with easy AI');
-    }
-    
-    // Start the game immediately BEFORE changing page
-    const { startGame } = useChess.getState();
-    console.log('🎮 Starting game with adaptive difficulty:', difficulty);
-    startGame('ai', difficulty);
-    
-    // Force a re-render by updating the page
+    // Navigate to game page and show the MainMenu
     setCurrentPage('game');
     setShowLanding(false);
     
-    // Verify game started
-    const { gamePhase: newPhase } = useChess.getState();
-    console.log('✅ Game phase after start:', newPhase);
+    // Ensure we're in menu phase so MainMenu shows
+    const { resetGame } = useChess.getState();
+    resetGame(); // This sets gamePhase to 'menu'
+    
+    console.log('✅ Showing game menu for mode selection');
   };
   
   // Listen for hash changes to handle navigation

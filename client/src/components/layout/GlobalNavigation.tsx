@@ -36,7 +36,15 @@ export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: Globa
             {/* Logo/Brand */}
             <div 
               className="flex items-center gap-2 cursor-pointer hover:text-amber-200 transition-colors"
-              onClick={() => onNavigate('landing')}
+              onClick={() => {
+                // If we're in the game, show the menu instead of going to landing
+                if (currentPage === 'game') {
+                  console.log('🎮 Logo clicked while in game - showing game menu');
+                  onStartGame(); // This now shows the MainMenu
+                } else {
+                  onNavigate('landing');
+                }
+              }}
             >
               <Crown className="w-6 h-6" />
               <h1 className="text-xl font-bold">Wizard Chess Master</h1>
@@ -52,7 +60,14 @@ export function GlobalNavigation({ currentPage, onNavigate, onStartGame }: Globa
                     onClick={(e) => {
                       console.log(`🖱️ Navigation button clicked: ${item.label} (${item.id})`);
                       e.preventDefault();
-                      onNavigate(item.id);
+                      
+                      // If we're in the game and clicking Home, show the game menu instead
+                      if (currentPage === 'game' && item.id === 'landing') {
+                        console.log('🎮 Home clicked while in game - showing game menu');
+                        onStartGame(); // This now shows the MainMenu
+                      } else {
+                        onNavigate(item.id);
+                      }
                     }}
                     className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                       currentPage === item.id 
