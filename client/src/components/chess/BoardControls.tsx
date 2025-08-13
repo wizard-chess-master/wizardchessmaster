@@ -231,8 +231,8 @@ export function BoardControls({ onSettings }: BoardControlsProps) {
             variant="outline"
             size="sm"
             onClick={() => {
-              resetGame();
-              window.location.reload();
+              console.log('🎮 Menu button clicked - returning to game menu');
+              resetGame(); // This sets gamePhase to 'menu' and shows MainMenu
             }}
             className="medieval-btn-mini w-full h-9 flex flex-col items-center justify-center p-1"
             title="Main Menu"
