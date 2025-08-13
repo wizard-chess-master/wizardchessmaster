@@ -536,6 +536,13 @@ export class DeepNeuralNetwork {
   private extractTemporalFeatures(state: GameState): number[] {
     const features: number[] = [];
     
+    // Add null check for moveHistory
+    if (!state?.moveHistory || !Array.isArray(state.moveHistory)) {
+      console.warn('Invalid move history:', state);
+      // Return default temporal features
+      return [1, 0, 0, 0, 0, 0, 0, 0]; // 8 features: opening phase, no moves, no castling
+    }
+    
     // Game phase (opening, middle, endgame)
     const moveCount = state.moveHistory.length;
     features.push(moveCount < 20 ? 1 : 0);  // Opening
@@ -620,6 +627,21 @@ export class DeepNeuralNetwork {
   async predict(state: GameState): Promise<{ value: number; policy: Float32Array }> {
     if (!this.model) {
       throw new Error('Model not built. Call buildModel() first.');
+    }
+    
+    // Validate state has required fields
+    if (!state || !state.board || !state.currentPlayer) {
+      console.error('Invalid game state for prediction:', state);
+      // Return neutral prediction if state is invalid
+      return {
+        value: 0,
+        policy: new Float32Array(this.config.outputSize).fill(1 / this.config.outputSize)
+      };
+    }
+    
+    // Ensure moveHistory exists
+    if (!state.moveHistory) {
+      state.moveHistory = [];
     }
     
     const features = this.extractFeatures(state);

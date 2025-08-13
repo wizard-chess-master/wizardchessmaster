@@ -209,12 +209,15 @@ export async function testAIIntegration(): Promise<void> {
     console.log(`   - Model Available: ${globalAI.model ? 'Yes' : 'No'}`);
     console.log(`   - Functions Available: getBestMove=${typeof globalAI.getBestMove}, evaluatePosition=${typeof globalAI.evaluatePosition}`);
     
-    // Test a simple position evaluation
+    // Test a simple position evaluation with proper structure
     const testState: any = {
       board: Array(10).fill(null).map(() => Array(10).fill(null)),
       currentPlayer: 'white',
       gamePhase: 'playing',
-      aiDifficulty: 'hard'
+      aiDifficulty: 'hard',
+      moveHistory: [],  // Add moveHistory to prevent errors
+      castlingRights: { white: { kingside: true, queenside: true }, black: { kingside: true, queenside: true } },
+      enPassant: null
     };
     
     console.log('\n📊 Testing position evaluation...');
