@@ -32,6 +32,8 @@ export function MentorNotification() {
   const speakFeedback = (message: string) => {
     try {
       if ('speechSynthesis' in window) {
+        console.log('🎤 AI Coach attempting to speak:', message.substring(0, 50) + '...');
+        
         // Cancel any ongoing speech to prevent overlapping
         speechSynthesis.cancel();
         
@@ -47,6 +49,13 @@ export function MentorNotification() {
           // Enhanced voice selection for natural sound
           const setVoiceAndSpeak = () => {
             const voices = speechSynthesis.getVoices();
+            console.log(`🎤 Available voices: ${voices.length}`);
+            
+            // Log available voices for debugging
+            if (voices.length === 0) {
+              console.warn('⚠️ No voices available for AI Coach!');
+              return;
+            }
             
             // Priority order for natural-sounding voices
             const preferredVoice = 
@@ -67,47 +76,73 @@ export function MentorNotification() {
                 !voice.name.toLowerCase().includes('woman')
               ) ||
               // Fallback: First available English voice
-              voices.find(voice => voice.lang.startsWith('en'));
+              voices.find(voice => voice.lang.startsWith('en')) ||
+              // Last fallback: Any voice
+              voices[0];
             
             if (preferredVoice) {
               utterance.voice = preferredVoice;
-              console.log('🎵 Using voice:', preferredVoice.name);
+              console.log('🎤 AI Coach using voice:', preferredVoice.name, preferredVoice.lang);
+            } else {
+              console.warn('⚠️ No suitable voice found for AI Coach');
             }
             
-            // Add error handling to prevent stuttering
+            // Add comprehensive error handling
             utterance.onerror = (event) => {
-              console.log('Speech error:', event);
+              console.error('❌ AI Coach speech error:', event.error || 'Unknown error');
+              console.error('Error details:', event);
+            };
+            
+            utterance.onstart = () => {
+              console.log('🎤 AI Coach started speaking');
             };
             
             utterance.onend = () => {
-              console.log('Speech completed');
+              console.log('✅ AI Coach finished speaking');
             };
             
             // Speak with additional checks
-            if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+            if (speechSynthesis.speaking) {
+              console.warn('⚠️ AI Coach: Speech synthesis already speaking, cancelling first');
+              speechSynthesis.cancel();
+              setTimeout(() => {
+                speechSynthesis.speak(utterance);
+                console.log('🎤 AI Coach speech queued (after cancel)');
+              }, 100);
+            } else if (speechSynthesis.pending) {
+              console.warn('⚠️ AI Coach: Speech synthesis has pending utterances');
               speechSynthesis.speak(utterance);
+              console.log('🎤 AI Coach speech queued (with pending)');
+            } else {
+              speechSynthesis.speak(utterance);
+              console.log('🎤 AI Coach speech queued');
             }
           };
           
           // Ensure voices are loaded before speaking
           if (speechSynthesis.getVoices().length > 0) {
+            console.log('🎤 Voices already loaded, speaking immediately');
             setVoiceAndSpeak();
           } else {
+            console.log('⏳ Waiting for voices to load...');
             // Wait for voices to load with timeout
             let voiceTimeout = setTimeout(() => {
-              console.log('Voice loading timeout, using default');
+              console.log('⚠️ Voice loading timeout, attempting with available voices');
               setVoiceAndSpeak();
             }, 1000);
             
             speechSynthesis.onvoiceschanged = () => {
               clearTimeout(voiceTimeout);
+              console.log('🎤 Voices loaded via onvoiceschanged event');
               setVoiceAndSpeak();
             };
           }
         }, 200); // Longer delay for stability
+      } else {
+        console.error('❌ Speech synthesis not available in this browser');
       }
     } catch (error) {
-      console.log('Voice synthesis error:', error);
+      console.error('❌ AI Coach voice synthesis error:', error);
     }
   };
 
