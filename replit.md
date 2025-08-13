@@ -17,6 +17,7 @@
 - **AI Training Phase 3 Complete (Aug 13 2025)**: Successfully achieved 2500 ELO at 80k games - Memory stable at 650-700MB, all checkpoints saved, on track for 2550+ ELO at 100k games
 - **AI Training COMPLETE (Aug 13 2025)**: Successfully achieved 2550 ELO at 100k games - All 5 phases complete, Grandmaster-level AI achieved, memory maintained under 750MB throughout, transfer learning optimization successful
 - **UI Cleanup Complete (Aug 13 2025)**: Removed all upgrade banners and promotional ads - AdBanner components commented out in App.tsx, GlobalNavigation.tsx, GameUI.tsx; fallback promotional ads disabled in adManager.ts for clean gaming experience
+- **Wizard Attack Mechanics Fixed (Aug 13 2025)**: Wizard now properly executes magical attacks with enhanced visual effects - purple beam animation from wizard to target, sparkles along beam path, impact explosion at target. Wizard performs a subtle magical gesture during attack for visual distinction between teleport and attack moves
 
 # User Preferences
 
