@@ -37,6 +37,8 @@ class WizardChessAudioManager {
   private volume: number = 0.7;
   private muted: boolean = false;
   private initialized: boolean = false;
+  private audioUnlocked: boolean = false;
+  private unlockScheduled: boolean = false;
 
   private config: AudioConfig = {
     soundEffects: {
@@ -86,11 +88,75 @@ class WizardChessAudioManager {
         audio.loop = true;
       });
       
+      // Set up audio unlock on first user interaction
+      this.setupAudioUnlock();
+      
       this.initialized = true;
       console.log('✅ Wizard Chess Audio Manager initialized successfully');
     } catch (error) {
       console.error('❌ Failed to initialize audio manager:', error);
     }
+  }
+
+  private setupAudioUnlock(): void {
+    if (this.audioUnlocked) return;
+    
+    const unlockAudio = () => {
+      if (this.audioUnlocked) return;
+      
+      console.log('🔓 Attempting to unlock audio...');
+      
+      // Create a silent audio element and try to play it
+      const silentAudio = new Audio();
+      silentAudio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmkmBS9+z/PhiDYIHWS48N2XRQ0FUavk8bNdGAY';
+      
+      const playPromise = silentAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          this.audioUnlocked = true;
+          console.log('✅ Audio unlocked successfully!');
+          
+          // Try to play any pending sounds
+          this.playPendingSounds();
+        }).catch(error => {
+          console.warn('⚠️ Audio unlock failed, will retry on next interaction:', error.name);
+        });
+      }
+    };
+    
+    // Try to unlock immediately (in case we're already in a user gesture context)
+    unlockAudio();
+    
+    // Also set up listeners for future user interactions
+    const events = ['click', 'touchstart', 'keydown'];
+    events.forEach(event => {
+      document.addEventListener(event, unlockAudio, { once: true, passive: true });
+    });
+  }
+
+  private scheduleAudioUnlock(): void {
+    if (this.unlockScheduled || this.audioUnlocked) return;
+    
+    this.unlockScheduled = true;
+    
+    const unlockOnInteraction = () => {
+      if (this.audioUnlocked) return;
+      
+      console.log('🔓 Retrying audio unlock after user interaction...');
+      this.setupAudioUnlock();
+      this.unlockScheduled = false;
+    };
+    
+    // Set up one-time listeners
+    const events = ['click', 'touchstart', 'keydown'];
+    events.forEach(event => {
+      document.addEventListener(event, unlockOnInteraction, { once: true, passive: true });
+    });
+  }
+
+  private playPendingSounds(): void {
+    // This method can be extended to replay any sounds that failed due to autoplay restrictions
+    console.log('🎵 Audio unlocked - ready to play sounds!');
   }
 
   private async loadAudioGroup(
@@ -144,12 +210,18 @@ class WizardChessAudioManager {
       // Handle the promise properly to prevent unhandled rejection
       if (playPromise !== undefined) {
         await playPromise.catch(error => {
-          // Silent failure for audio play - this is common and expected
-          console.debug(`Audio play failed for ${effectKey} (normal behavior):`, error.name);
+          // Log the error more visibly for debugging
+          if (error.name === 'NotAllowedError') {
+            console.warn(`🔇 Audio blocked by browser - user interaction needed for ${effectKey}`);
+            // Try to unlock audio on next user interaction
+            this.scheduleAudioUnlock();
+          } else {
+            console.warn(`⚠️ Audio play failed for ${effectKey}:`, error.name);
+          }
         });
       }
     } catch (error) {
-      console.debug(`Failed to play sound effect ${effectKey}:`, error);
+      console.warn(`Failed to play sound effect ${effectKey}:`, error);
     }
   }
 
@@ -174,11 +246,18 @@ class WizardChessAudioManager {
       // Handle the promise properly to prevent unhandled rejection
       if (playPromise !== undefined) {
         await playPromise.catch(error => {
-          console.debug(`Voice play failed for ${voiceKey} (normal behavior):`, error.name);
+          // Log the error more visibly for debugging
+          if (error.name === 'NotAllowedError') {
+            console.warn(`🔇 Audio blocked by browser - user interaction needed for ${voiceKey}`);
+            // Try to unlock audio on next user interaction
+            this.scheduleAudioUnlock();
+          } else {
+            console.warn(`⚠️ Voice play failed for ${voiceKey}:`, error.name);
+          }
         });
       }
     } catch (error) {
-      console.debug(`Failed to play voice ${voiceKey}:`, error);
+      console.warn(`Failed to play voice ${voiceKey}:`, error);
     }
   }
 

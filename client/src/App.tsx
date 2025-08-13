@@ -41,6 +41,7 @@ import { initializePayments } from "./lib/monetization/paymentManager";
 import { useCampaignRewardCelebration } from "./components/campaign/CampaignRewardCelebration";
 
 import ChessAudioController from "./components/audio/ChessAudioController";
+import { AudioUnlockPrompt } from "./components/audio/AudioUnlockPrompt";
 
 import "@fontsource/inter";
 
@@ -406,6 +407,9 @@ function AppContent() {
         <PerformanceDashboard />
         <StabilityTestPanel />
         <BrowserCompatibilityPanel />
+        
+        {/* Audio Unlock Prompt - shows when browser blocks audio */}
+        <AudioUnlockPrompt />
         </div>
       </div>
       </AuthProvider>
