@@ -323,11 +323,11 @@ function AppContent() {
               <div className="max-w-7xl mx-auto">
                 
                 {/* Top Ad Banner */}
-                <AdBanner 
+                {/* <AdBanner 
                   containerId="game-top-banner"
                   className="mb-4 w-full max-w-2xl mx-auto"
                   style={{ maxWidth: '600px', width: '100%' }}
-                />
+                /> */}
                 
                 {/* Game Content - Side by Side Layout */}
                 <div className="game-content flex flex-col lg:flex-row items-center lg:items-start justify-center gap-8">
