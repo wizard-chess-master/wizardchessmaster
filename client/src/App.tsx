@@ -47,6 +47,7 @@ import "@fontsource/inter";
 // Import AI training functions (makes them available in browser console)
 import './lib/ai/startTraining';
 import './lib/ai/testAI';
+import './lib/ai/selfPlay';
 import "./styles/chess.css";
 import "./styles/animations.css";
 import "./debug";

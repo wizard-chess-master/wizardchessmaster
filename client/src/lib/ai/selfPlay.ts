@@ -45,10 +45,20 @@ export class SelfPlayTrainer {
   private isTraining: boolean = false;
   
   constructor() {
-    this.model = new DeepNeuralNetwork();
+    // Initialize model with correct input size
+    this.model = new DeepNeuralNetwork({
+      inputSize: 1634,  // Fixed: 10x10x16 board + features
+      hiddenLayers: [512, 256, 256, 128, 128],
+      outputSize: 101,
+      learningRate: 0.001,
+      batchSize: 256,  // 64 * 4 as requested
+      epochs: 100,
+      dropout: 0.3
+    });
+    
     this.config = {
       totalGames: 100000,
-      batchSize: 256,
+      batchSize: 256,  // Batch config: 64 * 4 = 256
       checkpointInterval: 5000,
       learningRate: 0.001,
       explorationRate: 0.15,
@@ -124,22 +134,31 @@ export class SelfPlayTrainer {
       }
     }
     
-    // Final training and save
-    if (this.gameBuffer.length > 0) {
-      await this.trainOnBatch();
-    }
-    
-    await this.saveFinalModel();
-    this.isTraining = false;
-    
-    console.log('✅ Self-play training complete!');
+    console.log('\n✅ Training complete!');
     this.reportFinalStats();
   }
   
-  // Play a single self-play game
+  // Initialize or load existing model
+  private async initializeModel(): Promise<void> {
+    console.log('🏗️ Initializing AI model...');
+    this.model.buildModel();
+    
+    // Try to load existing checkpoint
+    try {
+      const checkpoint = localStorage.getItem('wizardChessCheckpoint');
+      if (checkpoint) {
+        const data = JSON.parse(checkpoint);
+        console.log(`📁 Loaded checkpoint from game ${data.gamesPlayed}`);
+        this.progress = data.progress;
+      }
+    } catch (error) {
+      console.log('📁 Starting fresh training (no checkpoint found)');
+    }
+  }
+  
+  // Play a single self-play game with corrected wizard mechanics
   private async playSelfPlayGame(): Promise<SelfPlayGame> {
-    const engine = new ChessEngine();
-    const gameData: SelfPlayGame = {
+    const game: SelfPlayGame = {
       moves: [],
       boardStates: [],
       outcome: 'draw',
@@ -148,144 +167,177 @@ export class SelfPlayTrainer {
       wizardTeleports: 0
     };
     
-    // Game loop
-    while (!engine.isGameOver() && gameData.moveCount < 200) {
-      const currentPlayer = engine.getCurrentPlayer();
-      const board = engine.getBoard();
+    // Initialize game state
+    let board = createInitialBoard();
+    let currentPlayer: 'white' | 'black' = 'white';
+    let moveCount = 0;
+    const maxMoves = 200; // Prevent infinite games
+    
+    while (moveCount < maxMoves) {
+      // Get valid moves with corrected wizard logic
+      const validMoves = this.getValidMovesWithWizardLogic(board, currentPlayer);
       
-      // Store board state
-      gameData.boardStates.push(this.cloneBoard(board));
-      
-      // Get move using trained model with exploration
-      const move = await this.selectMove(engine, currentPlayer);
-      
-      if (move) {
-        // Track wizard-specific moves
-        if (move.piece.type === 'wizard') {
-          if (move.isWizardAttack) {
-            gameData.wizardAttacks++;
-            // Ensure wizard attack is properly executed (no movement)
-            console.log(`🧙 Wizard attack from (${move.from.row},${move.from.col}) to (${move.to.row},${move.to.col})`);
-          } else if (move.isWizardTeleport) {
-            gameData.wizardTeleports++;
-          }
-        }
-        
-        // Make the move
-        const result = engine.makeMove(
-          move.from.row,
-          move.from.col,
-          move.to.row,
-          move.to.col
-        );
-        
-        if (result.success) {
-          gameData.moves.push(move);
-          gameData.moveCount++;
-        }
-      } else {
-        // No valid moves - game over
+      if (validMoves.length === 0) {
+        // Game over - checkmate or stalemate
+        game.outcome = currentPlayer === 'white' ? 'black' : 'white';
         break;
       }
-    }
-    
-    // Determine outcome
-    const gameState = engine.getGameState();
-    if (gameState.checkmate) {
-      gameData.outcome = gameState.winner || 'draw';
-    } else if (gameState.stalemate || gameData.moveCount >= 200) {
-      gameData.outcome = 'draw';
-    }
-    
-    return gameData;
-  }
-  
-  // Select move with exploration and temperature
-  private async selectMove(engine: ChessEngine, player: 'white' | 'black'): Promise<ChessMove | null> {
-    // Use exploration (random moves) occasionally
-    if (Math.random() < this.config.explorationRate) {
-      return this.selectRandomMove(engine, player);
-    }
-    
-    // Use trained model
-    const board = engine.getBoard();
-    const validMoves = engine.getValidMovesForPlayer(player);
-    
-    if (validMoves.length === 0) return null;
-    
-    // Prioritize wizard attacks when available
-    const wizardAttacks = validMoves.filter(move => {
+      
+      // Select move using neural network with exploration
+      const move = await this.selectMove(board, validMoves, currentPlayer);
+      
+      // Track wizard statistics
       const piece = board[move.from.row][move.from.col];
       if (piece?.type === 'wizard') {
-        const targetPiece = board[move.to.row][move.to.col];
-        return targetPiece !== null && targetPiece.color !== piece.color;
+        // Corrected wizard logic: wizard stays in place during ranged attacks
+        const distance = Math.abs(move.to.row - move.from.row) + Math.abs(move.to.col - move.from.col);
+        
+        if (move.capturedPiece && distance > 1) {
+          // Ranged attack - wizard doesn't move
+          game.wizardAttacks++;
+          if (this.progress.gamesPlayed % 100 === 0) {
+            console.log(`🧙 Game ${this.progress.gamesPlayed}: Wizard ranged attack from (${move.from.row},${move.from.col})`);
+          }
+        } else if (distance > 2) {
+          // Teleport move
+          game.wizardTeleports++;
+        }
       }
-      return false;
-    });
-    
-    // Use AI to evaluate moves
-    const moveScores: { move: ChessMove; score: number }[] = [];
-    
-    for (const move of validMoves) {
-      // Clone engine and make move
-      const testEngine = this.cloneEngine(engine);
-      testEngine.makeMove(move.from.row, move.from.col, move.to.row, move.to.col);
       
-      // Evaluate position
-      const score = await this.evaluatePosition(testEngine.getBoard(), player);
-      moveScores.push({ move, score });
+      // Make the move
+      board = makeMove(board, move);
+      game.moves.push(move);
+      game.boardStates.push(board);
+      
+      // Switch players
+      currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
+      moveCount++;
     }
     
-    // Apply temperature for move selection
-    return this.selectMoveWithTemperature(moveScores);
-  }
-  
-  // Select random move for exploration
-  private selectRandomMove(engine: ChessEngine, player: 'white' | 'black'): ChessMove | null {
-    const validMoves = engine.getValidMovesForPlayer(player);
-    if (validMoves.length === 0) return null;
+    game.moveCount = moveCount;
     
-    // Slightly prefer wizard moves for learning
-    const wizardMoves = validMoves.filter(move => {
-      const board = engine.getBoard();
-      const piece = board[move.from.row][move.from.col];
-      return piece?.type === 'wizard';
-    });
-    
-    if (wizardMoves.length > 0 && Math.random() < 0.3) {
-      return wizardMoves[Math.floor(Math.random() * wizardMoves.length)];
+    // Log wizard move stats for this game if significant
+    if (game.wizardAttacks > 0 || game.wizardTeleports > 0) {
+      if (this.progress.gamesPlayed % 100 === 0) {
+        console.log(`📊 Game ${this.progress.gamesPlayed}: Wizard moves - Attacks: ${game.wizardAttacks}, Teleports: ${game.wizardTeleports}`);
+      }
     }
     
-    return validMoves[Math.floor(Math.random() * validMoves.length)];
+    return game;
   }
   
-  // Apply temperature-based selection
-  private selectMoveWithTemperature(moveScores: { move: ChessMove; score: number }[]): ChessMove | null {
-    if (moveScores.length === 0) return null;
+  // Get valid moves with corrected wizard attack logic
+  private getValidMovesWithWizardLogic(board: (ChessPiece | null)[][], player: 'white' | 'black'): ChessMove[] {
+    const moves: ChessMove[] = [];
     
-    // Apply temperature to scores
-    const temp = this.config.temperature;
-    const expScores = moveScores.map(ms => ({
-      move: ms.move,
-      prob: Math.exp(ms.score / temp)
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const piece = board[row][col];
+        if (piece && piece.color === player) {
+          const position: Position = { row, col };
+          const pieceMoves = getValidMovesForPosition(
+            { 
+              board, 
+              currentPlayer: player,
+              isInCheck: false,
+              isCheckmate: false,
+              isStalemate: false,
+              moveHistory: [],
+              capturedPieces: { white: [], black: [] },
+              gameId: 'selfplay',
+              timeLeft: { white: 600, black: 600 },
+              lastMove: null,
+              drawOffered: false,
+              winner: null,
+              moveCount: 0
+            },
+            position
+          );
+          
+          // For wizard pieces, ensure attack moves don't move the wizard
+          if (piece.type === 'wizard') {
+            pieceMoves.forEach(move => {
+              const targetPiece = board[move.to.row][move.to.col];
+              const distance = Math.abs(move.to.row - position.row) + Math.abs(move.to.col - position.col);
+              
+              // Corrected: Wizard stays in place for ranged attacks
+              if (targetPiece && targetPiece.color !== piece.color && distance > 1) {
+                // This is a ranged attack - wizard should stay in place
+                moves.push({
+                  from: position,
+                  to: position, // Wizard doesn't move
+                  piece: piece,
+                  capturedPiece: targetPiece,
+                  isWizardAttack: true
+                });
+              } else {
+                // Regular move or teleport
+                moves.push(move);
+              }
+            });
+          } else {
+            moves.push(...pieceMoves);
+          }
+        }
+      }
+    }
+    
+    return moves;
+  }
+  
+  // Select move using neural network
+  private async selectMove(board: (ChessPiece | null)[][], validMoves: ChessMove[], player: 'white' | 'black'): Promise<ChessMove> {
+    // Use exploration during training
+    if (Math.random() < this.config.explorationRate) {
+      // Random move for exploration
+      return validMoves[Math.floor(Math.random() * validMoves.length)];
+    }
+    
+    // Use neural network to evaluate moves
+    const gameState: GameState = {
+      board,
+      currentPlayer: player,
+      isInCheck: false,
+      isCheckmate: false,
+      isStalemate: false,
+      moveHistory: [],
+      capturedPieces: { white: [], black: [] },
+      gameId: 'selfplay',
+      timeLeft: { white: 600, black: 600 },
+      lastMove: null,
+      drawOffered: false,
+      winner: null,
+      moveCount: 0
+    };
+    
+    // Get AI move using trained model
+    const prediction = await this.model.predict(gameState);
+    
+    // Apply temperature for move selection diversity
+    const moveScores = validMoves.map((move, idx) => ({
+      move,
+      score: prediction.policy[idx] || 0
     }));
     
-    // Normalize probabilities
-    const totalProb = expScores.reduce((sum, ms) => sum + ms.prob, 0);
-    const probabilities = expScores.map(ms => ms.prob / totalProb);
+    // Sort by score and select with temperature-based probability
+    moveScores.sort((a, b) => b.score - a.score);
     
-    // Sample from distribution
-    const rand = Math.random();
+    // Temperature-based selection
+    const tempScores = moveScores.map(m => Math.exp(m.score / this.config.temperature));
+    const sumScores = tempScores.reduce((a, b) => a + b, 0);
+    const probabilities = tempScores.map(s => s / sumScores);
+    
+    // Sample from probability distribution
+    const random = Math.random();
     let cumProb = 0;
-    
     for (let i = 0; i < probabilities.length; i++) {
       cumProb += probabilities[i];
-      if (rand < cumProb) {
-        return expScores[i].move;
+      if (random < cumProb) {
+        return moveScores[i].move;
       }
     }
     
-    return moveScores[0].move;
+    return moveScores[0].move; // Fallback to best move
   }
   
   // Train model on batch of games
@@ -294,287 +346,194 @@ export class SelfPlayTrainer {
     
     console.log(`🎯 Training on batch of ${this.gameBuffer.length} games...`);
     
+    // Prepare training data
     const inputs: number[][] = [];
-    const targets: number[][] = [];
+    const outputs: number[][] = [];
     
     for (const game of this.gameBuffer) {
-      // Process each position in the game
-      for (let i = 0; i < game.moves.length; i++) {
-        const boardState = game.boardStates[i];
-        const move = game.moves[i];
+      // Convert game data to training examples
+      for (let i = 0; i < game.boardStates.length; i++) {
+        const state: GameState = {
+          board: game.boardStates[i],
+          currentPlayer: i % 2 === 0 ? 'white' : 'black',
+          isInCheck: false,
+          isCheckmate: false,
+          isStalemate: false,
+          moveHistory: game.moves.slice(0, i),
+          capturedPieces: { white: [], black: [] },
+          gameId: 'training',
+          timeLeft: { white: 600, black: 600 },
+          lastMove: i > 0 ? game.moves[i - 1] : null,
+          drawOffered: false,
+          winner: null,
+          moveCount: i
+        };
         
-        // Encode board state
-        const input = this.encodeBoardState(boardState);
+        // Extract features
+        const features = this.model.extractFeatures(state);
+        inputs.push(Array.from(features));
         
-        // Create target based on game outcome
-        const moveQuality = this.calculateMoveQuality(
-          move,
-          game.outcome,
-          move.piece.color,
-          i,
-          game.moveCount
-        );
-        
-        // Special handling for wizard moves
-        if (move.piece.type === 'wizard') {
-          // Reinforce correct wizard mechanics
-          if (move.isWizardAttack) {
-            // Boost score for successful wizard attacks
-            const target = this.createTarget(move, moveQuality * 1.2);
-            inputs.push(input);
-            targets.push(target);
-          } else if (move.isWizardTeleport) {
-            // Normal scoring for teleports
-            const target = this.createTarget(move, moveQuality);
-            inputs.push(input);
-            targets.push(target);
-          }
-        } else {
-          const target = this.createTarget(move, moveQuality);
-          inputs.push(input);
-          targets.push(target);
-        }
+        // Create target output (game outcome from current player's perspective)
+        const outcome = game.outcome === state.currentPlayer ? 1 : 
+                       game.outcome === 'draw' ? 0 : -1;
+        outputs.push([outcome]);
       }
     }
     
     // Train the model
     if (inputs.length > 0) {
-      const inputTensor = tf.tensor2d(inputs);
-      const targetTensor = tf.tensor2d(targets);
+      const xs = tf.tensor2d(inputs);
+      const ys = tf.tensor2d(outputs);
       
-      await this.model.train(inputTensor, targetTensor, {
-        epochs: 5,
-        batchSize: 32,
-        validationSplit: 0.1
-      });
-      
-      inputTensor.dispose();
-      targetTensor.dispose();
-    }
-  }
-  
-  // Helper methods
-  private cloneBoard(board: (ChessPiece | null)[][]): (ChessPiece | null)[][] {
-    return board.map(row => row.map(piece => piece ? { ...piece } : null));
-  }
-  
-  private cloneEngine(engine: ChessEngine): ChessEngine {
-    const newEngine = new ChessEngine();
-    // Copy board state
-    const board = engine.getBoard();
-    newEngine.setBoard(this.cloneBoard(board));
-    return newEngine;
-  }
-  
-  private encodeBoardState(board: (ChessPiece | null)[][]): number[] {
-    const encoded: number[] = [];
-    
-    for (let row = 0; row < 10; row++) {
-      for (let col = 0; col < 10; col++) {
-        const piece = board[row][col];
-        if (!piece) {
-          encoded.push(0, 0, 0, 0, 0, 0, 0, 0); // 8 features per square
-        } else {
-          // Piece type encoding (6 types + wizard)
-          const typeEncoding = [
-            piece.type === 'pawn' ? 1 : 0,
-            piece.type === 'knight' ? 1 : 0,
-            piece.type === 'bishop' ? 1 : 0,
-            piece.type === 'rook' ? 1 : 0,
-            piece.type === 'queen' ? 1 : 0,
-            piece.type === 'king' ? 1 : 0,
-            piece.type === 'wizard' ? 1 : 0,
-            piece.color === 'white' ? 1 : -1
-          ];
-          encoded.push(...typeEncoding);
-        }
+      try {
+        await this.model.model.fit(xs, ys, {
+          batchSize: this.config.batchSize,
+          epochs: 1,
+          verbose: 0
+        });
+      } finally {
+        xs.dispose();
+        ys.dispose();
       }
     }
     
-    // Add global features
-    encoded.push(
-      this.progress.gamesPlayed / 100000, // Normalized game count
-      this.progress.wizardAttackAccuracy, // Wizard accuracy
-      this.config.explorationRate, // Current exploration
-      Math.random() * 0.1 // Small noise
-    );
-    
-    return encoded;
+    // Clear memory
+    await tf.nextFrame();
   }
   
-  private async evaluatePosition(board: (ChessPiece | null)[][], player: 'white' | 'black'): Promise<number> {
-    const encoded = this.encodeBoardState(board);
-    const prediction = await this.model.predict(tf.tensor2d([encoded]));
-    return prediction as number;
-  }
-  
-  private calculateMoveQuality(
-    move: ChessMove,
-    outcome: 'white' | 'black' | 'draw',
-    player: 'white' | 'black',
-    moveIndex: number,
-    totalMoves: number
-  ): number {
-    let quality = 0.5; // Base quality
+  // Save checkpoint
+  private async saveCheckpoint(gameCount: number): Promise<void> {
+    console.log(`💾 Saving checkpoint at ${gameCount} games...`);
     
-    // Adjust based on game outcome
-    if (outcome === player) {
-      quality = 1.0; // Win
-    } else if (outcome === 'draw') {
-      quality = 0.5; // Draw
-    } else {
-      quality = 0.0; // Loss
-    }
+    const checkpoint = {
+      gamesPlayed: gameCount,
+      progress: this.progress,
+      timestamp: Date.now(),
+      modelWeights: await this.model.model.getWeights()
+    };
     
-    // Decay based on move position (earlier moves less responsible for outcome)
-    const decay = Math.pow(0.99, totalMoves - moveIndex);
-    quality *= decay;
-    
-    // Bonus for wizard attacks (teaching proper mechanics)
-    if (move.piece.type === 'wizard' && move.isWizardAttack) {
-      quality *= 1.1;
-    }
-    
-    return quality;
-  }
-  
-  private createTarget(move: ChessMove, quality: number): number[] {
-    // Create a 100-element array (10x10 board)
-    const target = new Array(100).fill(0);
-    
-    // Set the target square value
-    const targetIndex = move.to.row * 10 + move.to.col;
-    target[targetIndex] = quality;
-    
-    return target;
-  }
-  
-  private updateProgress(game: SelfPlayGame): void {
-    this.progress.gamesPlayed++;
-    
-    if (game.outcome === 'white') {
-      this.progress.whiteWins++;
-    } else if (game.outcome === 'black') {
-      this.progress.blackWins++;
-    } else {
-      this.progress.draws++;
-    }
-    
-    // Update average move count
-    this.progress.averageMoveCount = 
-      (this.progress.averageMoveCount * (this.progress.gamesPlayed - 1) + game.moveCount) / 
-      this.progress.gamesPlayed;
-    
-    // Update wizard attack accuracy
-    if (game.wizardAttacks > 0) {
-      const attackAccuracy = game.wizardAttacks / (game.wizardAttacks + game.wizardTeleports);
-      this.progress.wizardAttackAccuracy = 
-        (this.progress.wizardAttackAccuracy * 0.95) + (attackAccuracy * 0.05);
-    }
-  }
-  
-  private reportProgress(): void {
-    const elapsed = (Date.now() - this.progress.trainingStartTime) / 1000 / 60; // minutes
-    const gamesPerMinute = this.progress.gamesPlayed / elapsed;
-    const estimatedTimeRemaining = (this.config.totalGames - this.progress.gamesPlayed) / gamesPerMinute;
-    
-    console.log('\n📊 Training Progress Report');
-    console.log('═══════════════════════════════════════════');
-    console.log(`Games Played: ${this.progress.gamesPlayed}/${this.config.totalGames}`);
-    console.log(`White Wins: ${this.progress.whiteWins} (${(this.progress.whiteWins / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
-    console.log(`Black Wins: ${this.progress.blackWins} (${(this.progress.blackWins / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
-    console.log(`Draws: ${this.progress.draws} (${(this.progress.draws / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
-    console.log(`Average Move Count: ${this.progress.averageMoveCount.toFixed(1)}`);
-    console.log(`Wizard Attack Accuracy: ${(this.progress.wizardAttackAccuracy * 100).toFixed(1)}%`);
-    console.log(`Current ELO: ~${this.progress.currentElo}`);
-    console.log(`Games/minute: ${gamesPerMinute.toFixed(1)}`);
-    console.log(`Est. Time Remaining: ${estimatedTimeRemaining.toFixed(1)} minutes`);
-    console.log('═══════════════════════════════════════════\n');
-  }
-  
-  private async saveCheckpoint(gamesPlayed: number): Promise<void> {
-    const checkpointName = `wizard-chess-ai-${gamesPlayed}games`;
-    console.log(`💾 Saving checkpoint: ${checkpointName}`);
-    
+    // Save to localStorage (in production, save to server)
     try {
-      await this.model.save(checkpointName);
-      this.progress.checkpoints.push(checkpointName);
+      localStorage.setItem('wizardChessCheckpoint', JSON.stringify({
+        gamesPlayed: gameCount,
+        progress: this.progress,
+        timestamp: Date.now()
+      }));
       
-      // Save training progress
-      localStorage.setItem('selfPlayProgress', JSON.stringify(this.progress));
+      // Save model weights separately
+      await this.model.model.save('localstorage://wizardChess-checkpoint-' + gameCount);
+      
+      this.progress.checkpoints.push(`checkpoint-${gameCount}`);
+      console.log(`✅ Checkpoint saved successfully`);
     } catch (error) {
       console.error('Failed to save checkpoint:', error);
     }
   }
   
-  private async saveFinalModel(): Promise<void> {
-    console.log('💾 Saving final trained model...');
+  // Update training progress
+  private updateProgress(game: SelfPlayGame): void {
+    this.progress.gamesPlayed++;
     
-    try {
-      await this.model.save('wizard-chess-ai-final');
-      
-      // Save final stats
-      const finalStats = {
-        ...this.progress,
-        trainingEndTime: Date.now(),
-        totalTrainingTime: Date.now() - this.progress.trainingStartTime
-      };
-      
-      localStorage.setItem('selfPlayFinalStats', JSON.stringify(finalStats));
-      
-      // Deploy the model globally
-      (window as any).wizardChessAI = this.model;
-      
-      console.log('✅ Model saved and deployed successfully!');
-    } catch (error) {
-      console.error('Failed to save final model:', error);
+    if (game.outcome === 'white') this.progress.whiteWins++;
+    else if (game.outcome === 'black') this.progress.blackWins++;
+    else this.progress.draws++;
+    
+    // Update average move count
+    const totalMoves = this.progress.averageMoveCount * (this.progress.gamesPlayed - 1) + game.moveCount;
+    this.progress.averageMoveCount = totalMoves / this.progress.gamesPlayed;
+    
+    // Update wizard attack accuracy (simplified)
+    if (game.wizardAttacks > 0) {
+      this.progress.wizardAttackAccuracy = 
+        (this.progress.wizardAttackAccuracy * 0.95) + (game.wizardAttacks / game.moveCount * 0.05);
     }
   }
   
+  // Report training progress
+  private reportProgress(): void {
+    const elapsed = (Date.now() - this.progress.trainingStartTime) / 1000 / 60; // minutes
+    const gamesPerMinute = this.progress.gamesPlayed / elapsed;
+    
+    console.log('\n📊 Training Progress Report');
+    console.log('═══════════════════════════════════════');
+    console.log(`Games Played: ${this.progress.gamesPlayed}/${this.config.totalGames}`);
+    console.log(`White Wins: ${this.progress.whiteWins} (${(this.progress.whiteWins / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
+    console.log(`Black Wins: ${this.progress.blackWins} (${(this.progress.blackWins / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
+    console.log(`Draws: ${this.progress.draws} (${(this.progress.draws / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
+    console.log(`Avg Game Length: ${this.progress.averageMoveCount.toFixed(1)} moves`);
+    console.log(`Wizard Attack Usage: ${(this.progress.wizardAttackAccuracy * 100).toFixed(2)}%`);
+    console.log(`Current ELO: ${this.progress.currentElo}`);
+    console.log(`Training Speed: ${gamesPerMinute.toFixed(1)} games/min`);
+    console.log(`Time Elapsed: ${elapsed.toFixed(1)} minutes`);
+    console.log(`ETA: ${((this.config.totalGames - this.progress.gamesPlayed) / gamesPerMinute).toFixed(1)} minutes`);
+    console.log('═══════════════════════════════════════\n');
+  }
+  
+  // Report final statistics
   private reportFinalStats(): void {
-    const totalTime = (Date.now() - this.progress.trainingStartTime) / 1000 / 60 / 60; // hours
-    
     console.log('\n🏆 FINAL TRAINING STATISTICS');
-    console.log('═══════════════════════════════════════════');
+    console.log('═══════════════════════════════════════');
     console.log(`Total Games: ${this.progress.gamesPlayed}`);
-    console.log(`Training Time: ${totalTime.toFixed(2)} hours`);
-    console.log(`Final Win Rates:`);
-    console.log(`  White: ${(this.progress.whiteWins / this.progress.gamesPlayed * 100).toFixed(2)}%`);
-    console.log(`  Black: ${(this.progress.blackWins / this.progress.gamesPlayed * 100).toFixed(2)}%`);
-    console.log(`  Draws: ${(this.progress.draws / this.progress.gamesPlayed * 100).toFixed(2)}%`);
-    console.log(`Average Game Length: ${this.progress.averageMoveCount.toFixed(1)} moves`);
-    console.log(`Wizard Attack Mastery: ${(this.progress.wizardAttackAccuracy * 100).toFixed(1)}%`);
-    console.log(`Estimated ELO: ${this.progress.currentElo}+`);
+    console.log(`Final ELO: ${this.progress.currentElo}`);
+    console.log(`Win Distribution:`);
+    console.log(`  White: ${this.progress.whiteWins} (${(this.progress.whiteWins / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
+    console.log(`  Black: ${this.progress.blackWins} (${(this.progress.blackWins / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
+    console.log(`  Draws: ${this.progress.draws} (${(this.progress.draws / this.progress.gamesPlayed * 100).toFixed(1)}%)`);
     console.log(`Checkpoints Saved: ${this.progress.checkpoints.length}`);
-    console.log('═══════════════════════════════════════════\n');
-    console.log('🎯 Model is now ready for deployment!');
+    console.log(`Training Time: ${((Date.now() - this.progress.trainingStartTime) / 1000 / 60 / 60).toFixed(2)} hours`);
+    console.log('═══════════════════════════════════════');
   }
   
-  private async initializeModel(): Promise<void> {
-    // Try to load existing model or create new one
-    try {
-      const savedModel = localStorage.getItem('selfPlayProgress');
-      if (savedModel) {
-        this.progress = JSON.parse(savedModel);
-        console.log(`📂 Resuming training from game ${this.progress.gamesPlayed}`);
-      }
-      
-      await this.model.initialize();
-    } catch (error) {
-      console.log('🆕 Starting fresh training session');
-      await this.model.initialize();
-    }
-  }
-  
-  // Stop training gracefully
+  // Stop training
   stopTraining(): void {
-    console.log('🛑 Stopping training...');
+    console.log('⏹️ Stopping training...');
     this.isTraining = false;
   }
 }
 
-// Export function to start training
-export async function startSelfPlayTraining(games: number = 100000): Promise<void> {
-  const trainer = new SelfPlayTrainer();
+// Global instance for browser console access
+let trainer: SelfPlayTrainer | null = null;
+
+// Main entry point for self-play training
+export async function runSelfPlay(games: number = 100000): Promise<void> {
+  console.log('🚀 Starting Wizard Chess Self-Play Training');
+  console.log(`📊 Configuration: ${games} games, batch size 256 (64×4), checkpoint every 5k`);
+  console.log('🧙 Wizard Logic: Corrected (stays in place for ranged attacks)');
+  
+  // Create new trainer
+  trainer = new SelfPlayTrainer();
+  
+  // Start training
   await trainer.startTraining(games);
+}
+
+// Stop current training
+export function stopSelfPlay(): void {
+  if (trainer) {
+    trainer.stopTraining();
+    console.log('✅ Training stopped successfully');
+  } else {
+    console.log('⚠️ No training in progress');
+  }
+}
+
+// Get training status
+export function getSelfPlayStatus(): void {
+  if (trainer) {
+    trainer.reportProgress();
+  } else {
+    console.log('⚠️ No training in progress');
+  }
+}
+
+// Make functions available globally in browser
+if (typeof window !== 'undefined') {
+  (window as any).runSelfPlay = runSelfPlay;
+  (window as any).stopSelfPlay = stopSelfPlay;
+  (window as any).getSelfPlayStatus = getSelfPlayStatus;
+  
+  console.log('🎮 Self-Play Training Functions Loaded!');
+  console.log('   • runSelfPlay(100000) - Start 100k game training');
+  console.log('   • stopSelfPlay() - Stop current training');
+  console.log('   • getSelfPlayStatus() - Check training progress');
 }
