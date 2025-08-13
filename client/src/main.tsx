@@ -111,6 +111,15 @@ import('./lib/ai/testRL').then(module => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load testRL:`, err);
 });
 
+// Add integration test
+import('./lib/ai/testIntegration').then(module => {
+  (window as any).simulateGameWithCommentary = module.simulateGameWithCommentary;
+  console.log(`[${new Date().toISOString()}] ✅ simulateGameWithCommentary loaded`);
+  console.log('🎮 Run simulateGameWithCommentary() to test full integration');
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load testIntegration:`, err);
+});
+
 // Add deployment AI
 import('./lib/ai/deployAI').then(module => {
   module.deployAI().then(() => {

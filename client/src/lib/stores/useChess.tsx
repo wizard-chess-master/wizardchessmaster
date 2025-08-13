@@ -14,6 +14,9 @@ import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
 import gameDataCollector from "../dataCollection/gameDataCollector";
+import { useDynamicAIMentor } from "./useDynamicAIMentor";
+import { aiCoach, rlCommentary } from "../ai/coach";
+import type { Tags } from "../ai/coach";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -29,7 +32,7 @@ interface ChessStore extends GameState {
   // Actions
   startGame: (mode: GameMode, aiDifficulty?: AIDifficulty) => void;
   selectSquare: (position: Position | null) => void;
-  makePlayerMove: (from: Position, to: Position) => void;
+  makePlayerMove: (from: Position, to: Position) => Promise<void>;
   makeAIMove: () => void;
   makeAIVsAIMove: () => void;
   resetGame: () => void;
@@ -268,7 +271,7 @@ export const useChess = create<ChessStore>()(
       }
     },
 
-    makePlayerMove: (from: Position, to: Position) => {
+    makePlayerMove: async (from: Position, to: Position) => {
       const state = get();
       const piece = state.board[from.row][from.col];
       const captured = state.board[to.row][to.col] || undefined;
@@ -345,6 +348,41 @@ export const useChess = create<ChessStore>()(
 
       const newState = makeMove(state, move);
       set(newState);
+      
+      // 🤖 Generate AI Coach commentary with RL system
+      try {
+        // Get control tags for the move
+        const tags = await aiCoach.addControlTags(newState, move);
+        
+        // Generate commentary using RL system
+        const commentary = await rlCommentary.generateCommentary(newState, tags);
+        
+        // Update mentor with the commentary if it was generated
+        if (commentary) {
+          const mentorStore = useDynamicAIMentor.getState();
+          
+          // Determine relevance based on move quality
+          const isRelevant = tags.moveQuality > 0.7;
+          
+          // Create mentor feedback
+          const feedback = mentorStore.generateContextualFeedback(newState, tags.moveQuality);
+          
+          // Override the message with our RL-generated commentary
+          feedback.message = commentary;
+          
+          // Add the feedback to the mentor
+          mentorStore.addFeedback(feedback);
+          
+          console.log('🤖 AI Coach Commentary:', {
+            tags,
+            commentary,
+            relevance: isRelevant ? 'High' : 'Low',
+            moveNumber: newState.moveHistory.length
+          });
+        }
+      } catch (error) {
+        console.error('Failed to generate AI commentary:', error);
+      }
       
       // 📊 Record move for data collection (AI games only)
       if (state.gameMode === 'ai' && gameDataCollector.isCollectingData()) {
