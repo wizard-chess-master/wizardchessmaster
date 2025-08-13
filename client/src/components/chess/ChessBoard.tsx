@@ -1051,10 +1051,56 @@ export function ChessBoard() {
         }
       }
       
-      // Get the moved piece
-      const movedPiece = toRow >= 0 && toCol >= 0 ? board[toRow][toCol] : null;
+      // Check if this is a wizard ranged attack (wizard stays in place)
+      const isWizardAttack = lastMove.isWizardAttack || false;
+      
+      // Get the piece that made the move
+      // For wizard attacks, the wizard stays at the from position
+      const movedPiece = isWizardAttack 
+        ? (fromRow >= 0 && fromCol >= 0 ? board[fromRow][fromCol] : null)
+        : (toRow >= 0 && toCol >= 0 ? board[toRow][toCol] : null);
       
       if (movedPiece && fromRow >= 0 && fromCol >= 0 && toRow >= 0 && toCol >= 0) {
+        // Special handling for wizard ranged attacks
+        if (isWizardAttack) {
+          console.log('🧙 Wizard ranged attack detected - wizard stays at:', { row: fromRow, col: fromCol });
+          
+          // Create attack effect at target without moving the wizard
+          const targetX = toCol * squareSize + squareSize / 2;
+          const targetY = toRow * squareSize + squareSize / 2;
+          
+          // Trigger attack burst effect at target
+          setAttackBurstEffect({
+            x: targetX,
+            y: targetY,
+            timestamp: Date.now()
+          });
+          
+          // Create particles for the attack
+          const attackParticles: Particle[] = [];
+          for (let i = 0; i < 15; i++) {
+            const angle = (i / 15) * Math.PI * 2;
+            const speed = 4 + Math.random() * 3;
+            attackParticles.push({
+              x: targetX,
+              y: targetY,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed,
+              life: 25,
+              maxLife: 25,
+              color: '#ff00ff', // Purple for wizard attacks
+              size: 3 + Math.random() * 2
+            });
+          }
+          setParticles(prev => [...prev, ...attackParticles]);
+          
+          // Play wizard attack sound
+          playWizardAbility('ranged_attack');
+          
+          // Don't animate piece movement for ranged attacks
+          return;
+        }
+        
         console.log('🎭 Animating piece movement:', {
           piece: movedPiece.type,
           from: { row: fromRow, col: fromCol },
@@ -1069,7 +1115,7 @@ export function ChessBoard() {
         
         if (isCastling) {
           animationType = 'castling';
-        } else if (movedPiece.type === 'wizard' && (Math.abs(fromRow - toRow) > 1 || Math.abs(fromCol - toCol) > 1)) {
+        } else if (movedPiece.type === 'wizard' && !isCapture && (Math.abs(fromRow - toRow) > 1 || Math.abs(fromCol - toCol) > 1)) {
           animationType = 'wizard-teleport';
         } else if (isCapture) {
           animationType = 'attack';
