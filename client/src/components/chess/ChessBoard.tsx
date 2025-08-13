@@ -148,8 +148,14 @@ export function ChessBoard() {
       
       if (isAIMove) {
         console.log('🤖 Detected AI move, triggering opponent highlight');
+        
+        // Skip animation for wizard ranged attacks - they're handled by special effects
+        if (lastMove.isWizardAttack) {
+          console.log('🧙 Skipping movement animation for wizard ranged attack');
+          return;
+        }
+        
         const type = lastMove.isWizardTeleport ? 'wizard-teleport' 
-                   : lastMove.isWizardAttack ? 'attack'
                    : lastMove.isCastling ? 'castling' 
                    : 'normal';
         
