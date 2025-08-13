@@ -1065,34 +1065,87 @@ export function ChessBoard() {
         if (isWizardAttack) {
           console.log('🧙 Wizard ranged attack detected - wizard stays at:', { row: fromRow, col: fromCol });
           
-          // Create attack effect at target without moving the wizard
+          // Calculate positions for magic beam effect
+          const wizardX = fromCol * squareSize + squareSize / 2;
+          const wizardY = fromRow * squareSize + squareSize / 2;
           const targetX = toCol * squareSize + squareSize / 2;
           const targetY = toRow * squareSize + squareSize / 2;
           
-          // Trigger attack burst effect at target
-          setAttackBurstEffect({
-            x: targetX,
-            y: targetY,
-            timestamp: Date.now()
-          });
+          // Create magical beam particles from wizard to target
+          const beamParticles: Particle[] = [];
+          const beamSteps = 20;
+          const dx = targetX - wizardX;
+          const dy = targetY - wizardY;
           
-          // Create particles for the attack
-          const attackParticles: Particle[] = [];
-          for (let i = 0; i < 15; i++) {
-            const angle = (i / 15) * Math.PI * 2;
-            const speed = 4 + Math.random() * 3;
-            attackParticles.push({
+          // Create delayed particle trail for magic beam effect
+          for (let i = 0; i < beamSteps; i++) {
+            setTimeout(() => {
+              const progress = i / beamSteps;
+              const beamX = wizardX + dx * progress;
+              const beamY = wizardY + dy * progress;
+              
+              // Create magical sparkles along the beam path
+              for (let j = 0; j < 3; j++) {
+                beamParticles.push({
+                  x: beamX + (Math.random() - 0.5) * 10,
+                  y: beamY + (Math.random() - 0.5) * 10,
+                  vx: (Math.random() - 0.5) * 2,
+                  vy: (Math.random() - 0.5) * 2 - 0.5,
+                  life: 30,
+                  maxLife: 30,
+                  color: ['#ff00ff', '#aa00ff', '#ff44ff'][Math.floor(Math.random() * 3)], // Purple variations
+                  size: 2 + Math.random() * 2
+                });
+              }
+              setParticles(prev => [...prev, ...beamParticles]);
+            }, i * 15); // Stagger particle creation for beam effect
+          }
+          
+          // Delayed impact explosion at target
+          setTimeout(() => {
+            // Trigger attack burst effect at target
+            setAttackBurstEffect({
               x: targetX,
               y: targetY,
-              vx: Math.cos(angle) * speed,
-              vy: Math.sin(angle) * speed,
-              life: 25,
-              maxLife: 25,
-              color: '#ff00ff', // Purple for wizard attacks
-              size: 3 + Math.random() * 2
+              timestamp: Date.now(),
+              color: '#ff00ff' // Purple for wizard attacks
             });
-          }
-          setParticles(prev => [...prev, ...attackParticles]);
+            
+            // Create impact particles at target
+            const impactParticles: Particle[] = [];
+            for (let i = 0; i < 25; i++) {
+              const angle = (i / 25) * Math.PI * 2;
+              const speed = 5 + Math.random() * 4;
+              impactParticles.push({
+                x: targetX,
+                y: targetY,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 35,
+                maxLife: 35,
+                color: '#ff00ff', // Purple for wizard attacks
+                size: 4 + Math.random() * 3
+              });
+            }
+            
+            // Add some larger magical orbs
+            for (let i = 0; i < 5; i++) {
+              const angle = Math.random() * Math.PI * 2;
+              const speed = 2 + Math.random() * 2;
+              impactParticles.push({
+                x: targetX,
+                y: targetY,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed - 1,
+                life: 45,
+                maxLife: 45,
+                color: '#ffaaff', // Light purple orbs
+                size: 6 + Math.random() * 4
+              });
+            }
+            
+            setParticles(prev => [...prev, ...impactParticles]);
+          }, 300); // Delay impact for dramatic effect
           
           // Play wizard attack sound
           playWizardAbility('ranged_attack');
