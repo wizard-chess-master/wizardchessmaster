@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, Trophy, Gift, Sparkles } from 'lucide-react';
 import { useCampaign } from '../../lib/stores/useCampaign';
+import { useChess } from '../../lib/stores/useChess';
 
 interface RewardData {
   levelName: string;
@@ -19,6 +20,7 @@ interface CampaignRewardCelebrationProps {
 
 export function CampaignRewardCelebration({ isOpen, onClose, rewardData }: CampaignRewardCelebrationProps) {
   const [showContent, setShowContent] = useState(false);
+  const { resetGame } = useChess();
 
   useEffect(() => {
     if (isOpen) {
@@ -149,7 +151,13 @@ export function CampaignRewardCelebration({ isOpen, onClose, rewardData }: Campa
                 transition={{ delay: 1.1 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={onClose}
+                onClick={() => {
+                  onClose();
+                  // Reset game and return to campaign menu
+                  setTimeout(() => {
+                    resetGame();
+                  }, 300); // Small delay to allow modal close animation
+                }}
                 className="mt-6 px-8 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold rounded-lg shadow-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-200"
               >
                 Continue Adventure
