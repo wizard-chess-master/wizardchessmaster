@@ -1,0 +1,138 @@
+DEPLOYING WIZARD CHESS AI - 2550 ELO
+index-BKudg56m.js:20307 ══════════════════════════════════════════════════════════════════════
+index-BKudg56m.js:20306 🚀 Loading trained AI model from 100k checkpoint...
+index-BKudg56m.js:20305 🏗️ Building deep neural network...
+index-BKudg56m.js:20305 ✅ Deep neural network built successfully
+index-BKudg56m.js:20305    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+index-BKudg56m.js:20305    Total parameters: 1246437
+index-BKudg56m.js:20306 ✅ Model architecture built with 2550 ELO strength
+index-BKudg56m.js:20306 ✅ Model loaded successfully
+index-BKudg56m.js:20306    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+index-BKudg56m.js:20306    ELO Rating: 2550
+index-BKudg56m.js:20306    Training Games: 100,000
+index-BKudg56m.js:40 🏁 Creating initial board setup...
+index-BKudg56m.js:40 🔧 Fixed board setup - verifying white home row:
+index-BKudg56m.js:40 Position (9,6) wizard: Object
+index-BKudg56m.js:21055 🔊 Audio Compatibility Check: Object
+index-BKudg56m.js:21101 🎮 Wizard Chess AI Training Functions Loaded!
+index-BKudg56m.js:21101    • startAITraining(100000) - Start training with 100k games
+index-BKudg56m.js:21101    • stopAITraining() - Stop current training
+index-BKudg56m.js:21101    • getTrainingStatus() - Check training progress
+index-BKudg56m.js:21107 🎮 Self-Play Training Functions Loaded!
+index-BKudg56m.js:21107    • runSelfPlay(100000) - Start 100k game training
+index-BKudg56m.js:21107    • stopSelfPlay() - Stop current training
+index-BKudg56m.js:21107    • getSelfPlayStatus() - Check training progress
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.493Z] Wizard Chess Master - Initializing...
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.494Z] Environment: production
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.494Z] URL: https://wizardchessmaster.com/
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.494Z] Initializing AI functions...
+2index-BKudg56m.js:20305 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+index-BKudg56m.js:20307 
+✅ AI DEPLOYMENT SUCCESSFUL
+index-BKudg56m.js:20308    Model is now available globally as window.wizardChessAI
+index-BKudg56m.js:20308    ELO Rating: 2550 (Grandmaster level)
+index-BKudg56m.js:20308    Ready for gameplay at wizardchessmaster.com
+index-BKudg56m.js:20308 ══════════════════════════════════════════════════════════════════════
+index-BKudg56m.js:21096 🌐 Browser detected: Chrome 139.0.0.0
+index-BKudg56m.js:21096 📊 Compatibility score: 100%
+index-BKudg56m.js:20311 🎮 AI deployment complete, running integration test...
+index-BKudg56m.js:20308 
+======================================================================
+index-BKudg56m.js:20309 🧪 TESTING AI INTEGRATION (2550 ELO)
+index-BKudg56m.js:20309 ======================================================================
+index-BKudg56m.js:20309 ✅ AI Model Status:
+index-BKudg56m.js:20309    - ELO Rating: 2550
+index-BKudg56m.js:20309    - Training Games: 100000
+index-BKudg56m.js:20309    - Model Available: Yes
+index-BKudg56m.js:20309    - Functions Available: getBestMove=function, evaluatePosition=function
+index-BKudg56m.js:20309 
+📊 Testing position evaluation...
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.743Z] ✅ testAIModel loaded and exposed globally
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.743Z] ✅ runSelfPlay and getSelfPlayStatus loaded
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.743Z] ✅ startAITraining loaded
+index-BKudg56m.js:20306 
+══════════════════════════════════════════════════════════════════════
+index-BKudg56m.js:20307 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+index-BKudg56m.js:20307 ══════════════════════════════════════════════════════════════════════
+index-BKudg56m.js:20306 🚀 Loading trained AI model from 100k checkpoint...
+index-BKudg56m.js:20305 🏗️ Building deep neural network...
+index-BKudg56m.js:20305 ✅ Deep neural network built successfully
+index-BKudg56m.js:20305    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+index-BKudg56m.js:20305    Total parameters: 1246437
+index-BKudg56m.js:20306 ✅ Model architecture built with 2550 ELO strength
+index-BKudg56m.js:20306 ✅ Model loaded successfully
+index-BKudg56m.js:20306    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+index-BKudg56m.js:20306    ELO Rating: 2550
+index-BKudg56m.js:20306    Training Games: 100,000
+index-BKudg56m.js:20305 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+index-BKudg56m.js:20307 
+✅ AI DEPLOYMENT SUCCESSFUL
+index-BKudg56m.js:20308    Model is now available globally as window.wizardChessAI
+index-BKudg56m.js:20308    ELO Rating: 2550 (Grandmaster level)
+index-BKudg56m.js:20308    Ready for gameplay at wizardchessmaster.com
+index-BKudg56m.js:20308 ══════════════════════════════════════════════════════════════════════
+index-BKudg56m.js:21107 [2025-08-13T16:58:45.815Z] ✅ AI deployed successfully
+10index-BKudg56m.js:20790 ⚠️ Could not verify premium status, defaulting to free
+isAdFree @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:21107 🎵 Initializing audio system...
+index-BKudg56m.js:40 🛑 URGENT: Comprehensive audio cleanup on initialization...
+index-BKudg56m.js:40 Audio check: Array(0)
+index-BKudg56m.js:40 Context: Available
+index-BKudg56m.js:40 🎵 Initializing Wizard Chess Audio System...
+index-BKudg56m.js:40 🎵 Initializing Wizard Chess Audio Manager...
+index-BKudg56m.js:40 🎵 Loading Sound Effects...
+index-BKudg56m.js:21107 🔄 Hash changed to: 
+index-BKudg56m.js:40 ✅ AudioContext closed
+index-BKudg56m.js:20310    Position evaluation: -0.0019001041073352098
+index-BKudg56m.js:20310 
+✅ AI INTEGRATION TEST PASSED
+index-BKudg56m.js:20311    The 2550 ELO AI is ready for gameplay!
+index-BKudg56m.js:20311 ======================================================================
+index-BKudg56m.js:20311 📊 Connected to data collection server
+index-BKudg56m.js:20790 ⚠️ AdSense not initialized, showing fallback ad
+showBannerAd @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:20790 🚫 Fallback promotional ad disabled
+index-BKudg56m.js:20790 ⚠️ AdSense not initialized, showing fallback ad
+showBannerAd @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:20790 🚫 Fallback promotional ad disabled
+index-BKudg56m.js:20790 ⚠️ AdSense not initialized, showing fallback ad
+showBannerAd @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:20790 🚫 Fallback promotional ad disabled
+index-BKudg56m.js:20790 ⚠️ AdSense not initialized, showing fallback ad
+showBannerAd @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:20790 🚫 Fallback promotional ad disabled
+index-BKudg56m.js:20790 ⚠️ AdSense not initialized, showing fallback ad
+showBannerAd @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:20790 🚫 Fallback promotional ad disabled
+index-BKudg56m.js:20311 ✅ Global Audio Manager initialized successfully
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: victory
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: wizard_attack
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: checkmate
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: capture_zap
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: hint_reveal
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: check_alert
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: move_clack
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: wizard_teleport
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: button_click
+index-BKudg56m.js:21107 🎵 Main.tsx: Theme-music2.mp3 ready - user will control theme music
+index-BKudg56m.js:21055 ⚡ Navigation Performance: Object
+index-BKudg56m.js:40 ✅ Loaded Sound Effects: level_start
+index-BKudg56m.js:40 ✅ Sound Effects loading completed
+index-BKudg56m.js:40 🎵 Loading Voice Files...
+index-BKudg56m.js:40 ✅ Loaded Voice Files: hint_explanation
+index-BKudg56m.js:40 ✅ Loaded Voice Files: game_intro
+index-BKudg56m.js:40 ✅ Loaded Voice Files: victory_celebration
+index-BKudg56m.js:40 ✅ Loaded Voice Files: level_complete
+index-BKudg56m.js:40 ✅ Loaded Voice Files: greeting
+index-BKudg56m.js:40 ✅ Loaded Voice Files: defeat_encouragement
+index-BKudg56m.js:40 ✅ Loaded Voice Files: tutorial_welcome
+index-BKudg56m.js:40 ✅ Voice Files loading completed
+index-BKudg56m.js:40 ✅ Wizard Chess Audio Manager initialized successfully
+index-BKudg56m.js:40 ✅ Wizard Chess Audio System initialized
+5index-BKudg56m.js:20790 ⚠️ Could not verify premium status, defaulting to free
+isAdFree @ index-BKudg56m.js:20790Understand this warning
+index-BKudg56m.js:21107 ✅ Audio system initialized
+index-BKudg56m.js:21107 💳 Initializing monetization systems...
+index-BKudg56m.js:20736 🎯 AdSense initialized successfully with publisher: 4938312134119004
+index-BKudg56m.js:20851 💳 Stripe initialized successfully
+index-BKudg56m.js:21107 ✅ Monetization systems initialized
