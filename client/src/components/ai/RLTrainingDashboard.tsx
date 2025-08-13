@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { 
   Play, Pause, RotateCcw, Download, Upload, 
-  TrendingUp, Activity, Brain, Zap, Target, Award 
+  TrendingUp, Activity, Brain, Zap, Target, Award, TestTube
 } from 'lucide-react';
 import { 
   LineChart, Line, AreaChart, Area, BarChart, Bar,
@@ -20,6 +20,7 @@ import {
 } from 'recharts';
 import { selfPlayTrainer, TrainingProgress, GenerationStats } from '@/lib/ai/selfPlayTraining';
 import { rlSystem } from '@/lib/ai/reinforcementLearning';
+import { StabilityTestRunner } from './StabilityTestRunner';
 
 export function RLTrainingDashboard() {
   const [isTraining, setIsTraining] = useState(false);
@@ -214,11 +215,15 @@ export function RLTrainingDashboard() {
 
       {/* Main Dashboard */}
       <Tabs value={selectedTab} onValueChange={setSelectedTab}>
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
           <TabsTrigger value="analysis">Analysis</TabsTrigger>
           <TabsTrigger value="config">Configuration</TabsTrigger>
+          <TabsTrigger value="stability">
+            <TestTube className="w-4 h-4 mr-1" />
+            Stability
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -441,6 +446,11 @@ export function RLTrainingDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Stability Testing Tab */}
+        <TabsContent value="stability" className="space-y-4">
+          <StabilityTestRunner />
         </TabsContent>
       </Tabs>
     </div>
