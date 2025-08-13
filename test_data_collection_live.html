@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Live Data Collection Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a1a; color: #0f0; }
+        .log { margin: 5px 0; padding: 5px 10px; border-left: 3px solid #0f0; }
+        .error { color: #f00; border-color: #f00; }
+        button { background: #0f0; color: #000; border: none; padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>📊 Live Data Collection Test</h1>
+    <button onclick="runTest()">Run Full Test</button>
+    <button onclick="checkDB()">Check Database</button>
+    <div id="logs"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function log(msg, type = 'log') {
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            document.getElementById('logs').appendChild(div);
+            console.log(msg);
+        }
+
+        function runTest() {
+            log('🚀 Starting data collection test...', 'log');
+            
+            const socket = io('/', {
+                path: '/socket.io/',
+                transports: ['websocket', 'polling']
+            });
+            
+            socket.on('connect', () => {
+                log('✅ Connected to Socket.IO', 'log');
+                
+                const gameId = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                
+                // Start game
+                socket.emit('game:start', {
+                    gameId: gameId,
+                    playerColor: 'white',
+                    opponentType: 'ai',
+                    aiDifficulty: 'medium'
+                });
+                log(`📤 game:start sent (ID: ${gameId})`, 'log');
+                
+                // Simulate 3 moves
+                setTimeout(() => {
+                    socket.emit('game:move', {
+                        gameId: gameId,
+                        move: { from: {row: 8, col: 4}, to: {row: 6, col: 4}, piece: {type: 'pawn'} },
+                        gameState: { currentPlayer: 'black', moveCount: 1 }
+                    });
+                    log('📤 Move 1: e2-e4', 'log');
+                }, 500);
+                
+                setTimeout(() => {
+                    socket.emit('game:move', {
+                        gameId: gameId,
+                        move: { from: {row: 1, col: 4}, to: {row: 3, col: 4}, piece: {type: 'pawn'} },
+                        gameState: { currentPlayer: 'white', moveCount: 2 }
+                    });
+                    log('📤 Move 2: e7-e5', 'log');
+                }, 1000);
+                
+                setTimeout(() => {
+                    socket.emit('game:move', {
+                        gameId: gameId,
+                        move: { from: {row: 9, col: 6}, to: {row: 6, col: 5}, piece: {type: 'knight'} },
+                        gameState: { currentPlayer: 'black', moveCount: 3 }
+                    });
+                    log('📤 Move 3: Nf3', 'log');
+                }, 1500);
+                
+                // End game
+                setTimeout(() => {
+                    socket.emit('game:end', {
+                        gameId: gameId,
+                        result: 'win',
+                        winner: 'white',
+                        durationSeconds: 120
+                    });
+                    log('📤 game:end sent (White wins)', 'log');
+                    log('✅ Test complete! Check server logs for confirmation.', 'log');
+                    
+                    setTimeout(() => {
+                        socket.disconnect();
+                        log('🔌 Disconnected', 'log');
+                    }, 500);
+                }, 2000);
+            });
+            
+            socket.on('ping', () => {
+                socket.emit('pong');
+                log('🏓 Heartbeat: ping-pong', 'log');
+            });
+            
+            socket.on('connect_error', (err) => {
+                log(`❌ Connection error: ${err.message}`, 'error');
+            });
+        }
+        
+        async function checkDB() {
+            log('📊 To check database, run this SQL:', 'log');
+            log('SELECT * FROM human_games ORDER BY created_at DESC LIMIT 5;', 'log');
+        }
+    </script>
+</body>
+</html>
