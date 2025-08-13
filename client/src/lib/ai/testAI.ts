@@ -5,7 +5,7 @@
 import { DeepNeuralNetwork } from './deepNeuralNetwork';
 import { createInitialBoard } from '../chess/gameEngine';
 
-export async function testAIModel(): Promise<void> {
+export async function testAIModel(): Promise<any> {
   console.log('🧪 Testing AI Model Configuration...');
   
   try {
