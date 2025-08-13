@@ -23,12 +23,8 @@ if (typeof window !== 'undefined') {
       return;
     }
     
-    // Log the error for monitoring
-    if (typeof window !== 'undefined' && window.console && window.console.error) {
-      console.error('Unhandled promise rejection:', event.reason);
-    }
-    
-    // Prevent default to avoid double logging
+    console.warn('Unhandled promise rejection:', event.reason);
+    // Prevent default to avoid console error spam
     event.preventDefault();
   });
 

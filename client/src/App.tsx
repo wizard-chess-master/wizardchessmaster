@@ -25,12 +25,8 @@ import { PremiumTestButton } from "./components/debug/PremiumTestButton";
 import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
 import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
 import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
-import { StabilityTestPanelV2 } from "./components/debug/StabilityTestPanelV2";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
 import { DeploymentPanel } from "./components/debug/DeploymentPanel";
-import { DeploymentPanelV2 } from "./components/debug/DeploymentPanelV2";
-import { DebugTestRunner } from "./components/debug/DebugTestRunner";
-import { PerformanceProfilerPanel } from "./components/performance/PerformanceProfilerPanel";
 import { PerformanceOverlay } from "./components/performance/PerformanceOverlay";
 import { initializePerformance } from "./lib/performance";
 
@@ -53,7 +49,7 @@ import "@fontsource/inter";
 import "./styles/chess.css";
 import "./styles/animations.css";
 import "./debug";
-import { ErrorBoundary, GameErrorBoundary, MultiplayerErrorBoundary } from "./components/ErrorBoundary";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 function AppContent() {
   const { gamePhase, ...gameState } = useChess();
@@ -324,7 +320,6 @@ function AppContent() {
           />
 
         <div className="game-container">
-        <ErrorBoundary>
         {/* Immersive Audio Controller - manages 3D spatial audio for chess game */}
         <ChessAudioController />
         
@@ -451,12 +446,9 @@ function AppContent() {
         <PremiumTestButton email="tokingteepee@gmail.com" />
         <SystemDiagnostics />
         <PerformanceDashboard />
-        <StabilityTestPanelV2 />
+        <StabilityTestPanel />
         <BrowserCompatibilityPanel />
-        <DeploymentPanelV2 />
-        <DebugTestRunner />
-        <PerformanceProfilerPanel />
-        </ErrorBoundary>
+        <DeploymentPanel />
         </div>
       </div>
       </AuthProvider>

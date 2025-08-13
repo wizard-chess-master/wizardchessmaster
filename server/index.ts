@@ -2,66 +2,12 @@ import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { createServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
-import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { MultiplayerManager } from "./multiplayer";
-import { serverLogger } from "./utils/serverLogger";
-import { securityHeaders, cacheControl, compressionOptions } from "./middleware/security";
 import path from "path";
 
 const app = express();
-
-// Apply compression middleware first (before any responses)
-app.use(compression({
-  filter: (req, res) => {
-    // Compress everything except streams
-    if (req.headers['x-no-compression']) {
-      return false;
-    }
-    return compression.filter(req, res);
-  },
-  level: 6,
-  threshold: 1024
-}));
-
-// Apply security and cache headers to ALL responses (including index.html)
-app.use((req, res, next) => {
-  // Set headers for ALL responses
-  
-  // CSP headers - always apply
-  res.setHeader('Content-Security-Policy', [
-    "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://www.googletagmanager.com https://pagead2.googlesyndication.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    "font-src 'self' https://fonts.gstatic.com data:",
-    "img-src 'self' data: blob: https://*.stripe.com https://googleads.g.doubleclick.net",
-    "connect-src 'self' ws: wss: https://api.stripe.com https://api.openai.com https://googleads.g.doubleclick.net",
-    "frame-src 'self' https://js.stripe.com https://googleads.g.doubleclick.net"
-  ].join('; '));
-  
-  // Security headers - always apply
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-  
-  // Cache headers based on file type
-  const path = req.path;
-  if (path.match(/\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$/)) {
-    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-  } else if (path.match(/\.(mp3|ogg|wav)$/)) {
-    res.setHeader('Cache-Control', 'public, max-age=604800');
-  } else if (path === '/' || path.match(/\.html?$/)) {
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-  }
-  
-  // Enable compression hint
-  res.setHeader('Vary', 'Accept-Encoding');
-  
-  next();
-});
 
 // Configure session middleware for authentication
 app.use(session({
@@ -83,9 +29,6 @@ app.use('/api/webhooks/stripe', express.raw({ type: 'application/json' }));
 // Standard JSON middleware for other routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// Add request logging middleware
-app.use(serverLogger.requestLogger());
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -160,7 +103,7 @@ app.use((req, res, next) => {
     // importantly only setup vite in development and after
     // setting up all the other routes so the catch-all route
     // doesn't interfere with the other routes
-    if (process.env.NODE_ENV === "development") {
+    if (app.get("env") === "development") {
       await setupVite(app, server);
     } else {
       serveStatic(app);
