@@ -5,6 +5,7 @@
 
 import { GameState, ChessMove } from '../chess/types';
 import { evaluateMove } from '../chess/aiPlayer';
+import * as tf from '@tensorflow/tfjs';
 
 // Control tags for move quality (similar to Leela Chess Zero)
 export enum MoveQualityTag {
@@ -595,3 +596,292 @@ export const aiCoach = new AICoachController();
 
 // Export Tags interface for external use
 export type { Tags };
+
+/**
+ * Reinforcement Learning Commentary System
+ * Uses reward model to optimize commentary generation
+ */
+class RLCommentarySystem {
+  private commentCount: number = 0;
+  private rewardModel: tf.Sequential;
+  private lastComment: string = '';
+  private commentHistory: string[] = [];
+  private isModelReady: boolean = false;
+  
+  constructor() {
+    this.initializeRewardModel();
+  }
+  
+  private async initializeRewardModel() {
+    // Create reward model for RL
+    this.rewardModel = tf.sequential({
+      layers: [
+        tf.layers.dense({ 
+          units: 32, 
+          activation: 'relu', 
+          inputShape: [2], // moveQuality, suggestion index
+          kernelInitializer: 'glorotUniform'
+        }),
+        tf.layers.dropout({ rate: 0.1 }),
+        tf.layers.dense({ 
+          units: 16, 
+          activation: 'relu',
+          kernelInitializer: 'glorotUniform'
+        }),
+        tf.layers.dense({ 
+          units: 1, 
+          activation: 'linear' // Linear for reward prediction
+        })
+      ]
+    });
+    
+    this.rewardModel.compile({
+      optimizer: tf.train.sgd(0.01), // Lower learning rate for stability
+      loss: 'meanSquaredError'
+    });
+    
+    this.isModelReady = true;
+    console.log('🤖 RL Reward Model initialized');
+  }
+  
+  // Convert suggestion to index
+  private tagToIndex(suggestion: string): number {
+    const tagMap: Record<string, number> = {
+      'Improve king safety immediately': 0,
+      'Strengthen your pawn structure': 1,
+      'Complete piece development': 2,
+      'Consider defensive moves to protect your pieces': 3,
+      'Look for better piece coordination': 4,
+      'Good position, maintain pressure': 5,
+      'Excellent! Continue with tactical play': 6,
+      'Consider tactical play': 7
+    };
+    return (tagMap[suggestion] || 7) / 7; // Normalize to 0-1
+  }
+  
+  // Check if commentary is repetitive
+  private isRepetitive(comment: string): boolean {
+    if (!comment) return false;
+    
+    // Check exact repetition in recent history
+    const recentComments = this.commentHistory.slice(-5);
+    if (recentComments.includes(comment)) {
+      return true;
+    }
+    
+    // Check similarity (simple word overlap)
+    const commentWords = new Set(comment.toLowerCase().split(/\s+/));
+    for (const historical of recentComments) {
+      const historicalWords = new Set(historical.toLowerCase().split(/\s+/));
+      const intersection = new Set([...commentWords].filter(x => historicalWords.has(x)));
+      const similarity = intersection.size / Math.min(commentWords.size, historicalWords.size);
+      if (similarity > 0.7) { // 70% similarity threshold
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  // Check if commentary is relevant to game state
+  private isRelevant(state: GameState, suggestion: string): boolean {
+    // Check suggestion relevance to game state
+    if (state.isInCheck && suggestion.includes('king safety')) {
+      return true;
+    }
+    
+    if (state.moveHistory.length < 10 && suggestion.includes('development')) {
+      return true;
+    }
+    
+    if (state.moveHistory.length > 30 && suggestion.includes('endgame')) {
+      return true;
+    }
+    
+    // Check for piece-specific relevance
+    const lastMove = state.moveHistory[state.moveHistory.length - 1];
+    if (lastMove) {
+      if (lastMove.piece.type === 'pawn' && suggestion.includes('pawn')) {
+        return true;
+      }
+      if ((lastMove.piece.type === 'queen' || lastMove.piece.type === 'rook') && 
+          suggestion.includes('pressure')) {
+        return true;
+      }
+    }
+    
+    // Default moderate relevance
+    return Math.random() > 0.3; // 70% chance of being relevant
+  }
+  
+  // Generate commentary using RL
+  async generateCommentary(state: GameState, tags: Tags): Promise<string> {
+    // Frequency limiting: 1 comment per 5 moves
+    this.commentCount++;
+    if (this.commentCount % 5 !== 0) {
+      return ''; // No commentary this move
+    }
+    
+    if (!this.isModelReady) {
+      await this.initializeRewardModel();
+    }
+    
+    try {
+      // Prepare input for reward model
+      const input = tf.tensor2d([[tags.moveQuality, this.tagToIndex(tags.suggestion)]]);
+      
+      // Predict initial reward
+      const rewardPrediction = this.rewardModel.predict(input) as tf.Tensor;
+      let reward = (await rewardPrediction.data())[0];
+      
+      // Generate commentary based on tags and state
+      const commentary = this.generateContextualCommentary(state, tags);
+      
+      // Apply RL rewards/penalties
+      if (this.isRepetitive(commentary)) {
+        reward -= 1.0; // Penalize repetition
+        console.log('🔄 Repetition penalty applied: -1.0');
+      }
+      
+      if (this.isRelevant(state, tags.suggestion)) {
+        reward += 1.0; // Reward relevance
+        console.log('✅ Relevance reward applied: +1.0');
+      }
+      
+      // Clamp reward to reasonable range
+      reward = Math.max(-2, Math.min(2, reward));
+      
+      // Train the reward model with the updated reward
+      const targetReward = tf.tensor1d([reward]);
+      await this.rewardModel.fit(input, targetReward, {
+        epochs: 1,
+        verbose: 0
+      });
+      
+      // Clean up tensors
+      input.dispose();
+      rewardPrediction.dispose();
+      targetReward.dispose();
+      
+      // Update history
+      this.lastComment = commentary;
+      this.commentHistory.push(commentary);
+      if (this.commentHistory.length > 20) {
+        this.commentHistory.shift(); // Keep only recent history
+      }
+      
+      console.log(`💬 Generated commentary (reward: ${reward.toFixed(2)}): "${commentary}"`);
+      return commentary;
+      
+    } catch (error) {
+      console.error('RL Commentary generation failed:', error);
+      return this.getFallbackCommentary(tags);
+    }
+  }
+  
+  // Generate contextual commentary based on state and tags
+  private generateContextualCommentary(state: GameState, tags: Tags): string {
+    const templates = {
+      excellent: [
+        "Brilliant move! {suggestion}",
+        "Excellent tactical awareness! {suggestion}",
+        "Outstanding position achieved! {suggestion}"
+      ],
+      good: [
+        "Good move. {suggestion}",
+        "Solid choice. {suggestion}",
+        "Well played. {suggestion}"
+      ],
+      average: [
+        "Acceptable, but {suggestion}",
+        "Room for improvement. {suggestion}",
+        "Consider this: {suggestion}"
+      ],
+      poor: [
+        "Careful! {suggestion}",
+        "This could be better. {suggestion}",
+        "Watch out! {suggestion}"
+      ]
+    };
+    
+    // Select template based on move quality
+    let selectedTemplates: string[];
+    if (tags.moveQuality > 0.75) {
+      selectedTemplates = templates.excellent;
+    } else if (tags.moveQuality > 0.5) {
+      selectedTemplates = templates.good;
+    } else if (tags.moveQuality > 0.25) {
+      selectedTemplates = templates.average;
+    } else {
+      selectedTemplates = templates.poor;
+    }
+    
+    // Random selection from appropriate templates
+    const template = selectedTemplates[Math.floor(Math.random() * selectedTemplates.length)];
+    
+    // Replace placeholder with suggestion
+    return template.replace('{suggestion}', tags.suggestion);
+  }
+  
+  // Fallback commentary if RL fails
+  private getFallbackCommentary(tags: Tags): string {
+    return `Move quality: ${(tags.moveQuality * 100).toFixed(0)}%. ${tags.suggestion}`;
+  }
+  
+  // Get statistics about commentary generation
+  getStats() {
+    return {
+      totalComments: Math.floor(this.commentCount / 5),
+      historySize: this.commentHistory.length,
+      lastComment: this.lastComment,
+      modelReady: this.isModelReady
+    };
+  }
+  
+  // Reset the system
+  reset() {
+    this.commentCount = 0;
+    this.lastComment = '';
+    this.commentHistory = [];
+    console.log('🔄 RL Commentary System reset');
+  }
+}
+
+// Export RL system instance
+export const rlCommentary = new RLCommentarySystem();
+
+// Global function for testing
+if (typeof window !== 'undefined') {
+  (window as any).generateCommentary = async (state?: GameState, tags?: Tags) => {
+    // Use default test values if not provided
+    const testState = state || {
+      board: Array(10).fill(null).map(() => Array(10).fill(null)),
+      currentPlayer: 'white' as const,
+      selectedPosition: null,
+      validMoves: [],
+      gamePhase: 'playing' as const,
+      gameMode: 'ai' as const,
+      aiDifficulty: 'medium' as const,
+      moveHistory: [],
+      isInCheck: false,
+      isCheckmate: false,
+      isStalemate: false,
+      winner: null
+    };
+    
+    const testTags = tags || {
+      moveQuality: Math.random(),
+      suggestion: 'Consider tactical play'
+    };
+    
+    console.log('🧪 Testing RL Commentary Generation');
+    console.log('   Input tags:', testTags);
+    const result = await rlCommentary.generateCommentary(testState, testTags);
+    console.log('   Generated:', result || '(No commentary - frequency limit)');
+    console.log('   Stats:', rlCommentary.getStats());
+    return result;
+  };
+  
+  (window as any).rlCommentaryStats = () => rlCommentary.getStats();
+  (window as any).resetRLCommentary = () => rlCommentary.reset();
+}

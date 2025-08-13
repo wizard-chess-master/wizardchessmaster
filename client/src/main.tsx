@@ -102,6 +102,15 @@ import('./lib/ai/testTraining').then(module => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load testTraining:`, err);
 });
 
+// Add RL test
+import('./lib/ai/testRL').then(module => {
+  (window as any).testRLSystem = module.testRLSystem;
+  console.log(`[${new Date().toISOString()}] ✅ testRLSystem loaded`);
+  console.log('💡 Run testRLSystem() to test RL commentary');
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load testRL:`, err);
+});
+
 // Add deployment AI
 import('./lib/ai/deployAI').then(module => {
   module.deployAI().then(() => {
