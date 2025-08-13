@@ -1,0 +1,2368 @@
+analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+www.google-analytics.com/analytics.js:1  Failed to load resource: net::ERR_UNSAFE_REDIRECT
+www.googletagmanager.com/gtag/js?id=AW-11411994397:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+_app-e6bd723799b3a3fb.js:13 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-e6bd723799b3a3fb.js:13 [LaunchDarkly] LaunchDarkly client initialized
+WizardChess:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+about:blank:1 Uncaught (in promise) #<Event>
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'ambient-light-sensor'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'battery'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-not-rendered'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'execution-while-out-of-viewport'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'layout-animations'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'legacy-image-formats'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'navigation-override'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'oversized-images'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'publickey-credentials'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'speaker-selection'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unoptimized-images'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+Unrecognized feature: 'unsized-media'.
+framework-5aa35b0080079112.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-5aa35b0080079112.js:1
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowfullscreen'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+Allow attribute will take precedence over 'allowpaymentrequest'.
+inject.js:6072 Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+apply @ inject.js:6072
+about:blank:1 Uncaught (in promise) #<Event>
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+framework-5aa35b0080079112.js:1 Unable to preventDefault inside passive event listener invocation.
+preventDefault @ framework-5aa35b0080079112.js:1
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+Grammarly-check.js:1 [Violation] Permissions policy violation: unload is not allowed in this document.
+(anonymous) @ Grammarly-check.js:1
+inject.js:6072 Canvas2D: Multiple readback operations using getImageData are faster with the willReadFrequently attribute set to true. See: https://html.spec.whatwg.org/multipage/canvas.html#concept-canvas-will-read-frequently
+apply @ inject.js:6072
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+pagead2.googlesyndication.com/pagead/managed/js/adsense/m202508070101/show_ads_impl_fy2021.js:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+Network.js:227 WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ Network.js:227
+eruda.js:2 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=DxFGAq_TrpuT' is invalid.
+    at new t (eruda.js:2:218737)
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🏁 Creating initial board setup...
+ 🔧 Fixed board setup - verifying white home row:
+ Position (9,6) wizard: Object
+ 📚 Hint learning data loaded: Object
+ 🔊 Audio Compatibility Check: Object
+ 🎮 Wizard Chess AI Training Functions Loaded!
+    • startAITraining(100000) - Start training with 100k games
+    • stopAITraining() - Stop current training
+    • getTrainingStatus() - Check training progress
+ 🎮 Self-Play Training Functions Loaded!
+    • runSelfPlay(100000) - Start 100k game training
+    • stopSelfPlay() - Stop current training
+    • getSelfPlayStatus() - Check training progress
+ [2025-08-13T16:34:03.467Z] Wizard Chess Master - Initializing...
+ [2025-08-13T16:34:03.467Z] Environment: development
+ [2025-08-13T16:34:03.467Z] URL: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/
+ [2025-08-13T16:34:03.467Z] Initializing AI functions...
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ 🌐 Browser detected: Chrome 139.0.0.0
+ 📊 Compatibility score: 100%
+ 🎮 AI deployment complete, running integration test...
+ 
+======================================================================
+ 🧪 TESTING AI INTEGRATION (2550 ELO)
+ ======================================================================
+ ✅ AI Model Status:
+    - ELO Rating: 2550
+    - Training Games: 100000
+    - Model Available: Yes
+    - Functions Available: getBestMove=function, evaluatePosition=function
+ 
+📊 Testing position evaluation...
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🎵 Initializing audio system...
+ 🛑 URGENT: Comprehensive audio cleanup on initialization...
+ Audio check: Array(0)
+ Context: Available
+ 🎵 Initializing Wizard Chess Audio System...
+ 🎵 Initializing Wizard Chess Audio Manager...
+ 🎵 Loading Sound Effects...
+ 🔄 Hash changed to: 
+ ✅ AudioContext closed
+    Position evaluation: 0.005789103452116251
+ 
+✅ AI INTEGRATION TEST PASSED
+    The 2550 ELO AI is ready for gameplay!
+ ======================================================================
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🏁 Creating initial board setup...
+ 🔧 Fixed board setup - verifying white home row:
+ Position (9,6) wizard: Object
+ 📚 Hint learning data loaded: Object
+ 🔊 Audio Compatibility Check: Object
+ 🎮 Wizard Chess AI Training Functions Loaded!
+    • startAITraining(100000) - Start training with 100k games
+    • stopAITraining() - Stop current training
+    • getTrainingStatus() - Check training progress
+ 🎮 Self-Play Training Functions Loaded!
+    • runSelfPlay(100000) - Start 100k game training
+    • stopSelfPlay() - Stop current training
+    • getSelfPlayStatus() - Check training progress
+ [2025-08-13T16:34:04.979Z] Wizard Chess Master - Initializing...
+ [2025-08-13T16:34:04.979Z] Environment: development
+ [2025-08-13T16:34:04.979Z] URL: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/
+ [2025-08-13T16:34:04.979Z] Initializing AI functions...
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ 🌐 Browser detected: Chrome 139.0.0.0
+ 📊 Compatibility score: 100%
+ 🎮 AI deployment complete, running integration test...
+ 
+======================================================================
+ 🧪 TESTING AI INTEGRATION (2550 ELO)
+ ======================================================================
+ ✅ AI Model Status:
+    - ELO Rating: 2550
+    - Training Games: 100000
+    - Model Available: Yes
+    - Functions Available: getBestMove=function, evaluatePosition=function
+ 
+📊 Testing position evaluation...
+ ⚠️ Low FPS detected: 2
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/api/auth/session took 1415.60ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/testAI.ts?v=RltaqBZ6KQKidvQvtmxSG took 1405.40ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/selfPlay.ts?v=RltaqBZ6KQKidvQvtmxSG took 1420.70ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/trainSelfPlay.ts?v=RltaqBZ6KQKidvQvtmxSG took 1428.20ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/deployAI.ts?v=RltaqBZ6KQKidvQvtmxSG took 1439.80ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🎵 Initializing audio system...
+ 🛑 URGENT: Comprehensive audio cleanup on initialization...
+ Audio check: Array(0)
+ Context: Available
+ 🎵 Initializing Wizard Chess Audio System...
+ 🎵 Initializing Wizard Chess Audio Manager...
+ 🎵 Loading Sound Effects...
+ 🔄 Hash changed to: 
+ ✅ AudioContext closed
+    Position evaluation: 0.0036054737865924835
+ 
+✅ AI INTEGRATION TEST PASSED
+    The 2550 ELO AI is ready for gameplay!
+ ======================================================================
+ 🎮 Self-Play Training Functions Loaded!
+    • runSelfPlay(100000) - Start 100k game training
+    • stopSelfPlay() - Stop current training
+    • getSelfPlayStatus() - Check training progress
+ [2025-08-13T16:34:05.452Z] ✅ runSelfPlay and getSelfPlayStatus loaded
+ [2025-08-13T16:34:05.453Z] ✅ startAITraining loaded
+ [2025-08-13T16:34:05.456Z] ✅ testAIModel loaded and exposed globally
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ 🎮 AI deployment complete, running integration test...
+ 
+======================================================================
+ 🧪 TESTING AI INTEGRATION (2550 ELO)
+ ======================================================================
+ ✅ AI Model Status:
+    - ELO Rating: 2550
+    - Training Games: 100000
+    - Model Available: Yes
+    - Functions Available: getBestMove=function, evaluatePosition=function
+ 
+📊 Testing position evaluation...
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ [2025-08-13T16:34:05.662Z] ✅ AI deployed successfully
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ✅ Loaded Sound Effects: wizard_attack
+ ✅ Loaded Sound Effects: wizard_teleport
+    Position evaluation: -0.0005106850294396281
+ 
+✅ AI INTEGRATION TEST PASSED
+    The 2550 ELO AI is ready for gameplay!
+ ======================================================================
+ ⚠️ Low FPS detected: 7
+Mt.forEach.n.<computed> @ eruda.js:2
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🏁 Creating initial board setup...
+ 🔧 Fixed board setup - verifying white home row:
+ Position (9,6) wizard: Object
+ 📚 Hint learning data loaded: Object
+ 🔊 Audio Compatibility Check: Object
+ 🎮 Wizard Chess AI Training Functions Loaded!
+    • startAITraining(100000) - Start training with 100k games
+    • stopAITraining() - Stop current training
+    • getTrainingStatus() - Check training progress
+ 🎮 Self-Play Training Functions Loaded!
+    • runSelfPlay(100000) - Start 100k game training
+    • stopSelfPlay() - Stop current training
+    • getSelfPlayStatus() - Check training progress
+ [2025-08-13T16:34:06.244Z] Wizard Chess Master - Initializing...
+ [2025-08-13T16:34:06.245Z] Environment: development
+ [2025-08-13T16:34:06.245Z] URL: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/
+ [2025-08-13T16:34:06.245Z] Initializing AI functions...
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ 🌐 Browser detected: Chrome 139.0.0.0
+ 📊 Compatibility score: 100%
+ 🎮 AI deployment complete, running integration test...
+ 
+======================================================================
+ 🧪 TESTING AI INTEGRATION (2550 ELO)
+ ======================================================================
+ ✅ AI Model Status:
+    - ELO Rating: 2550
+    - Training Games: 100000
+    - Model Available: Yes
+    - Functions Available: getBestMove=function, evaluatePosition=function
+ 
+📊 Testing position evaluation...
+ ⚠️ Low FPS detected: 6
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/api/auth/session took 2174.20ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/testAI.ts?v=9TaQEi0m4rsWKz2JvwqcO took 1128.90ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/selfPlay.ts?v=9TaQEi0m4rsWKz2JvwqcO took 1264.10ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/deployAI.ts?v=9TaQEi0m4rsWKz2JvwqcO took 1265.00ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/src/lib/ai/trainSelfPlay.ts?v=9TaQEi0m4rsWKz2JvwqcO took 1265.90ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Global Audio Manager initialization failed (this is normal in some browsers): Error: Audio load timeout
+    at globalAudioManager.ts:26:60
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🎵 Initializing audio system...
+ 🛑 URGENT: Comprehensive audio cleanup on initialization...
+ Audio check: Array(0)
+ Context: Available
+ 🎵 Initializing Wizard Chess Audio System...
+ 🎵 Initializing Wizard Chess Audio Manager...
+ 🎵 Loading Sound Effects...
+ 🔄 Hash changed to: 
+ ✅ AudioContext closed
+    Position evaluation: -0.0021700463257730007
+ 
+✅ AI INTEGRATION TEST PASSED
+    The 2550 ELO AI is ready for gameplay!
+ ======================================================================
+ 🎮 Self-Play Training Functions Loaded!
+    • runSelfPlay(100000) - Start 100k game training
+    • stopSelfPlay() - Stop current training
+    • getSelfPlayStatus() - Check training progress
+ [2025-08-13T16:34:06.692Z] ✅ runSelfPlay and getSelfPlayStatus loaded
+ ⚠️ Low FPS detected: 2
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Low FPS detected: 2
+Mt.forEach.n.<computed> @ eruda.js:2
+ [2025-08-13T16:34:07.381Z] ✅ startAITraining loaded
+ [2025-08-13T16:34:07.382Z] ✅ testAIModel loaded and exposed globally
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/api/auth/session took 1706.30ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🚫 Fallback promotional ad disabled
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ 🎮 AI deployment complete, running integration test...
+ 
+======================================================================
+ 🧪 TESTING AI INTEGRATION (2550 ELO)
+ ======================================================================
+ ✅ AI Model Status:
+    - ELO Rating: 2550
+    - Training Games: 100000
+    - Model Available: Yes
+    - Functions Available: getBestMove=function, evaluatePosition=function
+ 
+📊 Testing position evaluation...
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ [2025-08-13T16:34:07.624Z] ✅ AI deployed successfully
+ ⚠️ Low FPS detected: 5
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Loaded Sound Effects: wizard_teleport
+ ✅ Loaded Sound Effects: wizard_attack
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/button_click.mp3 took 3000.60ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/move_clack.mp3 took 2853.00ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/capture_zap.mp3 took 2850.70ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/check_alert.mp3 took 2851.70ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/checkmate.mp3 took 2851.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/victory.mp3 took 2887.30ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/button_click.mp3 took 3083.20ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/level_start.mp3 took 2974.00ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/hint_reveal.mp3 took 2849.40ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/button_click.mp3 took 1602.00ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/api/auth/session took 1376.20ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/move_clack.mp3 took 1480.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/capture_zap.mp3 took 1480.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/check_alert.mp3 took 1479.90ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/checkmate.mp3 took 1483.70ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/victory.mp3 took 1547.40ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/level_start.mp3 took 1632.10ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/hint_reveal.mp3 took 1479.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+    Position evaluation: 0.0015911704394966364
+ 
+✅ AI INTEGRATION TEST PASSED
+    The 2550 ELO AI is ready for gameplay!
+ ======================================================================
+ 🎮 Self-Play Training Functions Loaded!
+    • runSelfPlay(100000) - Start 100k game training
+    • stopSelfPlay() - Stop current training
+    • getSelfPlayStatus() - Check training progress
+ [2025-08-13T16:34:07.753Z] ✅ runSelfPlay and getSelfPlayStatus loaded
+ [2025-08-13T16:34:07.753Z] ✅ startAITraining loaded
+ [2025-08-13T16:34:07.761Z] ✅ testAIModel loaded and exposed globally
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ 🎮 AI deployment complete, running integration test...
+ 
+======================================================================
+ 🧪 TESTING AI INTEGRATION (2550 ELO)
+ ======================================================================
+ ✅ AI Model Status:
+    - ELO Rating: 2550
+    - Training Games: 100000
+    - Model Available: Yes
+    - Functions Available: getBestMove=function, evaluatePosition=function
+ 
+📊 Testing position evaluation...
+ 
+══════════════════════════════════════════════════════════════════════
+ 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+ ══════════════════════════════════════════════════════════════════════
+ 🚀 Loading trained AI model from 100k checkpoint...
+ 🏗️ Building deep neural network...
+ ✅ Deep neural network built successfully
+    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+    Total parameters: 1246437
+ ✅ Model architecture built with 2550 ELO strength
+ ✅ Model loaded successfully
+    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+    ELO Rating: 2550
+    Training Games: 100,000
+ 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+ 
+✅ AI DEPLOYMENT SUCCESSFUL
+    Model is now available globally as window.wizardChessAI
+    ELO Rating: 2550 (Grandmaster level)
+    Ready for gameplay at wizardchessmaster.com
+ ══════════════════════════════════════════════════════════════════════
+ [2025-08-13T16:34:07.936Z] ✅ AI deployed successfully
+ ⚠️ Global Audio Manager initialization failed (this is normal in some browsers): Error: Audio load timeout
+    at globalAudioManager.ts:26:60
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Loaded Sound Effects: wizard_attack
+ ✅ Loaded Sound Effects: wizard_teleport
+ ✅ Loaded Sound Effects: move_clack
+ ✅ Loaded Sound Effects: capture_zap
+ ✅ Loaded Sound Effects: check_alert
+ ✅ Loaded Sound Effects: checkmate
+ ✅ Loaded Sound Effects: hint_reveal
+ ✅ Loaded Sound Effects: victory
+ ✅ Loaded Sound Effects: move_clack
+ ✅ Loaded Sound Effects: capture_zap
+ ✅ Loaded Sound Effects: hint_reveal
+ ✅ Loaded Sound Effects: checkmate
+ ✅ Loaded Sound Effects: level_start
+ ✅ Loaded Sound Effects: check_alert
+ ✅ Loaded Sound Effects: victory
+ ✅ Global Audio Manager initialized successfully
+ ✅ Loaded Sound Effects: move_clack
+ ✅ Loaded Sound Effects: capture_zap
+ ✅ Loaded Sound Effects: check_alert
+ ✅ Loaded Sound Effects: checkmate
+ ✅ Loaded Sound Effects: hint_reveal
+ ✅ Loaded Sound Effects: level_start
+    Position evaluation: -0.0114962849766016
+ 
+✅ AI INTEGRATION TEST PASSED
+    The 2550 ELO AI is ready for gameplay!
+ ======================================================================
+ 🎵 Main.tsx: Theme-music2.mp3 ready - user will control theme music
+ ✅ Loaded Sound Effects: button_click
+ ✅ Sound Effects loading completed
+ 🎵 Loading Voice Files...
+ ✅ Loaded Sound Effects: victory
+ ⚡ Navigation Performance: Object
+ ⚠️ Low FPS detected: 23
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Low FPS detected: 23
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🎵 Main.tsx: Theme-music2.mp3 ready - user will control theme music
+ ⚡ Navigation Performance: Object
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/button_click.mp3 took 3746.80ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Loaded Sound Effects: button_click
+ ✅ Sound Effects loading completed
+ 🎵 Loading Voice Files...
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+Network.js:227 WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ Network.js:227
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/level_start.mp3 took 2550.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Loaded Sound Effects: level_start
+Console.js:61 
+══════════════════════════════════════════════════════════════════════
+Console.js:61 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+Console.js:61 ══════════════════════════════════════════════════════════════════════
+Console.js:61 🚀 Loading trained AI model from 100k checkpoint...
+Console.js:61 🏗️ Building deep neural network...
+Console.js:61 ✅ Deep neural network built successfully
+Console.js:61    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+Console.js:61    Total parameters: 1246437
+Console.js:61 ✅ Model architecture built with 2550 ELO strength
+Console.js:61 ✅ Model loaded successfully
+Console.js:61    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+Console.js:61    ELO Rating: 2550
+Console.js:61    Training Games: 100,000
+Console.js:61 🏁 Creating initial board setup...
+Console.js:61 🔧 Fixed board setup - verifying white home row:
+Console.js:61 Position (9,6) wizard: Object
+Console.js:61 📚 Hint learning data loaded: Object
+Console.js:61 🔊 Audio Compatibility Check: Object
+Console.js:61 🎮 Wizard Chess AI Training Functions Loaded!
+Console.js:61    • startAITraining(100000) - Start training with 100k games
+Console.js:61    • stopAITraining() - Stop current training
+Console.js:61    • getTrainingStatus() - Check training progress
+Console.js:61 🎮 Self-Play Training Functions Loaded!
+Console.js:61    • runSelfPlay(100000) - Start 100k game training
+Console.js:61    • stopSelfPlay() - Stop current training
+Console.js:61    • getSelfPlayStatus() - Check training progress
+Console.js:61 [2025-08-13T16:34:09.759Z] Wizard Chess Master - Initializing...
+Console.js:61 [2025-08-13T16:34:09.759Z] Environment: development
+Console.js:61 [2025-08-13T16:34:09.759Z] URL: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/
+Console.js:61 [2025-08-13T16:34:09.759Z] Initializing AI functions...
+Console.js:61 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+Console.js:61 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+Console.js:61 
+✅ AI DEPLOYMENT SUCCESSFUL
+Console.js:61    Model is now available globally as window.wizardChessAI
+Console.js:61    ELO Rating: 2550 (Grandmaster level)
+Console.js:61    Ready for gameplay at wizardchessmaster.com
+Console.js:61 ══════════════════════════════════════════════════════════════════════
+Console.js:61 🌐 Browser detected: Chrome 139.0.0.0
+Console.js:61 📊 Compatibility score: 100%
+Console.js:61 🎮 AI deployment complete, running integration test...
+Console.js:61 
+======================================================================
+Console.js:61 🧪 TESTING AI INTEGRATION (2550 ELO)
+Console.js:61 ======================================================================
+Console.js:61 ✅ AI Model Status:
+Console.js:61    - ELO Rating: 2550
+Console.js:61    - Training Games: 100000
+Console.js:61    - Model Available: Yes
+Console.js:61    - Functions Available: getBestMove=function, evaluatePosition=function
+Console.js:61 
+📊 Testing position evaluation...
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/greeting.mp3 took 1523.30ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/game_intro.mp3 took 1479.20ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/victory_celebration.mp3 took 1479.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/hint_explanation.mp3 took 1482.70ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/defeat_encouragement.mp3 took 1483.80ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/level_complete.mp3 took 1500.00ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/voice-files/tutorial_welcome.mp3 took 1632.60ms
+Mt.forEach.n.<computed> @ eruda.js:2
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/sound-fx/button_click.mp3 took 2866.60ms
+Mt.forEach.n.<computed> @ eruda.js:2
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 🎵 Initializing audio system...
+Console.js:61 🛑 URGENT: Comprehensive audio cleanup on initialization...
+Console.js:61 Audio check: Array(0)
+Console.js:61 Context: Available
+Console.js:61 🎵 Initializing Wizard Chess Audio System...
+Console.js:61 🎵 Initializing Wizard Chess Audio Manager...
+Console.js:61 🎵 Loading Sound Effects...
+Console.js:61 🔄 Hash changed to: 
+Console.js:61 ✅ AudioContext closed
+Console.js:61    Position evaluation: 0.00036416793591342866
+Console.js:61 
+✅ AI INTEGRATION TEST PASSED
+Console.js:61    The 2550 ELO AI is ready for gameplay!
+Console.js:61 ======================================================================
+Console.js:61 [2025-08-13T16:34:10.257Z] ✅ testAIModel loaded and exposed globally
+Console.js:61 ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 🚫 Fallback promotional ad disabled
+Console.js:61 ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 🚫 Fallback promotional ad disabled
+Console.js:61 ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 🚫 Fallback promotional ad disabled
+Console.js:61 ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 🚫 Fallback promotional ad disabled
+Console.js:61 ⚠️ AdSense not initialized, showing fallback ad
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 🚫 Fallback promotional ad disabled
+ 🎵 Main.tsx: Theme-music2.mp3 ready - user will control theme music
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ ✅ Loaded Sound Effects: button_click
+ ✅ Sound Effects loading completed
+ 🎵 Loading Voice Files...
+ ✅ Loaded Voice Files: game_intro
+ ✅ Loaded Voice Files: victory_celebration
+ ✅ Loaded Voice Files: hint_explanation
+ ✅ Loaded Voice Files: greeting
+ ✅ Loaded Voice Files: defeat_encouragement
+ ✅ Loaded Voice Files: level_complete
+ ✅ Loaded Voice Files: victory_celebration
+ ✅ Loaded Voice Files: game_intro
+ ✅ Loaded Voice Files: defeat_encouragement
+ ✅ Loaded Voice Files: tutorial_welcome
+ ✅ Voice Files loading completed
+ ✅ Wizard Chess Audio Manager initialized successfully
+ ✅ Wizard Chess Audio System initialized
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Audio system initialized
+ 💳 Initializing monetization systems...
+ 🎯 AdSense initialized successfully with publisher: 4938312134119004
+ ✅ Loaded Voice Files: level_complete
+ ✅ Loaded Voice Files: hint_explanation
+ ✅ Loaded Voice Files: tutorial_welcome
+ ✅ Loaded Voice Files: greeting
+ ✅ Voice Files loading completed
+ ✅ Wizard Chess Audio Manager initialized successfully
+ ✅ Wizard Chess Audio System initialized
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Audio system initialized
+ 💳 Initializing monetization systems...
+ 🎯 AdSense initialized successfully with publisher: 4938312134119004
+ ⚡ Navigation Performance: Object
+Console.js:61 ⚠️ Low FPS detected: 16
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 [2025-08-13T16:34:10.841Z] ✅ startAITraining loaded
+Console.js:61 🎮 Self-Play Training Functions Loaded!
+Console.js:61    • runSelfPlay(100000) - Start 100k game training
+Console.js:61    • stopSelfPlay() - Stop current training
+Console.js:61    • getSelfPlayStatus() - Check training progress
+Console.js:61 [2025-08-13T16:34:10.842Z] ✅ runSelfPlay and getSelfPlayStatus loaded
+ 💳 Stripe initialized successfully
+ ✅ Monetization systems initialized
+Console.js:61 
+══════════════════════════════════════════════════════════════════════
+Console.js:61 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+Console.js:61 ══════════════════════════════════════════════════════════════════════
+Console.js:61 🚀 Loading trained AI model from 100k checkpoint...
+Console.js:61 🏗️ Building deep neural network...
+Console.js:61 ✅ Deep neural network built successfully
+Console.js:61    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+Console.js:61    Total parameters: 1246437
+Console.js:61 ✅ Model architecture built with 2550 ELO strength
+Console.js:61 ✅ Model loaded successfully
+Console.js:61    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+Console.js:61    ELO Rating: 2550
+Console.js:61    Training Games: 100,000
+Console.js:61 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+Console.js:61 
+✅ AI DEPLOYMENT SUCCESSFUL
+Console.js:61    Model is now available globally as window.wizardChessAI
+Console.js:61    ELO Rating: 2550 (Grandmaster level)
+Console.js:61    Ready for gameplay at wizardchessmaster.com
+Console.js:61 ══════════════════════════════════════════════════════════════════════
+Console.js:61 🎮 AI deployment complete, running integration test...
+Console.js:61 
+======================================================================
+Console.js:61 🧪 TESTING AI INTEGRATION (2550 ELO)
+Console.js:61 ======================================================================
+Console.js:61 ✅ AI Model Status:
+Console.js:61    - ELO Rating: 2550
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+Console.js:61    - Training Games: 100000
+Console.js:61    - Model Available: Yes
+Console.js:61    - Functions Available: getBestMove=function, evaluatePosition=function
+Console.js:61 
+📊 Testing position evaluation...
+Console.js:61 
+══════════════════════════════════════════════════════════════════════
+Console.js:61 🎮 DEPLOYING WIZARD CHESS AI - 2550 ELO
+Console.js:61 ══════════════════════════════════════════════════════════════════════
+Console.js:61 🚀 Loading trained AI model from 100k checkpoint...
+Console.js:61 🏗️ Building deep neural network...
+Console.js:61 ✅ Deep neural network built successfully
+Console.js:61    Architecture: 512 → 256 → 256 → 128 → 128 nodes
+Console.js:61    Total parameters: 1246437
+Console.js:61 ✅ Model architecture built with 2550 ELO strength
+Console.js:61 ✅ Model loaded successfully
+Console.js:61    Architecture: 858 → 512 → 256 → 256 → 128 → 128 → 2
+Console.js:61    ELO Rating: 2550
+Console.js:61    Training Games: 100,000
+Console.js:61 🚀 TensorFlow.js using WebGL backend (GPU acceleration)
+Console.js:61 
+✅ AI DEPLOYMENT SUCCESSFUL
+Console.js:61    Model is now available globally as window.wizardChessAI
+Console.js:61    ELO Rating: 2550 (Grandmaster level)
+Console.js:61    Ready for gameplay at wizardchessmaster.com
+Console.js:61 ══════════════════════════════════════════════════════════════════════
+Console.js:61 [2025-08-13T16:34:11.090Z] ✅ AI deployed successfully
+ ⚠️ Low FPS detected: 20
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Low FPS detected: 20
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Low FPS detected: 20
+Mt.forEach.n.<computed> @ eruda.js:2
+ 💳 Stripe initialized successfully
+ ✅ Monetization systems initialized
+Console.js:61 ✅ Global Audio Manager initialized successfully
+Console.js:61 ✅ Loaded Sound Effects: move_clack
+Console.js:61 ✅ Loaded Sound Effects: wizard_teleport
+Console.js:61 ✅ Loaded Sound Effects: wizard_attack
+Console.js:61 ✅ Loaded Sound Effects: capture_zap
+Console.js:61 ✅ Loaded Sound Effects: checkmate
+Console.js:61 ✅ Loaded Sound Effects: victory
+Console.js:61 ✅ Loaded Sound Effects: check_alert
+Console.js:61 ✅ Loaded Sound Effects: level_start
+Console.js:61 ✅ Loaded Sound Effects: button_click
+Console.js:61    Position evaluation: 0.004186049569398165
+Console.js:61 
+✅ AI INTEGRATION TEST PASSED
+Console.js:61    The 2550 ELO AI is ready for gameplay!
+Console.js:61 ======================================================================
+Console.js:61 🎵 Main.tsx: Theme-music2.mp3 ready - user will control theme music
+Console.js:61 ✅ Loaded Sound Effects: hint_reveal
+Console.js:61 ✅ Sound Effects loading completed
+Console.js:61 🎵 Loading Voice Files...
+Console.js:61 ⚡ Navigation Performance: Object
+ ✅ Loaded Voice Files: greeting
+ ✅ Loaded Voice Files: game_intro
+ ✅ Loaded Voice Files: victory_celebration
+ ✅ Loaded Voice Files: hint_explanation
+ ✅ Loaded Voice Files: level_complete
+ ✅ Loaded Voice Files: defeat_encouragement
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ ✅ Loaded Voice Files: tutorial_welcome
+ ✅ Voice Files loading completed
+ ✅ Wizard Chess Audio Manager initialized successfully
+ ✅ Wizard Chess Audio System initialized
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ eruda.js:2
+ ✅ Audio system initialized
+ 💳 Initializing monetization systems...
+ 🎯 AdSense initialized successfully with publisher: 4938312134119004
+Console.js:61 ✅ Loaded Voice Files: greeting
+Console.js:61 ✅ Loaded Voice Files: game_intro
+Console.js:61 ✅ Loaded Voice Files: defeat_encouragement
+Console.js:61 ✅ Loaded Voice Files: victory_celebration
+Console.js:61 ✅ Loaded Voice Files: level_complete
+Console.js:61 ✅ Loaded Voice Files: tutorial_welcome
+Console.js:61 ✅ Loaded Voice Files: hint_explanation
+Console.js:61 ✅ Voice Files loading completed
+Console.js:61 ✅ Wizard Chess Audio Manager initialized successfully
+Console.js:61 ✅ Wizard Chess Audio System initialized
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ⚠️ Could not verify premium status, defaulting to free
+Mt.forEach.n.<computed> @ Console.js:61
+Console.js:61 ✅ Audio system initialized
+Console.js:61 💳 Initializing monetization systems...
+Console.js:61 🎯 AdSense initialized successfully with publisher: 4938312134119004
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ 💳 Stripe initialized successfully
+ ✅ Monetization systems initialized
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+Console.js:61 💳 Stripe initialized successfully
+Console.js:61 ✅ Monetization systems initialized
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+Network.js:227 WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ Network.js:227
+ 📊 Connected to data collection server
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+content-scope-messaging.js:39 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'debug')
+    at content-scope-messaging.js:39:33
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+Network.js:227 WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ Network.js:227
+ 📊 Connected to data collection server
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+ WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ eruda.js:2
+Network.js:227 WebSocket connection to 'wss://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/?token=DxFGAq_TrpuT' failed: 
+t @ Network.js:227
+ 📊 Connected to data collection server
+Console.js:61 📊 Connected to data collection server
+ 📐 Final board sizing: Object
+ ✅ Loaded Sound Effects: move_clack
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎬 Starting move animation: Object
+ 🎵 Playing move sound for pawn
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ✅ Animation completed for: pawn
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎯 Enhanced canvas clicked
+ Audio check: Array(0)
+ Context: Available
+ 🎯 Canvas clicked!
+ 🎯 Click coordinates DEBUG: Object
+ 📍 Nearby pieces:
+   [8,5]: pawn (white)
+   [8,6]: pawn (white)
+   [8,7]: pawn (white)
+   [9,5]: king (white)
+   [9,6]: wizard (white)
+   [9,7]: bishop (white)
+ ✅ Valid square clicked: Object
+ 🔍 Piece at position: Object
+ 🎯 selectSquare called: Object
+ 🔍 Clicked position: Object Piece found: Object Current player: white
+ 🎮 Piece selection check: Object
+ ✅ Selecting piece: Object at Object
+ 📋 Valid moves found: 3 Array(3)
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎯 Enhanced canvas clicked
+ Audio check: Array(0)
+ Context: Available
+ 🎯 Canvas clicked!
+ 🎯 Click coordinates DEBUG: Object
+ 📍 Nearby pieces:
+   [7,5]: wizard (white)
+   [8,3]: pawn (white)
+   [8,4]: pawn (white)
+   [8,5]: pawn (white)
+ ✅ Valid square clicked: Object
+ 🔍 Piece at position: null
+ 🎯 selectSquare called: Object
+ 🔍 Clicked position: Object Piece found: null Current player: white
+ 🎮 Piece selection check: Object
+ ❌ Cannot select: Object
+ 🎵 Playing audio for: Object
+ 🎬 Starting move animation: Object
+ 🎵 Playing wizard teleport sound
+ 📊 Recorded move 3 for game game_1755102952602_pc61mk
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🎬 Detected move: Object
+ 🎭 Animating piece movement: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ✅ Loaded Sound Effects: move_clack
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🧙‍♂️ Checking mentor state: Object
+ 🧙‍♂️ Triggering mentor analysis for move: Object
+ 🧙‍♂️ Analyzing move: Object Game state: Object
+ 🧙‍♂️ Generated feedback: Object
+ 🧙‍♂️ Move analyzed: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: wizard
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ Speech error: SpeechSynthesisErrorEvent
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎵 Using voice: Daniel (English (United Kingdom))
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 📊 Recorded move 4 for game game_1755102952602_pc61mk
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🤖 Detected AI move, triggering opponent highlight
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🎬 Detected move: Object
+ 🎭 Animating piece movement: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Loaded Sound Effects: move_clack
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎬 Starting move animation: Object
+ 🎵 Playing move sound for pawn
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎯 Enhanced canvas clicked
+ Audio check: Array(0)
+ Context: Available
+ 🎯 Canvas clicked!
+ 🎯 Click coordinates DEBUG: Object
+ 📍 Nearby pieces:
+   [8,0]: pawn (white)
+   [8,1]: pawn (white)
+   [8,2]: pawn (white)
+   [9,0]: rook (white)
+   [9,1]: knight (white)
+   [9,2]: bishop (white)
+ ✅ Valid square clicked: Object
+ 🔍 Piece at position: Object
+ 🎯 selectSquare called: Object
+ 🔍 Clicked position: Object Piece found: Object Current player: white
+ 🎮 Piece selection check: Object
+ ✅ Selecting piece: Object at Object
+ 📋 Valid moves found: 2 Array(2)
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎯 Enhanced canvas clicked
+ Audio check: Array(0)
+ Context: Available
+ 🎯 Canvas clicked!
+ 🎯 Click coordinates DEBUG: Object
+ 📍 Nearby pieces:
+   [8,1]: pawn (white)
+   [8,2]: pawn (white)
+   [8,3]: pawn (white)
+ ✅ Valid square clicked: Object
+ 🔍 Piece at position: null
+ 🎯 selectSquare called: Object
+ 🔍 Clicked position: Object Piece found: null Current player: white
+ 🎮 Piece selection check: Object
+ ❌ Cannot select: Object
+ 🎵 Playing audio for: Object
+ 🎬 Starting move animation: Object
+ 🎵 Playing move sound for knight
+ 📊 Recorded move 5 for game game_1755102952602_pc61mk
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🎬 Detected move: Object
+ 🎭 Animating piece movement: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Loaded Sound Effects: move_clack
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🧙‍♂️ Checking mentor state: Object
+ 🧙‍♂️ Triggering mentor analysis for move: Object
+ 🧙‍♂️ Analyzing move: Object Game state: Object
+ 🧙‍♂️ Generated feedback: Object
+ 🧙‍♂️ Move analyzed: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: knight
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ Speech error: SpeechSynthesisErrorEvent
+ 🎵 Using voice: Daniel (English (United Kingdom))
+ 📊 Recorded move 6 for game game_1755102952602_pc61mk
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🤖 Detected AI move, triggering opponent highlight
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🎬 Detected move: Object
+ 🎭 Animating piece movement: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ✅ Loaded Sound Effects: move_clack
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎬 Starting move animation: Object
+ 🎵 Playing move sound for pawn
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ Speech completed
+ 🔍 Device Detection: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🔍 Device Detection: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎨 Updating canvas size...
+ 🎨 Viewport sizing calculation: Object
+ 📱 Tablet sizing applied: 650
+ 🎨 Canvas size calculated: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ 🎬 Detected move: Object
+ 🎭 Animating piece movement: Object
+ 🔍 Device Detection: Object
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+Console.js:61 ⚠️ Low FPS detected: 14
+Mt.forEach.n.<computed> @ Console.js:61
+ 🔍 ChessBoard Device Detection Debug: Object
+ 📐 Final board sizing: Object
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+stallwart.build.js:1 stallwart: failed ping 1
+ ⚠️ Low FPS detected: 4
+Mt.forEach.n.<computed> @ eruda.js:2
+measureFPS @ performanceProfiler.ts:105
+requestAnimationFrame
+measureFPS @ performanceProfiler.ts:112
+ ⚠️ MISSING PIECE at white home row (9,6) - should be wizard!
+ ✅ Animation completed for: pawn
+ ⚠️ Low FPS detected: 4
+Mt.forEach.n.<computed> @ eruda.js:2
+measureFPS @ performanceProfiler.ts:105
+requestAnimationFrame
+measureFPS @ performanceProfiler.ts:112
+Console.js:61 ⚠️ Low FPS detected: 4
+Mt.forEach.n.<computed> @ Console.js:61
+measureFPS @ performanceProfiler.ts:155
+requestAnimationFrame
+measureFPS @ performanceProfiler.ts:165
+ ⚠️ Low FPS detected: 4
+Mt.forEach.n.<computed> @ eruda.js:2
+measureFPS @ performanceProfiler.ts:105
+requestAnimationFrame
+measureFPS @ performanceProfiler.ts:112
+ ⚠️ Low FPS detected: 4
+Mt.forEach.n.<computed> @ eruda.js:2
+measureFPS @ performanceProfiler.ts:105
+requestAnimationFrame
+measureFPS @ performanceProfiler.ts:112
+ 🔍 ChessBoard Device Detection Debug: {deviceInfo: {…}, forceMobileMode: false, finalIsMobile: false, currentCanvasSize: 650, windowDimensions: {…}, …}
+ 📐 Final board sizing: {isMobileDevice: false, canvasSize: 650, mobileBoardSize: 650, effectiveBoardSize: 650, effectiveSquareSize: 65, …}
+ 🐌 Slow resource: https://75fb168e-effe-4c98-9788-06205574892f-00-13l9j4vw1zu5m.picard.replit.dev/assets/music/Theme-music2.mp3?t=1755102953109 took 2585.50ms
+Mt.forEach.n.<computed> @ eruda.js:2
+logResourceTiming @ performanceProfiler.ts:87
+(anonymous) @ performanceProfiler.ts:41
