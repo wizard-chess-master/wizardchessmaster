@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wizard Chess AI - Deployment Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        h1 { color: #ffd700; }
+        .test-section {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+        .pending { color: #FFC107; }
+        button {
+            background: #9333ea;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button:hover { background: #7928ca; }
+        #output {
+            background: #000;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            min-height: 200px;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧙‍♂️ Wizard Chess Master - AI Deployment Test</h1>
+    
+    <div class="test-section">
+        <h2>Step 1: Check AI Functions</h2>
+        <button onclick="checkFunctions()">Check Available Functions</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Step 2: Test AI Model</h2>
+        <button onclick="testAI()">Run AI Test</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Step 3: Run Self-Play</h2>
+        <button onclick="runSelfPlayTest()">Start Self-Play (10 games)</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Output:</h2>
+        <div id="output" class="pending">Waiting for tests...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Manual Console Commands:</h2>
+        <p>You can also run these commands directly in the browser console (F12):</p>
+        <ul>
+            <li><code>testAIModel()</code> - Test AI configuration</li>
+            <li><code>runSelfPlay(10)</code> - Run 10 self-play games</li>
+            <li><code>getSelfPlayStatus()</code> - Check training status</li>
+            <li><code>startAITraining(100)</code> - Start training with 100 games</li>
+        </ul>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toISOString();
+            const prefix = type === 'success' ? '✅' : type === 'error' ? '❌' : '📝';
+            output.innerHTML += `[${timestamp}] ${prefix} ${message}\n`;
+            console.log(message);
+        }
+        
+        function checkFunctions() {
+            output.innerHTML = '';
+            log('Checking available AI functions...', 'info');
+            
+            const functions = [
+                'testAIModel',
+                'runSelfPlay',
+                'getSelfPlayStatus',
+                'startAITraining',
+                'wizardChessAI'
+            ];
+            
+            let available = 0;
+            functions.forEach(fn => {
+                if (typeof window[fn] !== 'undefined') {
+                    log(`✓ ${fn} is available`, 'success');
+                    available++;
+                } else {
+                    log(`✗ ${fn} is NOT available`, 'error');
+                }
+            });
+            
+            if (window.wizardChessAI) {
+                log(`\nAI Model Details:`, 'info');
+                log(`  ELO Rating: ${window.wizardChessAI.elo || 'Unknown'}`, 'info');
+                log(`  Training Games: ${window.wizardChessAI.trainingGames || 'Unknown'}`, 'info');
+            }
+            
+            log(`\n${available}/${functions.length} functions available`, available === functions.length ? 'success' : 'error');
+        }
+        
+        async function testAI() {
+            output.innerHTML = '';
+            log('Running AI Model Test...', 'info');
+            
+            try {
+                if (typeof window.testAIModel === 'function') {
+                    await window.testAIModel();
+                    log('AI test completed successfully!', 'success');
+                } else {
+                    log('testAIModel function not found', 'error');
+                    log('Try refreshing the page and waiting 10 seconds', 'info');
+                }
+            } catch (error) {
+                log(`Test failed: ${error.message}`, 'error');
+            }
+        }
+        
+        async function runSelfPlayTest() {
+            output.innerHTML = '';
+            log('Starting self-play test...', 'info');
+            
+            try {
+                if (typeof window.runSelfPlay === 'function') {
+                    log('Running 10 self-play games...', 'info');
+                    await window.runSelfPlay(10);
+                    log('Self-play completed!', 'success');
+                    
+                    if (typeof window.getSelfPlayStatus === 'function') {
+                        const status = window.getSelfPlayStatus();
+                        log(`\nTraining Status:`, 'info');
+                        log(`  Games Played: ${status.gamesPlayed}`, 'info');
+                        log(`  Current ELO: ${status.currentElo}`, 'info');
+                    }
+                } else {
+                    log('runSelfPlay function not found', 'error');
+                    log('Try refreshing the page and waiting 10 seconds', 'info');
+                }
+            } catch (error) {
+                log(`Self-play failed: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('Page loaded. Checking AI system...', 'info');
+                checkFunctions();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

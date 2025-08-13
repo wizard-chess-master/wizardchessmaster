@@ -6,6 +6,11 @@ import './responsive-game.css';
 import './styles/responsive.css';
 // DEBUG DISABLED: import './lib/debug-admin'; // Load admin debug utilities
 
+// ===== DEPLOYMENT DEBUG LOGGING =====
+console.log(`[${new Date().toISOString()}] Wizard Chess Master - Initializing...`);
+console.log(`[${new Date().toISOString()}] Environment: ${import.meta.env.MODE}`);
+console.log(`[${new Date().toISOString()}] URL: ${window.location.href}`);
+
 // Global error handling for production stability
 if (typeof window !== 'undefined') {
   window.addEventListener('unhandledrejection', (event) => {
@@ -44,6 +49,43 @@ if (typeof window !== 'undefined') {
     console.warn('Global error caught:', event.error);
   });
 }
+
+// ===== AI FUNCTIONS INITIALIZATION =====
+console.log(`[${new Date().toISOString()}] Initializing AI functions...`);
+
+// Import and expose AI functions globally
+import('./lib/ai/testAI').then(module => {
+  (window as any).testAIModel = module.testAIModel;
+  console.log(`[${new Date().toISOString()}] ✅ testAIModel loaded and exposed globally`);
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load testAI:`, err);
+});
+
+import('./lib/ai/selfPlay').then(module => {
+  (window as any).runSelfPlay = module.runSelfPlay;
+  (window as any).getSelfPlayStatus = module.getSelfPlayStatus;
+  console.log(`[${new Date().toISOString()}] ✅ runSelfPlay and getSelfPlayStatus loaded`);
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load selfPlay:`, err);
+});
+
+import('./lib/ai/trainSelfPlay').then(module => {
+  (window as any).startAITraining = module.startAITraining;
+  console.log(`[${new Date().toISOString()}] ✅ startAITraining loaded`);
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load trainSelfPlay:`, err);
+});
+
+// Add deployment AI
+import('./lib/ai/deployAI').then(module => {
+  module.deployAI().then(() => {
+    console.log(`[${new Date().toISOString()}] ✅ AI deployed successfully`);
+  }).catch(err => {
+    console.error(`[${new Date().toISOString()}] ❌ Failed to deploy AI:`, err);
+  });
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load deployAI:`, err);
+});
 
 // FORCE Theme-music2.mp3 implementation in main initialization
 if (typeof window !== 'undefined') {
