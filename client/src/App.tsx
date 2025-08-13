@@ -43,6 +43,10 @@ import { useCampaignRewardCelebration } from "./components/campaign/CampaignRewa
 import ChessAudioController from "./components/audio/ChessAudioController";
 
 import "@fontsource/inter";
+
+// Import AI training functions (makes them available in browser console)
+import './lib/ai/startTraining';
+import './lib/ai/testAI';
 import "./styles/chess.css";
 import "./styles/animations.css";
 import "./debug";

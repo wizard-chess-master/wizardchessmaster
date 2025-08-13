@@ -21,7 +21,7 @@ export async function loadTrainedModel(): Promise<DeepNeuralNetwork> {
   
   // Initialize the model with production configuration
   const model = new DeepNeuralNetwork({
-    inputSize: 1024,  // 10x10 board + piece features + wizard abilities
+    inputSize: 1634,  // 10x10x16 board (1600) + wizard features + tactical + positional + temporal + mobility
     hiddenLayers: [512, 256, 256, 128, 128],
     outputSize: 101,   // 100 moves + 1 value
     learningRate: 0.0001,
