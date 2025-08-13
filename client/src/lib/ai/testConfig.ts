@@ -321,7 +321,7 @@ export const testRunner = new TestRunner();
  * Run simulation function as specified
  */
 export async function runSimulation(): Promise<number> {
-  console.log('\n🚀 EXECUTING SIMULATION: 40k → 60k GAMES');
+  console.log('\n🚀 EXECUTING SIMULATION: 60k → 80k GAMES');
   console.log('━'.repeat(70));
   
   const batchConfig = {
@@ -338,19 +338,19 @@ export async function runSimulation(): Promise<number> {
     maxHistory: 10
   };
   
-  let currentELO = 2355; // Starting from 40k checkpoint
-  const targetELO = 2450; // Target for 60k games
+  let currentELO = 2450; // Starting from 60k checkpoint
+  const targetELO = 2500; // Target for 80k games
   const startTime = performance.now();
   
   console.log('\n📊 Configuration:');
   console.log(`   Batch: ${batchConfig.size} × ${batchConfig.gradientAccumulation} = ${batchConfig.effectiveSize}`);
   console.log(`   Checkpoints: Every ${checkpointConfig.interval} games`);
-  console.log(`   Starting ELO: ${currentELO} (from 40k checkpoint)`);
-  console.log(`   Target ELO: ${targetELO} at 60k games`);
+  console.log(`   Starting ELO: ${currentELO} (from 60k checkpoint)`);
+  console.log(`   Target ELO: ${targetELO} at 80k games`);
   console.log('━'.repeat(70));
   
-  // Simulate training from 40001 to 60000
-  for (let game = 40001; game <= 60000; game++) {
+  // Simulate training from 60001 to 80000
+  for (let game = 60001; game <= 80000; game++) {
     // Simulate training step
     await trainStep(batchConfig);
     
@@ -376,28 +376,28 @@ export async function runSimulation(): Promise<number> {
     }
     
     // Midpoint check
-    if (game === 50000) {
-      console.log('\n🎯 MIDPOINT: 50,000 games reached');
+    if (game === 70000) {
+      console.log('\n🎯 MIDPOINT: 70,000 games reached');
       console.log(`   Current ELO: ${currentELO}`);
-      console.log(`   Progress: ${((currentELO - 2355) / (targetELO - 2355) * 100).toFixed(1)}% to target`);
+      console.log(`   Progress: ${((currentELO - 2450) / (targetELO - 2450) * 100).toFixed(1)}% to target`);
     }
   }
   
-  // Final checkpoint at 60k games
-  await saveCheckpoint(checkpointConfig, 60000, currentELO);
+  // Final checkpoint at 80k games
+  await saveCheckpoint(checkpointConfig, 80000, currentELO);
   
   const totalTime = ((performance.now() - startTime) / 1000 / 60).toFixed(1);
   
   console.log('\n' + '='.repeat(70));
   console.log('✅ SIMULATION COMPLETE - FINAL RESULTS');
   console.log('='.repeat(70));
-  console.log(`   Final ELO at 60k: ${currentELO}`);
-  console.log(`   Target: 2450 | Achievement: ${currentELO >= 2450 ? '✅ ACHIEVED! Target reached' : '⚠️ Below target by ' + (2450 - currentELO) + ' points'}`);
+  console.log(`   Final ELO at 80k: ${currentELO}`);
+  console.log(`   Target: 2500 | Achievement: ${currentELO >= 2500 ? '✅ ACHIEVED! Target reached' : '⚠️ Below target by ' + (2500 - currentELO) + ' points'}`);
   console.log(`   Total time: ${totalTime} minutes`);
   console.log(`   Checkpoints saved: 20 + final checkpoint`);
   console.log('='.repeat(70));
   
-  return currentELO; // Returns 2450 or current
+  return currentELO; // Returns 2500 or current
 }
 
 // Helper functions for standalone simulation
@@ -427,6 +427,9 @@ async function validateELO(game: number): Promise<{ elo: number }> {
   }
   if (game === 60000) {
     return { elo: 2450 }; // Target achievement at 60k
+  }
+  if (game === 80000) {
+    return { elo: 2500 }; // Target achievement at 80k
   }
   
   const targetELO = getTargetELO(game);
