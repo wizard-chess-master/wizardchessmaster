@@ -338,8 +338,9 @@ function AppContent() {
               onSettings={() => setShowSettings(true)}
               onAchievements={() => setShowAchievements(true)}
               onMenu={() => {
-                const { resetGame } = useChess.getState();
-                resetGame();
+                // Show menu instead of resetting game
+                // The MobileGameLayout component handles menu display internally
+                console.log('Menu button clicked - handled by MobileGameLayout');
               }}
             >
             <div className="desktop-game-layout hidden md:block min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
