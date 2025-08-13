@@ -2,8 +2,9 @@ import { GameState, ChessMove, Position, AIDifficulty, PieceColor, ChessPiece } 
 import { getPossibleMoves } from './pieceMovement';
 import { isKingInCheck, makeMove } from './gameEngine';
 import { aiLearning } from './aiLearning';
+import { getBestMove as getTrainedAIMove, ensureModelInitialized } from '../ai/deployAI';
 
-export function getAIMove(gameState: GameState): ChessMove | null {
+export async function getAIMove(gameState: GameState): Promise<ChessMove | null> {
   const aiColor = gameState.currentPlayer;
   const allMoves = getAllPossibleMoves(gameState, aiColor);
   
@@ -53,6 +54,21 @@ export function getAIMove(gameState: GameState): ChessMove | null {
   }
   
   // PRIORITY 4: Fall back to original strategy (using filtered moves)
+  // Use trained 2550 ELO AI for hard difficulty
+  if (gameState.aiDifficulty === 'hard') {
+    try {
+      console.log('🤖 Using Trained AI (2550 ELO) for hard difficulty...');
+      await ensureModelInitialized();
+      const trainedMove = await getTrainedAIMove(gameState);
+      if (trainedMove) {
+        console.log(`🧠 Trained AI (2550 ELO) selected: ${trainedMove.piece.type} from ${String.fromCharCode(97 + trainedMove.from.col)}${10 - trainedMove.from.row} to ${String.fromCharCode(97 + trainedMove.to.col)}${10 - trainedMove.to.row}`);
+        return trainedMove;
+      }
+    } catch (error) {
+      console.warn('⚠️ Trained AI failed, falling back to advanced strategy:', error);
+    }
+  }
+  
   switch (gameState.aiDifficulty) {
     case 'easy':
       return getRandomMove(gameState, aiColor, movesToConsider);

@@ -450,13 +450,13 @@ export const useChess = create<ChessStore>()(
       }
     },
 
-    makeAIVsAIMove: () => {
+    makeAIVsAIMove: async () => {
       const state = get();
       if (state.gamePhase !== 'playing' || state.gameMode !== 'ai-vs-ai') {
         return;
       }
 
-      const aiMove = getAIMove(state);
+      const aiMove = await getAIMove(state);
       if (aiMove) {
         // Audio managed by ChessAudioController component
         // Audio managed by ChessAudioController component
@@ -498,7 +498,7 @@ export const useChess = create<ChessStore>()(
         // Simulate AI thinking time
         await new Promise(resolve => setTimeout(resolve, thinkingDelay));
 
-        const aiMove = getAIMove(state);
+        const aiMove = await getAIMove(state);
         if (aiMove) {
           // Audio managed by ChessAudioController component
 
