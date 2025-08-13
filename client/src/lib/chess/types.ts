@@ -2,14 +2,7 @@ export type PieceType = 'pawn' | 'rook' | 'knight' | 'bishop' | 'queen' | 'king'
 export type PieceColor = 'white' | 'black';
 export type GamePhase = 'menu' | 'playing' | 'ended';
 export type GameMode = 'local' | 'ai' | 'ai-vs-ai' | 'multiplayer';
-// 20 difficulty levels for 20 campaign levels
-export type AIDifficulty = 
-  | 'level1' | 'level2' | 'level3' | 'level4' | 'level5'
-  | 'level6' | 'level7' | 'level8' | 'level9' | 'level10'
-  | 'level11' | 'level12' | 'level13' | 'level14' | 'level15'
-  | 'level16' | 'level17' | 'level18' | 'level19' | 'level20'
-  // Legacy difficulty names for backward compatibility
-  | 'easy' | 'medium' | 'hard' | 'advanced' | 'expert' | 'master';
+export type AIDifficulty = 'easy' | 'medium' | 'hard' | 'advanced';
 
 export interface Position {
   row: number;

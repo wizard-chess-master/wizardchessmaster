@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '../ui/collapsible';
-import { ChevronDown, Settings, ChevronUp, Clock } from 'lucide-react';
+import { ChevronDown, Settings, ChevronUp } from 'lucide-react';
 import { useChess } from '../../lib/stores/useChess';
 import { useAudio } from '../../lib/stores/useAudio';
 // import { GameHints } from './GameHints';
@@ -23,8 +23,6 @@ export function GameUI({ onSettings }: GameUIProps) {
     moveHistory, 
     isInCheck, 
     gameMode,
-    gamePhase,
-    gameStartTime,
     resetGame 
   } = useChess();
   
@@ -34,25 +32,6 @@ export function GameUI({ onSettings }: GameUIProps) {
   const isAmbientEnabled = false;
   const currentIntensity: GameIntensity = 'calm';
   const [showControls, setShowControls] = useState(false);
-  const [elapsedTime, setElapsedTime] = useState(0);
-  
-  // Timer effect
-  useEffect(() => {
-    if (gamePhase === 'playing' && gameStartTime) {
-      const interval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - gameStartTime) / 1000);
-        setElapsedTime(elapsed);
-      }, 1000);
-      
-      return () => clearInterval(interval);
-    }
-  }, [gamePhase, gameStartTime]);
-  
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
 
   const getCurrentPlayerDisplay = () => {
     return currentPlayer === 'white' ? '🤍 White to move' : '⚫ Black to move';
@@ -91,7 +70,6 @@ export function GameUI({ onSettings }: GameUIProps) {
     <div className="game-ui w-full">
       {/* Mobile Top Ad Banner - Hidden on Desktop */}
       <AdBanner 
-        containerId="game-ui-mobile-ad"
         className="mb-3 lg:hidden"
         style={{ maxWidth: '400px', width: '100%' }}
       />
@@ -129,14 +107,8 @@ export function GameUI({ onSettings }: GameUIProps) {
                     </Badge>
                   )}
                 </div>
-                <div className="game-stats flex items-center gap-3">
-                  <div className="timer flex items-center gap-1 medieval-text text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span>{formatTime(elapsedTime)}</span>
-                  </div>
-                  <div className="move-count medieval-text text-sm text-muted-foreground">
-                    Move: {Math.floor(moveHistory.length / 2) + 1}
-                  </div>
+                <div className="move-count medieval-text text-sm text-muted-foreground">
+                  Move: {Math.floor(moveHistory.length / 2) + 1}
                 </div>
               </div>
             </CardContent>

@@ -168,8 +168,8 @@ const COACHING_STRATEGIES: CoachingStrategy[] = [
 // Create the Dynamic AI Mentor store
 export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
   subscribeWithSelector((set, get) => ({
-    // Initial state - persist across sessions
-    isActive: localStorage.getItem('mentorActive') !== 'false', // Default to active unless explicitly disabled
+    // Initial state
+    isActive: true, // Start active by default
     currentFeedback: [],
     analytics: {
       currentGameScore: 50,
@@ -216,99 +216,39 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       // Select initial strategy
       get().selectOptimalStrategy();
       
-      // Add welcome feedback without immediate speech
-      // Delay feedback to avoid immediate speech synthesis on activation
-      setTimeout(() => {
-        get().addFeedback({
-          id: `welcome-${Date.now()}`,
-          type: 'encouragement',
-          message: 'Greetings, young apprentice! I am Merlin the Wise. I shall guide your chess journey with ancient wisdom and magical insights.',
-          priority: 'medium',
-          timestamp: Date.now(),
-          context: {
-            learningPoint: 'Mentor system activated'
-          }
-        });
-      }, 500); // Small delay to prevent immediate speech
+      // Add welcome feedback
+      get().addFeedback({
+        id: `welcome-${Date.now()}`,
+        type: 'encouragement',
+        message: 'Greetings, young apprentice! I am Merlin the Wise. I shall guide your chess journey with ancient wisdom and magical insights.',
+        priority: 'medium',
+        timestamp: Date.now(),
+        context: {
+          learningPoint: 'Mentor system activated'
+        }
+      });
     },
 
     activateMentor: () => {
-      console.log('🧙‍♂️ Activating AI Mentor...');
       set({ isActive: true });
-      localStorage.setItem('mentorActive', 'true');
       get().initializeMentor();
-      const state = get();
-      console.log('🧙‍♂️ AI Mentor activated:', {
-        isActive: state.isActive,
-        strategy: state.currentStrategy?.name,
-        feedbackCount: state.currentFeedback.length
-      });
+      console.log('🧙‍♂️ AI Mentor activated');
     },
 
     deactivateMentor: () => {
       set({ isActive: false });
-      localStorage.setItem('mentorActive', 'false');
       console.log('🧙‍♂️ AI Mentor deactivated');
     },
 
     // Real-time move analysis
     analyzeCurrentMove: (gameState: GameState, move: ChessMove) => {
-      console.log('🧙‍♂️ analyzeCurrentMove called');
       const state = get();
-      console.log('🧙‍♂️ Current mentor state in analysis:', {
-        isActive: state.isActive,
-        feedbackCount: state.currentFeedback.length
-      });
-      
       if (!state.isActive) {
         console.log('🧙‍♂️ Mentor not active, skipping analysis');
         return;
       }
-      
-      // Only analyze player (white) moves - AI coach helps the player, not the AI
-      if (move.piece.color !== 'white') {
-        console.log('🧙‍♂️ Skipping black (AI) move - coach only analyzes player moves');
-        return;
-      }
 
-      console.log('🧙‍♂️ Starting move analysis:', {
-        piece: move.piece.type,
-        from: move.from,
-        to: move.to,
-        captured: move.captured?.type,
-        moveHistoryLength: gameState.moveHistory.length
-      });
-
-      // Count only white (player) moves for feedback frequency
-      const playerMoves = Math.ceil((gameState.moveHistory.length + 1) / 2);
-      console.log('🧙‍♂️ Move counting:', {
-        totalMoves: gameState.moveHistory.length,
-        playerMoves: playerMoves,
-        currentMoveColor: move.piece.color
-      });
-      
-      // Provide feedback more frequently to ensure coach is working
-      const shouldProvideFeedback = (
-        playerMoves === 1 || // First move
-        playerMoves === 2 || // Second move  
-        playerMoves === 3 || // Third move
-        playerMoves === 5 || // Fifth move
-        playerMoves === 10 || // Tenth move
-        playerMoves % 5 === 0 || // Every 5 player moves
-        move.isWizardTeleport || // Special wizard moves
-        move.isWizardAttack || 
-        move.isCastling || // Important strategic moves
-        move.captured || // Any capture
-        gameState.isInCheck || // Check situations
-        Math.random() < 0.4 // 40% chance for random feedback
-      );
-
-      if (!shouldProvideFeedback) {
-        console.log('🧙‍♂️ Skipping feedback for player move', playerMoves);
-        return;
-      }
-      
-      console.log('🧙‍♂️ PROVIDING FEEDBACK for player move', playerMoves, 'total moves:', gameState.moveHistory.length);
+      console.log('🧙‍♂️ Analyzing move:', move, 'Game state:', gameState);
 
       // Calculate move quality based on various factors
       let moveQuality = 50; // Base score
@@ -326,15 +266,10 @@ export const useDynamicAIMentor = create<DynamicAIMentorStore>()(
       // Game phase assessment
       const phase = get().assessGamePhase(gameState);
       
-      // Generate contextual feedback with more specific chess advice
+      // Generate contextual feedback
       const feedback = get().generateContextualFeedback(gameState, moveQuality);
       console.log('🧙‍♂️ Generated feedback:', feedback);
-      console.log('🧙‍♂️ Adding feedback to display...');
       get().addFeedback(feedback);
-      console.log('🧙‍♂️ Current feedback count:', get().currentFeedback.length);
-      
-      // Update last feedback time to prevent spam
-      set({ lastFeedbackTime: Date.now() });
       
       // Update analytics
       get().updatePerformanceAnalytics(gameState);
@@ -711,17 +646,6 @@ useDynamicAIMentor.subscribe(
     }
   }
 );
-
-// Initialize mentor on load if it was previously active
-if (typeof window !== 'undefined') {
-  const wasActive = localStorage.getItem('mentorActive') !== 'false';
-  if (wasActive) {
-    console.log('🧙‍♂️ Restoring mentor state from previous session');
-    setTimeout(() => {
-      useDynamicAIMentor.getState().initializeMentor();
-    }, 1000); // Delay to ensure everything is loaded
-  }
-}
 
 // Export the store for global access
 if (typeof window !== 'undefined') {

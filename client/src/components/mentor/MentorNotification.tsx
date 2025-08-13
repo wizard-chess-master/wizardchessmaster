@@ -12,14 +12,11 @@ export function MentorNotification() {
 
   // Show latest feedback in persistent panel
   useEffect(() => {
-    console.log('📜 MentorNotification: currentFeedback updated:', currentFeedback.length, 'items');
     if (currentFeedback.length > 0) {
       const latestFeedback = currentFeedback[currentFeedback.length - 1];
-      console.log('📜 Latest feedback:', latestFeedback.message);
       
       // Only show if it's a new feedback (not already visible)
       if (!visibleFeedback || latestFeedback.id !== visibleFeedback.id) {
-        console.log('📜 Displaying new feedback');
         setVisibleFeedback(latestFeedback);
 
         // Play voice narration if enabled with longer delay for stability
@@ -34,20 +31,9 @@ export function MentorNotification() {
 
   const speakFeedback = (message: string) => {
     try {
-      // Check if coach voice is enabled in settings
-      const coachVoiceEnabled = localStorage.getItem('coachVoiceEnabled') !== 'false';
-      if (!coachVoiceEnabled) {
-        return; // Don't speak if coach voice is disabled
-      }
-      
       if ('speechSynthesis' in window) {
-        // Wrap in try-catch to handle any DOMException
-        try {
-          // Cancel any ongoing speech to prevent overlapping
-          speechSynthesis.cancel();
-        } catch (e) {
-          console.log('Speech synthesis cancel error (safe to ignore):', e);
-        }
+        // Cancel any ongoing speech to prevent overlapping
+        speechSynthesis.cancel();
         
         // Longer delay to ensure clean start
         setTimeout(() => {
@@ -97,13 +83,9 @@ export function MentorNotification() {
               console.log('Speech completed');
             };
             
-            // Speak with additional checks and error handling
-            try {
-              if (!speechSynthesis.speaking && !speechSynthesis.pending) {
-                speechSynthesis.speak(utterance);
-              }
-            } catch (speakError) {
-              console.log('Speech synthesis speak error (safe to ignore):', speakError);
+            // Speak with additional checks
+            if (!speechSynthesis.speaking && !speechSynthesis.pending) {
+              speechSynthesis.speak(utterance);
             }
           };
           
@@ -151,7 +133,6 @@ export function MentorNotification() {
   };
 
   if (!visibleFeedback) {
-    console.log('📜 MentorNotification: No visible feedback to display');
     return (
       <div className="text-purple-200 text-sm text-center py-4">
         <p>No messages yet. Start playing to receive guidance!</p>
@@ -159,7 +140,6 @@ export function MentorNotification() {
     );
   }
 
-  console.log('📜 MentorNotification: Rendering feedback:', visibleFeedback.message);
   return (
     <div className="space-y-2">
       <div className="bg-purple-800/50 border border-purple-400 rounded-md p-3">

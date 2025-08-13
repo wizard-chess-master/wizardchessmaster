@@ -13,7 +13,6 @@ import { useCampaign } from "./useCampaign";
 import { useLeaderboard } from "./useLeaderboard";
 import { useAIDifficultyProgression } from "./useAIDifficultyProgression";
 import { useWizardAssistant } from "./useWizardAssistant";
-import { useDynamicAIMentor } from "./useDynamicAIMentor";
 
 interface ChessStore extends GameState {
   // Campaign tracking
@@ -62,13 +61,6 @@ export const useChess = create<ChessStore>()(
     aiThinkingMessage: '',
 
     startGame: (mode: GameMode, aiDifficulty: AIDifficulty = 'medium') => {
-      // Initialize AI mentor for new game
-      const mentorState = useDynamicAIMentor.getState();
-      if (mentorState.isActive) {
-        console.log('🧙‍♂️ Initializing AI mentor for new game');
-        mentorState.initializeMentor();
-      }
-      
       const newBoard = createInitialBoard();
       console.log('🎮 Starting new game:', { mode, aiDifficulty });
       console.log('📋 Initial board created:', newBoard);
@@ -362,34 +354,18 @@ export const useChess = create<ChessStore>()(
       }
       
       // Trigger Dynamic AI Mentor analysis (non-blocking)
-      console.log('🧙‍♂️ About to check mentor for move');
       setTimeout(() => {
         try {
-          console.log('🧙‍♂️ Getting mentor state...');
-          const mentorState = useDynamicAIMentor.getState();
-          console.log('🧙‍♂️ Mentor state retrieved:', { 
-            isActive: mentorState.isActive,
-            currentFeedback: mentorState.currentFeedback.length,
-            sessionStartTime: mentorState.sessionStartTime,
-            hasAnalyzeFunction: typeof mentorState.analyzeCurrentMove === 'function'
+          import('./useDynamicAIMentor').then(({ useDynamicAIMentor }) => {
+            const mentorState = useDynamicAIMentor.getState();
+            console.log('🧙‍♂️ Checking mentor state:', { isActive: mentorState.isActive });
+            if (mentorState.isActive) {
+              console.log('🧙‍♂️ Triggering mentor analysis for move:', move);
+              mentorState.analyzeCurrentMove(newState, move);
+            }
           });
-          
-          if (mentorState.isActive) {
-            console.log('🧙‍♂️ Mentor is active! Triggering analysis for move:', {
-              from: move.from,
-              to: move.to,
-              piece: move.piece.type,
-              color: move.piece.color,
-              isWizardMove: move.isWizardTeleport || move.isWizardAttack,
-              captured: move.captured?.type
-            });
-            mentorState.analyzeCurrentMove(newState, move);
-            console.log('🧙‍♂️ Analysis call completed');
-          } else {
-            console.log('🧙‍♂️ Mentor not active, skipping analysis');
-          }
         } catch (error) {
-          console.error('🧙‍♂️ Mentor system error:', error);
+          console.log('🧙‍♂️ Mentor system not available:', error);
         }
       }, 100); // Small delay to ensure state is updated
 
@@ -474,13 +450,13 @@ export const useChess = create<ChessStore>()(
       }
     },
 
-    makeAIVsAIMove: async () => {
+    makeAIVsAIMove: () => {
       const state = get();
       if (state.gamePhase !== 'playing' || state.gameMode !== 'ai-vs-ai') {
         return;
       }
 
-      const aiMove = await getAIMove(state);
+      const aiMove = getAIMove(state);
       if (aiMove) {
         // Audio managed by ChessAudioController component
         // Audio managed by ChessAudioController component
@@ -522,7 +498,7 @@ export const useChess = create<ChessStore>()(
         // Simulate AI thinking time
         await new Promise(resolve => setTimeout(resolve, thinkingDelay));
 
-        const aiMove = await getAIMove(state);
+        const aiMove = getAIMove(state);
         if (aiMove) {
           // Audio managed by ChessAudioController component
 

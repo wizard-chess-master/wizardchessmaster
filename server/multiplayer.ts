@@ -74,8 +74,7 @@ class MultiplayerManager {
 
   private isPlayerReconnected(userId: number): boolean {
     // Check if player has reconnected with a new socket
-    const players = Array.from(this.connectedPlayers.values());
-    for (const player of players) {
+    for (const [_, player] of this.connectedPlayers) {
       if (player.userId === userId) {
         return true;
       }
@@ -116,7 +115,6 @@ class MultiplayerManager {
         displayName: string; 
         rating: number;
         lastGameId?: string;
-        lastChecksum?: string;
       }) => {
         console.log(`🔄 Player reconnecting: ${data.displayName}`);
         
@@ -125,51 +123,33 @@ class MultiplayerManager {
           socketId: socket.id
         };
         
-        // Store player data
+        // Update socket ID for reconnected player
         this.connectedPlayers.set(socket.id, playerData);
         
-        // Try to recover game state if player was in a game
-        if (data.lastGameId) {
+        // Rejoin personal room
+        socket.join(`user:${data.userId}`);
+        
+        // Check if player was in a game
+        if (data.lastGameId && this.activeGames.has(data.lastGameId)) {
           const game = this.activeGames.get(data.lastGameId);
-          if (game) {
-            console.log(`🎮 Recovering game state for ${data.displayName}`);
-            
-            // Update socket ID for the player
-            if (game.player1.userId === data.userId) {
-              game.player1.socketId = socket.id;
-            } else if (game.player2.userId === data.userId) {
-              game.player2.socketId = socket.id;
-            }
-            
-            // Join the game room
-            socket.join(data.lastGameId);
-            
-            // Send current game state with checksum
-            const currentChecksum = game.stateManager.generateChecksum(game.gameState);
-            socket.emit('game:state-recovered', {
-              gameId: data.lastGameId,
-              gameState: game.gameState,
-              checksum: currentChecksum,
-              currentTurn: game.currentTurn,
-              player1Time: game.player1Time,
-              player2Time: game.player2Time
-            });
-            
-            // Verify state consistency if client provides checksum
-            if (data.lastChecksum && data.lastChecksum !== currentChecksum) {
-              console.warn(`⚠️ State mismatch detected for ${data.displayName}`);
-              socket.emit('game:state-sync-required', {
-                serverChecksum: currentChecksum,
-                clientChecksum: data.lastChecksum
-              });
-            }
-          }
+          socket.join(data.lastGameId);
+          
+          // Send current game state
+          socket.emit('game:restored', {
+            gameId: data.lastGameId,
+            gameState: game?.gameState,
+            currentTurn: game?.currentTurn,
+            player1Time: game?.player1Time,
+            player2Time: game?.player2Time
+          });
         }
         
-        socket.emit('reconnection:success', { 
-          message: 'Successfully reconnected',
-          timestamp: Date.now()
+        socket.emit('player:reconnected', { 
+          success: true,
+          message: 'Successfully reconnected'
         });
+        
+        this.broadcastServerStats();
       });
 
       socket.on('player:join', async (data: { userId: number; username: string; displayName: string; rating: number }) => {

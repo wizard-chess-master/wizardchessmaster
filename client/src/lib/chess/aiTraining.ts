@@ -160,7 +160,7 @@ export class AITrainer {
       const currentStrategy = gameState.currentPlayer === 'white' ? whiteStrategy : blackStrategy;
       const strategicDifficulty = currentStrategy.difficulty;
       
-      const aiMove = await getAIMove(gameState);
+      const aiMove = getAIMove(gameState);
       if (!aiMove) {
         // No valid moves available - end game
         console.log(`No AI move available at move ${moveCount + 1}, ending game`);

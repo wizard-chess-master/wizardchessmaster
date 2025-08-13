@@ -7,7 +7,7 @@ import { MainMenu } from "./components/chess/MainMenu";
 import { ChessBoard } from "./components/chess/ChessBoard";
 import { GameUI } from "./components/chess/GameUI";
 import { BoardControls } from "./components/chess/BoardControls";
-import { GameSettingsDialog } from "./components/settings/GameSettingsDialog";
+import { SettingsDialog } from "./components/chess/SettingsDialog";
 import { GameOverDialog } from "./components/chess/GameOverDialog";
 import { AuthProvider } from "./components/auth/AuthProvider";
 import { ResponsiveLayout } from "./components/layout/ResponsiveLayout";
@@ -26,9 +26,6 @@ import { SystemDiagnostics } from "./components/debug/SystemDiagnostics";
 import { PerformanceDashboard } from "./components/debug/PerformanceDashboard";
 import { StabilityTestPanel } from "./components/debug/StabilityTestPanel";
 import { BrowserCompatibilityPanel } from "./components/debug/BrowserCompatibilityPanel";
-import { DeploymentPanel } from "./components/debug/DeploymentPanel";
-import { PerformanceOverlay } from "./components/performance/PerformanceOverlay";
-import { initializePerformance } from "./lib/performance";
 
 import { AchievementNotificationQueue } from "./components/achievements/AchievementNotification";
 import { AchievementPanel } from "./components/achievements/AchievementPanel";
@@ -68,15 +65,11 @@ function AppContent() {
   // Campaign reward celebration
   const { showCelebration, CelebrationComponent } = useCampaignRewardCelebration();
 
-  // Initialize audio, performance, and monetization systems
+  // Initialize audio and monetization systems
   useEffect(() => {
     const initSystems = async () => {
       try {
-        // Initialize performance optimizations
-        console.log('⚡ Initializing performance optimizations...');
-        initializePerformance();
-        
-        // Initialize audio system
+        // Initialize audio system first
         console.log('🎵 Initializing audio system...');
         await initializeAudio();
         console.log('✅ Audio system initialized');
@@ -238,13 +231,7 @@ function AppContent() {
           <GlobalNavigation 
             currentPage={currentPage}
             onNavigate={handleNavigate}
-            onStartGame={() => {
-              // Just navigate to game page and show menu
-              setCurrentPage('game');
-              // Ensure we're in menu phase
-              const { resetGame } = useChess.getState();
-              resetGame();
-            }}
+            onStartGame={handleStartGame}
           />
           
           {currentPage === 'landing' && (
@@ -294,7 +281,6 @@ function AppContent() {
 
 
           <PremiumTestButton email="tokingteepee@gmail.com" />
-          <PerformanceOverlay position="bottom-right" />
         </div>
       </AuthProvider>
     );
@@ -307,16 +293,7 @@ function AppContent() {
           <GlobalNavigation 
             currentPage={currentPage}
             onNavigate={handleNavigate}
-            onStartGame={() => {
-              // Just navigate to game page, don't start a game
-              setCurrentPage('game');
-              // Make sure we're in menu phase when navigating to game
-              const { resetGame } = useChess.getState();
-              const { gamePhase } = useChess.getState();
-              if (gamePhase !== 'menu') {
-                resetGame();
-              }
-            }}
+            onStartGame={() => setCurrentPage('game')}
           />
 
         <div className="game-container">
@@ -363,7 +340,6 @@ function AppContent() {
               onMenu={() => {
                 const { resetGame } = useChess.getState();
                 resetGame();
-                // Stay on game page but go back to menu phase
               }}
             >
             <div className="desktop-game-layout hidden md:block min-h-screen bg-gradient-to-b from-gray-900 to-black p-4">
@@ -413,7 +389,7 @@ function AppContent() {
           </>
         )}
 
-        <GameSettingsDialog 
+        <SettingsDialog 
           isOpen={showSettings} 
           onClose={() => setShowSettings(false)} 
         />
@@ -448,7 +424,6 @@ function AppContent() {
         <PerformanceDashboard />
         <StabilityTestPanel />
         <BrowserCompatibilityPanel />
-        <DeploymentPanel />
         </div>
       </div>
       </AuthProvider>

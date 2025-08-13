@@ -1157,8 +1157,9 @@ export function ChessBoard() {
     handleCanvasClick(event);
   };
 
-  // Only use mobile mode on actual mobile devices
-  const finalIsMobile = deviceInfo.isMobile;
+  // Force mobile mode for testing if screen is small (desktop mobile view mode)
+  const forceMobileMode = deviceInfo.screenWidth <= 768 || window.innerWidth <= 768;
+  const finalIsMobile = deviceInfo.isMobile || forceMobileMode;
   
   // Calculate mobile-responsive sizing and styling
   const isMobileDevice = finalIsMobile;
@@ -1167,16 +1168,29 @@ export function ChessBoard() {
   // Debug device detection with detailed logging
   console.log('🔍 ChessBoard Device Detection Debug:', {
     deviceInfo,
+    forceMobileMode,
     finalIsMobile,
     currentCanvasSize: canvasSize,
     windowDimensions: { width: window.innerWidth, height: window.innerHeight },
     userAgent: navigator.userAgent
   });
   
-  // Mobile-specific board size calculation
+  // Extra debugging for mobile view mode
+  if (forceMobileMode) {
+    console.log('📱 MOBILE MODE ACTIVE - Desktop mobile view detected');
+  }
+  
+  // Force immediate mobile sizing for screens <= 768px
+  React.useEffect(() => {
+    if (window.innerWidth <= 768) {
+      console.log('🎯 FORCING MOBILE MODE - Screen width:', window.innerWidth);
+    }
+  }, []);
+  
+  // Mobile-specific board size calculation with forced mobile detection
   const mobileBoardSize = React.useMemo(() => {
-    // Only use mobile sizing on actual mobile devices
-    const shouldUseMobileSize = isMobileDevice;
+    // Force mobile sizing for narrow screens
+    const shouldUseMobileSize = isMobileDevice || window.innerWidth <= 768;
     
     if (!shouldUseMobileSize) return canvasSize;
     
@@ -1235,8 +1249,8 @@ export function ChessBoard() {
     return finalSize;
   }, [isMobileDevice, deviceInfo, canvasSize]);
   
-  // Only use mobile sizing on actual mobile devices
-  const shouldUseMobileSize = isMobileDevice;
+  // Force mobile sizing for narrow screens regardless of device detection
+  const shouldUseMobileSize = isMobileDevice || window.innerWidth <= 768;
   const effectiveBoardSize = shouldUseMobileSize ? mobileBoardSize : canvasSize;
   const effectiveSquareSize = effectiveBoardSize / 10;
   
