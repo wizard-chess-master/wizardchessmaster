@@ -200,10 +200,16 @@ export function ChessBoard() {
       }
       
       // Calculate max size with dynamic factor and UI offset
+      // Use the smaller dimension to ensure board fits in viewport
+      const screenMin = Math.min(viewportWidth, viewportHeight);
       const maxSizeCalculated = Math.min(
+        screenMin * 0.85, // Use 85% of smallest dimension
         viewportWidth * sizeFactor,
-        (viewportHeight - 180) * 0.82 // Reduced height constraint by ~5% for more bottom space
+        (viewportHeight - 180) * 0.82 // Height constraint with UI offset
       );
+      
+      // Prevent board from getting too large in full screen
+      const absoluteMaxSize = Math.min(maxSizeCalculated, 1200); // Cap at 1200px max
       
       // Log the dynamic sizing calculation
       console.log('🎨 Dynamic sizing applied:', {
@@ -211,11 +217,12 @@ export function ChessBoard() {
         viewportHeight,
         aspectRatio,
         sizeFactor,
-        maxSize: maxSizeCalculated
+        screenMin,
+        maxSize: absoluteMaxSize
       });
       
       // Ensure minimum size for playability
-      let finalSize = Math.max(maxSizeCalculated, 320);
+      let finalSize = Math.max(Math.min(absoluteMaxSize, maxSizeCalculated), 320);
       
       // Round to nearest 10 for clean square sizes
       finalSize = Math.floor(finalSize / 10) * 10;
@@ -1399,13 +1406,15 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "w-full h-full max-h-[calc(100vh-60px)]", // Reduced constraint for more bottom space
+      "w-full h-full", // Remove max-height constraint that causes issues
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
     )}
     style={{
-      overflow: 'visible' // Allow board to be fully visible
+      overflow: 'visible', // Allow board to be fully visible
+      minHeight: '100vh', // Ensure container fills viewport
+      position: 'relative'
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
@@ -1422,7 +1431,8 @@ export function ChessBoard() {
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
           margin: '0 auto', // Always center the board
-          transform: 'translateX(-1%)', // Shift left by 1% to better center in frame
+          maxWidth: '90vw', // Prevent board from exceeding viewport width
+          maxHeight: '90vh', // Prevent board from exceeding viewport height
           position: 'relative'
         }}
       >
