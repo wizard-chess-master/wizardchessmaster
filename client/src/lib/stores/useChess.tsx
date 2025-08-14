@@ -21,6 +21,7 @@ import type { Tags } from "../ai/coach";
 interface ChessStore extends GameState {
   // Campaign tracking
   gameStartTime: number;
+  wizardCaptureCount: number; // Track wizard captures for campaign requirements
   
   // Settings
   hintsEnabled: boolean;
@@ -60,6 +61,7 @@ export const useChess = create<ChessStore>()(
   subscribeWithSelector((set, get) => ({
     ...initialState,
     gameStartTime: Date.now(),
+    wizardCaptureCount: 0,
     hintsEnabled: true,
     aiThinking: false,
     aiThinkingMessage: '',
@@ -102,7 +104,8 @@ export const useChess = create<ChessStore>()(
         isCheckmate: false,
         isStalemate: false,
         winner: null,
-        gameStartTime: Date.now()
+        gameStartTime: Date.now(),
+        wizardCaptureCount: 0
       });
       
       // ELIMINATE old music and FORCE Theme-music1.mp3 playback
@@ -347,7 +350,18 @@ export const useChess = create<ChessStore>()(
       }
 
       const newState = makeMove(state, move);
-      set(newState);
+      
+      // Track wizard captures for campaign requirements
+      let newWizardCaptureCount = state.wizardCaptureCount;
+      if (captured && captured.type === 'wizard') {
+        newWizardCaptureCount++;
+        console.log(`🧙 Wizard captured! Total: ${newWizardCaptureCount}`);
+      }
+      
+      set({
+        ...newState,
+        wizardCaptureCount: newWizardCaptureCount
+      });
       
       // 🤖 Generate AI Coach commentary with RL system
       try {
@@ -453,7 +467,8 @@ export const useChess = create<ChessStore>()(
           const playerWon = newState.winner === 'white';
           const gameTime = Date.now() - state.gameStartTime;
           const moveCount = newState.moveHistory.length;
-          completeCampaignGame(currentLevelId, playerWon, moveCount, gameTime);
+          const wizardCaptures = state.wizardCaptureCount;
+          completeCampaignGame(currentLevelId, playerWon, moveCount, gameTime, wizardCaptures);
           
           // Record campaign stats for leaderboard
           const { recordCampaignGame } = useLeaderboard.getState();

@@ -12,6 +12,9 @@ export interface CampaignLevel {
   attempts: number;
   wins: number;
   losses: number;
+  wizardCaptures: number; // Track wizard captures for this level
+  requiredWins: number; // Number of wins required to complete level
+  requiredWizardCaptures: number; // Number of wizard captures required
   bestMoveCount?: number;
   stars: number; // 0-3 stars based on performance
   requiredWinRate: number; // Required win rate to unlock next level
@@ -59,7 +62,7 @@ export interface CampaignState {
   // Actions
   initializeCampaign: () => void;
   startCampaignLevel: (levelId: string) => void;
-  completeCampaignGame: (levelId: string, won: boolean, moveCount: number, gameTime: number) => void;
+  completeCampaignGame: (levelId: string, won: boolean, moveCount: number, gameTime: number, wizardCaptures: number) => void;
   calculateNextDifficulty: () => string;
   updatePlayerRating: (won: boolean, opponentStrength: number) => void;
   resetCampaign: () => void;
@@ -79,6 +82,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 1,
+    requiredWizardCaptures: 0,
     stars: 0,
     requiredWinRate: 0.5,
     isPremiumLevel: false,
@@ -105,6 +111,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 2,
+    requiredWizardCaptures: 1,
     stars: 0,
     requiredWinRate: 0.6,
     isPremiumLevel: false,
@@ -126,6 +135,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 3,
+    requiredWizardCaptures: 2,
     stars: 0,
     requiredWinRate: 0.6,
     isPremiumLevel: false,
@@ -147,6 +159,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 4,
+    requiredWizardCaptures: 3,
     stars: 0,
     requiredWinRate: 0.65,
     isPremiumLevel: true,
@@ -168,6 +183,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 5,
+    requiredWizardCaptures: 4,
     stars: 0,
     requiredWinRate: 0.65,
     isPremiumLevel: false,
@@ -189,6 +207,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 6,
+    requiredWizardCaptures: 5,
     stars: 0,
     requiredWinRate: 0.7,
     isPremiumLevel: true,
@@ -210,6 +231,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 7,
+    requiredWizardCaptures: 6,
     stars: 0,
     requiredWinRate: 0.7,
     isPremiumLevel: true,
@@ -231,6 +255,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 8,
+    requiredWizardCaptures: 7,
     stars: 0,
     requiredWinRate: 0.7,
     isPremiumLevel: true,
@@ -252,6 +279,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 9,
+    requiredWizardCaptures: 8,
     stars: 0,
     requiredWinRate: 0.75,
     isPremiumLevel: true,
@@ -273,6 +303,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 10,
+    requiredWizardCaptures: 9,
     stars: 0,
     requiredWinRate: 0.75,
     isPremiumLevel: true,
@@ -294,6 +327,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 11,
+    requiredWizardCaptures: 10,
     stars: 0,
     requiredWinRate: 0.8,
     isPremiumLevel: true,
@@ -315,6 +351,9 @@ const initialLevels: CampaignLevel[] = [
     attempts: 0,
     wins: 0,
     losses: 0,
+    wizardCaptures: 0,
+    requiredWins: 12,
+    requiredWizardCaptures: 12,
     stars: 0,
     requiredWinRate: 0.8,
     isPremiumLevel: true,
@@ -369,7 +408,7 @@ export const useCampaign = create<CampaignState>()(
         set({ levels: updatedLevels });
       },
 
-      completeCampaignGame: (levelId: string, won: boolean, moveCount: number, gameTime: number) => {
+      completeCampaignGame: (levelId: string, won: boolean, moveCount: number, gameTime: number, wizardCaptures: number) => {
         const state = get();
         const level = state.levels.find(l => l.id === levelId);
         if (!level) return;
@@ -379,6 +418,7 @@ export const useCampaign = create<CampaignState>()(
           if (l.id === levelId) {
             const newWins = won ? l.wins + 1 : l.wins;
             const newLosses = won ? l.losses : l.losses + 1;
+            const newWizardCaptures = l.wizardCaptures + wizardCaptures;
             const totalGames = newWins + newLosses;
             const winRate = totalGames > 0 ? newWins / totalGames : 0;
             
@@ -390,12 +430,18 @@ export const useCampaign = create<CampaignState>()(
             else if (winRate >= 0.65) stars = 2;   // 65%+ = 2 stars (decent)
             else if (winRate >= 0.5) stars = 1;    // 50%+ = 1 star (basic completion)
 
-            const completed = winRate >= l.requiredWinRate && totalGames >= 3;
+            // Check if level requirements are met
+            const completed = newWins >= l.requiredWins && newWizardCaptures >= l.requiredWizardCaptures;
+            
+            if (completed && !l.completed) {
+              console.log(`🔓 Level ${levelId.replace('level', '')} completed! Wins: ${newWins}/${l.requiredWins}, Wizard Captures: ${newWizardCaptures}/${l.requiredWizardCaptures}`);
+            }
             
             return {
               ...l,
               wins: newWins,
               losses: newLosses,
+              wizardCaptures: newWizardCaptures,
               completed,
               stars,
               bestMoveCount: !l.bestMoveCount || moveCount < l.bestMoveCount ? moveCount : l.bestMoveCount,
