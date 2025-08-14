@@ -1396,8 +1396,6 @@ export function ChessBoard() {
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
           margin: '0 auto', // Center the board
-          marginLeft: 'calc(50% + 2%)', // Shift RIGHT by 2% to align coordinates with squares
-          transform: 'translateX(-50%)', // Center after shift
           maxWidth: 'calc(100vw - 160px)', // Much more padding for border visibility
           maxHeight: 'calc(100vh - 160px)', // Much more padding for vertical space
           position: 'relative',
