@@ -66,9 +66,9 @@ app.use((req, res, next) => {
 
 (async () => {
   try {
-    // Set NODE_ENV to production for deployment if not already set
+    // Set NODE_ENV to development if not already set (for dev command)
     if (!process.env.NODE_ENV) {
-      process.env.NODE_ENV = 'production';
+      process.env.NODE_ENV = 'development';
     }
 
     console.log(`Starting server in ${process.env.NODE_ENV} mode`);
@@ -111,7 +111,7 @@ app.use((req, res, next) => {
     // importantly only setup vite in development and after
     // setting up all the other routes so the catch-all route
     // doesn't interfere with the other routes
-    if (app.get("env") === "development") {
+    if (process.env.NODE_ENV === "development") {
       await setupVite(app, server);
     } else {
       serveStatic(app);
@@ -128,7 +128,11 @@ app.use((req, res, next) => {
     }, () => {
       log(`server started successfully on port ${port} with host 0.0.0.0`);
       log(`environment: ${process.env.NODE_ENV}`);
-      log(`serving static files from dist in production mode`);
+      if (process.env.NODE_ENV === "development") {
+        log(`serving with Vite dev server in development mode`);
+      } else {
+        log(`serving static files from dist in production mode`);
+      }
     }).on('error', (err) => {
       console.error('Server failed to start:', err);
       console.error('Error details:', {
