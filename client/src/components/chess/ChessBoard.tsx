@@ -1395,7 +1395,9 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          margin: '0 auto', // Always center the board
+          margin: '0 auto', // Center the board
+          marginLeft: 'calc(50% - 2%)', // Shift left by 2% for better alignment
+          transform: 'translateX(-50%)', // Center after shift
           maxWidth: 'calc(100vw - 160px)', // Much more padding for border visibility
           maxHeight: 'calc(100vh - 160px)', // Much more padding for vertical space
           position: 'relative',
