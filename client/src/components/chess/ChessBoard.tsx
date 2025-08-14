@@ -182,65 +182,47 @@ export function ChessBoard() {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Account for UI elements - optimized for Mac Desktop
-      const headerHeight = 60; // Header height
-      const controlsHeight = 60; // Controls height  
-      const padding = 20; // Safety padding
-      const availableHeight = viewportHeight * 0.65 - 120; // Safe height for Mac Desktop
+      // Calculate aspect ratio for dynamic sizing
+      const aspectRatio = viewportWidth / viewportHeight;
       
-      let maxSize = 800;
+      // Dynamic sizing factor based on screen size and aspect ratio
+      let sizeFactor = 0.5; // Default for balanced screens
       
-      // Enhanced responsive sizing with MacBook optimization
-      console.log('🎨 Viewport sizing calculation:', { viewportWidth, viewportHeight, availableHeight });
-      
-      if (viewportWidth < 480) {
-        // Small mobile: prioritize fitting on screen
-        maxSize = Math.min(viewportWidth * 0.95, availableHeight * 0.9, 350);
-        console.log('📱 Small mobile sizing applied:', maxSize);
-      } else if (viewportWidth < 768) {
-        // Mobile: balance between size and usability  
-        maxSize = Math.min(viewportWidth * 0.90, availableHeight * 0.85, 500);
-        console.log('📱 Mobile sizing applied:', maxSize);
-      } else if (viewportWidth < 1024) {
-        // Tablet: more generous sizing
-        maxSize = Math.min(viewportWidth * 0.80, availableHeight * 0.85, 650);
-        console.log('📱 Tablet sizing applied:', maxSize);
-      } else if (viewportWidth < 1440) {
-        // Small desktop: standard sizing
-        maxSize = Math.min(viewportWidth * 0.65, availableHeight * 0.85, 700);
-        console.log('🖥️ Small desktop sizing applied:', maxSize);
-      } else if (viewportWidth >= 2560) {
-        // MacBook displays (13.6", 14.2", 15.3", 16.2")
-        // Use reduced width for better fit on Mac Desktop
-        const aspectRatio = viewportWidth / viewportHeight;
-        
-        if (aspectRatio > 1.6) {
-          // Wide screens (like MacBook Pro 16.2")
-          maxSize = Math.min(availableHeight, viewportWidth * 0.4, 900);
-          console.log('💻 MacBook Pro wide screen applied:', maxSize);
-        } else {
-          // Standard MacBook aspect ratios (like 2560x1440)
-          maxSize = Math.min(availableHeight, viewportWidth * 0.5, 850);
-          console.log('💻 MacBook standard screen applied:', maxSize);
-        }
-      } else {
-        // Standard desktop: balance width and height
-        maxSize = Math.min(viewportWidth * 0.55, availableHeight * 0.85, 900);
-        console.log('🖥️ Desktop sizing applied:', maxSize);
+      if (viewportWidth <= 768) {
+        sizeFactor = 0.9; // Mobile devices
+      } else if (viewportWidth <= 1024) {
+        sizeFactor = 0.7; // Tablet devices
+      } else if (aspectRatio > 1.6) {
+        sizeFactor = 0.45; // Wide screens (e.g., 16:10 MacBooks)
       }
       
+      // Calculate max size with dynamic factor and UI offset
+      const maxSizeCalculated = Math.min(
+        viewportWidth * sizeFactor,
+        viewportHeight * sizeFactor - 100 // Offset for UI elements
+      );
+      
+      // Log the dynamic sizing calculation
+      console.log('🎨 Dynamic sizing applied:', {
+        viewportWidth,
+        viewportHeight,
+        aspectRatio,
+        sizeFactor,
+        maxSize: maxSizeCalculated
+      });
+      
       // Ensure minimum size for playability
-      maxSize = Math.max(maxSize, 320);
+      let finalSize = Math.max(maxSizeCalculated, 320);
       
       // Round to nearest 10 for clean square sizes
-      maxSize = Math.floor(maxSize / 10) * 10;
+      finalSize = Math.floor(finalSize / 10) * 10;
       
-      const newSquareSize = Math.floor(maxSize / 10);
+      const newSquareSize = Math.floor(finalSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
       console.log('🎨 Canvas size calculated:', { 
         viewport: { width: viewportWidth, height: viewportHeight },
-        available: { height: availableHeight },
+        finalSize,
         canvas: { size: newCanvasSize, squareSize: newSquareSize }
       });
       
@@ -1406,7 +1388,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "w-full h-full max-h-[calc(100vh-120px)] overflow-hidden",
+      "w-full h-full max-h-[calc(100vh-100px)] overflow-hidden",
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
@@ -1425,8 +1407,6 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          maxWidth: isMobileDevice ? '95vw' : '50vw', // Reduced to 50% for Mac Desktop
-          maxHeight: isMobileDevice ? '75vh' : 'calc(100vh - 120px)', // Matched to container height
           margin: '0 auto' // Always center the board
         }}
       >
