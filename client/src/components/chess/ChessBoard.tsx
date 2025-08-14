@@ -174,7 +174,7 @@ export function ChessBoard() {
     }
   }, [moveHistory]);
 
-  // Responsive canvas sizing - 800x800 base, scales down for mobile
+  // Responsive canvas sizing - optimized for MacBooks and all screens
   useEffect(() => {
     const updateCanvasSize = () => {
       console.log('🎨 Updating canvas size...');
@@ -182,40 +182,65 @@ export function ChessBoard() {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Base size is 800x800 for desktop (reduced from 880 for better performance)
+      // Account for UI elements (header, controls, padding)
+      const headerHeight = 80; // Approximate header height
+      const controlsHeight = 100; // Approximate controls height
+      const padding = 40; // Safety padding
+      const availableHeight = viewportHeight - headerHeight - controlsHeight - padding;
+      
       let maxSize = 800;
       
-      // Enhanced mobile-responsive sizing with device detection
-      console.log('🎨 Viewport sizing calculation:', { viewportWidth, viewportHeight });
+      // Enhanced responsive sizing with MacBook optimization
+      console.log('🎨 Viewport sizing calculation:', { viewportWidth, viewportHeight, availableHeight });
       
       if (viewportWidth < 480) {
         // Small mobile: prioritize fitting on screen
-        maxSize = Math.min(viewportWidth * 0.95, Math.min(viewportHeight * 0.6, 350));
+        maxSize = Math.min(viewportWidth * 0.95, availableHeight * 0.9, 350);
         console.log('📱 Small mobile sizing applied:', maxSize);
       } else if (viewportWidth < 768) {
         // Mobile: balance between size and usability  
-        maxSize = Math.min(viewportWidth * 0.90, Math.min(viewportHeight * 0.7, 500));
+        maxSize = Math.min(viewportWidth * 0.90, availableHeight * 0.85, 500);
         console.log('📱 Mobile sizing applied:', maxSize);
       } else if (viewportWidth < 1024) {
         // Tablet: more generous sizing
-        maxSize = Math.min(viewportWidth * 0.80, Math.min(viewportHeight * 0.8, 650));
+        maxSize = Math.min(viewportWidth * 0.80, availableHeight * 0.85, 650);
         console.log('📱 Tablet sizing applied:', maxSize);
-      } else if (viewportWidth < 1200) {
+      } else if (viewportWidth < 1440) {
         // Small desktop: standard sizing
-        maxSize = Math.min(viewportWidth * 0.70, 800);
+        maxSize = Math.min(viewportWidth * 0.65, availableHeight * 0.85, 700);
         console.log('🖥️ Small desktop sizing applied:', maxSize);
+      } else if (viewportWidth >= 2560) {
+        // MacBook displays (13.6", 14.2", 15.3", 16.2")
+        // Use viewport height as primary constraint for MacBooks
+        const aspectRatio = viewportWidth / viewportHeight;
+        
+        if (aspectRatio > 1.6) {
+          // Wide screens (like MacBook Pro 16.2")
+          maxSize = Math.min(availableHeight * 0.85, viewportWidth * 0.45, 1200);
+          console.log('💻 MacBook Pro wide screen applied:', maxSize);
+        } else {
+          // Standard MacBook aspect ratios
+          maxSize = Math.min(availableHeight * 0.85, viewportWidth * 0.5, 1000);
+          console.log('💻 MacBook standard screen applied:', maxSize);
+        }
       } else {
-        console.log('🖥️ Large desktop sizing applied:', maxSize);
+        // Standard desktop: balance width and height
+        maxSize = Math.min(viewportWidth * 0.55, availableHeight * 0.85, 900);
+        console.log('🖥️ Desktop sizing applied:', maxSize);
       }
       
       // Ensure minimum size for playability
       maxSize = Math.max(maxSize, 320);
+      
+      // Round to nearest 10 for clean square sizes
+      maxSize = Math.floor(maxSize / 10) * 10;
       
       const newSquareSize = Math.floor(maxSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
       console.log('🎨 Canvas size calculated:', { 
         viewport: { width: viewportWidth, height: viewportHeight },
+        available: { height: availableHeight },
         canvas: { size: newCanvasSize, squareSize: newSquareSize }
       });
       
@@ -1381,6 +1406,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
+      "w-full h-full max-h-screen overflow-hidden",
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
@@ -1399,9 +1425,9 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          maxWidth: isMobileDevice ? '95vw' : '100%', // Ensure it fits on mobile screens
-          maxHeight: isMobileDevice ? '80vh' : 'none', // Prevent overflow on mobile
-          margin: isMobileDevice ? '0 auto' : 'initial' // Center on mobile
+          maxWidth: isMobileDevice ? '95vw' : '90vw', // Ensure it fits on all screens
+          maxHeight: isMobileDevice ? '80vh' : 'calc(100vh - 220px)', // Account for header and controls
+          margin: '0 auto' // Always center the board
         }}
       >
         <div className="board-coordinates">
