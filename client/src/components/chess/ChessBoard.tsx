@@ -182,11 +182,11 @@ export function ChessBoard() {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Account for UI elements (header, controls, padding)
-      const headerHeight = 80; // Approximate header height
-      const controlsHeight = 100; // Approximate controls height
-      const padding = 40; // Safety padding
-      const availableHeight = viewportHeight - headerHeight - controlsHeight - padding;
+      // Account for UI elements (header, controls, padding) - adjusted for better MacBook fit
+      const headerHeight = 70; // Reduced header height
+      const controlsHeight = 80; // Reduced controls height  
+      const padding = 20; // Reduced safety padding
+      const availableHeight = Math.min(viewportHeight * 0.75, viewportHeight - 150);
       
       let maxSize = 800;
       
@@ -1406,7 +1406,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "w-full h-full max-h-screen overflow-hidden",
+      "w-full h-full max-h-[calc(100vh-150px)] overflow-hidden",
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
@@ -1425,8 +1425,8 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          maxWidth: isMobileDevice ? '95vw' : '90vw', // Ensure it fits on all screens
-          maxHeight: isMobileDevice ? '80vh' : 'calc(100vh - 220px)', // Account for header and controls
+          maxWidth: isMobileDevice ? '95vw' : '80vw', // Reduced for better fit
+          maxHeight: isMobileDevice ? '75vh' : 'calc(100vh - 150px)', // Adjusted for MacBook screens
           margin: '0 auto' // Always center the board
         }}
       >
