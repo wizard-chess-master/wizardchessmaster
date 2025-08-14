@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { speakText, generateCampaignMusic, VOICE_IDS, initializeElevenLabs } from '../audio/elevenLabs';
 
 export interface CampaignLevel {
   id: string;
@@ -393,6 +394,12 @@ export const useCampaign = create<CampaignState>()(
         if (state.levels.length === 0) {
           set({ levels: initialLevels });
         }
+        
+        // Initialize ElevenLabs integration
+        const elevenLabsReady = initializeElevenLabs();
+        if (elevenLabsReady) {
+          console.log('✅ ElevenLabs voice integration ready for campaign mode');
+        }
       },
 
       startCampaignLevel: (levelId: string) => {
@@ -528,8 +535,30 @@ export const useCampaign = create<CampaignState>()(
         if (currentLevel?.completed) {
           const currentIndex = updatedLevels.findIndex(l => l.id === levelId);
           if (currentIndex < updatedLevels.length - 1) {
+            const nextLevel = updatedLevels[currentIndex + 1];
             updatedLevels[currentIndex + 1].unlocked = true;
-            console.log(`🔓 Unlocked next level: ${updatedLevels[currentIndex + 1].name}`);
+            console.log(`🔓 Unlocked next level: ${nextLevel.name}`);
+            
+            // Generate voice announcement for level unlock
+            try {
+              const announcement = `Congratulations! You've unlocked ${nextLevel.name}. ${nextLevel.description}`;
+              speakText(announcement, VOICE_IDS.victory).catch(err => 
+                console.log('Voice announcement failed, using fallback:', err)
+              );
+              
+              // Generate music for the newly unlocked level
+              const levelNumber = parseInt(nextLevel.id.replace('level', ''));
+              generateCampaignMusic(levelNumber).then(musicBuffer => {
+                console.log(`🎵 Generated music for Level ${levelNumber}`);
+                // Store music for later playback
+                (window as any).__campaignMusic = (window as any).__campaignMusic || {};
+                (window as any).__campaignMusic[levelNumber] = musicBuffer;
+              }).catch(err => 
+                console.log('Music generation failed:', err)
+              );
+            } catch (error) {
+              console.log('ElevenLabs integration error:', error);
+            }
           }
         }
 

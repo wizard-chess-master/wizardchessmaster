@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config({ path: '.env.local' });
+
 import express, { type Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { createServer } from "http";
