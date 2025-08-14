@@ -187,26 +187,26 @@ export function ChessBoard() {
       }
       
       // Account for padding, coordinate labels, and border
-      const padding = 60; // Increased more for safety margin
+      const padding = 40; // Increased for labels and UI elements
       const labelHeight = 30; // Height for coordinate labels
-      const labelWidth = 35; // Width for coordinate labels (increased)
-      const borderWidth = 8; // Double the border compensation for safety
+      const labelWidth = 30; // Width for coordinate labels
+      const borderWidth = 4; // Account for border-4 class (4px border)
       
       // Calculate available space accounting for labels and border
       const availableWidth = viewportWidth - padding * 2 - labelWidth - borderWidth * 2;
       const availableHeight = viewportHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
       
-      // Dynamic size factor based on screen size - very aggressive reduction
-      let sizeFactor = 0.70; // Much smaller to ensure all borders visible
+      // Dynamic size factor based on screen size - adjusted for border visibility
+      let sizeFactor = 0.84; // Reduced from 0.9 to ensure border space
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.80; // Mobile - significant reduction
+        sizeFactor = 0.94; // Mobile - adjusted from 0.95
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.75; // Tablet - significant reduction
+        sizeFactor = 0.89; // Tablet - adjusted from 0.92
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.60; // Large displays - major reduction
+        sizeFactor = 0.69; // Large displays - adjusted from 0.75
       } else if (viewportWidth / viewportHeight > 1.6) {
-        sizeFactor = 0.65; // Wide screens - major reduction
+        sizeFactor = 0.76; // Wide screens - adjusted from 0.8
       }
       
       // Calculate board size using available space
@@ -215,12 +215,8 @@ export function ChessBoard() {
         availableHeight * sizeFactor
       );
       
-      // Add significant right margin compensation to ensure border visibility
-      const rightMarginOffset = 40; // Much larger offset for safety
-      const adjustedSize = maxSize - rightMarginOffset;
-      
       // Remove hard cap to allow larger boards on big screens
-      const finalSize = Math.max(300, Math.floor(adjustedSize / 10) * 10);
+      const finalSize = Math.max(300, Math.floor(maxSize / 10) * 10);
       const newSquareSize = Math.floor(finalSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
@@ -1302,10 +1298,10 @@ export function ChessBoard() {
     const actualHeight = window.innerHeight;
     
     // Consistent padding with desktop calculations - include border
-    const padding = 60; // Match desktop padding
+    const padding = 40;
     const labelHeight = 30;
-    const labelWidth = 35; // Match desktop label width
-    const borderWidth = 8; // Match desktop border compensation
+    const labelWidth = 30;
+    const borderWidth = 4; // Account for border-4 class
     
     let availableWidth = actualWidth - padding * 2 - labelWidth - borderWidth * 2;
     let availableHeight = actualHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
@@ -1395,11 +1391,10 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          margin: '0 auto', // Center the board
-          maxWidth: 'calc(100vw - 160px)', // Much more padding for border visibility
-          maxHeight: 'calc(100vh - 160px)', // Much more padding for vertical space
-          position: 'relative',
-          paddingRight: '20px' // Additional right padding to ensure border shows
+          margin: '0 auto', // Always center the board
+          maxWidth: 'calc(100vw - 80px)', // Full width minus padding for labels
+          maxHeight: 'calc(100vh - 120px)', // Full height minus padding and labels
+          position: 'relative'
         }}
       >
         <div className="board-coordinates">
