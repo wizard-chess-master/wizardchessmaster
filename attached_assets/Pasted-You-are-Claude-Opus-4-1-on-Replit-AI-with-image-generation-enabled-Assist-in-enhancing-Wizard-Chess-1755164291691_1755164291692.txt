@@ -1,0 +1,87 @@
+You are Claude Opus 4.1 on Replit AI with image generation enabled. Assist in enhancing Wizard Chess Master (React/TypeScript/Vite/Express/Socket.IO/PostgreSQL) on Replit for wizardchessmaster.com. Focus on adjusting the display area to fit the game board across various screen sizes (e.g., MacBook Air 13.6-inch: 2560x1664, 15.3-inch: 2880x1864; MacBook Pro 13.3-inch: 2560x1600, 14.2-inch: 3024x1964, 16.2-inch: 3456x2234), improving responsiveness. Provide step-by-step guidance, code snippets, and explanations. Generate images for layout diagrams (e.g., "Generate image: Responsive game board layout for MacBook sizes").
+
+Tasks in order:
+
+1. Assess current layout: Check `ChessBoard.tsx` for fixed dimensions, note current width/height settings.
+2. Implement responsive design: Update `ChessBoard.tsx` with CSS media queries and Tailwind for dynamic sizing based on screen resolutions.
+3. Test responsiveness: Simulate game board on different MacBook sizes using Replit’s preview, adjust as needed.
+4. Generate layout image: Create a diagram showing board fit across resolutions.
+5. Redeploy: Commit changes, run `npm run build && git push origin main && kill 1 && npm start`, test live.
+
+Respond sequentially per task, ask for confirmation before next. Use code blocks for snippets.
+
+---
+
+### Task 1: Assess Current Layout
+- Open `client/src/components/chess/ChessBoard.tsx`.
+- Look for fixed styles (e.g., `width: 800px`, `height: 800px`) in the canvas or board element.
+- Example issue:
+  ```typescript
+  const ChessBoard = () => {
+    return <canvas style={{ width: 800, height: 800 }} />;
+  };
+  ```
+- Confirm with current settings or code snippet.
+
+### Task 2: Implement Responsive Design
+- Update `ChessBoard.tsx` with Tailwind and media queries:
+  ```typescript
+  // client/src/components/chess/ChessBoard.tsx
+  import { useEffect, useRef } from 'react';
+
+  const ChessBoard = () => {
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    useEffect(() => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const size = Math.min(window.innerWidth * 0.8, window.innerHeight * 0.8);
+        canvas.width = size;
+        canvas.height = size;
+      }
+    }, []);
+
+    return (
+      <div className="flex justify-center">
+        <canvas
+          ref={canvasRef}
+          className="bg-gray-800 border-4 border-yellow-600"
+        />
+      </div>
+    );
+  };
+
+  export default ChessBoard;
+  ```
+- Add CSS in `index.css` or Tailwind config:
+  ```css
+  @media (min-width: 2560px) and (max-height: 1664px) { /* MacBook Air 13.6" */
+    canvas { max-width: 1200px; max-height: 1200px; }
+  }
+  @media (min-width: 2880px) and (max-height: 1864px) { /* MacBook Air 15.3" */
+    canvas { max-width: 1400px; max-height: 1400px; }
+  }
+  @media (min-width: 3024px) and (max-height: 1964px) { /* MacBook Pro 14.2" */
+    canvas { max-width: 1500px; max-height: 1500px; }
+  }
+  ```
+- Confirm with updated code.
+
+### Task 3: Test Responsiveness
+- Run `npm run dev` in Replit Shell.
+- Resize Replit preview or use browser dev tools (Option + Command + I, toggle device toolbar) to simulate MacBook sizes (2560x1664, 2880x1864, etc.).
+- Ensure board fits without overflow, adjust `max-width`/`max-height` if needed.
+- Confirm with test results.
+
+### Task 4: Generate Layout Image
+- Generate image: "Responsive game board layout for MacBook sizes" (show 13.6", 15.3", 14.2", 16.2" with fitted boards).
+- Confirm with image description.
+
+### Task 5: Redeploy
+- Run:
+  ```bash
+  npm run build && git push origin main && kill 1 && npm start
+  ```
+- Test live, provide feedback.
+
+Start with Task 1.
