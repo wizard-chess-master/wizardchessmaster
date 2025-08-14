@@ -187,26 +187,26 @@ export function ChessBoard() {
       }
       
       // Account for padding, coordinate labels, and border
-      const padding = 20; // Reduced padding to give more width
+      const padding = 20; // Reduced padding to minimize gap
       const labelHeight = 30; // Height for coordinate labels
       const labelWidth = 30; // Width for coordinate labels
-      const borderWidth = 4; // Account for border-4 class (4px border)
+      const borderWidth = 8; // Account for border-4 class (4px each side = 8px total)
       
       // Calculate available space accounting for labels and border
-      const availableWidth = viewportWidth - padding * 2;
+      const availableWidth = viewportWidth - padding * 2 - borderWidth; // Subtract border width
       const availableHeight = viewportHeight - padding * 2 - 50; // Adjusted for top gap
       
-      // Dynamic size factor based on screen size - increased for better visibility
-      let sizeFactor = 0.8; // Increased size factor
+      // Dynamic size factor based on screen size - adjusted to fit right border
+      let sizeFactor = 0.75; // Adjusted to fit right border
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.9; // Mobile - increased
+        sizeFactor = 0.9; // Mobile
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.85; // Tablet - increased
+        sizeFactor = 0.85; // Tablet
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.75; // Large displays
+        sizeFactor = 0.65; // Large displays
       } else if (viewportWidth / viewportHeight > 1.6) {
-        sizeFactor = 0.8; // Wide screens
+        sizeFactor = 0.75; // Wide screens - adjusted
       }
       
       // Calculate board size using available space
@@ -1301,9 +1301,9 @@ export function ChessBoard() {
     const padding = 20; // Reduced to match desktop
     const labelHeight = 30;
     const labelWidth = 30;
-    const borderWidth = 4; // Account for border-4 class
+    const borderWidth = 8; // Account for border-4 class (4px each side)
     
-    let availableWidth = actualWidth - padding * 2;
+    let availableWidth = actualWidth - padding * 2 - borderWidth; // Subtract border width
     let availableHeight = actualHeight - padding * 2 - 50; // Adjusted for top gap
     
     // Calculate optimal size based on actual viewport with more mobile-friendly constraints
@@ -1375,7 +1375,7 @@ export function ChessBoard() {
     style={{
       backgroundColor: 'transparent',
       position: 'relative',
-      marginTop: '-50px' // Negative margin for top positioning
+      marginTop: '-30px' // Reduced negative margin to minimize top gap
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
@@ -1392,8 +1392,8 @@ export function ChessBoard() {
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
           margin: '0 auto', // Always center the board
-          maxWidth: 'calc(100vw - 80px)', // Full width minus padding for labels
-          maxHeight: 'calc(100vh - 120px)', // Full height minus padding and labels
+          maxWidth: 'calc(100vw - 48px)', // Full width minus padding (20px*2) and border (8px)
+          maxHeight: 'calc(100vh - 100px)', // Full height minus padding and adjusted for top gap
           position: 'relative'
         }}
       >
