@@ -189,17 +189,12 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     
     // Check if path is clear (b1, c1, d1, e1 for white - columns 1, 2, 3, 4)
     let pathClear = true;
-    console.log('🏰 Checking queenside castling path for', king.color);
     for (let col = 1; col <= 4; col++) {
-      const piece = board[homeRow][col];
-      console.log(`  Column ${col}: ${piece ? `${piece.type} (${piece.color})` : 'empty'}`);
       if (board[homeRow][col]) {
-        console.log(`  ❌ Path blocked at column ${col} by ${piece?.type}`);
         pathClear = false;
         break;
       }
     }
-    console.log('  Path clear:', pathClear);
     
     if (pathClear) {
       // Check if king would pass through or end up in check
@@ -215,7 +210,6 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
       if (canCastle) {
         // King moves to c1/c10 (column 2)
         moves.push({ row: homeRow, col: 2 });
-        console.log('🏰 Queenside castling move available:', { row: homeRow, col: 2 });
       }
     }
   }
@@ -229,17 +223,12 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     
     // Check if path is clear (g1, h1, i1 for white - columns 6, 7, 8)
     let pathClear = true;
-    console.log('🏰 Checking kingside castling path for', king.color);
     for (let col = 6; col <= 8; col++) {
-      const piece = board[homeRow][col];
-      console.log(`  Column ${col}: ${piece ? `${piece.type} (${piece.color})` : 'empty'}`);
       if (board[homeRow][col]) {
-        console.log(`  ❌ Path blocked at column ${col} by ${piece?.type}`);
         pathClear = false;
         break;
       }
     }
-    console.log('  Path clear:', pathClear);
     
     if (pathClear) {
       // Check if king would pass through or end up in check
@@ -255,7 +244,6 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
       if (canCastle) {
         // King moves to g1/g10 (column 7) - corrected: should be column 7, not 6
         moves.push({ row: homeRow, col: 7 });
-        console.log('🏰 Kingside castling move available:', { row: homeRow, col: 7 });
       }
     }
   }
