@@ -197,9 +197,21 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     }
     
     if (pathClear) {
-      // King moves to c1/c10 (column 2)
-      moves.push({ row: homeRow, col: 2 });
-      console.log('🏰 Queenside castling move available:', { row: homeRow, col: 2 });
+      // Check if king would pass through or end up in check
+      // King moves through columns 4, 3, 2 (from 5 to 2)
+      let canCastle = true;
+      for (let col = 2; col <= 5; col++) { // Check columns 2, 3, 4, 5 (destination and all squares king passes through)
+        if (isKingUnderAttack(board, { row: homeRow, col }, king.color)) {
+          canCastle = false;
+          break;
+        }
+      }
+      
+      if (canCastle) {
+        // King moves to c1/c10 (column 2)
+        moves.push({ row: homeRow, col: 2 });
+        console.log('🏰 Queenside castling move available:', { row: homeRow, col: 2 });
+      }
     }
   }
   
@@ -210,7 +222,7 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
       kingsideRook.color === king.color && 
       !kingsideRook.hasMoved) {
     
-    // Check if path is clear (g1, h1, i1 for white)
+    // Check if path is clear (f1, g1, h1, i1 for white)
     let pathClear = true;
     for (let col = 6; col <= 8; col++) {
       if (board[homeRow][col]) {
@@ -220,9 +232,21 @@ function getCastlingMoves(board: (ChessPiece | null)[][], pos: Position, king: C
     }
     
     if (pathClear) {
-      // King moves to g1/g10 (column 6) - standard castling is 2 squares from e1 to g1
-      moves.push({ row: homeRow, col: 6 });
-      console.log('🏰 Kingside castling move available:', { row: homeRow, col: 6 });
+      // Check if king would pass through or end up in check
+      // King moves through columns 6, 7 (from 5 to 7)
+      let canCastle = true;
+      for (let col = 5; col <= 7; col++) { // Check columns 5, 6, 7 (current position and all squares king passes through)
+        if (isKingUnderAttack(board, { row: homeRow, col }, king.color)) {
+          canCastle = false;
+          break;
+        }
+      }
+      
+      if (canCastle) {
+        // King moves to g1/g10 (column 7) - corrected: should be column 7, not 6
+        moves.push({ row: homeRow, col: 7 });
+        console.log('🏰 Kingside castling move available:', { row: homeRow, col: 7 });
+      }
     }
   }
   
