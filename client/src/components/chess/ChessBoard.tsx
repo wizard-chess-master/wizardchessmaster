@@ -186,17 +186,17 @@ export function ChessBoard() {
       const aspectRatio = viewportWidth / viewportHeight;
       
       // Dynamic sizing factor based on screen size and aspect ratio
-      let sizeFactor = 0.665; // Default reduced by ~5% to prevent edge clipping
+      let sizeFactor = 0.658; // Default reduced by ~6% total to prevent any overlap
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.85; // Mobile devices - also reduced by ~5%
+        sizeFactor = 0.841; // Mobile devices - reduced by ~6% total
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.76; // Tablet devices - also reduced by ~5%
+        sizeFactor = 0.752; // Tablet devices - reduced by ~6% total
       } else if (viewportWidth >= 2560) {
         // MacBook displays - use height as primary constraint
-        sizeFactor = 0.71; // Reduced by ~5% to prevent frame clipping
+        sizeFactor = 0.703; // Reduced by ~6% total to prevent right side overlap
       } else if (aspectRatio > 1.6) {
-        sizeFactor = 0.62; // Wide screens - also reduced by ~5%
+        sizeFactor = 0.614; // Wide screens - reduced by ~6% total
       }
       
       // Calculate max size with dynamic factor and UI offset
