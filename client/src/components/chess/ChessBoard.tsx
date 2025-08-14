@@ -1366,7 +1366,7 @@ export function ChessBoard() {
   return (
     <div className={cn(
       "board-container",
-      "flex flex-col items-center justify-center",
+      "flex flex-col items-center justify-start", // Changed from justify-center to justify-start
       "w-full h-screen overflow-hidden", // Full viewport with no overflow
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
@@ -1375,7 +1375,8 @@ export function ChessBoard() {
     style={{
       backgroundColor: 'transparent',
       position: 'relative',
-      padding: '20px' // Consistent padding
+      padding: '20px', // Consistent padding
+      paddingTop: '40px' // Add more top padding to position board near top
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
