@@ -187,26 +187,26 @@ export function ChessBoard() {
       }
       
       // Account for padding, coordinate labels, and border
-      const padding = 40; // Increased for labels and UI elements
+      const padding = 20; // Reduced padding to give more width
       const labelHeight = 30; // Height for coordinate labels
       const labelWidth = 30; // Width for coordinate labels
       const borderWidth = 4; // Account for border-4 class (4px border)
       
       // Calculate available space accounting for labels and border
-      const availableWidth = viewportWidth - padding * 2 - labelWidth - borderWidth * 2;
-      const availableHeight = viewportHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
+      const availableWidth = viewportWidth - padding * 2;
+      const availableHeight = viewportHeight - padding * 2 - 50; // Adjusted for top gap
       
-      // Dynamic size factor based on screen size - balanced for visibility
-      let sizeFactor = 0.88; // Slightly reduced from 0.9 for border visibility
+      // Dynamic size factor based on screen size - increased for better visibility
+      let sizeFactor = 0.8; // Increased size factor
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.94; // Mobile - good balance
+        sizeFactor = 0.9; // Mobile - increased
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.90; // Tablet - balanced
+        sizeFactor = 0.85; // Tablet - increased
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.72; // Large displays - prevent excessive size
+        sizeFactor = 0.75; // Large displays
       } else if (viewportWidth / viewportHeight > 1.6) {
-        sizeFactor = 0.78; // Wide screens - balanced
+        sizeFactor = 0.8; // Wide screens
       }
       
       // Calculate board size using available space
@@ -1298,13 +1298,13 @@ export function ChessBoard() {
     const actualHeight = window.innerHeight;
     
     // Consistent padding with desktop calculations - include border
-    const padding = 40;
+    const padding = 20; // Reduced to match desktop
     const labelHeight = 30;
     const labelWidth = 30;
     const borderWidth = 4; // Account for border-4 class
     
-    let availableWidth = actualWidth - padding * 2 - labelWidth - borderWidth * 2;
-    let availableHeight = actualHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
+    let availableWidth = actualWidth - padding * 2;
+    let availableHeight = actualHeight - padding * 2 - 50; // Adjusted for top gap
     
     // Calculate optimal size based on actual viewport with more mobile-friendly constraints
     const isPortrait = actualWidth < actualHeight;
@@ -1367,7 +1367,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-start", // Position at top
-      "w-full h-screen overflow-hidden", // Full viewport with no overflow
+      "w-full h-screen overflow-hidden p-1", // Full viewport with minimal padding
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
@@ -1375,9 +1375,7 @@ export function ChessBoard() {
     style={{
       backgroundColor: 'transparent',
       position: 'relative',
-      padding: '20px',
-      paddingTop: '10px', // Minimal top padding to move board higher
-      marginTop: '0' // Remove negative margin to prevent cutoff
+      marginTop: '-50px' // Negative margin for top positioning
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
