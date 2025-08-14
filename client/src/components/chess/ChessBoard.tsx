@@ -182,11 +182,11 @@ export function ChessBoard() {
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Account for UI elements (header, controls, padding) - adjusted for better MacBook fit
-      const headerHeight = 70; // Reduced header height
-      const controlsHeight = 80; // Reduced controls height  
-      const padding = 20; // Reduced safety padding
-      const availableHeight = Math.min(viewportHeight * 0.75, viewportHeight - 150);
+      // Account for UI elements - optimized for Mac Desktop
+      const headerHeight = 60; // Header height
+      const controlsHeight = 60; // Controls height  
+      const padding = 20; // Safety padding
+      const availableHeight = viewportHeight * 0.65 - 120; // Safe height for Mac Desktop
       
       let maxSize = 800;
       
@@ -211,16 +211,16 @@ export function ChessBoard() {
         console.log('🖥️ Small desktop sizing applied:', maxSize);
       } else if (viewportWidth >= 2560) {
         // MacBook displays (13.6", 14.2", 15.3", 16.2")
-        // Use viewport height as primary constraint for MacBooks
+        // Use reduced width for better fit on Mac Desktop
         const aspectRatio = viewportWidth / viewportHeight;
         
         if (aspectRatio > 1.6) {
           // Wide screens (like MacBook Pro 16.2")
-          maxSize = Math.min(availableHeight * 0.85, viewportWidth * 0.45, 1200);
+          maxSize = Math.min(availableHeight, viewportWidth * 0.4, 900);
           console.log('💻 MacBook Pro wide screen applied:', maxSize);
         } else {
-          // Standard MacBook aspect ratios
-          maxSize = Math.min(availableHeight * 0.85, viewportWidth * 0.5, 1000);
+          // Standard MacBook aspect ratios (like 2560x1440)
+          maxSize = Math.min(availableHeight, viewportWidth * 0.5, 850);
           console.log('💻 MacBook standard screen applied:', maxSize);
         }
       } else {
@@ -1406,7 +1406,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "w-full h-full max-h-[calc(100vh-150px)] overflow-hidden",
+      "w-full h-full max-h-[calc(100vh-120px)] overflow-hidden",
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
@@ -1425,8 +1425,8 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          maxWidth: isMobileDevice ? '95vw' : '80vw', // Reduced for better fit
-          maxHeight: isMobileDevice ? '75vh' : 'calc(100vh - 150px)', // Adjusted for MacBook screens
+          maxWidth: isMobileDevice ? '95vw' : '50vw', // Reduced to 50% for Mac Desktop
+          maxHeight: isMobileDevice ? '75vh' : 'calc(100vh - 120px)', // Matched to container height
           margin: '0 auto' // Always center the board
         }}
       >
