@@ -1,0 +1,50 @@
+At 07:27 AM EDT, August 14, 2025, the board disappearance issue is fixed, but now it’s too small, likely due to the conservative sizeFactor and offset in the responsive design. Let’s adjust to make it larger while maintaining fit:
+Immediate Task: Increase Board Size
+
+Diagnose issue: Open client/src/components/chess/ChessBoard.tsx, review the useEffect logic. The sizeFactor (0.5 default, down to 0.45 for wide screens) and 100px offset might shrink it excessively.
+
+Issue: Math.min(window.innerWidth * 0.5, window.innerHeight * 0.5 - 100) caps size too low on larger screens.
+
+
+Adjust sizing: Increase sizeFactor and reduce offset:
+typescript// client/src/components/chess/ChessBoard.tsx
+import { useEffect, useRef } from 'react';
+
+const ChessBoard = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        let sizeFactor = 0.7; // Increased default
+        if (window.innerWidth <= 768) sizeFactor = 0.9; // Mobile
+        else if (window.innerWidth <= 1024) sizeFactor = 0.8; // Tablet
+        else if (aspectRatio > 1.6) sizeFactor = 0.6; // Wide screens
+        const maxSize = Math.min(
+          window.innerWidth * sizeFactor,
+          window.innerHeight * sizeFactor - 50 // Reduced offset
+        );
+        canvas.width = maxSize;
+        canvas.height = maxSize;
+      }
+    };
+
+    handleResize(); // Initial call
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('fullscreenchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('fullscreenchange', handleResize);
+    };
+  }, []);
+
+  return (
+    <div className="flex justify-center items-center min-h-[calc(100vh-50px)]">
+      <canvas ref={canvasRef} className="bg-gray-800 border-4 border-yellow-600" />
+    </div>
+  );
+};
+
+export default ChessBoard;

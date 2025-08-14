@@ -191,27 +191,27 @@ export function ChessBoard() {
       
       // Simple and reliable sizing calculation
       const aspectRatio = viewportWidth / viewportHeight;
-      let sizeFactor = 0.5; // Default conservative size
+      let sizeFactor = 0.7; // Increased default for larger board
       
       // Adjust size factor based on screen size
       if (viewportWidth <= 768) {
         sizeFactor = 0.9; // Mobile
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.7; // Tablet
+        sizeFactor = 0.8; // Tablet - increased
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.6; // Large displays
+        sizeFactor = 0.75; // Large displays - increased
       } else if (aspectRatio > 1.6) {
-        sizeFactor = 0.45; // Wide screens
+        sizeFactor = 0.6; // Wide screens - increased
       }
       
-      // Calculate board size - simple and reliable
+      // Calculate board size - reduced offset for larger board
       const maxSize = Math.min(
         viewportWidth * sizeFactor,
-        (viewportHeight - 100) * sizeFactor
+        (viewportHeight - 50) * sizeFactor
       );
       
-      // Ensure reasonable bounds
-      const finalSize = Math.min(1000, Math.max(320, Math.floor(maxSize / 10) * 10));
+      // Ensure reasonable bounds - increased max for larger boards
+      const finalSize = Math.min(1200, Math.max(320, Math.floor(maxSize / 10) * 10));
       const newSquareSize = Math.floor(finalSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
@@ -1421,7 +1421,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "min-h-[calc(100vh-100px)]", // Minimum height to ensure visibility
+      "min-h-[calc(100vh-50px)]", // Adjusted to match reduced offset
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
