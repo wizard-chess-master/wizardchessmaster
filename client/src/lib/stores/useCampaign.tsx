@@ -38,6 +38,11 @@ export interface CampaignLevel {
     unlocksBoardVariant?: string;
   };
   isPremiumLevel: boolean; // Requires premium subscription
+  // ElevenLabs integration
+  musicStyle?: string; // Music style to unlock for this level
+  voiceId?: string; // Voice ID to unlock for this level
+  musicUnlocked?: boolean; // Whether music has been unlocked
+  voiceUnlocked?: boolean; // Whether voice has been unlocked
 }
 
 export interface PlayerStats {
@@ -69,6 +74,8 @@ export interface CampaignState {
   resetCampaign: () => void;
   getCurrentLevel: () => CampaignLevel | null;
   getNextLevel: () => CampaignLevel | null;
+  unlockMusic: (levelId: string) => Promise<void>;
+  unlockVoice: (levelId: string) => Promise<void>;
 }
 
 const initialLevels: CampaignLevel[] = [
@@ -99,7 +106,11 @@ const initialLevels: CampaignLevel[] = [
       experiencePoints: 100,
       unlocksStory: true,
       unlocksBoard: false
-    }
+    },
+    musicStyle: null, // No music for level 1
+    voiceId: VOICE_IDS.narrator,
+    musicUnlocked: false,
+    voiceUnlocked: true // Basic narrator voice unlocked from start
   },
   {
     id: 'level2',
@@ -195,7 +206,11 @@ const initialLevels: CampaignLevel[] = [
       preGameStory: 'In the scorching desert, battle mages hone their aggressive tactics.',
       postWinStory: 'Your aggressive spirit has impressed the desert warriors.',
     },
-    rewards: { experiencePoints: 250, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'desert' }
+    rewards: { experiencePoints: 250, unlocksStory: true, unlocksBoard: true, unlocksBoardVariant: 'desert' },
+    musicStyle: 'royal court elegant', // Epic orchestral music for level 5
+    voiceId: VOICE_IDS.wizard, // Battle mage voice
+    musicUnlocked: false,
+    voiceUnlocked: false
   },
   {
     id: 'level6',
@@ -546,16 +561,9 @@ export const useCampaign = create<CampaignState>()(
                 console.log('Voice announcement failed, using fallback:', err)
               );
               
-              // Generate music for the newly unlocked level
-              const levelNumber = parseInt(nextLevel.id.replace('level', ''));
-              generateCampaignMusic(levelNumber).then(musicBuffer => {
-                console.log(`🎵 Generated music for Level ${levelNumber}`);
-                // Store music for later playback
-                (window as any).__campaignMusic = (window as any).__campaignMusic || {};
-                (window as any).__campaignMusic[levelNumber] = musicBuffer;
-              }).catch(err => 
-                console.log('Music generation failed:', err)
-              );
+              // Try to unlock music and voice for the next level if requirements are met
+              get().unlockMusic(nextLevel.id);
+              get().unlockVoice(nextLevel.id);
             } catch (error) {
               console.log('ElevenLabs integration error:', error);
             }
@@ -623,6 +631,69 @@ export const useCampaign = create<CampaignState>()(
           return state.levels[currentIndex + 1];
         }
         return null;
+      },
+
+      unlockMusic: async (levelId: string) => {
+        const state = get();
+        const level = state.levels.find(l => l.id === levelId);
+        
+        if (!level || !level.musicStyle || level.musicUnlocked) {
+          return;
+        }
+
+        // Check if requirements are met
+        if (level.wins >= level.requiredWins && level.wizardCaptures >= level.requiredWizardCaptures) {
+          try {
+            const levelNumber = parseInt(level.id.replace('level', ''));
+            const musicBuffer = await generateCampaignMusic(levelNumber);
+            
+            // Store music for later playback
+            (window as any).__campaignMusic = (window as any).__campaignMusic || {};
+            (window as any).__campaignMusic[levelNumber] = musicBuffer;
+            
+            // Update level to mark music as unlocked
+            const updatedLevels = state.levels.map(l => 
+              l.id === levelId ? { ...l, musicUnlocked: true } : l
+            );
+            
+            set({ levels: updatedLevels });
+            console.log(`🎵 Unlocked ${level.musicStyle} music for ${level.name}`);
+            
+            // Play a short preview
+            const { playAudioBuffer } = await import('../audio/elevenLabs');
+            await playAudioBuffer(musicBuffer);
+          } catch (error) {
+            console.error('Failed to unlock music:', error);
+          }
+        }
+      },
+
+      unlockVoice: async (levelId: string) => {
+        const state = get();
+        const level = state.levels.find(l => l.id === levelId);
+        
+        if (!level || !level.voiceId || level.voiceUnlocked) {
+          return;
+        }
+
+        // Check if requirements are met
+        if (level.wins >= level.requiredWins && level.wizardCaptures >= level.requiredWizardCaptures) {
+          try {
+            // Update level to mark voice as unlocked
+            const updatedLevels = state.levels.map(l => 
+              l.id === levelId ? { ...l, voiceUnlocked: true } : l
+            );
+            
+            set({ levels: updatedLevels });
+            console.log(`🗣️ Unlocked voice ${level.voiceId} for ${level.name}`);
+            
+            // Play a voice announcement
+            const announcement = `Congratulations! You've unlocked the ${level.name} voice narration.`;
+            await speakText(announcement, level.voiceId);
+          } catch (error) {
+            console.error('Failed to unlock voice:', error);
+          }
+        }
       },
     }),
     {
