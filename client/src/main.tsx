@@ -120,6 +120,18 @@ import('./lib/ai/testIntegration').then(module => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load testIntegration:`, err);
 });
 
+// Add ElevenLabs test functions
+import('./lib/test/testElevenLabsIntegration').then(module => {
+  (window as any).testLevel5Unlock = module.testLevel5Unlock;
+  (window as any).checkCampaignStatus = module.checkCampaignStatus;
+  console.log(`[${new Date().toISOString()}] ✅ ElevenLabs test functions loaded`);
+  console.log('🎮 ElevenLabs Integration Test Functions:');
+  console.log('   • testLevel5Unlock() - Simulate Level 5 unlock with music/voice');
+  console.log('   • checkCampaignStatus() - Check current campaign and API status');
+}).catch(err => {
+  console.error(`[${new Date().toISOString()}] ❌ Failed to load ElevenLabs test:`, err);
+});
+
 // Add deployment AI
 import('./lib/ai/deployAI').then(module => {
   module.deployAI().then(() => {
