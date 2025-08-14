@@ -1420,8 +1420,8 @@ export function ChessBoard() {
   return (
     <div className={cn(
       "board-container",
-      "flex flex-col items-center justify-center",
-      "min-h-[calc(100vh-50px)]", // Adjusted to match reduced offset
+      "flex flex-col items-center",
+      "mt-[-20px]", // Negative margin to raise board position
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
