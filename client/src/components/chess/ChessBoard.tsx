@@ -1376,7 +1376,7 @@ export function ChessBoard() {
       backgroundColor: 'transparent',
       position: 'relative',
       padding: '20px', // Consistent padding
-      marginTop: '-20px' // Negative margin to move board higher
+      marginTop: '-50px' // Increased negative margin to move board much higher
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
