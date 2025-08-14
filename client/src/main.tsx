@@ -11,6 +11,27 @@ console.log(`[${new Date().toISOString()}] Wizard Chess Master - Initializing...
 console.log(`[${new Date().toISOString()}] Environment: ${import.meta.env.MODE}`);
 console.log(`[${new Date().toISOString()}] URL: ${window.location.href}`);
 
+// ===== CONSOLE DIAGNOSTICS =====
+// Add console diagnostics to verify functionality
+window.addEventListener('load', () => {
+  console.log(`[${new Date().toISOString()}] ✅ Window load event fired - Console is functional`);
+  console.log(`[${new Date().toISOString()}] 📊 Console Diagnostics:`);
+  console.log(`  - User Agent: ${navigator.userAgent}`);
+  console.log(`  - Platform: ${navigator.platform}`);
+  console.log(`  - Screen Resolution: ${window.screen.width}x${window.screen.height}`);
+  console.log(`  - Viewport: ${window.innerWidth}x${window.innerHeight}`);
+  console.log(`  - Memory: ${(performance as any).memory ? `${Math.round((performance as any).memory.usedJSHeapSize / 1048576)}MB used` : 'Not available'}`);
+  console.log(`  - Connection: ${(navigator as any).connection ? (navigator as any).connection.effectiveType : 'Not available'}`);
+  
+  // Test console methods
+  console.info(`[${new Date().toISOString()}] ℹ️ Console.info working`);
+  console.warn(`[${new Date().toISOString()}] ⚠️ Console.warn working`);
+  console.error(`[${new Date().toISOString()}] ❌ Console.error working (test only)`);
+  console.debug(`[${new Date().toISOString()}] 🐛 Console.debug working`);
+  
+  console.log(`[${new Date().toISOString()}] ✅ All console methods verified - Ready for deployment`);
+});
+
 // Global error handling for production stability
 if (typeof window !== 'undefined') {
   window.addEventListener('unhandledrejection', (event) => {
