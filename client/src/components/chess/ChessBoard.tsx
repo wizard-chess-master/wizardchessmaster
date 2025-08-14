@@ -174,67 +174,59 @@ export function ChessBoard() {
     }
   }, [moveHistory]);
 
-  // Responsive canvas sizing - fixed for fullscreen transitions
+  // Responsive canvas sizing - optimized for fullscreen and performance
   useEffect(() => {
     const handleResize = () => {
-      console.log('🎨 Handling resize/fullscreen change...');
-      
       // Get current viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
       // Ensure valid dimensions
       if (viewportWidth <= 0 || viewportHeight <= 0) {
-        console.warn('Invalid viewport dimensions');
         return;
       }
       
-      // Simple and reliable sizing calculation
-      const aspectRatio = viewportWidth / viewportHeight;
-      let sizeFactor = 0.7; // Increased default for larger board
+      // Improved sizing calculation for better board visibility
+      let sizeFactor = 0.85; // Increased default for better visibility
       
       // Adjust size factor based on screen size
       if (viewportWidth <= 768) {
-        sizeFactor = 0.9; // Mobile
+        sizeFactor = 0.95; // Mobile - nearly full width
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.8; // Tablet - increased
+        sizeFactor = 0.9; // Tablet
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.75; // Large displays - increased
-      } else if (aspectRatio > 1.6) {
-        sizeFactor = 0.6; // Wide screens - increased
+        sizeFactor = 0.8; // Large displays
+      } else if (viewportWidth / viewportHeight > 1.6) {
+        sizeFactor = 0.75; // Wide screens
       }
       
-      // Calculate board size - reduced offset for larger board
+      // Calculate board size with better constraints
       const maxSize = Math.min(
         viewportWidth * sizeFactor,
-        (viewportHeight - 50) * sizeFactor
+        (viewportHeight - 100) * sizeFactor // More room for UI elements
       );
       
-      // Ensure reasonable bounds - increased max for larger boards
-      const finalSize = Math.min(1200, Math.max(320, Math.floor(maxSize / 10) * 10));
+      // Ensure reasonable bounds with better defaults
+      const finalSize = Math.min(900, Math.max(400, Math.floor(maxSize / 10) * 10));
       const newSquareSize = Math.floor(finalSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
-      console.log('🎨 Resize calculated:', {
-        viewport: { width: viewportWidth, height: viewportHeight },
-        sizeFactor,
-        finalSize: newCanvasSize
-      });
+      // Only log in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🎨 Resize calculated:', {
+          viewport: { width: viewportWidth, height: viewportHeight },
+          sizeFactor,
+          finalSize: newCanvasSize
+        });
+      }
       
       // Update state
       setCanvasSize(newCanvasSize);
       setSquareSize(newSquareSize);
       
-      // Force redraw after a brief delay
+      // Efficient redraw without opacity tricks
       requestAnimationFrame(() => {
-        const canvas = document.getElementById('chess-canvas') as HTMLCanvasElement;
-        if (canvas) {
-          // Force the canvas to re-render
-          canvas.style.opacity = '0.99';
-          setTimeout(() => {
-            canvas.style.opacity = '1';
-          }, 10);
-        }
+        drawBoard();
       });
     };
 
@@ -565,14 +557,10 @@ export function ChessBoard() {
     return symbols[color as keyof typeof symbols][pieceType as keyof typeof symbols.white] || '?';
   };
 
-  // Handle canvas clicks - simplified for better reliability
+  // Handle canvas clicks - optimized for performance
   const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    console.log('🎯 Canvas clicked!');
     const canvas = canvasRef.current;
-    if (!canvas) {
-      console.log('❌ No canvas reference');
-      return;
-    }
+    if (!canvas) return;
     
     const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -591,51 +579,17 @@ export function ChessBoard() {
     const col = Math.floor(canvasX / squareSize);
     const row = Math.floor(canvasY / squareSize);
     
-    console.log('🎯 Click coordinates DEBUG:', { 
-      clientX: event.clientX,
-      clientY: event.clientY,
-      rectLeft: rect.left,
-      rectTop: rect.top,
-      relativeX: x,
-      relativeY: y,
-      canvasSize,
-      effectiveBoardSize,
-      rectWidth: rect.width,
-      rectHeight: rect.height,
-      scaleX,
-      scaleY,
-      canvasX,
-      canvasY,
-      squareSizeUsed: squareSize,
-      calculatedRow: row,
-      calculatedCol: col,
-      piece: board[row]?.[col]
-    });
-    
-    // Additional debug: show what's in nearby squares
-    if (row >= 0 && row < 10 && col >= 0 && col < 10) {
-      console.log('📍 Nearby pieces:');
-      for (let r = Math.max(0, row - 1); r <= Math.min(9, row + 1); r++) {
-        for (let c = Math.max(0, col - 1); c <= Math.min(9, col + 1); c++) {
-          const piece = board[r][c];
-          if (piece) {
-            console.log(`  [${r},${c}]: ${piece.type} (${piece.color})`);
-          }
-        }
-      }
+    // Only log in development mode for debugging
+    if (process.env.NODE_ENV === 'development' && board[row]?.[col]) {
+      console.log('🎯 Square clicked:', { row, col, piece: board[row][col]?.type });
     }
     
     if (row >= 0 && row < 10 && col >= 0 && col < 10) {
-      console.log('✅ Valid square clicked:', { row, col });
-      console.log('🔍 Piece at position:', board[row][col]);
-      
       // Trigger simple animation
       setIsAnimating(true);
       setTimeout(() => setIsAnimating(false), 300);
       
       selectSquare({ row, col });
-    } else {
-      console.log('❌ Click outside board bounds:', { row, col });
     }
   };
 
@@ -1265,7 +1219,6 @@ export function ChessBoard() {
 
   // Enhanced click handler with visual feedback
   const handleCanvasClickWithEffects = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    console.log('🎯 Enhanced canvas clicked');
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -1310,26 +1263,19 @@ export function ChessBoard() {
   const isMobileDevice = finalIsMobile;
   const shouldHideCoordinates = isMobileDevice && deviceInfo.orientation === 'portrait' && !settings.mobileShowCoordinates;
   
-  // Debug device detection with detailed logging
-  console.log('🔍 ChessBoard Device Detection Debug:', {
-    deviceInfo,
-    forceMobileMode,
-    finalIsMobile,
-    currentCanvasSize: canvasSize,
-    windowDimensions: { width: window.innerWidth, height: window.innerHeight },
-    userAgent: navigator.userAgent
-  });
-  
-  // Extra debugging for mobile view mode
-  if (forceMobileMode) {
-    console.log('📱 MOBILE MODE ACTIVE - Desktop mobile view detected');
+  // Debug device detection only in development
+  if (process.env.NODE_ENV === 'development' && Math.random() < 0.01) { // Log occasionally
+    console.log('🔍 ChessBoard Device Detection:', {
+      deviceInfo,
+      forceMobileMode,
+      finalIsMobile,
+      currentCanvasSize: canvasSize
+    });
   }
   
   // Force immediate mobile sizing for screens <= 768px
   React.useEffect(() => {
-    if (window.innerWidth <= 768) {
-      console.log('🎯 FORCING MOBILE MODE - Screen width:', window.innerWidth);
-    }
+    // Mobile mode detection handled silently
   }, []);
   
   // Mobile-specific board size calculation with forced mobile detection
@@ -1399,21 +1345,11 @@ export function ChessBoard() {
   const effectiveBoardSize = shouldUseMobileSize ? mobileBoardSize : canvasSize;
   const effectiveSquareSize = effectiveBoardSize / 10;
   
-  console.log('📐 Final board sizing:', {
-    isMobileDevice,
-    canvasSize,
-    mobileBoardSize,
-    effectiveBoardSize,
-    effectiveSquareSize,
-    appliedStyles: isMobileDevice ? 'MOBILE' : 'DESKTOP'
-  });
-  
-  // Alert if mobile sizing is being applied
-  if (isMobileDevice && effectiveBoardSize !== canvasSize) {
-    console.log('✅ MOBILE RESPONSIVE SIZING ACTIVE:', {
-      originalSize: canvasSize,
-      mobileSize: effectiveBoardSize,
-      reduction: `${Math.round((1 - effectiveBoardSize/canvasSize) * 100)}%`
+  // Only log sizing info occasionally in development
+  if (process.env.NODE_ENV === 'development' && Math.random() < 0.05) {
+    console.log('📐 Board sizing:', {
+      effectiveBoardSize,
+      effectiveSquareSize
     });
   }
 
@@ -1421,7 +1357,7 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center",
-      "mt-[-20px]", // Negative margin to raise board position
+      "mt-4", // Positive margin for proper spacing from top
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"

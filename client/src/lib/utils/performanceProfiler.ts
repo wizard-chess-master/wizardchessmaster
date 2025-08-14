@@ -141,6 +141,8 @@ export class PerformanceProfiler {
     let lastTime = performance.now();
     let frameCount = 0;
     let fps = 0;
+    let warningCount = 0;
+    const maxWarnings = 3; // Only warn a few times
 
     const measureFPS = () => {
       const currentTime = performance.now();
@@ -151,7 +153,9 @@ export class PerformanceProfiler {
         frameCount = 0;
         lastTime = currentTime;
 
-        if (fps < 30) {
+        // Only warn for persistent low FPS, not single frame drops
+        if (fps < 20 && fps > 0 && warningCount < maxWarnings) {
+          warningCount++;
           console.warn(`⚠️ Low FPS detected: ${fps}`);
         }
 
