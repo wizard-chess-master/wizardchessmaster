@@ -11,6 +11,7 @@ import usersRoutes from "./routes/users";
 import { multiplayerRouter } from "./routes/multiplayer";
 import chessRoutes from "./routes/chess";
 import founderRoutes from "./routes/founder";
+import elevenLabsRoutes from "./routes/elevenlabs";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // put application routes here
@@ -47,6 +48,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Register founder routes
   app.use('/api/founder', founderRoutes);
+  
+  // Register ElevenLabs routes
+  app.use('/api/elevenlabs', elevenLabsRoutes);
   
   // Register AI training routes
   const { default: aiTrainingRoutes } = await import('./routes/aiTraining');

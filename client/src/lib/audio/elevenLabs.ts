@@ -1,15 +1,15 @@
 import axios from 'axios';
 
-// Get API key from environment
-const API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
-
-// Voice IDs for different characters/themes
-export const VOICE_IDS = {
-  narrator: '21m00Tcm4TlvDq8ikWAM', // Rachel voice - default narrator
-  wizard: 'pNInz6obpgDQGcFmaJgB', // Adam voice - wizard character  
-  mentor: 'EXAVITQu4vr4xnSDxMaL', // Bella voice - AI mentor
-  victory: 'ThT5KcBeYPX3keUQqHPh', // Dorothy voice - victory celebrations
+// Voice types for different characters/themes
+export const VOICE_TYPES = {
+  narrator: 'narrator', // Rachel voice - default narrator
+  wizard: 'wizard', // Adam voice - wizard character  
+  mentor: 'mentor', // Bella voice - AI mentor
+  victory: 'victory', // Dorothy voice - victory celebrations
 };
+
+// Map old VOICE_IDS to VOICE_TYPES for backward compatibility
+export const VOICE_IDS = VOICE_TYPES;
 
 // Music generation styles per campaign level
 export const CAMPAIGN_MUSIC_STYLES = {
@@ -28,11 +28,11 @@ export const CAMPAIGN_MUSIC_STYLES = {
 };
 
 /**
- * Generate voice audio from text using ElevenLabs API
+ * Generate voice audio from text using our server endpoint
  */
 export async function generateVoice(
   text: string, 
-  voiceId: string = VOICE_IDS.narrator,
+  voiceType: string = VOICE_TYPES.narrator,
   options: {
     stability?: number;
     similarity_boost?: number; 
@@ -40,29 +40,17 @@ export async function generateVoice(
     use_speaker_boost?: boolean;
   } = {}
 ): Promise<ArrayBuffer> {
-  if (!API_KEY) {
-    console.error('ElevenLabs API key not configured');
-    throw new Error('Voice generation unavailable - API key missing');
-  }
-
   try {
     const response = await axios.post(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+      '/api/elevenlabs/generate-voice',
       {
         text,
-        model_id: 'eleven_monolingual_v1',
-        voice_settings: {
-          stability: options.stability ?? 0.5,
-          similarity_boost: options.similarity_boost ?? 0.5,
-          style: options.style ?? 0,
-          use_speaker_boost: options.use_speaker_boost ?? true
-        }
+        voiceType,
+        options
       },
       {
         headers: {
-          'xi-api-key': API_KEY,
           'Content-Type': 'application/json',
-          'Accept': 'audio/mpeg'
         },
         responseType: 'arraybuffer'
       }
@@ -70,8 +58,14 @@ export async function generateVoice(
 
     console.log(`✅ Voice generated successfully for: "${text.substring(0, 50)}..."`);
     return response.data;
-  } catch (error) {
-    console.error('Failed to generate voice:', error);
+  } catch (error: any) {
+    console.error('Failed to generate voice:', error?.response?.data || error.message);
+    
+    // If the server returns an error about missing API key, provide helpful message
+    if (error?.response?.status === 500) {
+      console.error('ElevenLabs API key may not be configured on the server');
+    }
+    
     throw error;
   }
 }

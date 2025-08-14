@@ -147,13 +147,13 @@ import('./lib/ai/testIntegration').then(module => {
 });
 
 // Add ElevenLabs test functions
-import('./lib/test/testElevenLabsIntegration').then(module => {
+import('./lib/test/testElevenLabs').then(module => {
   (window as any).testLevel5Unlock = module.testLevel5Unlock;
-  (window as any).checkCampaignStatus = module.checkCampaignStatus;
+  (window as any).testElevenLabsIntegration = module.testElevenLabsIntegration;
   console.log(`[${new Date().toISOString()}] ✅ ElevenLabs test functions loaded`);
   console.log('🎮 ElevenLabs Integration Test Functions:');
-  console.log('   • testLevel5Unlock() - Simulate Level 5 unlock with music/voice');
-  console.log('   • checkCampaignStatus() - Check current campaign and API status');
+  console.log('   • testLevel5Unlock() - Test Level 5 unlock voice generation');
+  console.log('   • testElevenLabsIntegration() - Test full ElevenLabs API integration');
 }).catch(err => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load ElevenLabs test:`, err);
 });
