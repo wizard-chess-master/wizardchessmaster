@@ -378,7 +378,7 @@ export function getAllValidMoves(board: (ChessPiece | null)[][], color: string):
           const testBoard = board.map(r => [...r]);
           
           // Special handling for castling moves
-          if (piece.type === 'king' && from.col === 5 && (to.col === 2 || to.col === 6)) {
+          if (piece.type === 'king' && from.col === 5 && (to.col === 2 || to.col === 7)) {
             const homeRow = piece.color === 'white' ? 9 : 0;
             
             // For castling, check that king doesn't pass through check
@@ -390,9 +390,9 @@ export function getAllValidMoves(board: (ChessPiece | null)[][], color: string):
                   return false;
                 }
               }
-            } else if (to.col === 6) { // Kingside castling
-              // Check that squares king passes through (f1->g1) are not under attack
-              for (let col = 5; col <= 6; col++) {
+            } else if (to.col === 7) { // Kingside castling
+              // Check that squares king passes through (f1->g1->h1) are not under attack
+              for (let col = 5; col <= 7; col++) {
                 const testPos = { row: homeRow, col };
                 if (isKingUnderAttack(board, testPos, color)) {
                   return false;

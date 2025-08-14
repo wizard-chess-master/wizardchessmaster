@@ -339,7 +339,7 @@ export function ChessBoard() {
           // Special styling for castling moves
           const piece = selectedPosition ? board[selectedPosition.row][selectedPosition.col] : null;
           const isCastlingMove = piece?.type === 'king' && selectedPosition &&
-                                 selectedPosition.col === 5 && (col === 2 || col === 6);
+                                 selectedPosition.col === 5 && (col === 2 || col === 7);
           
           if (isCastlingMove) {
             console.log('🏰 Drawing castling indicator at:', { row, col });
