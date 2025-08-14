@@ -186,20 +186,23 @@ export function ChessBoard() {
       const aspectRatio = viewportWidth / viewportHeight;
       
       // Dynamic sizing factor based on screen size and aspect ratio
-      let sizeFactor = 0.5; // Default for balanced screens
+      let sizeFactor = 0.7; // Default for balanced screens
       
       if (viewportWidth <= 768) {
         sizeFactor = 0.9; // Mobile devices
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.7; // Tablet devices
+        sizeFactor = 0.8; // Tablet devices
+      } else if (viewportWidth >= 2560) {
+        // MacBook displays - use height as primary constraint
+        sizeFactor = 0.75; // Increased for better visibility
       } else if (aspectRatio > 1.6) {
-        sizeFactor = 0.45; // Wide screens (e.g., 16:10 MacBooks)
+        sizeFactor = 0.65; // Wide screens
       }
       
       // Calculate max size with dynamic factor and UI offset
       const maxSizeCalculated = Math.min(
         viewportWidth * sizeFactor,
-        viewportHeight * sizeFactor - 100 // Offset for UI elements
+        (viewportHeight - 150) * 0.85 // Height-based constraint with UI offset
       );
       
       // Log the dynamic sizing calculation
