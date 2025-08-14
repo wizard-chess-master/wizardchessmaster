@@ -603,7 +603,7 @@ export type { Tags };
  */
 class RLCommentarySystem {
   private commentCount: number = 0;
-  private rewardModel: tf.Sequential;
+  private rewardModel!: tf.Sequential; // Will be initialized in constructor
   private lastComment: string = '';
   private commentHistory: string[] = [];
   private isModelReady: boolean = false;
@@ -673,7 +673,7 @@ class RLCommentarySystem {
     const commentWords = new Set(comment.toLowerCase().split(/\s+/));
     for (const historical of recentComments) {
       const historicalWords = new Set(historical.toLowerCase().split(/\s+/));
-      const intersection = new Set([...commentWords].filter(x => historicalWords.has(x)));
+      const intersection = new Set(Array.from(commentWords).filter(x => historicalWords.has(x)));
       const similarity = intersection.size / Math.min(commentWords.size, historicalWords.size);
       if (similarity > 0.7) { // 70% similarity threshold
         return true;

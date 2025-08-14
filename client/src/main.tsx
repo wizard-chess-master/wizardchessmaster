@@ -91,8 +91,13 @@ import('./lib/ai/selfPlay').then(module => {
 });
 
 import('./lib/ai/trainSelfPlay').then(module => {
-  (window as any).startAITraining = module.startAITraining;
-  console.log(`[${new Date().toISOString()}] ✅ startAITraining loaded`);
+  // Check if startAITraining exists in the module
+  if ('startAITraining' in module) {
+    (window as any).startAITraining = module.startAITraining;
+    console.log(`[${new Date().toISOString()}] ✅ startAITraining loaded`);
+  } else {
+    console.log(`[${new Date().toISOString()}] ⚠️ startAITraining not found in module`);
+  }
 }).catch(err => {
   console.error(`[${new Date().toISOString()}] ❌ Failed to load trainSelfPlay:`, err);
 });
