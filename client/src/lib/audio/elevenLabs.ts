@@ -146,22 +146,30 @@ export async function speakText(
 /**
  * Initialize ElevenLabs integration
  */
-export function initializeElevenLabs(): boolean {
-  if (!API_KEY) {
-    console.warn('⚠️ ElevenLabs API key not found in environment');
+export async function initializeElevenLabs(): Promise<boolean> {
+  try {
+    // Check if API key is configured on server
+    const response = await fetch('/api/elevenlabs/status');
+    const status = await response.json();
+    
+    if (!status.configured) {
+      console.warn('⚠️ ElevenLabs API key not configured on server');
+      return false;
+    }
+    
+    console.log('✅ ElevenLabs integration initialized');
+    console.log('Available voices:', Object.keys(VOICE_IDS));
+    console.log('Campaign music styles:', Object.keys(CAMPAIGN_MUSIC_STYLES).length, 'levels');
+    
+    return true;
+  } catch (error) {
+    console.warn('⚠️ Failed to check ElevenLabs status:', error);
     return false;
   }
-  
-  console.log('✅ ElevenLabs integration initialized');
-  console.log('Available voices:', Object.keys(VOICE_IDS));
-  console.log('Campaign music styles:', Object.keys(CAMPAIGN_MUSIC_STYLES).length, 'levels');
-  
-  return true;
 }
 
 // Export for testing
 export const __testing = {
-  API_KEY,
   testConnection: async () => {
     try {
       await generateVoice('Test', VOICE_IDS.narrator);
