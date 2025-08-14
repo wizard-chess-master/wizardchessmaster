@@ -1421,7 +1421,9 @@ export function ChessBoard() {
         style={{
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
-          margin: '0 auto' // Always center the board
+          margin: '0 auto', // Always center the board
+          transform: 'translateX(-1%)', // Shift left by 1% to better center in frame
+          position: 'relative'
         }}
       >
         <div className="board-coordinates">
