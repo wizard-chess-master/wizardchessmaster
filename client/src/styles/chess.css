@@ -695,9 +695,9 @@ body.multiplayer-active .multiplayer-game-wrapper * {
 .chess-canvas {
   display: block;
   border-radius: 4px;
-  max-width: 100%;
+  /* Remove max-width constraint to prevent clipping */
+  width: auto;
   height: auto;
-  margin: 0 auto;
   margin: 0 auto;
 }
 

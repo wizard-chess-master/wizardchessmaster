@@ -186,23 +186,23 @@ export function ChessBoard() {
       const aspectRatio = viewportWidth / viewportHeight;
       
       // Dynamic sizing factor based on screen size and aspect ratio
-      let sizeFactor = 0.7; // Default for balanced screens
+      let sizeFactor = 0.665; // Default reduced by ~5% to prevent edge clipping
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.9; // Mobile devices
+        sizeFactor = 0.85; // Mobile devices - also reduced by ~5%
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.8; // Tablet devices
+        sizeFactor = 0.76; // Tablet devices - also reduced by ~5%
       } else if (viewportWidth >= 2560) {
         // MacBook displays - use height as primary constraint
-        sizeFactor = 0.75; // Increased for better visibility
+        sizeFactor = 0.71; // Reduced by ~5% to prevent frame clipping
       } else if (aspectRatio > 1.6) {
-        sizeFactor = 0.65; // Wide screens
+        sizeFactor = 0.62; // Wide screens - also reduced by ~5%
       }
       
       // Calculate max size with dynamic factor and UI offset
       const maxSizeCalculated = Math.min(
         viewportWidth * sizeFactor,
-        (viewportHeight - 150) * 0.85 // Height-based constraint with UI offset
+        (viewportHeight - 180) * 0.82 // Reduced height constraint by ~5% for more bottom space
       );
       
       // Log the dynamic sizing calculation
@@ -280,14 +280,17 @@ export function ChessBoard() {
 
     // Reduced logging to prevent crashes
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    // Clear canvas - use actual canvas dimensions
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Calculate actual square size based on canvas dimensions
+    const actualSquareSize = canvas.width / 10;
 
     // Draw squares
     for (let row = 0; row < 10; row++) {
       for (let col = 0; col < 10; col++) {
-        const x = col * squareSize;
-        const y = row * squareSize;
+        const x = col * actualSquareSize;
+        const y = row * actualSquareSize;
         
         // Alternate square colors
         const isLight = (row + col) % 2 === 0;
@@ -324,11 +327,11 @@ export function ChessBoard() {
           ctx.shadowBlur = 0;
         }
         
-        ctx.fillRect(x, y, squareSize, squareSize);
+        ctx.fillRect(x, y, actualSquareSize, actualSquareSize);
         
         // Draw border
         ctx.strokeStyle = '#999';
-        ctx.strokeRect(x, y, squareSize, squareSize);
+        ctx.strokeRect(x, y, actualSquareSize, actualSquareSize);
         
         // Draw piece if present (skip if it's the animating piece)
         const piece = board[row][col];
@@ -341,7 +344,7 @@ export function ChessBoard() {
         }
         
         if (piece && imagesRef.current && !isAnimatingPiece) {
-          drawPieceAtPosition(ctx, piece, x, y);
+          drawPieceAtPosition(ctx, piece, x, y, actualSquareSize);
         }
         
         // Draw move indicators
@@ -361,7 +364,7 @@ export function ChessBoard() {
             ctx.strokeStyle = 'rgba(255, 215, 0, 0.8)';
             ctx.lineWidth = 3;
             ctx.beginPath();
-            ctx.arc(x + squareSize / 2, y + squareSize / 2, 20, 0, 2 * Math.PI);
+            ctx.arc(x + actualSquareSize / 2, y + actualSquareSize / 2, 20, 0, 2 * Math.PI);
             ctx.fill();
             ctx.stroke();
             
@@ -370,12 +373,12 @@ export function ChessBoard() {
             ctx.font = 'bold 12px serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
-            ctx.fillText('CASTLE', x + squareSize / 2, y + squareSize / 2);
+            ctx.fillText('CASTLE', x + actualSquareSize / 2, y + actualSquareSize / 2);
           } else {
             // Regular move indicator
             ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
             ctx.beginPath();
-            ctx.arc(x + squareSize / 2, y + squareSize / 2, 8, 0, 2 * Math.PI);
+            ctx.arc(x + actualSquareSize / 2, y + actualSquareSize / 2, 8, 0, 2 * Math.PI);
             ctx.fill();
           }
         }
@@ -393,10 +396,12 @@ export function ChessBoard() {
         : 1 - Math.pow(1 - progress, 3); // Cubic ease-out for smooth movement
       
       // Calculate current position using linear interpolation (lerp)
-      const fromX = animatingPiece.fromCol * squareSize;
-      const fromY = animatingPiece.fromRow * squareSize;
-      const toX = animatingPiece.toCol * squareSize;
-      const toY = animatingPiece.toRow * squareSize;
+      // Use actual canvas dimensions for proper positioning
+      const actualSquareSize = ctx.canvas.width / 10;
+      const fromX = animatingPiece.fromCol * actualSquareSize;
+      const fromY = animatingPiece.fromRow * actualSquareSize;
+      const toX = animatingPiece.toCol * actualSquareSize;
+      const toY = animatingPiece.toRow * actualSquareSize;
       
       const currentX = fromX + (toX - fromX) * easedProgress;
       const currentY = fromY + (toY - fromY) * easedProgress;
@@ -437,15 +442,18 @@ export function ChessBoard() {
   };
 
   // Helper function to draw a piece at given position
-  const drawPieceAtPosition = (ctx: CanvasRenderingContext2D, piece: any, x: number, y: number) => {
+  const drawPieceAtPosition = (ctx: CanvasRenderingContext2D, piece: any, x: number, y: number, currentSquareSize?: number) => {
     const spriteKey = getSpriteKey(piece.type, piece.color);
     const img = imagesRef.current[spriteKey];
+    
+    // Use passed square size or fall back to default
+    const actualSquare = currentSquareSize || squareSize;
     
     if (img && img.complete && img.naturalWidth > 0) {
       // Calculate aspect ratio preservation for all pieces
       const imgAspect = img.naturalWidth / img.naturalHeight;
       let padding = 5;
-      let availableSize = squareSize - (padding * 2);
+      let availableSize = actualSquare - (padding * 2);
       
       // Apply size multipliers for specific pieces
       let sizeMultiplier = 1.0;
@@ -458,7 +466,7 @@ export function ChessBoard() {
         padding = 3; // Slight padding reduction
       }
       
-      availableSize = (squareSize - (padding * 2)) * sizeMultiplier;
+      availableSize = (actualSquare - (padding * 2)) * sizeMultiplier;
       
       let drawWidth, drawHeight, drawX, drawY;
       
@@ -466,26 +474,26 @@ export function ChessBoard() {
         // Nearly square - center it
         drawWidth = availableSize;
         drawHeight = availableSize;
-        drawX = x + (squareSize - drawWidth) / 2;
-        drawY = y + (squareSize - drawHeight) / 2;
+        drawX = x + (actualSquare - drawWidth) / 2;
+        drawY = y + (actualSquare - drawHeight) / 2;
       } else if (imgAspect > 1) {
         // Wider than tall
         drawWidth = availableSize;
         drawHeight = availableSize / imgAspect;
-        drawX = x + (squareSize - drawWidth) / 2;
-        drawY = y + (squareSize - drawHeight) / 2;
+        drawX = x + (actualSquare - drawWidth) / 2;
+        drawY = y + (actualSquare - drawHeight) / 2;
       } else {
         // Taller than wide
         drawWidth = availableSize * imgAspect;
         drawHeight = availableSize;
-        drawX = x + (squareSize - drawWidth) / 2;
-        drawY = y + (squareSize - drawHeight) / 2;
+        drawX = x + (actualSquare - drawWidth) / 2;
+        drawY = y + (actualSquare - drawHeight) / 2;
       }
       
       // Reduce height by 10% for kings and wizards
       if (piece.type === 'king' || piece.type === 'wizard') {
         drawHeight = drawHeight * 0.9; // 10% height reduction
-        drawY = y + (squareSize - drawHeight) / 2; // Re-center vertically
+        drawY = y + (actualSquare - drawHeight) / 2; // Re-center vertically
       }
       
       // Use ctx.drawImage with preserved aspect ratio and custom sizing
@@ -502,7 +510,7 @@ export function ChessBoard() {
       ctx.font = '30px serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(symbol, x + squareSize / 2, y + squareSize / 2);
+      ctx.fillText(symbol, x + actualSquare / 2, y + actualSquare / 2);
     }
   };
 
@@ -1391,11 +1399,14 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "w-full h-full max-h-[calc(100vh-100px)] overflow-hidden",
+      "w-full h-full max-h-[calc(100vh-60px)]", // Reduced constraint for more bottom space
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
-    )}>
+    )}
+    style={{
+      overflow: 'visible' // Allow board to be fully visible
+    }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
         <AIThinkingIndicator difficulty={aiDifficulty} />
@@ -1455,8 +1466,8 @@ export function ChessBoard() {
             <canvas
               id="chess-canvas"
               ref={canvasRef}
-              width={canvasSize} // Keep internal resolution high
-              height={canvasSize} // Keep internal resolution high
+              width={effectiveBoardSize} // Match internal resolution to display size
+              height={effectiveBoardSize} // Match internal resolution to display size
               onClick={handleCanvasClickWithEffects}
               className={cn(
                 "chess-canvas",
@@ -1466,8 +1477,8 @@ export function ChessBoard() {
               )}
               style={{ 
                 cursor: 'pointer',
-                width: effectiveBoardSize + 'px',  // Scale display size
-                height: effectiveBoardSize + 'px', // Scale display size
+                width: effectiveBoardSize + 'px',  // Display size matches internal
+                height: effectiveBoardSize + 'px', // Display size matches internal
                 border: isMobileDevice ? '3px solid #b58863' : undefined,
                 borderRadius: isMobileDevice ? '8px' : undefined,
                 boxShadow: isMobileDevice ? '0 4px 12px rgba(0,0,0,0.3)' : undefined
