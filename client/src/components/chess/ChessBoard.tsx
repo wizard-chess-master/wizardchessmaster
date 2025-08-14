@@ -174,112 +174,89 @@ export function ChessBoard() {
     }
   }, [moveHistory]);
 
-  // Responsive canvas sizing - optimized for MacBooks and all screens
+  // Responsive canvas sizing - fixed for fullscreen transitions
   useEffect(() => {
-    let resizeTimeout: NodeJS.Timeout;
-    
-    const updateCanvasSize = () => {
-      console.log('🎨 Updating canvas size...');
-      // Calculate available space for the board
+    const handleResize = () => {
+      console.log('🎨 Handling resize/fullscreen change...');
+      
+      // Get current viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // Ensure we have valid dimensions
+      // Ensure valid dimensions
       if (viewportWidth <= 0 || viewportHeight <= 0) {
-        console.warn('Invalid viewport dimensions, skipping resize');
+        console.warn('Invalid viewport dimensions');
         return;
       }
       
-      // Calculate aspect ratio for dynamic sizing
+      // Simple and reliable sizing calculation
       const aspectRatio = viewportWidth / viewportHeight;
+      let sizeFactor = 0.5; // Default conservative size
       
-      // Dynamic sizing factor based on screen size and aspect ratio
-      let sizeFactor = 0.658; // Default reduced by ~6% total to prevent any overlap
-      
+      // Adjust size factor based on screen size
       if (viewportWidth <= 768) {
-        sizeFactor = 0.841; // Mobile devices - reduced by ~6% total
+        sizeFactor = 0.9; // Mobile
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.752; // Tablet devices - reduced by ~6% total
+        sizeFactor = 0.7; // Tablet
       } else if (viewportWidth >= 2560) {
-        // MacBook displays - use height as primary constraint
-        sizeFactor = 0.703; // Reduced by ~6% total to prevent right side overlap
+        sizeFactor = 0.6; // Large displays
       } else if (aspectRatio > 1.6) {
-        sizeFactor = 0.614; // Wide screens - reduced by ~6% total
+        sizeFactor = 0.45; // Wide screens
       }
       
-      // Calculate max size with dynamic factor and UI offset
-      // Use the smaller dimension to ensure board fits in viewport
-      const screenMin = Math.min(viewportWidth, viewportHeight);
-      const maxSizeCalculated = Math.min(
-        screenMin * 0.85, // Use 85% of smallest dimension
+      // Calculate board size - simple and reliable
+      const maxSize = Math.min(
         viewportWidth * sizeFactor,
-        (viewportHeight - 180) * 0.82 // Height constraint with UI offset
+        (viewportHeight - 100) * sizeFactor
       );
       
-      // Dynamic max size based on viewport - larger cap for fullscreen
-      const isFullscreen = document.fullscreenElement || 
-                          (document as any).webkitFullscreenElement;
-      const absoluteMaxSize = Math.min(maxSizeCalculated, isFullscreen ? 1400 : 1000);
-      
-      // Log the dynamic sizing calculation
-      console.log('🎨 Dynamic sizing applied:', {
-        viewportWidth,
-        viewportHeight,
-        aspectRatio,
-        sizeFactor,
-        screenMin,
-        maxSize: absoluteMaxSize
-      });
-      
-      // Ensure minimum size for playability
-      let finalSize = Math.max(Math.min(absoluteMaxSize, maxSizeCalculated), 320);
-      
-      // Round to nearest 10 for clean square sizes
-      finalSize = Math.floor(finalSize / 10) * 10;
-      
+      // Ensure reasonable bounds
+      const finalSize = Math.min(1000, Math.max(320, Math.floor(maxSize / 10) * 10));
       const newSquareSize = Math.floor(finalSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
-      console.log('🎨 Canvas size calculated:', { 
+      console.log('🎨 Resize calculated:', {
         viewport: { width: viewportWidth, height: viewportHeight },
-        finalSize,
-        canvas: { size: newCanvasSize, squareSize: newSquareSize },
-        isFullscreen
+        sizeFactor,
+        finalSize: newCanvasSize
       });
       
+      // Update state
       setCanvasSize(newCanvasSize);
       setSquareSize(newSquareSize);
       
-      // Force a redraw after size change
-      setTimeout(() => {
+      // Force redraw after a brief delay
+      requestAnimationFrame(() => {
         const canvas = document.getElementById('chess-canvas') as HTMLCanvasElement;
         if (canvas) {
-          canvas.style.display = 'block'; // Ensure canvas is visible
+          // Force the canvas to re-render
+          canvas.style.opacity = '0.99';
+          setTimeout(() => {
+            canvas.style.opacity = '1';
+          }, 10);
         }
-      }, 0);
-    };
-    
-    // Debounced resize handler to prevent issues during transitions
-    const handleResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(() => {
-        updateCanvasSize();
-      }, 100); // 100ms debounce
+      });
     };
 
-    // Initial size calculation
-    updateCanvasSize();
+    // Initial sizing
+    handleResize();
     
-    // Listen for resize and fullscreen changes
+    // Add all necessary event listeners
     window.addEventListener('resize', handleResize);
-    document.addEventListener('fullscreenchange', updateCanvasSize);
-    document.addEventListener('webkitfullscreenchange', updateCanvasSize);
+    window.addEventListener('orientationchange', handleResize);
+    document.addEventListener('fullscreenchange', handleResize);
+    document.addEventListener('webkitfullscreenchange', handleResize);
+    document.addEventListener('mozfullscreenchange', handleResize);
+    document.addEventListener('MSFullscreenChange', handleResize);
     
+    // Cleanup
     return () => {
-      clearTimeout(resizeTimeout);
       window.removeEventListener('resize', handleResize);
-      document.removeEventListener('fullscreenchange', updateCanvasSize);
-      document.removeEventListener('webkitfullscreenchange', updateCanvasSize);
+      window.removeEventListener('orientationchange', handleResize);
+      document.removeEventListener('fullscreenchange', handleResize);
+      document.removeEventListener('webkitfullscreenchange', handleResize);
+      document.removeEventListener('mozfullscreenchange', handleResize);
+      document.removeEventListener('MSFullscreenChange', handleResize);
     };
   }, []);
 
@@ -1444,15 +1421,15 @@ export function ChessBoard() {
     <div className={cn(
       "board-container",
       "flex flex-col items-center justify-center",
-      "w-full h-full", // Remove max-height constraint that causes issues
+      "min-h-[calc(100vh-100px)]", // Minimum height to ensure visibility
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
     )}
     style={{
-      overflow: 'visible', // Allow board to be fully visible
-      position: 'relative',
-      transition: 'all 0.3s ease' // Smooth transition when resizing
+      width: '100%',
+      backgroundColor: 'transparent',
+      position: 'relative'
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
