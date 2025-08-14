@@ -186,28 +186,36 @@ export function ChessBoard() {
         return;
       }
       
-      // Improved sizing calculation for better board visibility
-      let sizeFactor = 0.85; // Increased default for better visibility
+      // Account for padding and coordinate labels
+      const padding = 40; // Increased for labels and UI elements
+      const labelHeight = 30; // Height for coordinate labels
+      const labelWidth = 30; // Width for coordinate labels
       
-      // Adjust size factor based on screen size
+      // Calculate available space accounting for labels
+      const availableWidth = viewportWidth - padding * 2 - labelWidth;
+      const availableHeight = viewportHeight - padding * 2 - labelHeight * 2;
+      
+      // Dynamic size factor based on screen size
+      let sizeFactor = 0.9; // Higher default to use more available space
+      
       if (viewportWidth <= 768) {
-        sizeFactor = 0.95; // Mobile - nearly full width
+        sizeFactor = 0.95; // Mobile - use most of the space
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.9; // Tablet
+        sizeFactor = 0.92; // Tablet
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.8; // Large displays
+        sizeFactor = 0.75; // Large displays - prevent board from being too large
       } else if (viewportWidth / viewportHeight > 1.6) {
-        sizeFactor = 0.75; // Wide screens
+        sizeFactor = 0.8; // Wide screens
       }
       
-      // Calculate board size with better constraints
+      // Calculate board size using available space
       const maxSize = Math.min(
-        viewportWidth * sizeFactor,
-        (viewportHeight - 100) * sizeFactor // More room for UI elements
+        availableWidth * sizeFactor,
+        availableHeight * sizeFactor
       );
       
-      // Ensure reasonable bounds with better defaults
-      const finalSize = Math.min(900, Math.max(400, Math.floor(maxSize / 10) * 10));
+      // Remove hard cap to allow larger boards on big screens
+      const finalSize = Math.max(300, Math.floor(maxSize / 10) * 10);
       const newSquareSize = Math.floor(finalSize / 10);
       const newCanvasSize = newSquareSize * 10;
       
@@ -1288,13 +1296,13 @@ export function ChessBoard() {
     const actualWidth = window.innerWidth;
     const actualHeight = window.innerHeight;
     
-    // More aggressive padding reduction for mobile devices
-    const padding = actualWidth <= 480 ? 16 : 24; // Smaller padding for phones
-    const headerHeight = actualWidth <= 480 ? 60 : 80;
-    const controlsHeight = actualWidth <= 480 ? 60 : 80;
+    // Consistent padding with desktop calculations
+    const padding = 40;
+    const labelHeight = 30;
+    const labelWidth = 30;
     
-    let availableWidth = actualWidth - padding;
-    let availableHeight = actualHeight - headerHeight - controlsHeight - padding;
+    let availableWidth = actualWidth - padding * 2 - labelWidth;
+    let availableHeight = actualHeight - padding * 2 - labelHeight * 2;
     
     // Calculate optimal size based on actual viewport with more mobile-friendly constraints
     const isPortrait = actualWidth < actualHeight;
@@ -1356,16 +1364,16 @@ export function ChessBoard() {
   return (
     <div className={cn(
       "board-container",
-      "flex flex-col items-center",
-      "mt-4", // Positive margin for proper spacing from top
+      "flex flex-col items-center justify-center",
+      "w-full h-screen overflow-hidden", // Full viewport with no overflow
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
       isMobileDevice && deviceInfo.orientation === 'landscape' && "landscape-board"
     )}
     style={{
-      width: '100%',
       backgroundColor: 'transparent',
-      position: 'relative'
+      position: 'relative',
+      padding: '20px' // Consistent padding
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
@@ -1382,8 +1390,8 @@ export function ChessBoard() {
           width: `${effectiveBoardSize}px`,
           height: `${effectiveBoardSize}px`,
           margin: '0 auto', // Always center the board
-          maxWidth: '90vw', // Prevent board from exceeding viewport width
-          maxHeight: '90vh', // Prevent board from exceeding viewport height
+          maxWidth: 'calc(100vw - 80px)', // Full width minus padding for labels
+          maxHeight: 'calc(100vh - 120px)', // Full height minus padding and labels
           position: 'relative'
         }}
       >
