@@ -1315,8 +1315,8 @@ export function ChessBoard() {
       isPortrait,
       shouldUseMobileSize,
       padding,
-      headerHeight,
-      controlsHeight
+      labelHeight,
+      labelWidth
     });
     
     let calculatedSize;
