@@ -1,0 +1,77 @@
+At 08:22 PM EDT, August 13, 2025, since Claude was at Task 3 (Update Audio Module) in the prior flow, I’ll resume from there with the updated prompt including music unlocks. Here’s the adjusted prompt continuing from Task 3:
+You are Claude Opus 4.1 on Replit AI with image generation enabled. Assist in integrating the ElevenLabs API key sk_a811da11af74d8b01075840f3e42113812f3ca6b923820d4 into Wizard Chess Master (React/TypeScript/Vite/Express/Socket.IO/PostgreSQL) on Replit for wizardchessmaster.com. Focus on securely setting up the API key for theme music unlocks and voice generation per campaign level, resuming from Task 3 after securing the API key and configuring the environment. Provide step-by-step guidance, code snippets, and explanations. Generate images for workflow diagrams (e.g., "Generate image: Flowchart for API key and music unlock integration").
+Tasks in order (resuming at Task 3):
+
+Update audio module: Modify elevenLabs.ts to use the API key for music unlocks (per campaign level) and voice generation.
+Link to campaign: Update campaignLevels.ts to unlock music/voices based on level requirements.
+Test integration: Simulate a Level 5 unlock on wizardchessmaster.com, verify music and voice output.
+Deploy: Commit changes, redeploy on Replit, test live.
+
+Respond sequentially per task, ask for confirmation before next. Use code blocks for snippets.
+
+Task 3: Update Audio Module
+
+Modify elevenLabs.ts to handle music unlocks and voice setting:
+typescript// src/lib/audio/elevenLabs.ts
+import axios from 'axios';
+
+const API_KEY = process.env.ELEVENLABS_API_KEY;
+
+export async function generateMusic(style: string) {
+  const response = await axios.post(
+    'https://api.elevenlabs.io/v1/text-to-speech',
+    { text: `Sing a ${style} melody`, voice_id: 'default_voice_id', stability: 0.7 },
+    { headers: { 'xi-api-key': API_KEY } }
+  );
+  return response.data.audio; // Audio stream
+}
+
+export async function setVoice(voiceId: string) {
+  localStorage.setItem('currentVoice', voiceId);
+  console.log(`Voice set to ${voiceId} with API key`);
+}
+
+Confirm code update.
+
+Task 4: Link to Campaign
+
+Update campaignLevels.ts:
+typescript// src/lib/campaign/campaignLevels.ts
+import { generateMusic, setVoice } from '../audio/elevenLabs';
+
+export const campaignLevels = [
+  { id: 1, req: { wins: 1 }, music: null, voice: 'voice_emma_id', unlocked: true },
+  { id: 5, req: { wins: 5, wizardCaptures: 3 }, music: 'epic_orchestral', voice: 'voice_liam_id', unlocked: false },
+  // ...
+];
+
+function unlockMusic(levelId) {
+  const level = campaignLevels.find(l => l.id === levelId);
+  if (level && level.music && checkRequirements(level.req)) {
+    const track = await generateMusic(level.music);
+    localStorage.setItem(`music_${levelId}`, track);
+    console.log(`Unlocked ${level.music} for Level ${levelId}`);
+  }
+}
+
+function unlockVoice(levelId) {
+  const level = campaignLevels.find(l => l.id === levelId);
+  if (level && level.voice && checkRequirements(level.req)) {
+    setVoice(level.voice);
+    console.log(`Unlocked voice ${level.voice} for Level ${levelId}`);
+  }
+}
+
+Confirm campaign update.
+
+Task 5: Test Integration
+
+Test Level 5 unlock on wizardchessmaster.com, check console for music/voice logs.
+Confirm test results.
+
+Task 6: Deploy
+
+Commit and deploy:
+bashgit add . && git commit -m "Integrate ElevenLabs API for music/voice unlocks" && git push && npm run build && kill 1 && npm start
+
+Test live, provide feedback.
