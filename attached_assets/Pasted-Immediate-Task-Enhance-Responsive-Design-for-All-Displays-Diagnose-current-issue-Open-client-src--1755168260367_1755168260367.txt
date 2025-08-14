@@ -1,0 +1,56 @@
+Immediate Task: Enhance Responsive Design for All Displays
+
+Diagnose current issue: Open client/src/components/chess/ChessBoard.tsx, review the useEffect logic. The current 0.5 * width and 0.65 * height - 120 might not scale well across all resolutions (e.g., 2560x1664 to 3456x2234 MacBooks, or smaller screens).
+
+Issue: Fixed percentage and offset might clip on tall/thin or wide displays.
+
+
+Implement universal responsiveness: Update to use a dynamic scaling factor with media queries:
+typescript// client/src/components/chess/ChessBoard.tsx
+import { useEffect, useRef } from 'react';
+
+const ChessBoard = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const aspectRatio = window.innerWidth / window.innerHeight;
+      let sizeFactor = 0.5; // Default for balanced screens
+      if (window.innerWidth <= 768) sizeFactor = 0.9; // Mobile
+      else if (window.innerWidth <= 1024) sizeFactor = 0.7; // Tablet
+      else if (aspectRatio > 1.6) sizeFactor = 0.45; // Wide screens (e.g., 16:10 MacBooks)
+      const maxSize = Math.min(
+        window.innerWidth * sizeFactor,
+        window.innerHeight * sizeFactor - 100 // Offset for UI
+      );
+      canvas.width = maxSize;
+      canvas.height = maxSize;
+    }
+  }, []);
+
+  return (
+    <div className="flex justify-center items-center min-h-[calc(100vh-100px)]">
+      <canvas ref={canvasRef} className="bg-gray-800 border-4 border-yellow-600" />
+    </div>
+  );
+};
+
+export default ChessBoard;
+
+Test across devices: Run npm run dev in Replit Shell, use browser dev tools (Option + Command + I, toggle device toolbar) to simulate:
+
+MacBook Air 13.6" (2560x1664)
+MacBook Pro 16.2" (3456x2234)
+iPhone (375x667)
+Ensure no overlap on any.
+
+
+Redeploy: Run npm run build && git push origin main && kill 1 && npm start.
+Test live: Visit wizardchessmaster.com, test on your Mac and resize browser, verify board fits across displays.
+
+bashnpm run dev  # Test locally
+npm run build && git push origin main && kill 1 && npm start
+
+Provide feedback with test results across different simulated sizes and live site behavior.
+8.1s
