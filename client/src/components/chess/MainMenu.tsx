@@ -315,7 +315,7 @@ export function MainMenu({ onSettings, onAchievements, onCollection }: MainMenuP
                   <p>
                     <strong>Position:</strong> Two wizards per side in corners (a1/j1 for white, a10/j10 for black)<br/>
                     <strong>Teleport:</strong> Move to any unoccupied square within 2 spaces<br/>
-                    <strong>Ranged Attack:</strong> Attack enemies within 2 squares without moving
+                    <strong>Ranged Attack:</strong> Magically attack enemies within 2 squares and return to square it attacked from
                   </p>
                 </div>
                 
