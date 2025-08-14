@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Recognition Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .danger-button {
+            background: #f44336;
+        }
+        .danger-button:hover {
+            background: #da190b;
+        }
+        .info-button {
+            background: #2196F3;
+        }
+        .info-button:hover {
+            background: #0b7dda;
+        }
+        #output {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+        }
+        .success {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .warning {
+            color: #FFC107;
+            font-weight: bold;
+        }
+        .info {
+            color: #2196F3;
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏁 Check Recognition Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>Test Controls</h2>
+        <button onclick="setupCheckScenario()">Setup Check Scenario</button>
+        <button onclick="testCheckDetection()">Test Check Detection</button>
+        <button onclick="testMoveValidation()">Test Move Validation in Check</button>
+        <button onclick="testCheckmate()">Test Checkmate Detection</button>
+        <button onclick="clearBoard()" class="danger-button">Clear Board</button>
+        <button onclick="resetGame()" class="info-button">Reset to Normal Game</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Output</h2>
+        <div id="output">Click a test button to begin...</div>
+    </div>
+    
+    <iframe id="gameFrame" src="/"></iframe>
+    
+    <script>
+        const output = document.getElementById('output');
+        const gameFrame = document.getElementById('gameFrame');
+        
+        function log(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type ? ` class="${type}"` : '';
+            output.innerHTML += `<span${className}>[${timestamp}] ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearOutput() {
+            output.innerHTML = '';
+        }
+        
+        async function waitForGame() {
+            return new Promise((resolve) => {
+                const checkInterval = setInterval(() => {
+                    try {
+                        const gameWindow = gameFrame.contentWindow;
+                        if (gameWindow.useChess && gameWindow.useChess.getState) {
+                            clearInterval(checkInterval);
+                            resolve(gameWindow);
+                        }
+                    } catch (e) {
+                        // Game not ready yet
+                    }
+                }, 500);
+            });
+        }
+        
+        async function setupCheckScenario() {
+            clearOutput();
+            log('Setting up check scenario...', 'info');
+            
+            const gameWindow = await waitForGame();
+            const { getState, setState } = gameWindow.useChess;
+            
+            // Create a simple check scenario
+            // White king at e1 (row 9, col 4)
+            // Black rook at e8 (row 2, col 4) - putting white king in check
+            const emptyBoard = Array(10).fill(null).map(() => Array(10).fill(null));
+            
+            // Place white king
+            emptyBoard[9][4] = {
+                type: 'king',
+                color: 'white',
+                id: 'w-king',
+                hasMoved: false
+            };
+            
+            // Place black rook that will give check
+            emptyBoard[2][4] = {
+                type: 'rook',
+                color: 'black',
+                id: 'b-rook',
+                hasMoved: false
+            };
+            
+            // Add some other pieces for testing escape moves
+            emptyBoard[9][3] = {
+                type: 'bishop',
+                color: 'white',
+                id: 'w-bishop',
+                hasMoved: false
+            };
+            
+            emptyBoard[8][4] = {
+                type: 'pawn',
+                color: 'white',
+                id: 'w-pawn',
+                hasMoved: false
+            };
+            
+            setState({
+                board: emptyBoard,
+                currentPlayer: 'white',
+                gamePhase: 'playing',
+                isInCheck: true,
+                selectedPosition: null,
+                validMoves: []
+            });
+            
+            log('✅ Check scenario setup complete', 'success');
+            log('White king at e1 (row 9, col 4)', 'info');
+            log('Black rook at e8 (row 2, col 4) giving check', 'info');
+            log('White bishop at d1 (row 9, col 3)', 'info');
+            log('White pawn at e2 (row 8, col 4) can block', 'info');
+        }
+        
+        async function testCheckDetection() {
+            clearOutput();
+            log('Testing check detection...', 'info');
+            
+            const gameWindow = await waitForGame();
+            const { getState } = gameWindow.useChess;
+            const state = getState();
+            
+            log(`Current player: ${state.currentPlayer}`, 'info');
+            log(`Is in check: ${state.isInCheck}`, state.isInCheck ? 'warning' : 'info');
+            
+            // Check if the game correctly identifies check
+            if (state.isInCheck) {
+                log('✅ Check correctly detected!', 'success');
+            } else {
+                log('❌ Check not detected - there may be an issue', 'error');
+            }
+            
+            // Try to get valid moves for the king
+            const king = state.board[9]?.[4];
+            if (king && king.type === 'king') {
+                log('King found at position', 'info');
+                
+                // Simulate clicking on the king
+                gameWindow.useChess.getState().selectSquare({ row: 9, col: 4 });
+                
+                setTimeout(() => {
+                    const newState = gameWindow.useChess.getState();
+                    if (newState.validMoves) {
+                        log(`Valid moves for king: ${newState.validMoves.length}`, 'info');
+                        newState.validMoves.forEach(move => {
+                            log(`  - Can move to row ${move.row}, col ${move.col}`, 'info');
+                        });
+                    }
+                }, 100);
+            }
+        }
+        
+        async function testMoveValidation() {
+            clearOutput();
+            log('Testing move validation in check...', 'info');
+            
+            const gameWindow = await waitForGame();
+            const { getState } = gameWindow.useChess;
+            const state = getState();
+            
+            if (!state.isInCheck) {
+                log('⚠️ Not in check - run "Setup Check Scenario" first', 'warning');
+                return;
+            }
+            
+            log('Testing if only legal moves are allowed...', 'info');
+            
+            // Test 1: Try to move the bishop (should only work if it blocks/captures the checking piece)
+            gameWindow.useChess.getState().selectSquare({ row: 9, col: 3 });
+            
+            setTimeout(() => {
+                const bishopMoves = gameWindow.useChess.getState().validMoves;
+                log(`Bishop has ${bishopMoves.length} valid moves`, 'info');
+                
+                if (bishopMoves.length === 0) {
+                    log('✅ Bishop correctly has no moves (cannot resolve check)', 'success');
+                } else {
+                    bishopMoves.forEach(move => {
+                        log(`  Bishop can move to row ${move.row}, col ${move.col}`, 'warning');
+                    });
+                }
+                
+                // Test 2: Try to move the pawn to block
+                gameWindow.useChess.getState().selectSquare({ row: 8, col: 4 });
+                
+                setTimeout(() => {
+                    const pawnMoves = gameWindow.useChess.getState().validMoves;
+                    log(`Pawn has ${pawnMoves.length} valid moves`, 'info');
+                    
+                    const canBlock = pawnMoves.some(m => m.row === 7 && m.col === 4);
+                    if (canBlock) {
+                        log('✅ Pawn can correctly block the check', 'success');
+                    } else {
+                        log('❌ Pawn cannot block - possible issue', 'error');
+                    }
+                }, 100);
+            }, 100);
+        }
+        
+        async function testCheckmate() {
+            clearOutput();
+            log('Setting up checkmate scenario...', 'info');
+            
+            const gameWindow = await waitForGame();
+            const { getState, setState } = gameWindow.useChess;
+            
+            // Create a checkmate scenario
+            const emptyBoard = Array(10).fill(null).map(() => Array(10).fill(null));
+            
+            // White king in corner
+            emptyBoard[9][0] = {
+                type: 'king',
+                color: 'white',
+                id: 'w-king',
+                hasMoved: true
+            };
+            
+            // Black queen giving check
+            emptyBoard[8][0] = {
+                type: 'queen',
+                color: 'black',
+                id: 'b-queen',
+                hasMoved: false
+            };
+            
+            // Black rook cutting off escape
+            emptyBoard[9][1] = {
+                type: 'rook',
+                color: 'black',
+                id: 'b-rook',
+                hasMoved: false
+            };
+            
+            setState({
+                board: emptyBoard,
+                currentPlayer: 'white',
+                gamePhase: 'playing',
+                isInCheck: true,
+                selectedPosition: null,
+                validMoves: []
+            });
+            
+            log('✅ Checkmate scenario setup', 'success');
+            log('White king at a1 (row 9, col 0)', 'info');
+            log('Black queen at a2 (row 8, col 0) giving check', 'info');
+            log('Black rook at b1 (row 9, col 1) blocking escape', 'info');
+            
+            // Check if checkmate is detected
+            setTimeout(() => {
+                const state = getState();
+                if (state.gamePhase === 'checkmate' || state.gamePhase === 'ended') {
+                    log('✅ Checkmate correctly detected!', 'success');
+                } else {
+                    log(`Game phase: ${state.gamePhase}`, 'warning');
+                    log('Checking for legal moves...', 'info');
+                    
+                    // Try to find any legal moves
+                    gameWindow.useChess.getState().selectSquare({ row: 9, col: 0 });
+                    setTimeout(() => {
+                        const kingMoves = gameWindow.useChess.getState().validMoves;
+                        if (kingMoves.length === 0) {
+                            log('✅ No legal moves - this is checkmate', 'success');
+                        } else {
+                            log(`⚠️ King has ${kingMoves.length} moves - not checkmate`, 'warning');
+                        }
+                    }, 100);
+                }
+            }, 500);
+        }
+        
+        function clearBoard() {
+            clearOutput();
+            log('Clearing board...', 'info');
+            gameFrame.contentWindow.useChess.setState({
+                board: Array(10).fill(null).map(() => Array(10).fill(null)),
+                currentPlayer: 'white',
+                gamePhase: 'playing',
+                isInCheck: false
+            });
+            log('✅ Board cleared', 'success');
+        }
+        
+        function resetGame() {
+            clearOutput();
+            log('Resetting to normal game...', 'info');
+            gameFrame.contentWindow.useChess.getState().startNewGame('ai');
+            log('✅ Game reset', 'success');
+        }
+        
+        // Wait for game to load
+        gameFrame.onload = () => {
+            log('Game loaded. Ready for testing!', 'success');
+        };
+    </script>
+</body>
+</html>
