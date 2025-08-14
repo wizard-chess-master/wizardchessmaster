@@ -1,0 +1,61 @@
+Immediate Task: Adjust Right Border Visibility
+
+Diagnose issue: Open client/src/components/chess/ChessBoard.tsx, check the handleResize logic. The maxWidth calculation (window.innerWidth - padding * 2) with sizeFactor might slightly overshoot, cutting off the border.
+
+Issue: sizeFactor * maxWidth might not leave enough room for the border (4px) on the right.
+
+
+Fine-tune sizing: Adjust the sizeFactor slightly and add border compensation:
+typescript// client/src/components/chess/ChessBoard.tsx
+import { useEffect, useRef } from 'react';
+
+const ChessBoard = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const canvas = canvasRef.current;
+      if (canvas) {
+        const padding = 40;
+        const borderWidth = 4; // Match border-4 from class
+        const maxWidth = window.innerWidth - padding * 2 - borderWidth;
+        const maxHeight = window.innerHeight - padding * 2 - 60; // Adjusted for labels
+        let sizeFactor = 0.84; // Reduced from 0.85 to give border space
+        if (window.innerWidth <= 768) sizeFactor = 0.94; // Adjusted for mobile
+        else if (window.innerWidth <= 1024) sizeFactor = 0.89; // Adjusted for tablet
+        else if (window.innerWidth > 2560) sizeFactor = 0.69; // Adjusted for large displays
+        const size = Math.min(maxWidth * sizeFactor, maxHeight * sizeFactor);
+        canvas.width = size;
+        canvas.height = size;
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('fullscreenchange', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('fullscreenchange', handleResize);
+    };
+  }, []);
+
+  return (
+    <div className="flex justify-center items-start p-2 w-full overflow-hidden">
+      <canvas ref={canvasRef} className="bg-gray-800 border-4 border-yellow-600" />
+    </div>
+  );
+};
+
+export default ChessBoard;
+
+Changes: Reduced sizeFactor slightly (e.g., 0.84 from 0.85), subtracted borderWidth from maxWidth, adjusted other sizeFactor values proportionally, and fine-tuned maxHeight offset.
+
+
+Test locally: Run npm run dev in Replit Shell, preview on your display, toggle full screen, and check if the right border appears without cutting off squares.
+Redeploy: Run npm run build && git push origin main && kill 1 && npm start.
+Test live: Visit wizardchessmaster.com, verify the right border is visible with all squares intact.
+
+bashnpm run dev  # Test locally
+npm run build && git push origin main && kill 1 && npm start
+
+Provide feedback with test results (border visibility, square integrity) and any new issues. The risk is minimal, but monitor for stability.
