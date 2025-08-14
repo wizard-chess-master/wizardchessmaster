@@ -196,17 +196,17 @@ export function ChessBoard() {
       const availableWidth = viewportWidth - padding * 2 - labelWidth - borderWidth * 2;
       const availableHeight = viewportHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
       
-      // Dynamic size factor based on screen size - adjusted for border visibility
-      let sizeFactor = 0.84; // Reduced from 0.9 to ensure border space
+      // Dynamic size factor based on screen size - balanced for visibility
+      let sizeFactor = 0.88; // Slightly reduced from 0.9 for border visibility
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.94; // Mobile - adjusted from 0.95
+        sizeFactor = 0.94; // Mobile - good balance
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.89; // Tablet - adjusted from 0.92
+        sizeFactor = 0.90; // Tablet - balanced
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.69; // Large displays - adjusted from 0.75
+        sizeFactor = 0.72; // Large displays - prevent excessive size
       } else if (viewportWidth / viewportHeight > 1.6) {
-        sizeFactor = 0.76; // Wide screens - adjusted from 0.8
+        sizeFactor = 0.78; // Wide screens - balanced
       }
       
       // Calculate board size using available space
@@ -1366,7 +1366,7 @@ export function ChessBoard() {
   return (
     <div className={cn(
       "board-container",
-      "flex flex-col items-center justify-start", // Changed from justify-center to justify-start
+      "flex flex-col items-center justify-start", // Position at top
       "w-full h-screen overflow-hidden", // Full viewport with no overflow
       isMobileDevice && "mobile-board-container",
       isMobileDevice && deviceInfo.orientation === 'portrait' && "portrait-board",
@@ -1375,8 +1375,9 @@ export function ChessBoard() {
     style={{
       backgroundColor: 'transparent',
       position: 'relative',
-      padding: '20px', // Consistent padding
-      marginTop: '-50px' // Increased negative margin to move board much higher
+      padding: '20px',
+      paddingTop: '10px', // Minimal top padding to move board higher
+      marginTop: '0' // Remove negative margin to prevent cutoff
     }}>
       {/* AI Thinking Indicator */}
       {aiThinking && (
