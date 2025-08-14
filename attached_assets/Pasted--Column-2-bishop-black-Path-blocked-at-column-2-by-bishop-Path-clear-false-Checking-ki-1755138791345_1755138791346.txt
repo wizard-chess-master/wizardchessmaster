@@ -1,0 +1,197 @@
+  Column 2: bishop (black)
+  ❌ Path blocked at column 2 by bishop
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: empty
+  Column 2: bishop (black)
+  ❌ Path blocked at column 2 by bishop
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: empty
+  Column 2: bishop (black)
+  ❌ Path blocked at column 2 by bishop
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: wizard (black)
+  ❌ Path blocked at column 6 by wizard
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: empty
+  Column 7: bishop (black)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: empty
+  Column 7: bishop (black)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for white
+  Column 1: knight (white)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for white
+  Column 6: empty
+  Column 7: bishop (white)
+  ❌ Path blocked at column 7 by bishop
+  Path clear: false
+🏰 Checking queenside castling path for black
+  Column 1: knight (black)
+  ❌ Path blocked at column 1 by knight
+  Path clear: false
+🏰 Checking kingside castling path for black
+  Column 6: empty
+  Column 7: bishop (black)
