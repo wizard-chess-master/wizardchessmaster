@@ -186,26 +186,27 @@ export function ChessBoard() {
         return;
       }
       
-      // Account for padding and coordinate labels
+      // Account for padding, coordinate labels, and border
       const padding = 40; // Increased for labels and UI elements
       const labelHeight = 30; // Height for coordinate labels
       const labelWidth = 30; // Width for coordinate labels
+      const borderWidth = 4; // Account for border-4 class (4px border)
       
-      // Calculate available space accounting for labels
-      const availableWidth = viewportWidth - padding * 2 - labelWidth;
-      const availableHeight = viewportHeight - padding * 2 - labelHeight * 2;
+      // Calculate available space accounting for labels and border
+      const availableWidth = viewportWidth - padding * 2 - labelWidth - borderWidth * 2;
+      const availableHeight = viewportHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
       
-      // Dynamic size factor based on screen size
-      let sizeFactor = 0.9; // Higher default to use more available space
+      // Dynamic size factor based on screen size - adjusted for border visibility
+      let sizeFactor = 0.84; // Reduced from 0.9 to ensure border space
       
       if (viewportWidth <= 768) {
-        sizeFactor = 0.95; // Mobile - use most of the space
+        sizeFactor = 0.94; // Mobile - adjusted from 0.95
       } else if (viewportWidth <= 1024) {
-        sizeFactor = 0.92; // Tablet
+        sizeFactor = 0.89; // Tablet - adjusted from 0.92
       } else if (viewportWidth >= 2560) {
-        sizeFactor = 0.75; // Large displays - prevent board from being too large
+        sizeFactor = 0.69; // Large displays - adjusted from 0.75
       } else if (viewportWidth / viewportHeight > 1.6) {
-        sizeFactor = 0.8; // Wide screens
+        sizeFactor = 0.76; // Wide screens - adjusted from 0.8
       }
       
       // Calculate board size using available space
@@ -1296,13 +1297,14 @@ export function ChessBoard() {
     const actualWidth = window.innerWidth;
     const actualHeight = window.innerHeight;
     
-    // Consistent padding with desktop calculations
+    // Consistent padding with desktop calculations - include border
     const padding = 40;
     const labelHeight = 30;
     const labelWidth = 30;
+    const borderWidth = 4; // Account for border-4 class
     
-    let availableWidth = actualWidth - padding * 2 - labelWidth;
-    let availableHeight = actualHeight - padding * 2 - labelHeight * 2;
+    let availableWidth = actualWidth - padding * 2 - labelWidth - borderWidth * 2;
+    let availableHeight = actualHeight - padding * 2 - labelHeight * 2 - borderWidth * 2;
     
     // Calculate optimal size based on actual viewport with more mobile-friendly constraints
     const isPortrait = actualWidth < actualHeight;
